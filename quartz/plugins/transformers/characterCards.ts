@@ -36,6 +36,7 @@ const CARD_CSS = `
   flex-direction: column;
   color: inherit;
   text-decoration: none;
+  cursor: pointer;
 }
 
 .isr-character-card-image {
@@ -46,7 +47,7 @@ const CARD_CSS = `
   object-fit: cover;
   object-position: top center;
   background: var(--lightgray);
-  cursor: default;
+  cursor: inherit;
 }
 
 .isr-character-card-copy {
@@ -233,8 +234,8 @@ export const CharacterCards: QuartzTransformerPlugin = () => {
                 : ""
               return [
                 '<article class="isr-character-card">',
-                image,
                 `<a href="${href}" aria-label="Open ${escapeHtml(title)} dossier">`,
+                image,
                 '<div class="isr-character-card-copy">',
                 `<p class="isr-character-card-name">${escapeHtml(title)}</p>`,
                 subtitle ? `<p class="isr-character-card-subtitle">${escapeHtml(subtitle)}</p>` : "",
