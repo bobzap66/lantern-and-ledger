@@ -83,6 +83,21 @@ function sortKey(date) {
   return date.year * 10000 + (date.month ?? 0) * 100 + (date.day ?? 0)
 }
 
+function parseCalendarEventRange(text) {
+  const block = /<!--\s*calendar-events:start\s*-->([\s\S]*?)<!--\s*calendar-events:end\s*-->/i.exec(text)?.[1]
+  if (!block) return null
+
+  const dates = []
+  for (const match of block.matchAll(/\bdata-(?:date|end-date)="([^"]+)"/gi)) {
+    const parsed = parseGolarionDate(match[1])
+    if (parsed) dates.push(parsed)
+  }
+  if (dates.length === 0) return null
+
+  dates.sort((a, b) => sortKey(a) - sortKey(b))
+  return { start: dates[0], end: dates[dates.length - 1] }
+}
+
 function formatPoint(date) {
   if (!date.monthName) return ""
   return date.day ? `${date.day} ${date.monthName}` : date.monthName
@@ -234,16 +249,29 @@ for (const timeline of timelineFiles) {
 
     const hasCampaignDate = Boolean(fm.campaign_date_start || fm.campaign_date)
     const explicitlyIncluded = String(fm.timeline_include || "").toLowerCase() === "true"
-    if (!hasCampaignDate && !explicitlyIncluded) continue
+    const isSessionReport = String(fm.type || "").toLowerCase() === "report" && /^Session\s+\d+/i.test(String(fm.title || path.basename(file, ".md")))
+    const calendarRange = isSessionReport ? parseCalendarEventRange(text) : null
+    const hasSessionDate = isSessionReport && Boolean(fm.event_start || fm.event_date || calendarRange)
+    if (!hasCampaignDate && !explicitlyIncluded && !hasSessionDate) continue
     if (String(fm.source_layer || "").toLowerCase() === "reconstructed-retrospective" && !explicitlyIncluded) continue
 
-    const startRaw = fm.campaign_date_start || fm.campaign_date || fm.event_start || fm.event_date
-    const endRaw = fm.campaign_date_end || fm.campaign_date || fm.event_end || fm.event_date || startRaw
+    const sessionMatch = /^Session\s+0*(\d+)/i.exec(String(fm.title || path.basename(file, ".md")))
+    const effectiveFm = isSessionReport && sessionMatch
+      ? {
+          ...fm,
+          session_number: fm.session_number || String(Number(sessionMatch[1])),
+          timeline_label: fm.timeline_label || `Session ${Number(sessionMatch[1])}`,
+          timeline_link_label: fm.timeline_link_label || `Read Session ${Number(sessionMatch[1])}`,
+        }
+      : fm
+
+    const startRaw = fm.campaign_date_start || fm.campaign_date || fm.event_start || fm.event_date || calendarRange?.start.raw
+    const endRaw = fm.campaign_date_end || fm.campaign_date || fm.event_end || fm.event_date || calendarRange?.end.raw || startRaw
     const start = parseGolarionDate(startRaw)
     const end = parseGolarionDate(endRaw)
     if (!start || !end) continue
 
-    entries.push({ file, timelineFile: timeline.file, basename: path.basename(file, ".md"), fm, start, end, manual: false })
+    entries.push({ file, timelineFile: timeline.file, basename: path.basename(file, ".md"), fm: effectiveFm, start, end, manual: false })
   }
 
   for (const sourceText of manualSources) {
