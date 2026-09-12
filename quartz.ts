@@ -5,6 +5,7 @@ import { ArticleAuthorCards } from "./quartz/plugins/transformers/articleAuthorC
 import { FolderGallery } from "./quartz/plugins/transformers/folderGallery"
 import { ImageMetadataGallery } from "./quartz/plugins/transformers/imageMetadataGallery"
 import { ImageMetadataCarousel } from "./quartz/plugins/transformers/imageMetadataCarousel"
+import { VignetteIndexes } from "./quartz/plugins/transformers/vignetteIndexes"
 import CharacterVignettes from "./quartz/components/CharacterVignettes"
 import { Explorer } from "@quartz-community/explorer"
 
@@ -69,6 +70,7 @@ config.plugins.transformers.push(ImageMetadataGallery())
 config.plugins.transformers.push(ImageMetadataCarousel())
 config.plugins.transformers.push(CharacterCards())
 config.plugins.transformers.push(ArticleAuthorCards())
+config.plugins.transformers.push(VignetteIndexes())
 config.plugins.transformers.push(CampaignDossiers())
 
 const layout = await loadQuartzLayout()
