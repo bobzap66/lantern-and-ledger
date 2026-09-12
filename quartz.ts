@@ -7,6 +7,7 @@ import { ImageMetadataGallery } from "./quartz/plugins/transformers/imageMetadat
 import { ImageMetadataCarousel } from "./quartz/plugins/transformers/imageMetadataCarousel"
 import { VignetteIndexes } from "./quartz/plugins/transformers/vignetteIndexes"
 import CharacterVignettes from "./quartz/components/CharacterVignettes"
+import VignetteNavigation from "./quartz/components/VignetteNavigation"
 import { Explorer } from "@quartz-community/explorer"
 
 const dossierOrder = [
@@ -75,6 +76,7 @@ config.plugins.transformers.push(CampaignDossiers())
 
 const layout = await loadQuartzLayout()
 layout.defaults.beforeBody.push(CharacterVignettes())
+layout.defaults.afterBody.push(VignetteNavigation())
 
 export default config
 export { layout }
