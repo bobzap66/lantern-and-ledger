@@ -226,6 +226,9 @@ function initials(value: string) {
 }
 
 function dateText(frontmatter: Record<string, any>, fallbackPath: string) {
+  if (String(frontmatter?.date_status ?? "").toLowerCase() === "uncertain") {
+    return { iso: "", year: "Undated", label: "Undated", rank: Number.MAX_SAFE_INTEGER, sortGroup: 2, kind: "undated" }
+  }
   const raw = String(frontmatter?.date ?? "").trim()
   const filenameMatch = path.basename(fallbackPath).match(/^(\d{4}-\d{2}-\d{2})/)
   const iso = /^\d{4}-\d{2}-\d{2}$/.test(raw) ? raw : filenameMatch?.[1] ?? ""

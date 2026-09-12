@@ -14,6 +14,7 @@ function characterKey(value: unknown) {
 }
 
 function dateRank(frontmatter: Record<string, any> | undefined) {
+  if (String(frontmatter?.date_status ?? "").toLowerCase() === "uncertain") return Number.MAX_SAFE_INTEGER
   const text = String(frontmatter?.date ?? "").trim()
   if (text) {
     const parsed = Date.parse(text)
