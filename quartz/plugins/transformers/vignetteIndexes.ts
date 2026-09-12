@@ -268,11 +268,14 @@ function dateText(frontmatter: Record<string, any>, fallbackPath: string) {
 }
 
 function relativeSlugHref(fromRelativePath: string, toSlug: any) {
-  const fromSlug = simplifySlug(slugifyFilePath(fromRelativePath as any))
-  const normalizedFromSlug = String(fromSlug).replaceAll("\\", "/")
-  const isIndex = path.posix.basename(fromRelativePath).toLowerCase() === "index.md"
-  const fromDirectory = isIndex ? normalizedFromSlug : path.posix.dirname(normalizedFromSlug)
-  let href = path.posix.relative(fromDirectory, String(toSlug).replaceAll("\\", "/"))
+  const normalizedSourcePath = fromRelativePath.replaceAll("\\", "/")
+  const sourceDirectory = path.posix.dirname(normalizedSourcePath)
+  const directoryIndexPath = sourceDirectory === "." ? "index.md" : `${sourceDirectory}/index.md`
+  const fromDirectorySlug = simplifySlug(slugifyFilePath(directoryIndexPath as any))
+  const normalizedFromDirectory = String(fromDirectorySlug).replaceAll("\\", "/")
+  const normalizedTarget = String(toSlug).replaceAll("\\", "/")
+  let href = path.posix.relative(normalizedFromDirectory, normalizedTarget)
+  if (!href || href === ".") return "./"
   if (!href.startsWith(".")) href = `./${href}`
   return href
 }
@@ -402,7 +405,6 @@ export const VignetteIndexes: QuartzTransformerPlugin = () => {
         }).join("\n")
 
         const firstHeading = tree.children.findIndex((node: any) => node?.type === "heading" && node.depth === 1)
-        const firstYearHeading = tree.children.findIndex((node: any) => node?.type === "heading" && node.depth === 2)
         const heroInsertAt = firstHeading >= 0 ? firstHeading + 1 : 0
         tree.children.splice(heroInsertAt, 0, { type: "html", value: hero })
 
