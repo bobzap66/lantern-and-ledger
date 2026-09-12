@@ -225,16 +225,43 @@ function initials(value: string) {
   return value.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]?.toUpperCase() ?? "").join("")
 }
 
-function dateText(value: unknown, fallbackPath: string) {
-  const raw = String(value ?? "").trim()
+function dateText(frontmatter: Record<string, any>, fallbackPath: string) {
+  const raw = String(frontmatter?.date ?? "").trim()
   const filenameMatch = path.basename(fallbackPath).match(/^(\d{4}-\d{2}-\d{2})/)
   const iso = /^\d{4}-\d{2}-\d{2}$/.test(raw) ? raw : filenameMatch?.[1] ?? ""
-  if (!iso) return { iso: "", year: "Undated", label: "Undated", rank: Number.MAX_SAFE_INTEGER }
+  if (iso) {
+    const [year, month, day] = iso.split("-").map(Number)
+    const date = new Date(Date.UTC(year, month - 1, day))
+    const label = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", timeZone: "UTC" }).format(date)
+    return { iso, year: String(year), label, rank: year * 10000 + month * 100 + day, sortGroup: 1, kind: "publication" }
+  }
 
-  const [year, month, day] = iso.split("-").map(Number)
-  const date = new Date(Date.UTC(year, month - 1, day))
-  const label = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", timeZone: "UTC" }).format(date)
-  return { iso, year: String(year), label, rank: year * 10000 + month * 100 + day }
+  const golarionMonths = ["Abadius", "Calistril", "Pharast", "Gozran", "Desnus", "Sarenith", "Erastus", "Arodus", "Rova", "Lamashan", "Neth", "Kuthona"]
+  const monthNumber = (name: string) => golarionMonths.findIndex((month) => month.toLowerCase() === name.toLowerCase()) + 1
+  const campaign = String(frontmatter?.campaign_date_name ?? "").trim()
+  const dayMatch = campaign.match(/^(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})\s+AR$/)
+  const monthMatch = campaign.match(/^([A-Za-z]+)\s+(\d{4})\s+AR$/)
+
+  let year = 0
+  let month = 0
+  let day = 0
+  let label = campaign
+  if (dayMatch) {
+    day = Number(dayMatch[1])
+    month = monthNumber(dayMatch[2])
+    year = Number(dayMatch[3])
+    label = `${dayMatch[2]} ${day}`
+  } else if (monthMatch) {
+    month = monthNumber(monthMatch[1])
+    year = Number(monthMatch[2])
+    label = monthMatch[1]
+  }
+
+  if (year && month) {
+    return { iso: "", year: `${year} AR`, label, rank: year * 10000 + month * 100 + day, sortGroup: 0, kind: "campaign" }
+  }
+
+  return { iso: "", year: "Undated", label: "Undated", rank: Number.MAX_SAFE_INTEGER, sortGroup: 2, kind: "undated" }
 }
 
 function relativeSlugHref(fromRelativePath: string, toSlug: any) {
@@ -285,8 +312,8 @@ export const VignetteIndexes: QuartzTransformerPlugin = () => {
         const entries = allNotes
           .filter((note) => path.posix.dirname(note.relativePath) === sourceDirectory)
           .filter((note) => String(note.frontmatter?.type ?? "").toLowerCase() === "vignette")
-          .map((note) => ({ note, date: dateText(note.frontmatter?.date, note.relativePath) }))
-          .sort((a, b) => a.date.rank - b.date.rank || String(a.note.frontmatter?.title ?? "").localeCompare(String(b.note.frontmatter?.title ?? "")))
+          .map((note) => ({ note, date: dateText(note.frontmatter, note.relativePath) }))
+          .sort((a, b) => a.date.sortGroup - b.date.sortGroup || a.date.rank - b.date.rank || String(a.note.frontmatter?.title ?? "").localeCompare(String(b.note.frontmatter?.title ?? "")))
 
         if (entries.length === 0) return
 
@@ -312,8 +339,9 @@ export const VignetteIndexes: QuartzTransformerPlugin = () => {
 
         const authors = [...new Set(entries.map(({ note }) => String(note.frontmatter?.author ?? "").trim()).filter(Boolean))]
         const commonAuthor = authors.length === 1 ? authors[0] : ""
-        const firstYear = entries.find((entry) => entry.date.year !== "Undated")?.date.year ?? ""
-        const lastYear = [...entries].reverse().find((entry) => entry.date.year !== "Undated")?.date.year ?? ""
+        const publishedEntries = entries.filter((entry) => entry.date.kind === "publication")
+        const firstYear = publishedEntries[0]?.date.year ?? ""
+        const lastYear = publishedEntries.at(-1)?.date.year ?? ""
         const range = firstYear && lastYear ? (firstYear === lastYear ? firstYear : `${firstYear}–${lastYear}`) : ""
 
         const portraitHtml = portrait

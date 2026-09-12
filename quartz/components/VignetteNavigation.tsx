@@ -13,11 +13,26 @@ function characterKey(value: unknown) {
   return target ? target.split("/").filter(Boolean).at(-1)?.toLowerCase() ?? "" : ""
 }
 
-function dateRank(value: unknown) {
-  const text = String(value ?? "").trim()
-  if (!text) return 0
-  const parsed = Date.parse(text)
-  return Number.isFinite(parsed) ? parsed : 0
+function dateRank(frontmatter: Record<string, any> | undefined) {
+  const text = String(frontmatter?.date ?? "").trim()
+  if (text) {
+    const parsed = Date.parse(text)
+    if (Number.isFinite(parsed)) return 1_000_000_000_000_000 + parsed
+  }
+
+  const months = ["Abadius", "Calistril", "Pharast", "Gozran", "Desnus", "Sarenith", "Erastus", "Arodus", "Rova", "Lamashan", "Neth", "Kuthona"]
+  const campaign = String(frontmatter?.campaign_date_name ?? "").trim()
+  const dayMatch = campaign.match(/^(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})\s+AR$/)
+  const monthMatch = campaign.match(/^([A-Za-z]+)\s+(\d{4})\s+AR$/)
+  if (dayMatch) {
+    const month = months.findIndex((value) => value.toLowerCase() === dayMatch[2].toLowerCase()) + 1
+    return Number(dayMatch[3]) * 10000 + month * 100 + Number(dayMatch[1])
+  }
+  if (monthMatch) {
+    const month = months.findIndex((value) => value.toLowerCase() === monthMatch[1].toLowerCase()) + 1
+    return Number(monthMatch[2]) * 10000 + month * 100
+  }
+  return Number.MAX_SAFE_INTEGER
 }
 
 function inferredArchiveSlug(fileData: QuartzComponentProps["fileData"], allFiles: QuartzComponentProps["allFiles"]) {
@@ -50,7 +65,7 @@ export default (() => {
       .filter((file) => characterKey(file.frontmatter?.character) === key)
       .filter((file) => file.slug)
       .sort((a, b) => {
-        const dateDiff = dateRank(a.frontmatter?.date) - dateRank(b.frontmatter?.date)
+        const dateDiff = dateRank(a.frontmatter) - dateRank(b.frontmatter)
         if (dateDiff !== 0) return dateDiff
         const aTitle = String(a.frontmatter?.title ?? simplifySlug(a.slug!))
         const bTitle = String(b.frontmatter?.title ?? simplifySlug(b.slug!))
@@ -79,7 +94,7 @@ export default (() => {
     const item = (file: (typeof siblings)[number] | undefined, direction: "previous" | "next") => {
       if (!file?.slug) return <span class={`vignette-nav-item vignette-nav-${direction} is-empty`} aria-hidden="true" />
       const title = String(file.frontmatter?.title ?? simplifySlug(file.slug).split("/").at(-1) ?? "Vignette")
-      const date = String(file.frontmatter?.date ?? "").trim()
+      const date = String(file.frontmatter?.date ?? file.frontmatter?.campaign_date_name ?? "").trim()
       const href = resolveRelative(fileData.slug!, simplifySlug(file.slug) as FullSlug)
       return (
         <a href={href} class={`vignette-nav-item vignette-nav-${direction} internal`}>
