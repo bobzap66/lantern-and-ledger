@@ -185,9 +185,10 @@ function archiveForCharacter(note: Note, allNotes: Note[]) {
     if (match) return match
   }
 
-  const pageSlug = String(note.slug)
+  const pageSlug = String(note.slug).replaceAll("\\", "/")
+  const lowerPageSlug = pageSlug.toLowerCase()
   const marker = "/characters/"
-  const markerIndex = pageSlug.indexOf(marker)
+  const markerIndex = lowerPageSlug.indexOf(marker)
   if (markerIndex === -1) return undefined
   const campaignRoot = pageSlug.slice(0, markerIndex)
   const characterPath = pageSlug.slice(markerIndex + marker.length)
@@ -197,8 +198,9 @@ function archiveForCharacter(note: Note, allNotes: Note[]) {
   const candidates = [
     `${campaignRoot}/vignettes/${characterPath}`,
     `${campaignRoot}/vignettes/${characterPath}/${characterSegment}`,
-  ]
-  return allNotes.find((candidate) => candidates.includes(String(candidate.slug)))
+  ].map((value) => value.toLowerCase())
+
+  return allNotes.find((candidate) => candidates.includes(String(candidate.slug).replaceAll("\\", "/").toLowerCase()))
 }
 
 function archiveForVignette(note: Note, allNotes: Note[]) {
