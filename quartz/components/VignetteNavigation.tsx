@@ -1,16 +1,12 @@
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 import { FullSlug, resolveRelative, simplifySlug } from "../util/path"
+import { vignetteDate } from "../util/vignettes"
 
 function wikilinkTarget(value: unknown) {
   if (typeof value !== "string") return ""
   const text = value.trim()
   const match = text.match(/^\[\[([^\]|#]+)(?:#[^\]|]+)?(?:\|[^\]]+)?\]\]$/)
   return (match ? match[1] : text).replaceAll("\\", "/").replace(/\.md$/i, "")
-}
-
-function characterKey(value: unknown) {
-  const target = wikilinkTarget(value)
-  return target ? target.split("/").filter(Boolean).at(-1)?.toLowerCase() ?? "" : ""
 }
 
 function vignetteDirectory(slug: string) {
@@ -24,47 +20,18 @@ function isVignettePage(file: QuartzComponentProps["allFiles"][number]) {
   if (!file.slug) return false
   const slug = simplifySlug(file.slug)
   if (!slug.includes("/vignettes/")) return false
-
-  const parts = slug.split("/").filter(Boolean)
-  const last = parts.at(-1) ?? ""
-  const parent = parts.at(-2) ?? ""
-
-  // Archive/index pages are represented either as .../index (simplified to the
-  // directory) or, in Season of Ghosts, as a file named for its containing folder.
-  if (last === "vignettes" || last === parent) return false
-  return true
-}
-
-function navigationGroup(file: QuartzComponentProps["allFiles"][number]) {
-  const key = characterKey(file.frontmatter?.character)
-  if (key) return `character:${key}`
-  return file.slug ? `directory:${vignetteDirectory(file.slug)}` : ""
+  return String(file.frontmatter?.type ?? "").toLowerCase() === "vignette"
 }
 
 function dateRank(frontmatter: Record<string, any> | undefined) {
-  if (String(frontmatter?.date_status ?? "").toLowerCase() === "uncertain") return Number.MAX_SAFE_INTEGER
-  const text = String(frontmatter?.date ?? "").trim()
-  if (text) {
-    const parsed = Date.parse(text)
-    if (Number.isFinite(parsed)) return 1_000_000_000_000_000 + parsed
-  }
-
-  const months = ["Abadius", "Calistril", "Pharast", "Gozran", "Desnus", "Sarenith", "Erastus", "Arodus", "Rova", "Lamashan", "Neth", "Kuthona"]
-  const campaign = String(frontmatter?.campaign_date_name ?? "").trim()
-  const dayMatch = campaign.match(/^(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})\s+AR$/)
-  const monthMatch = campaign.match(/^([A-Za-z]+)\s+(\d{4})\s+AR$/)
-  if (dayMatch) {
-    const month = months.findIndex((value) => value.toLowerCase() === dayMatch[2].toLowerCase()) + 1
-    return Number(dayMatch[3]) * 10000 + month * 100 + Number(dayMatch[1])
-  }
-  if (monthMatch) {
-    const month = months.findIndex((value) => value.toLowerCase() === monthMatch[1].toLowerCase()) + 1
-    return Number(monthMatch[2]) * 10000 + month * 100
-  }
-  return Number.MAX_SAFE_INTEGER
+  const date = vignetteDate(frontmatter ?? {})
+  return date.sortGroup * 10_000_000_000 + date.rank
 }
 
-function inferredArchiveSlug(fileData: QuartzComponentProps["fileData"], allFiles: QuartzComponentProps["allFiles"]) {
+function inferredArchive(
+  fileData: QuartzComponentProps["fileData"],
+  allFiles: QuartzComponentProps["allFiles"],
+) {
   if (!fileData.slug) return undefined
   const current = simplifySlug(fileData.slug)
   const parts = current.split("/")
@@ -73,25 +40,34 @@ function inferredArchiveSlug(fileData: QuartzComponentProps["fileData"], allFile
   const characterSegment = directory.split("/").at(-1)
   if (!characterSegment) return undefined
 
-  const candidates = [directory, `${directory}/${characterSegment}`]
+  const candidates = [directory, `${directory}/index`, `${directory}/${characterSegment}`]
   for (const candidate of candidates) {
-    const match = allFiles.find((file) => file.slug && simplifySlug(file.slug) === candidate)
-    if (match?.slug) return simplifySlug(match.slug)
+    const match = allFiles.find(
+      (file) =>
+        file.slug &&
+        (String(file.slug) === candidate || String(simplifySlug(file.slug)) === candidate),
+    )
+    if (match?.slug) return match
   }
   return undefined
 }
 
 export default (() => {
-  const VignetteNavigation: QuartzComponent = ({ fileData, allFiles, displayClass }: QuartzComponentProps) => {
-    if (!fileData.slug || !isVignettePage(fileData as QuartzComponentProps["allFiles"][number])) return null
+  const VignetteNavigation: QuartzComponent = ({
+    fileData,
+    allFiles,
+    displayClass,
+  }: QuartzComponentProps) => {
+    if (!fileData.slug || !isVignettePage(fileData as QuartzComponentProps["allFiles"][number]))
+      return null
 
     const fm = fileData.frontmatter ?? {}
-    const group = navigationGroup(fileData as QuartzComponentProps["allFiles"][number])
+    const group = vignetteDirectory(fileData.slug)
     if (!group) return null
 
     const siblings = allFiles
       .filter((file) => isVignettePage(file))
-      .filter((file) => navigationGroup(file) === group)
+      .filter((file) => file.slug && vignetteDirectory(file.slug) === group)
       .filter((file) => file.slug)
       .sort((a, b) => {
         const dateDiff = dateRank(a.frontmatter) - dateRank(b.frontmatter)
@@ -102,7 +78,9 @@ export default (() => {
       })
 
     const currentSlug = simplifySlug(fileData.slug)
-    const currentIndex = siblings.findIndex((file) => file.slug && simplifySlug(file.slug) === currentSlug)
+    const currentIndex = siblings.findIndex(
+      (file) => file.slug && simplifySlug(file.slug) === currentSlug,
+    )
     if (currentIndex === -1) return null
 
     const previous = currentIndex > 0 ? siblings[currentIndex - 1] : undefined
@@ -110,24 +88,42 @@ export default (() => {
 
     const configuredParent = wikilinkTarget(fm.parent)
     const parentMatch = configuredParent
-      ? allFiles.find((file) => file.slug && (simplifySlug(file.slug) === configuredParent || simplifySlug(file.slug).endsWith(`/${configuredParent}`)))
+      ? allFiles.find(
+          (file) =>
+            file.slug &&
+            (simplifySlug(file.slug) === configuredParent ||
+              simplifySlug(file.slug).endsWith(`/${configuredParent}`)),
+        )
       : undefined
-    const archiveSlug = parentMatch?.slug ? simplifySlug(parentMatch.slug) : inferredArchiveSlug(fileData, allFiles)
+    const archive = parentMatch ?? inferredArchive(fileData, allFiles)
+    const archiveSlug = archive?.slug ? simplifySlug(archive.slug) : undefined
 
-    const characterName = String(fm.character ?? "Character")
-      .replace(/^\[\[/, "")
-      .replace(/\]\]$/, "")
-      .split("|").at(-1)
-      ?.trim() || "Character"
+    const characterName =
+      String(fm.character ?? "Character")
+        .replace(/^\[\[/, "")
+        .replace(/\]\]$/, "")
+        .split("|")
+        .at(-1)
+        ?.trim() || "Character"
+    const archiveTitle = String(archive?.frontmatter?.title ?? `${characterName} Vignettes`)
 
     const item = (file: (typeof siblings)[number] | undefined, direction: "previous" | "next") => {
-      if (!file?.slug) return <span class={`vignette-nav-item vignette-nav-${direction} is-empty`} aria-hidden="true" />
-      const title = String(file.frontmatter?.title ?? simplifySlug(file.slug).split("/").at(-1) ?? "Vignette")
-      const date = String(file.frontmatter?.date ?? file.frontmatter?.campaign_date_name ?? "").trim()
+      if (!file?.slug)
+        return (
+          <span class={`vignette-nav-item vignette-nav-${direction} is-empty`} aria-hidden="true" />
+        )
+      const title = String(
+        file.frontmatter?.title ?? simplifySlug(file.slug).split("/").at(-1) ?? "Vignette",
+      )
+      const date = String(
+        file.frontmatter?.date ?? file.frontmatter?.campaign_date_name ?? "",
+      ).trim()
       const href = resolveRelative(fileData.slug!, simplifySlug(file.slug) as FullSlug)
       return (
         <a href={href} class={`vignette-nav-item vignette-nav-${direction} internal`}>
-          <span class="vignette-nav-label">{direction === "previous" ? "← Previous" : "Next →"}</span>
+          <span class="vignette-nav-label">
+            {direction === "previous" ? "← Previous" : "Next →"}
+          </span>
           <span class="vignette-nav-title">{title}</span>
           {date && <span class="vignette-nav-date">{date}</span>}
         </a>
@@ -135,15 +131,23 @@ export default (() => {
     }
 
     return (
-      <nav class={`vignette-navigation ${displayClass ?? ""}`.trim()} aria-label="Vignette navigation">
+      <nav
+        class={`vignette-navigation ${displayClass ?? ""}`.trim()}
+        aria-label="Vignette navigation"
+      >
         <div class="vignette-nav-grid">
           {item(previous, "previous")}
           {archiveSlug ? (
-            <a href={resolveRelative(fileData.slug, archiveSlug as FullSlug)} class="vignette-nav-back internal">
+            <a
+              href={resolveRelative(fileData.slug, archiveSlug as FullSlug)}
+              class="vignette-nav-back internal"
+            >
               <span class="vignette-nav-label">Vignette Archive</span>
-              <span class="vignette-nav-title">Back to {characterName} Vignettes</span>
+              <span class="vignette-nav-title">Back to {archiveTitle}</span>
             </a>
-          ) : <span class="vignette-nav-back is-empty" aria-hidden="true" />}
+          ) : (
+            <span class="vignette-nav-back is-empty" aria-hidden="true" />
+          )}
           {item(next, "next")}
         </div>
       </nav>

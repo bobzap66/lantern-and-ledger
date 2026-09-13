@@ -4,6 +4,10 @@
 
 Quartz is a set of tools that helps you publish your [digital garden](https://jzhao.xyz/posts/networked-thought) and notes as a website for free.
 
+## Lantern and Ledger conventions
+
+- [Campaign character and vignette structure](docs/campaign-character-vignette-structure.md)
+
 🔗 Read the documentation and get started: https://quartz.jzhao.xyz/
 
 [Join the Discord Community](https://discord.gg/cRFFHYye7t)

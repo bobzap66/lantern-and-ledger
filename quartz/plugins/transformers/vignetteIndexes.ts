@@ -1,8 +1,16 @@
-import fs from "node:fs"
 import path from "node:path"
-import YAML from "yaml"
 import { QuartzTransformerPlugin } from "../types"
-import { simplifySlug, slugifyFilePath } from "../../util/path"
+import {
+  VignetteNote,
+  archiveForCharacter,
+  indexVignetteNotes,
+  isCharacterNote,
+  isVignetteArchive,
+  relativeSlugHref as sharedRelativeSlugHref,
+  vignetteDate,
+  vignettesForArchive,
+  wikilinkLabel,
+} from "../../util/vignettes"
 
 const VIGNETTE_INDEX_CSS = `
 .isr-vignette-archive-hero {
@@ -166,13 +174,6 @@ const VIGNETTE_INDEX_CSS = `
 }
 `
 
-type Note = {
-  absolutePath: string
-  relativePath: string
-  slug: any
-  frontmatter: Record<string, any>
-}
-
 function escapeHtml(value: unknown) {
   return String(value ?? "")
     .replaceAll("&", "&amp;")
@@ -182,39 +183,11 @@ function escapeHtml(value: unknown) {
 }
 
 function encodeRelativeUrl(value: string) {
-  return value.replaceAll("\\", "/").split("/").map((segment) =>
-    segment === "." || segment === ".." ? segment : encodeURIComponent(segment)
-  ).join("/")
-}
-
-function readFrontmatter(filePath: string): Record<string, any> {
-  try {
-    const source = fs.readFileSync(filePath, "utf8")
-    const match = source.match(/^---\s*\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/)
-    return match ? YAML.parse(match[1]) ?? {} : {}
-  } catch {
-    return {}
-  }
-}
-
-function markdownFiles(directory: string): string[] {
-  const result: string[] = []
-  const visit = (current: string) => {
-    for (const entry of fs.readdirSync(current, { withFileTypes: true })) {
-      if (entry.name.startsWith(".")) continue
-      const full = path.join(current, entry.name)
-      if (entry.isDirectory()) visit(full)
-      else if (entry.isFile() && entry.name.toLowerCase().endsWith(".md")) result.push(full)
-    }
-  }
-  visit(directory)
-  return result
-}
-
-function wikilinkTarget(value: unknown) {
-  if (typeof value !== "string") return ""
-  const match = value.match(/^\[\[([^\]|#]+)(?:#[^\]|]+)?(?:\|[^\]]+)?\]\]$/)
-  return (match ? match[1] : value).trim().replaceAll("\\", "/").replace(/\.md$/i, "")
+  return value
+    .replaceAll("\\", "/")
+    .split("/")
+    .map((segment) => (segment === "." || segment === ".." ? segment : encodeURIComponent(segment)))
+    .join("/")
 }
 
 function basenameWithoutExtension(value: string) {
@@ -222,196 +195,167 @@ function basenameWithoutExtension(value: string) {
 }
 
 function initials(value: string) {
-  return value.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]?.toUpperCase() ?? "").join("")
-}
-
-function dateText(frontmatter: Record<string, any>, fallbackPath: string) {
-  if (String(frontmatter?.date_status ?? "").toLowerCase() === "uncertain") {
-    return { iso: "", year: "Undated", label: "Undated", rank: Number.MAX_SAFE_INTEGER, sortGroup: 2, kind: "undated" }
-  }
-  const raw = String(frontmatter?.date ?? "").trim()
-  const filenameMatch = path.basename(fallbackPath).match(/^(\d{4}-\d{2}-\d{2})/)
-  const iso = /^\d{4}-\d{2}-\d{2}$/.test(raw) ? raw : filenameMatch?.[1] ?? ""
-  if (iso) {
-    const [year, month, day] = iso.split("-").map(Number)
-    const date = new Date(Date.UTC(year, month - 1, day))
-    const label = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", timeZone: "UTC" }).format(date)
-    return { iso, year: String(year), label, rank: year * 10000 + month * 100 + day, sortGroup: 1, kind: "publication" }
-  }
-
-  const golarionMonths = ["Abadius", "Calistril", "Pharast", "Gozran", "Desnus", "Sarenith", "Erastus", "Arodus", "Rova", "Lamashan", "Neth", "Kuthona"]
-  const monthNumber = (name: string) => golarionMonths.findIndex((month) => month.toLowerCase() === name.toLowerCase()) + 1
-  const campaign = String(frontmatter?.campaign_date_name ?? "").trim()
-  const dayMatch = campaign.match(/^(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})\s+AR$/)
-  const monthMatch = campaign.match(/^([A-Za-z]+)\s+(\d{4})\s+AR$/)
-
-  let year = 0
-  let month = 0
-  let day = 0
-  let label = campaign
-  if (dayMatch) {
-    day = Number(dayMatch[1])
-    month = monthNumber(dayMatch[2])
-    year = Number(dayMatch[3])
-    label = `${dayMatch[2]} ${day}`
-  } else if (monthMatch) {
-    month = monthNumber(monthMatch[1])
-    year = Number(monthMatch[2])
-    label = monthMatch[1]
-  }
-
-  if (year && month) {
-    return { iso: "", year: `${year} AR`, label, rank: year * 10000 + month * 100 + day, sortGroup: 0, kind: "campaign" }
-  }
-
-  return { iso: "", year: "Undated", label: "Undated", rank: Number.MAX_SAFE_INTEGER, sortGroup: 2, kind: "undated" }
-}
-
-function relativeSlugHref(fromRelativePath: string, toSlug: any) {
-  const normalizedSourcePath = fromRelativePath.replaceAll("\\", "/")
-  const sourceDirectory = path.posix.dirname(normalizedSourcePath)
-  const directoryIndexPath = sourceDirectory === "." ? "index.md" : `${sourceDirectory}/index.md`
-  const fromDirectorySlug = simplifySlug(slugifyFilePath(directoryIndexPath as any))
-  const normalizedFromDirectory = String(fromDirectorySlug).replaceAll("\\", "/")
-  const normalizedTarget = String(toSlug).replaceAll("\\", "/")
-  let href = path.posix.relative(normalizedFromDirectory, normalizedTarget)
-  if (!href || href === ".") return "./"
-  if (!href.startsWith(".")) href = `./${href}`
-  return href
+  return value
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase() ?? "")
+    .join("")
 }
 
 export const VignetteIndexes: QuartzTransformerPlugin = () => {
   let root = ""
-  let allNotes: Note[] = []
+  let allNotes: VignetteNote[] = []
 
   const ensureIndex = (vaultRoot: string) => {
     if (root === vaultRoot && allNotes.length > 0) return
     root = vaultRoot
-    allNotes = markdownFiles(vaultRoot).map((absolutePath) => {
-      const relativePath = path.relative(vaultRoot, absolutePath).replaceAll("\\", "/")
-      return {
-        absolutePath,
-        relativePath,
-        slug: simplifySlug(slugifyFilePath(relativePath as any)),
-        frontmatter: readFrontmatter(absolutePath),
-      }
-    })
+    allNotes = indexVignetteNotes(vaultRoot)
   }
 
   return {
     name: "VignetteIndexes",
     markdownPlugins(ctx) {
-      return [() => (tree: any, file: any) => {
-        const sourcePath = file.path || file.data?.filePath
-        if (!sourcePath || !Array.isArray(tree?.children)) return
+      return [
+        () => (tree: any, file: any) => {
+          const sourcePath = file.path || file.data?.filePath
+          if (!sourcePath || !Array.isArray(tree?.children)) return
 
-        const vaultRoot = path.resolve(ctx.argv.directory)
-        ensureIndex(vaultRoot)
+          const vaultRoot = path.resolve(ctx.argv.directory)
+          ensureIndex(vaultRoot)
 
-        const absoluteSource = path.resolve(sourcePath)
-        const relativeSource = path.relative(vaultRoot, absoluteSource).replaceAll("\\", "/")
-        const sourceFm = readFrontmatter(absoluteSource)
-        if (String(sourceFm?.type ?? "").toLowerCase() !== "index" || !sourceFm?.character) return
-        if (!relativeSource.toLowerCase().includes("/vignettes/")) return
+          const absoluteSource = path.resolve(sourcePath)
+          const relativeSource = path.relative(vaultRoot, absoluteSource).replaceAll("\\", "/")
+          const current = allNotes.find(
+            (note) => path.resolve(note.absolutePath) === absoluteSource,
+          )
+          if (!current || !isVignetteArchive(current)) return
+          const sourceFm = current.frontmatter
 
-        const sourceDirectory = path.posix.dirname(relativeSource)
-        const entries = allNotes
-          .filter((note) => path.posix.dirname(note.relativePath) === sourceDirectory)
-          .filter((note) => String(note.frontmatter?.type ?? "").toLowerCase() === "vignette")
-          .map((note) => ({ note, date: dateText(note.frontmatter, note.relativePath) }))
-          .sort((a, b) => a.date.sortGroup - b.date.sortGroup || a.date.rank - b.date.rank || String(a.note.frontmatter?.title ?? "").localeCompare(String(b.note.frontmatter?.title ?? "")))
+          const entries = vignettesForArchive(current, allNotes)
+            .map((note) => ({ note, date: vignetteDate(note.frontmatter, note.relativePath) }))
+            .sort(
+              (a, b) =>
+                a.date.sortGroup - b.date.sortGroup ||
+                a.date.rank - b.date.rank ||
+                String(a.note.frontmatter?.title ?? "").localeCompare(
+                  String(b.note.frontmatter?.title ?? ""),
+                ),
+            )
 
-        if (entries.length === 0) return
+          if (entries.length === 0) return
 
-        const characterTarget = wikilinkTarget(sourceFm.character)
-        const characterName = String(sourceFm.character).match(/\|([^\]]+)\]\]$/)?.[1]
-          ?? basenameWithoutExtension(characterTarget)
-          ?? "Character"
+          const characterName = wikilinkLabel(sourceFm.character, "Character")
+          const characterNote = allNotes.find(
+            (note) =>
+              isCharacterNote(note) &&
+              archiveForCharacter(note, allNotes)?.relativePath === current.relativePath,
+          )
+          const characterFm = characterNote?.frontmatter ?? {}
+          const portrait =
+            typeof characterFm.portrait === "string" ? characterFm.portrait.trim() : ""
+          const characterHref = characterNote
+            ? sharedRelativeSlugHref(relativeSource, characterNote.slug)
+            : ""
 
-        const sourceDirAbsolute = path.dirname(absoluteSource)
-        const candidateAbsolutePaths = [
-          path.resolve(sourceDirAbsolute, `${characterTarget}.md`),
-          path.resolve(vaultRoot, `${characterTarget}.md`),
-          path.resolve(sourceDirAbsolute, characterTarget, "index.md"),
-          path.resolve(vaultRoot, characterTarget, "index.md"),
-        ]
-        const characterAbsolute = candidateAbsolutePaths.find((candidate) => fs.existsSync(candidate))
-        const characterNote = characterAbsolute
-          ? allNotes.find((note) => path.resolve(note.absolutePath) === path.resolve(characterAbsolute))
-          : allNotes.find((note) => String(note.frontmatter?.title ?? "").trim().toLowerCase() === characterName.trim().toLowerCase())
-        const characterFm = characterNote?.frontmatter ?? {}
-        const portrait = typeof characterFm.portrait === "string" ? characterFm.portrait.trim() : ""
-        const characterHref = characterNote ? relativeSlugHref(relativeSource, characterNote.slug) : ""
+          const authors = [
+            ...new Set(
+              entries
+                .map(({ note }) => String(note.frontmatter?.author ?? "").trim())
+                .filter(Boolean),
+            ),
+          ]
+          const commonAuthor = authors.length === 1 ? authors[0] : ""
+          const publishedEntries = entries.filter((entry) => entry.date.kind === "publication")
+          const firstYear = publishedEntries[0]?.date.year ?? ""
+          const lastYear = publishedEntries.at(-1)?.date.year ?? ""
+          const range =
+            firstYear && lastYear
+              ? firstYear === lastYear
+                ? firstYear
+                : `${firstYear}–${lastYear}`
+              : ""
 
-        const authors = [...new Set(entries.map(({ note }) => String(note.frontmatter?.author ?? "").trim()).filter(Boolean))]
-        const commonAuthor = authors.length === 1 ? authors[0] : ""
-        const publishedEntries = entries.filter((entry) => entry.date.kind === "publication")
-        const firstYear = publishedEntries[0]?.date.year ?? ""
-        const lastYear = publishedEntries.at(-1)?.date.year ?? ""
-        const range = firstYear && lastYear ? (firstYear === lastYear ? firstYear : `${firstYear}–${lastYear}`) : ""
+          const portraitHtml = portrait
+            ? `<img class="isr-vignette-archive-portrait" src="${escapeHtml(encodeRelativeUrl(path.relative(path.dirname(absoluteSource), path.resolve(vaultRoot, portrait))))}" alt="Portrait of ${escapeHtml(characterName)}">`
+            : `<div class="isr-vignette-archive-placeholder" aria-hidden="true">${escapeHtml(initials(characterName))}</div>`
 
-        const portraitHtml = portrait
-          ? `<img class="isr-vignette-archive-portrait" src="${escapeHtml(encodeRelativeUrl(path.relative(path.dirname(absoluteSource), path.resolve(vaultRoot, portrait))))}" alt="Portrait of ${escapeHtml(characterName)}">`
-          : `<div class="isr-vignette-archive-placeholder" aria-hidden="true">${escapeHtml(initials(characterName))}</div>`
-
-        const hero = [
-          '<section class="isr-vignette-archive-hero" aria-label="Vignette archive summary">',
-          portraitHtml,
-          '<div class="isr-vignette-archive-copy">',
-          '<p class="isr-vignette-archive-eyebrow">Character Vignette Archive</p>',
-          `<p class="isr-vignette-archive-name">${characterHref ? `<a href="${escapeHtml(characterHref)}">${escapeHtml(characterName)}</a>` : escapeHtml(characterName)}</p>`,
-          '<div class="isr-vignette-archive-meta">',
-          `<span>${entries.length} vignette${entries.length === 1 ? "" : "s"}</span>`,
-          range ? `<span>${escapeHtml(range)}</span>` : "",
-          commonAuthor ? `<span>Written by ${escapeHtml(commonAuthor)}</span>` : "",
-          '</div>',
-          '</div>',
-          '</section>',
-        ].join("\n")
-
-        const grouped = new Map<string, typeof entries>()
-        for (const entry of entries) {
-          const list = grouped.get(entry.date.year) ?? []
-          list.push(entry)
-          grouped.set(entry.date.year, list)
-        }
-
-        const years = [...grouped.entries()].map(([year, yearEntries]) => {
-          const items = yearEntries.map(({ note, date }) => {
-            const title = String(note.frontmatter?.title ?? basenameWithoutExtension(note.relativePath))
-            const href = relativeSlugHref(relativeSource, note.slug)
-            const author = String(note.frontmatter?.author ?? "").trim()
-            const showAuthor = !commonAuthor && author
-            return [
-              `<a class="isr-vignette-entry" href="${escapeHtml(href)}">`,
-              `<time class="isr-vignette-entry-date"${date.iso ? ` datetime="${escapeHtml(date.iso)}"` : ""}>${escapeHtml(date.label)}</time>`,
-              '<span>',
-              `<span class="isr-vignette-entry-title">${escapeHtml(title)}</span>`,
-              showAuthor ? `<span class="isr-vignette-entry-author">By ${escapeHtml(author)}</span>` : "",
-              '</span>',
-              '</a>',
-            ].join("\n")
-          }).join("\n")
-
-          return [
-            '<section class="isr-vignette-year">',
-            '<div class="isr-vignette-year-heading">',
-            `<h2>${escapeHtml(year)}</h2>`,
-            `<span class="isr-vignette-year-count">${yearEntries.length} entr${yearEntries.length === 1 ? "y" : "ies"}</span>`,
-            '</div>',
-            `<div class="isr-vignette-grid">\n${items}\n</div>`,
-            '</section>',
+          const hero = [
+            '<section class="isr-vignette-archive-hero" aria-label="Vignette archive summary">',
+            portraitHtml,
+            '<div class="isr-vignette-archive-copy">',
+            '<p class="isr-vignette-archive-eyebrow">Character Vignette Archive</p>',
+            `<p class="isr-vignette-archive-name">${characterHref ? `<a href="${escapeHtml(characterHref)}">${escapeHtml(characterName)}</a>` : escapeHtml(characterName)}</p>`,
+            '<div class="isr-vignette-archive-meta">',
+            `<span>${entries.length} vignette${entries.length === 1 ? "" : "s"}</span>`,
+            range ? `<span>${escapeHtml(range)}</span>` : "",
+            commonAuthor ? `<span>Written by ${escapeHtml(commonAuthor)}</span>` : "",
+            "</div>",
+            "</div>",
+            "</section>",
           ].join("\n")
-        }).join("\n")
 
-        const firstHeading = tree.children.findIndex((node: any) => node?.type === "heading" && node.depth === 1)
-        const heroInsertAt = firstHeading >= 0 ? firstHeading + 1 : 0
-        tree.children.splice(heroInsertAt, 0, { type: "html", value: hero })
+          const grouped = new Map<string, typeof entries>()
+          for (const entry of entries) {
+            const list = grouped.get(entry.date.year) ?? []
+            list.push(entry)
+            grouped.set(entry.date.year, list)
+          }
 
-        const yearStart = tree.children.findIndex((node: any, index: number) => index > heroInsertAt && node?.type === "heading" && node.depth === 2)
-        if (yearStart >= 0) tree.children.splice(yearStart, tree.children.length - yearStart, { type: "html", value: years })
-        else tree.children.push({ type: "html", value: years })
-      }]
+          const years = [...grouped.entries()]
+            .map(([year, yearEntries]) => {
+              const items = yearEntries
+                .map(({ note, date }) => {
+                  const title = String(
+                    note.frontmatter?.title ?? basenameWithoutExtension(note.relativePath),
+                  )
+                  const href = sharedRelativeSlugHref(relativeSource, note.slug)
+                  const author = String(note.frontmatter?.author ?? "").trim()
+                  const showAuthor = !commonAuthor && author
+                  return [
+                    `<a class="isr-vignette-entry" href="${escapeHtml(href)}">`,
+                    `<time class="isr-vignette-entry-date"${date.iso ? ` datetime="${escapeHtml(date.iso)}"` : ""}>${escapeHtml(date.label)}</time>`,
+                    "<span>",
+                    `<span class="isr-vignette-entry-title">${escapeHtml(title)}</span>`,
+                    showAuthor
+                      ? `<span class="isr-vignette-entry-author">By ${escapeHtml(author)}</span>`
+                      : "",
+                    "</span>",
+                    "</a>",
+                  ].join("\n")
+                })
+                .join("\n")
+
+              return [
+                '<section class="isr-vignette-year">',
+                '<div class="isr-vignette-year-heading">',
+                `<h2>${escapeHtml(year)}</h2>`,
+                `<span class="isr-vignette-year-count">${yearEntries.length} entr${yearEntries.length === 1 ? "y" : "ies"}</span>`,
+                "</div>",
+                `<div class="isr-vignette-grid">\n${items}\n</div>`,
+                "</section>",
+              ].join("\n")
+            })
+            .join("\n")
+
+          const firstHeading = tree.children.findIndex(
+            (node: any) => node?.type === "heading" && node.depth === 1,
+          )
+          const heroInsertAt = firstHeading >= 0 ? firstHeading + 1 : 0
+          tree.children.splice(heroInsertAt, 0, { type: "html", value: hero })
+
+          const yearStart = tree.children.findIndex(
+            (node: any, index: number) =>
+              index > heroInsertAt && node?.type === "heading" && node.depth === 2,
+          )
+          if (yearStart >= 0)
+            tree.children.splice(yearStart, tree.children.length - yearStart, {
+              type: "html",
+              value: years,
+            })
+          else tree.children.push({ type: "html", value: years })
+        },
+      ]
     },
     externalResources() {
       return { css: [{ content: VIGNETTE_INDEX_CSS, inline: true }] }

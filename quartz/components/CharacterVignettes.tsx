@@ -3,17 +3,20 @@ import { FullSlug, resolveRelative, simplifySlug } from "../util/path"
 
 function isCharacterPage(fileData: QuartzComponentProps["fileData"]) {
   if (!fileData.slug) return false
+  if (String(fileData.frontmatter?.type ?? "").toLowerCase() !== "person") return false
 
   const pageSlug = simplifySlug(fileData.slug)
   const marker = "/characters/"
   const markerIndex = pageSlug.indexOf(marker)
   if (markerIndex === -1) return false
 
-  const characterPath = pageSlug.slice(markerIndex + marker.length)
-  return Boolean(characterPath && characterPath !== "index")
+  return Boolean(pageSlug.slice(markerIndex + marker.length))
 }
 
-function inferredVignetteSlug(fileData: QuartzComponentProps["fileData"], allFiles: QuartzComponentProps["allFiles"]) {
+function inferredVignetteSlug(
+  fileData: QuartzComponentProps["fileData"],
+  allFiles: QuartzComponentProps["allFiles"],
+) {
   if (!fileData.slug) return undefined
 
   const pageSlug = simplifySlug(fileData.slug)
@@ -30,11 +33,16 @@ function inferredVignetteSlug(fileData: QuartzComponentProps["fileData"], allFil
 
   const candidates = [
     `${campaignRoot}/vignettes/${characterPath}`,
+    `${campaignRoot}/vignettes/${characterPath}/index`,
     `${campaignRoot}/vignettes/${characterPath}/${characterSegment}`,
   ]
 
   for (const candidate of candidates) {
-    const match = allFiles.find((file) => file.slug && simplifySlug(file.slug) === candidate)
+    const match = allFiles.find(
+      (file) =>
+        file.slug &&
+        (String(file.slug) === candidate || String(simplifySlug(file.slug)) === candidate),
+    )
     if (match?.slug) return simplifySlug(match.slug)
   }
 
@@ -42,7 +50,11 @@ function inferredVignetteSlug(fileData: QuartzComponentProps["fileData"], allFil
 }
 
 export default (() => {
-  const CharacterVignettes: QuartzComponent = ({ fileData, allFiles, displayClass }: QuartzComponentProps) => {
+  const CharacterVignettes: QuartzComponent = ({
+    fileData,
+    allFiles,
+    displayClass,
+  }: QuartzComponentProps) => {
     if (!isCharacterPage(fileData)) return null
 
     const fm = fileData.frontmatter

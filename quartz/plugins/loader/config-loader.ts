@@ -247,6 +247,7 @@ async function getManifest(source: PluginSource): Promise<PluginManifest | null>
 
 export async function loadQuartzConfig(
   configOverrides?: Partial<GlobalConfiguration>,
+  layoutAdditions?: LayoutAdditions,
 ): Promise<QuartzConfig> {
   const json = readPluginsJson()
 
@@ -509,7 +510,7 @@ export async function loadQuartzConfig(
 
   // Load layout and add PageTypeDispatcher to emitters.
   // This must happen after plugin instantiation so the component registry is populated.
-  const layout = await loadQuartzLayout()
+  const layout = await loadQuartzLayout(undefined, layoutAdditions)
   plugins.emitters.push(
     builtinPlugins.PageTypes.PageTypeDispatcher({
       defaults: layout.defaults,
@@ -632,10 +633,17 @@ function detectCategoryFromModule(module: unknown): ProcessingCategory | null {
   return null
 }
 
-export async function loadQuartzLayout(layoutOverrides?: {
-  defaults?: Partial<FullPageLayout>
-  byPageType?: Record<string, Partial<FullPageLayout>>
-}): Promise<{
+type LayoutAdditions = Partial<
+  Pick<FullPageLayout, "header" | "left" | "right" | "beforeBody" | "afterBody" | "footer">
+>
+
+export async function loadQuartzLayout(
+  layoutOverrides?: {
+    defaults?: Partial<FullPageLayout>
+    byPageType?: Record<string, Partial<FullPageLayout>>
+  },
+  layoutAdditions?: LayoutAdditions,
+): Promise<{
   defaults: Partial<FullPageLayout>
   byPageType: Record<string, Partial<FullPageLayout>>
 }> {
@@ -714,6 +722,23 @@ export async function loadQuartzLayout(layoutOverrides?: {
   if (layoutOverrides?.byPageType) {
     for (const [pageType, overrideLayout] of Object.entries(layoutOverrides.byPageType)) {
       mergedByPageType[pageType] = { ...mergedByPageType[pageType], ...overrideLayout }
+    }
+  }
+
+  if (layoutAdditions) {
+    for (const [position, additions] of Object.entries(layoutAdditions)) {
+      if (!additions?.length) continue
+      const key = position as keyof LayoutAdditions
+      ;(mergedDefaults as Record<string, unknown>)[key] = [
+        ...((mergedDefaults[key] as QuartzComponent[] | undefined) ?? []),
+        ...additions,
+      ]
+      for (const pageLayout of Object.values(mergedByPageType)) {
+        ;(pageLayout as Record<string, unknown>)[key] = [
+          ...((pageLayout[key] as QuartzComponent[] | undefined) ?? []),
+          ...additions,
+        ]
+      }
     }
   }
 
