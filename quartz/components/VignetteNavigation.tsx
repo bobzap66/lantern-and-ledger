@@ -13,6 +13,34 @@ function characterKey(value: unknown) {
   return target ? target.split("/").filter(Boolean).at(-1)?.toLowerCase() ?? "" : ""
 }
 
+function vignetteDirectory(slug: string) {
+  const simplified = simplifySlug(slug)
+  const parts = simplified.split("/").filter(Boolean)
+  if (parts.length < 2) return ""
+  return parts.slice(0, -1).join("/")
+}
+
+function isVignettePage(file: QuartzComponentProps["allFiles"][number]) {
+  if (!file.slug) return false
+  const slug = simplifySlug(file.slug)
+  if (!slug.includes("/vignettes/")) return false
+
+  const parts = slug.split("/").filter(Boolean)
+  const last = parts.at(-1) ?? ""
+  const parent = parts.at(-2) ?? ""
+
+  // Archive/index pages are represented either as .../index (simplified to the
+  // directory) or, in Season of Ghosts, as a file named for its containing folder.
+  if (last === "vignettes" || last === parent) return false
+  return true
+}
+
+function navigationGroup(file: QuartzComponentProps["allFiles"][number]) {
+  const key = characterKey(file.frontmatter?.character)
+  if (key) return `character:${key}`
+  return file.slug ? `directory:${vignetteDirectory(file.slug)}` : ""
+}
+
 function dateRank(frontmatter: Record<string, any> | undefined) {
   if (String(frontmatter?.date_status ?? "").toLowerCase() === "uncertain") return Number.MAX_SAFE_INTEGER
   const text = String(frontmatter?.date ?? "").trim()
@@ -55,15 +83,15 @@ function inferredArchiveSlug(fileData: QuartzComponentProps["fileData"], allFile
 
 export default (() => {
   const VignetteNavigation: QuartzComponent = ({ fileData, allFiles, displayClass }: QuartzComponentProps) => {
-    const fm = fileData.frontmatter
-    if (!fm || String(fm.type ?? "").toLowerCase() !== "vignette" || !fileData.slug) return null
+    if (!fileData.slug || !isVignettePage(fileData as QuartzComponentProps["allFiles"][number])) return null
 
-    const key = characterKey(fm.character)
-    if (!key) return null
+    const fm = fileData.frontmatter ?? {}
+    const group = navigationGroup(fileData as QuartzComponentProps["allFiles"][number])
+    if (!group) return null
 
     const siblings = allFiles
-      .filter((file) => String(file.frontmatter?.type ?? "").toLowerCase() === "vignette")
-      .filter((file) => characterKey(file.frontmatter?.character) === key)
+      .filter((file) => isVignettePage(file))
+      .filter((file) => navigationGroup(file) === group)
       .filter((file) => file.slug)
       .sort((a, b) => {
         const dateDiff = dateRank(a.frontmatter) - dateRank(b.frontmatter)
