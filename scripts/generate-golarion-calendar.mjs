@@ -336,18 +336,19 @@ for (const file of files) {
 
   if (!campaign) continue
 
-  const rangeStart = parseDate(fm.event_start)
-  const rangeEnd = parseDate(fm.event_end)
-  const singleDate = parseDate(fm.event_date)
+  const rangeStart = parseDate(fm.event_start) || parseDate(fm.campaign_date_start)
+  const rangeEnd = parseDate(fm.event_end) || parseDate(fm.campaign_date_end)
+  const singleDate = parseDate(fm.event_date) || parseDate(fm.campaign_date)
   const start = rangeStart || singleDate
   if (!start) continue
   const end = rangeStart && rangeEnd && serialDay(rangeEnd) > serialDay(rangeStart) ? rangeEnd : null
+  const type = String(fm.type || "").toLowerCase()
 
   pendingFrontmatterEvents.push({
     start,
     end,
     name: fm.calendar_event_name || fm.title || path.basename(file, path.extname(file)),
-    category: fm.calendar_category || "Campaign Events",
+    category: fm.calendar_category || (type === "report" ? "Session Reports" : "Campaign Events"),
     campaign,
     source,
     type: fm.type || null,
