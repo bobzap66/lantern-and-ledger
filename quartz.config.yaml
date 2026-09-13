@@ -13,6 +13,7 @@ configuration:
     - private
     - templates
     - .obsidian
+    - "Campaigns/Abomination Vaults/Reconstruction/**"
     - "**/*.csv"
     - "**/*.json"
     - "**/*.py"
