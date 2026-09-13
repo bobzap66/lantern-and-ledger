@@ -69,9 +69,33 @@
         day: Math.min(realToday.getDate(), monthLength(year, realToday.getMonth())),
       }
       let selected = { ...actualToday }
+      let yearlyHistoryDeck = []
+      let yearlyHistoryDeckYear = null
+      let yearlyHistoryIndex = 0
+
+      const prepareYearlyHistoryDeck = (targetYear) => {
+        if (yearlyHistoryDeckYear === targetYear) return
+
+        yearlyHistoryDeck = (data.events ?? [])
+          .filter((event) => {
+            if (event.kind !== "historical" || event.datePrecision !== "year") return false
+            const yearsAgo = targetYear - event.year
+            return yearsAgo >= 100 && yearsAgo % 100 === 0
+          })
+          .map((event) => ({ ...event, yearsAgo: targetYear - event.year }))
+
+        for (let i = yearlyHistoryDeck.length - 1; i > 0; i -= 1) {
+          const j = Math.floor(Math.random() * (i + 1))
+          ;[yearlyHistoryDeck[i], yearlyHistoryDeck[j]] = [yearlyHistoryDeck[j], yearlyHistoryDeck[i]]
+        }
+
+        yearlyHistoryDeckYear = targetYear
+        yearlyHistoryIndex = 0
+      }
 
       const render = () => {
         selected.day = Math.min(selected.day, monthLength(selected.year, selected.month))
+        prepareYearlyHistoryDeck(selected.year)
 
         const holidays = (data.holidays ?? [])
           .filter((event) => event.month === selected.month && event.day === selected.day)
@@ -119,15 +143,6 @@
           .map((event) => ({ ...event, yearsAgo: selected.year - event.year }))
           .sort((a, b) => b.year - a.year || a.name.localeCompare(b.name))
 
-        const yearlyHistory = (data.events ?? [])
-          .filter((event) => {
-            if (event.kind !== "historical" || event.datePrecision !== "year") return false
-            const yearsAgo = selected.year - event.year
-            return yearsAgo >= 100 && yearsAgo % 100 === 0
-          })
-          .map((event) => ({ ...event, yearsAgo: selected.year - event.year }))
-          .sort((a, b) => b.year - a.year || a.name.localeCompare(b.name))
-
         const sourceLinks = (event) =>
           event.sources
             .map((source, index) => {
@@ -159,8 +174,9 @@
           ? `<ul class="golarion-today-list">${monthlyHistory.map((event) => `<li class="is-anniversary"><strong>${escapeHtml(event.name)}</strong><span>${event.yearsAgo === 0 ? "This year" : `${event.yearsAgo} ${event.yearsAgo === 1 ? "year" : "years"} ago`} · ${escapeHtml(data.months[event.month])} ${event.year} AR</span>${event.description ? `<p>${escapeHtml(event.description)}</p>` : ""}<p class="golarion-today-sources"><a href="${pathfinderWikiHref(event.name)}" target="_blank" rel="noopener noreferrer">PathfinderWiki</a></p></li>`).join("")}</ul>`
           : `<p class="golarion-today-empty">No month-level historical events are recorded for ${escapeHtml(data.months[selected.month])}.</p>`
 
-        const yearlyMarkup = yearlyHistory.length
-          ? `<ul class="golarion-today-list">${yearlyHistory.map((event) => `<li class="is-anniversary"><strong>${escapeHtml(event.name)}</strong><span>${event.yearsAgo} years ago · ${event.year} AR</span>${event.description ? `<p>${escapeHtml(event.description)}</p>` : ""}<p class="golarion-today-sources"><a href="${pathfinderWikiHref(event.name)}" target="_blank" rel="noopener noreferrer">PathfinderWiki</a></p></li>`).join("")}</ul>`
+        const yearlyEvent = yearlyHistoryDeck[yearlyHistoryIndex]
+        const yearlyMarkup = yearlyEvent
+          ? `<ul class="golarion-today-list"><li class="is-anniversary"><strong>${escapeHtml(yearlyEvent.name)}</strong><span>${yearlyEvent.yearsAgo} years ago · ${yearlyEvent.year} AR</span>${yearlyEvent.description ? `<p>${escapeHtml(yearlyEvent.description)}</p>` : ""}<p class="golarion-today-sources"><a href="${pathfinderWikiHref(yearlyEvent.name)}" target="_blank" rel="noopener noreferrer">PathfinderWiki</a></p></li></ul>${yearlyHistoryDeck.length > 1 ? '<button class="golarion-today-another" type="button" data-history-another>Show another</button>' : ""}`
           : '<p class="golarion-today-empty">No 100-year anniversary events are recorded for this year.</p>'
 
         root.innerHTML = `
@@ -191,6 +207,10 @@
         })
         root.querySelector("[data-history-today]")?.addEventListener("click", () => {
           selected = { ...actualToday }
+          render()
+        })
+        root.querySelector("[data-history-another]")?.addEventListener("click", () => {
+          yearlyHistoryIndex = (yearlyHistoryIndex + 1) % yearlyHistoryDeck.length
           render()
         })
       }
