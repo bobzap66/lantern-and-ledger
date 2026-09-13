@@ -181,26 +181,45 @@ function archiveForCharacter(note: Note, allNotes: Note[]) {
     ? note.frontmatter.vignette_index.trim().replace(/^\/+|\/+$/g, "").toLowerCase()
     : ""
   if (configured) {
-    const match = allNotes.find((candidate) => String(candidate.slug).toLowerCase() === configured)
+    const match = allNotes.find((candidate) => String(candidate.slug).replaceAll("\\", "/").toLowerCase() === configured)
     if (match) return match
   }
 
-  const pageSlug = String(note.slug).replaceAll("\\", "/")
-  const lowerPageSlug = pageSlug.toLowerCase()
+  // Prefer filesystem structure over generated slugs. Quartz slug casing and
+  // normalization can vary, while the vault convention is stable:
+  // Campaigns/<Campaign>/Characters/<Character>.md
+  // Campaigns/<Campaign>/Vignettes/<Character>/index.md (or <Character>.md)
+  const sourcePath = note.relativePath.replaceAll("\\", "/")
+  const lowerSourcePath = sourcePath.toLowerCase()
   const marker = "/characters/"
-  const markerIndex = lowerPageSlug.indexOf(marker)
+  const markerIndex = lowerSourcePath.indexOf(marker)
   if (markerIndex === -1) return undefined
-  const campaignRoot = pageSlug.slice(0, markerIndex)
-  const characterPath = pageSlug.slice(markerIndex + marker.length)
-  const characterSegment = characterPath.split("/").filter(Boolean).at(-1)
-  if (!characterSegment) return undefined
 
-  const candidates = [
-    `${campaignRoot}/vignettes/${characterPath}`,
-    `${campaignRoot}/vignettes/${characterPath}/${characterSegment}`,
-  ].map((value) => value.toLowerCase())
+  const campaignRoot = sourcePath.slice(0, markerIndex)
+  const characterName = path.posix.basename(sourcePath, path.posix.extname(sourcePath))
+  const archiveDirectory = `${campaignRoot}/Vignettes/${characterName}`.toLowerCase()
+  const characterNameLower = characterName.toLowerCase()
 
-  return allNotes.find((candidate) => candidates.includes(String(candidate.slug).replaceAll("\\", "/").toLowerCase()))
+  const structuralMatch = allNotes.find((candidate) => {
+    const candidatePath = candidate.relativePath.replaceAll("\\", "/")
+    const candidateDirectory = path.posix.dirname(candidatePath).toLowerCase()
+    if (candidateDirectory !== archiveDirectory) return false
+
+    const base = path.posix.basename(candidatePath, path.posix.extname(candidatePath)).toLowerCase()
+    const type = String(candidate.frontmatter?.type ?? "").toLowerCase()
+    return type === "index" || base === "index" || base === characterNameLower
+  })
+  if (structuralMatch) return structuralMatch
+
+  // Fallback for archives whose directory/file naming differs but whose
+  // frontmatter identifies the same character.
+  const campaignVignettesRoot = `${campaignRoot}/Vignettes/`.toLowerCase()
+  return allNotes.find((candidate) => {
+    const candidatePath = candidate.relativePath.replaceAll("\\", "/").toLowerCase()
+    if (!candidatePath.startsWith(campaignVignettesRoot)) return false
+    if (String(candidate.frontmatter?.type ?? "").toLowerCase() !== "index") return false
+    return characterKey(candidate.frontmatter?.character) === characterNameLower
+  })
 }
 
 function archiveForVignette(note: Note, allNotes: Note[]) {
