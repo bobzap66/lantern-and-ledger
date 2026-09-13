@@ -15,6 +15,7 @@ const CAMPAIGN_END = "<!-- CAMPAIGN_RECENTS_END -->"
 
 const IGNORED_DIRS = new Set([".git", ".obsidian", "private", "templates", "image metadata"])
 const MAINTENANCE_COMMIT = /(autolink|wikilink|link conversion|resolver|homepage navigation|one-shot|migration|maintenance|script|quartz|workflow)/i
+const HIDDEN_RECENT_PATHS = ["campaigns/abomination vaults/reconstruction/"]
 
 async function walk(dir) {
   const entries = await fs.readdir(dir, { withFileTypes: true })
@@ -168,6 +169,9 @@ const campaigns = []
 
 for (const file of await walk(CONTENT_ROOT)) {
   const rel = path.relative(CONTENT_ROOT, file).replace(/\\/g, "/")
+  const relLower = rel.toLowerCase()
+  if (HIDDEN_RECENT_PATHS.some((prefix) => relLower.startsWith(prefix))) continue
+
   const text = await fs.readFile(file, "utf8")
   const fm = parseFrontmatter(text)
 
