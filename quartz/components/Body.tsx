@@ -1,21 +1,36 @@
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 import { CampaignSpoilerGate } from "./CampaignSpoilerGate"
 
-function isCampaignPage(slug: string | undefined) {
-  if (!slug) return false
+function campaignKeyFromSlug(slug: string | undefined) {
+  if (!slug) return null
 
   const directMatch = /^campaigns\/([^/]+)(?:\/|$)/i.exec(slug)
-  if (!directMatch) return false
+  if (!directMatch) return null
 
   const first = directMatch[1]?.toLowerCase()
-  if (!first || first === "index") return false
+  if (!first || first === "index") return null
 
   if (first === "archived") {
     const archivedKey = /^campaigns\/archived\/([^/]+)(?:\/|$)/i.exec(slug)?.[1]?.toLowerCase()
-    return Boolean(archivedKey && archivedKey !== "index")
+    return archivedKey && archivedKey !== "index" ? archivedKey : null
   }
 
-  return true
+  return first
+}
+
+function campaignClassFromSlug(slug: string | undefined) {
+  const key = campaignKeyFromSlug(slug)
+  if (!key) return null
+
+  const safeKey = key
+    .replace(/[^a-z0-9-]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+
+  return safeKey ? `campaign--${safeKey}` : null
+}
+
+function isCampaignPage(slug: string | undefined) {
+  return Boolean(campaignKeyFromSlug(slug))
 }
 
 function isFormalPublication(
@@ -71,9 +86,11 @@ function isFormalPublication(
 const Body: QuartzComponent = (props: QuartzComponentProps) => {
   const { children, fileData } = props
   const lockedByDefault = isCampaignPage(fileData.slug)
+  const campaignClass = campaignClassFromSlug(fileData.slug)
   const frontmatter = fileData.frontmatter as Record<string, unknown> | undefined
   const formalPublication = isFormalPublication(frontmatter, fileData.slug)
   const bodyClasses = [
+    campaignClass,
     lockedByDefault ? "campaign-spoiler-pending" : "",
     formalPublication ? "formal-publication" : "",
   ]
