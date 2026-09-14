@@ -1,0 +1,135 @@
+/* Shared campaign identity for ordinary campaign pages.
+   Keeps Lantern and Ledger structure consistent while tinting recurring page elements. */
+
+#quartz-body[class*="campaign--"] {
+  --campaign-page-accent: var(--tertiary);
+  --campaign-page-secondary: var(--secondary);
+  --campaign-page-soft: color-mix(in srgb, var(--campaign-page-accent) 9%, transparent);
+  --campaign-page-rule: color-mix(in srgb, var(--campaign-page-accent) 48%, var(--isr-rule) 52%);
+  --campaign-page-shadow: rgba(67, 49, 27, 0.07);
+}
+
+#quartz-body.campaign--kingmaker {
+  --campaign-page-accent: #b98532;
+  --campaign-page-secondary: #557449;
+  --campaign-page-shadow: rgba(93, 67, 31, 0.09);
+}
+
+#quartz-body.campaign--abomination-vaults {
+  --campaign-page-accent: #4e9b86;
+  --campaign-page-secondary: #527985;
+  --campaign-page-shadow: rgba(35, 70, 75, 0.09);
+}
+
+#quartz-body.campaign--season-of-ghosts {
+  --campaign-page-accent: #c68b2c;
+  --campaign-page-secondary: #a76043;
+  --campaign-page-shadow: rgba(92, 57, 31, 0.08);
+}
+
+#quartz-body.campaign--claws-of-the-tyrant {
+  --campaign-page-accent: #a94b46;
+  --campaign-page-secondary: #6d656a;
+  --campaign-page-shadow: rgba(64, 42, 44, 0.1);
+}
+
+/* Page title: same editorial hierarchy, campaign-colored rule. */
+#quartz-body[class*="campaign--"] .article-title::after {
+  background: linear-gradient(90deg, var(--campaign-page-accent), transparent);
+}
+
+/* Section hierarchy. Timeline chapter headings remain governed by campaign-timeline.scss. */
+#quartz-body[class*="campaign--"] article:not(:has(.callout[data-callout^="timeline-"])) h2 {
+  border-bottom-color: var(--campaign-page-rule);
+}
+
+#quartz-body[class*="campaign--"] article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
+  content: "";
+  display: block;
+  width: min(5rem, 24%);
+  height: 2px;
+  margin-top: 0.35rem;
+  background: linear-gradient(90deg, var(--campaign-page-accent), transparent);
+}
+
+#quartz-body[class*="campaign--"] article h3 {
+  color: var(--campaign-page-secondary);
+}
+
+/* Opening drop cap and ordinary article links. */
+#quartz-body[class*="campaign--"] article > p:first-of-type::first-letter {
+  color: var(--campaign-page-accent);
+}
+
+#quartz-body[class*="campaign--"] article a:not(.tag-link) {
+  text-decoration-color: color-mix(in srgb, var(--campaign-page-secondary) 48%, transparent);
+}
+
+#quartz-body[class*="campaign--"] article a:not(.tag-link):hover {
+  color: var(--campaign-page-accent);
+  text-decoration-color: var(--campaign-page-accent);
+}
+
+/* Editorial rules and quoted material. */
+#quartz-body[class*="campaign--"] article hr {
+  background: linear-gradient(90deg, transparent, var(--campaign-page-accent), transparent);
+}
+
+#quartz-body[class*="campaign--"] article blockquote:not(.callout) {
+  border-left-color: var(--campaign-page-accent);
+  background: color-mix(in srgb, var(--light) 91%, var(--campaign-page-accent) 9%);
+}
+
+/* Tables keep the shared reference-book layout but inherit campaign identity. */
+#quartz-body[class*="campaign--"] article table {
+  border-color: var(--campaign-page-rule);
+  box-shadow: 0 5px 14px var(--campaign-page-shadow);
+}
+
+#quartz-body[class*="campaign--"] article th {
+  background: color-mix(in srgb, var(--campaign-page-secondary) 86%, var(--dark) 14%);
+}
+
+#quartz-body[class*="campaign--"] article tr:nth-child(even) {
+  background: color-mix(in srgb, var(--light) 91%, var(--campaign-page-accent) 9%);
+}
+
+/* Preserve semantic callout colors; only tint the surrounding presentation. */
+#quartz-body[class*="campaign--"] article .callout:not([data-callout^="timeline-"]) {
+  box-shadow: 0 5px 16px var(--campaign-page-shadow);
+}
+
+#quartz-body[class*="campaign--"] article .callout:not([data-callout^="timeline-"]) .callout-title {
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--campaign-page-accent) 36%, transparent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.24em;
+}
+
+/* Profile / At a Glance boxes are neutral enough to remain reusable but visibly campaign-owned. */
+#quartz-body[class*="campaign--"] article .callout[data-callout="profile"] {
+  border-left-color: var(--campaign-page-accent);
+  background: color-mix(in srgb, var(--light) 94%, var(--campaign-page-accent) 6%);
+}
+
+#quartz-body[class*="campaign--"] article .callout[data-callout="profile"] > .callout-title {
+  color: var(--campaign-page-secondary);
+}
+
+/* Image collections and other bordered inserts pick up only a faint campaign rule. */
+#quartz-body[class*="campaign--"] article h2#session-gallery + p {
+  border-color: var(--campaign-page-rule);
+  background: color-mix(in srgb, var(--light) 88%, var(--campaign-page-accent) 12%);
+}
+
+/* Campaign identity should survive dark mode without becoming neon. */
+[saved-theme="dark"] #quartz-body[class*="campaign--"] {
+  --campaign-page-soft: color-mix(in srgb, var(--campaign-page-accent) 13%, transparent);
+  --campaign-page-rule: color-mix(in srgb, var(--campaign-page-accent) 42%, var(--isr-rule) 58%);
+}
+
+[saved-theme="dark"] #quartz-body[class*="campaign--"] article blockquote:not(.callout),
+[saved-theme="dark"] #quartz-body[class*="campaign--"] article .callout[data-callout="profile"],
+[saved-theme="dark"] #quartz-body[class*="campaign--"] article h2#session-gallery + p {
+  background: color-mix(in srgb, var(--light) 94%, var(--campaign-page-accent) 6%);
+}
