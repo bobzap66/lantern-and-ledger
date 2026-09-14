@@ -264,17 +264,23 @@ function initials(title: string) {
   return title.split(/\s+/).filter(Boolean).slice(0, 2).map((word) => word[0]?.toUpperCase() ?? "").join("") || "?"
 }
 
-function resolvePortraitPath(vaultRoot: string, portrait: string) {
-  const requested = path.resolve(vaultRoot, portrait)
-  if (fs.existsSync(requested)) return requested
+function resolvePortraitPath(vaultRoot: string, portrait: string): string | undefined {
+  const trimmed = portrait.trim()
+  const wikilink = trimmed.match(/^!?\[\[([^\]|]+)(?:\|[^\]]+)?\]\]$/)?.[1]
+  const normalizedPortrait = (wikilink ?? trimmed).replaceAll("\\", "/").replace(/^\/+/, "")
+  if (!normalizedPortrait) return undefined
 
-  const normalizedPortrait = portrait.replaceAll("\\", "/")
-  if (normalizedPortrait.startsWith("assets/world-anvil/")) {
-    const fallback = path.resolve(vaultRoot, "assets/images", path.posix.basename(normalizedPortrait))
-    if (fs.existsSync(fallback)) return fallback
+  const candidates = [path.resolve(vaultRoot, normalizedPortrait)]
+
+  if (!normalizedPortrait.includes("/")) {
+    candidates.push(path.resolve(vaultRoot, "assets/images", normalizedPortrait))
   }
 
-  return requested
+  if (normalizedPortrait.startsWith("assets/world-anvil/")) {
+    candidates.push(path.resolve(vaultRoot, "assets/images", path.posix.basename(normalizedPortrait)))
+  }
+
+  return candidates.find((candidate) => fs.existsSync(candidate))
 }
 
 export const NpcCards: QuartzTransformerPlugin = () => {
