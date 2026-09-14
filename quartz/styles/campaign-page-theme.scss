@@ -61,13 +61,24 @@
   color: var(--campaign-page-accent);
 }
 
-#quartz-body[class*="campaign--"] article a:not(.tag-link) {
+#quartz-body[class*="campaign--"] article a:not(.tag-link):not(.campaign-primary-nav__item) {
   text-decoration-color: color-mix(in srgb, var(--campaign-page-secondary) 48%, transparent);
 }
 
-#quartz-body[class*="campaign--"] article a:not(.tag-link):hover {
+#quartz-body[class*="campaign--"] article a:not(.tag-link):not(.campaign-primary-nav__item):hover {
   color: var(--campaign-page-accent);
   text-decoration-color: var(--campaign-page-accent);
+}
+
+/* Keep timeline links tied to each event's major/minor color. */
+#quartz-body[class*="campaign--"] article .callout[data-callout^="timeline-"] .callout-content a {
+  color: color-mix(in srgb, var(--timeline-color) 78%, var(--dark) 22%);
+  text-decoration-color: color-mix(in srgb, var(--timeline-color) 55%, transparent);
+}
+
+#quartz-body[class*="campaign--"] article .callout[data-callout^="timeline-"] .callout-content a:hover {
+  color: var(--timeline-color);
+  text-decoration-color: var(--timeline-color);
 }
 
 /* Editorial rules and quoted material. */
