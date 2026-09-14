@@ -175,13 +175,18 @@ html.campaign-spoiler-locked {
 }
 
 .campaign-spoiler-reset {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 9999;
   display: block;
   width: fit-content;
-  margin: 0.65rem 0 1.25rem auto;
+  margin: 0;
   padding: 0.42rem 0.65rem;
   border-color: var(--lightgray);
-  background: transparent;
+  background: color-mix(in srgb, var(--light) 94%, var(--lightgray));
   color: var(--darkgray);
+  box-shadow: 0 3px 10px rgba(35, 28, 20, 0.12);
   font-size: 0.72rem;
   font-weight: 600;
 }
@@ -192,7 +197,10 @@ html.campaign-spoiler-locked {
 
 @media (max-width: 600px) {
   .campaign-spoiler-reset {
-    margin-top: -0.8rem;
+    position: static;
+    margin: -0.8rem 0 1.25rem auto;
+    background: transparent;
+    box-shadow: none;
   }
 
   .campaign-spoiler-actions {
