@@ -162,6 +162,16 @@ body[data-slug="index"] {
         font-size: 1rem;
         line-height: 1.5;
       }
+      .home-recent-campaign {
+        display: inline-block;
+        margin-bottom: 0.12rem;
+        color: var(--tertiary);
+        font-size: 0.64rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        line-height: 1.2;
+        text-transform: uppercase;
+      }
     }
   }
 
