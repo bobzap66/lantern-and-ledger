@@ -4,6 +4,10 @@ explorerOrder["campaigns/kingmaker/vignettes"] = [
   "pitax-gazette",
   "scholarly-journals",
   "lantern-and-ledger-thumping-waters",
+  "character-vignettes",
+]
+
+explorerOrder["campaigns/kingmaker/vignettes/character-vignettes"] = [
   "seamus",
   "matteo",
   "lurking-hunter",
