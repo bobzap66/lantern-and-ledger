@@ -23,6 +23,15 @@ componentRegistry.register("character-vignettes", characterVignettes, "local")
 componentRegistry.register("vignette-navigation", vignetteNavigation, "local")
 
 const config = await loadQuartzConfig(undefined, localLayout)
+config.configuration.ignorePatterns.push(
+  "Templates",
+  "Image Metadata",
+  "Meta",
+  "scripts",
+  "tmp",
+  "assets/**/*.md",
+  "Unused Images Report.md",
+)
 config.plugins.transformers.push(FolderGallery())
 config.plugins.transformers.push(ImageMetadataGallery())
 config.plugins.transformers.push(ImageMetadataCarousel())
