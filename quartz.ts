@@ -10,21 +10,20 @@ import { ImageMetadataCarousel } from "./quartz/plugins/transformers/imageMetada
 import { VignetteIndexes } from "./quartz/plugins/transformers/vignetteIndexes"
 import CharacterVignettes from "./quartz/components/CharacterVignettes"
 import VignetteNavigation from "./quartz/components/VignetteNavigation"
-import CuratedExplorer from "./quartz/components/CuratedExplorer"
+import ExplorerCurator from "./quartz/components/ExplorerCurator"
 import { componentRegistry } from "./quartz/components/registry"
 
 const characterVignettes = CharacterVignettes()
 const vignetteNavigation = VignetteNavigation()
-const curatedExplorer = CuratedExplorer()
+const explorerCurator = ExplorerCurator()
 const localLayout = {
-  left: [curatedExplorer],
   beforeBody: [characterVignettes],
-  afterBody: [vignetteNavigation],
+  afterBody: [vignetteNavigation, explorerCurator],
 }
 
 componentRegistry.register("character-vignettes", characterVignettes, "local")
 componentRegistry.register("vignette-navigation", vignetteNavigation, "local")
-componentRegistry.register("curated-explorer", curatedExplorer, "local")
+componentRegistry.register("explorer-curator", explorerCurator, "local")
 
 const config = await loadQuartzConfig(undefined, localLayout)
 config.plugins.transformers.push(FolderGallery())
