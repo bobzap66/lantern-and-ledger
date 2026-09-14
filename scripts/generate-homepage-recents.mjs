@@ -16,6 +16,23 @@ const CAMPAIGN_END = "<!-- CAMPAIGN_RECENTS_END -->"
 const IGNORED_DIRS = new Set([".git", ".obsidian", "private", "templates", "image metadata"])
 const MAINTENANCE_COMMIT = /(autolink|wikilink|link conversion|resolver|homepage navigation|one-shot|migration|maintenance|script|quartz|workflow)/i
 const HIDDEN_RECENT_PATHS = ["campaigns/abomination vaults/reconstruction/"]
+const HOME_EDITORIAL_FOLDERS = new Set([
+  "session notes",
+  "vignettes",
+  "articles",
+  "chapters",
+  "campaign history",
+  "chronicles of the new roseguard",
+])
+const HOME_EDITORIAL_TYPES = new Set([
+  "article",
+  "campaign-chapter",
+  "chronicle",
+  "newspaper",
+  "report",
+  "session",
+  "vignette",
+])
 
 async function walk(dir) {
   const entries = await fs.readdir(dir, { withFileTypes: true })
@@ -85,6 +102,19 @@ function formatDate(date) {
   }).format(date)
 }
 
+function campaignFromRel(rel) {
+  return /^Campaigns\/([^/]+)\//i.exec(rel)?.[1] ?? ""
+}
+
+function isHomepageEditorial(note) {
+  if (!note.campaign) return false
+  const type = String(note.type ?? "").toLowerCase()
+  if (HOME_EDITORIAL_TYPES.has(type)) return true
+
+  const segments = note.rel.toLowerCase().split("/")
+  return segments.some((segment) => HOME_EDITORIAL_FOLDERS.has(segment))
+}
+
 function chooseRecents(pool, excluded = new Set()) {
   const brandNew = [...pool]
     .filter((note) => !excluded.has(note.rel))
@@ -100,13 +130,16 @@ function chooseRecents(pool, excluded = new Set()) {
   return { brandNew, recentlyUpdated }
 }
 
-function renderSection(title, items, dateField, baseDir) {
+function renderSection(title, items, dateField, baseDir, { showCampaign = false } = {}) {
   const lines = [`### ${title}`, ""]
   if (items.length === 0) {
     lines.push("- Nothing here yet.")
   } else {
     for (const item of items) {
-      lines.push(`- [[${linkFrom(baseDir, item.rel)}|${item.title}]] — ${formatDate(item[dateField])}`)
+      const campaign = showCampaign && item.campaign
+        ? `<span class="home-recent-campaign">${item.campaign}</span> `
+        : ""
+      lines.push(`- ${campaign}[[${linkFrom(baseDir, item.rel)}|${item.title}]] — ${formatDate(item[dateField])}`)
     }
   }
   return lines.join("\n")
@@ -122,12 +155,12 @@ function renderBlock(start, end, recents, baseDir) {
       "",
       '<div class="home-recent-column">',
       "",
-      renderSection("Brand New", recents.brandNew, "created", baseDir),
+      renderSection("Brand New", recents.brandNew, "created", baseDir, { showCampaign: true }),
       "",
       "</div>",
       '<div class="home-recent-column">',
       "",
-      renderSection("Recently Updated", recents.recentlyUpdated, "modified", baseDir),
+      renderSection("Recently Revised", recents.recentlyUpdated, "modified", baseDir, { showCampaign: true }),
       "",
       "</div>",
       "</section>",
@@ -181,7 +214,7 @@ for (const file of await walk(CONTENT_ROOT)) {
   }
 
   if (rel.toLowerCase() === "index.md") continue
-  if (fm.draft === true || String(fm.type ?? "").toLowerCase() === "index") continue
+  if (fm.draft === true || fm.publish === false || String(fm.type ?? "").toLowerCase() === "index") continue
 
   const history = gitHistory(rel)
   if (history.length === 0) continue
@@ -193,10 +226,17 @@ for (const file of await walk(CONTENT_ROOT)) {
   const modified = explicitModified ?? meaningful?.date ?? history[0].date
 
   const title = String(fm.title || path.basename(rel, path.extname(rel))).trim()
-  notes.push({ rel, title, created, modified })
+  notes.push({
+    rel,
+    title,
+    type: String(fm.type ?? ""),
+    campaign: campaignFromRel(rel),
+    created,
+    modified,
+  })
 }
 
-const homeRecents = chooseRecents(notes)
+const homeRecents = chooseRecents(notes.filter(isHomepageEditorial))
 await injectBlock(
   INDEX_FILE,
   HOME_START,
@@ -206,8 +246,8 @@ await injectBlock(
 )
 
 console.log("Homepage recents generated")
-console.log("Brand New:", homeRecents.brandNew.map((note) => note.title).join(", "))
-console.log("Recently Updated:", homeRecents.recentlyUpdated.map((note) => note.title).join(", "))
+console.log("Brand New:", homeRecents.brandNew.map((note) => `${note.campaign}: ${note.title}`).join(", "))
+console.log("Recently Revised:", homeRecents.recentlyUpdated.map((note) => `${note.campaign}: ${note.title}`).join(", "))
 
 for (const campaign of campaigns) {
   const prefix = `${campaign.dir}/`
