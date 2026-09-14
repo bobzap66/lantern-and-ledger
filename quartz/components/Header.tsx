@@ -1,8 +1,9 @@
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
-import { CampaignSpoilerGate } from "./CampaignSpoilerGate"
+import { CampaignSpoilerGate, campaignFromSlug } from "./CampaignSpoilerGate"
 
 const Header: QuartzComponent = (props: QuartzComponentProps) => {
-  const { children, cfg, ctx } = props
+  const { children, cfg, ctx, fileData } = props
+  const campaign = campaignFromSlug(fileData.slug)
   const siteRoot =
     ctx.argv.serve || !cfg.baseUrl
       ? ""
@@ -32,6 +33,18 @@ const Header: QuartzComponent = (props: QuartzComponentProps) => {
         <div class="lantern-ledger-archive-rule" aria-hidden="true">
           <span>THE LANTERN AND LEDGER · ARCHIVES</span>
         </div>
+        {campaign && (
+          <button
+            class="campaign-spoiler-reset"
+            type="button"
+            data-campaign-key={campaign.key}
+            data-campaign-name={campaign.name}
+            data-spoiler-action="reset"
+            hidden
+          >
+            Hide {campaign.name} spoilers again
+          </button>
+        )}
         {children.length > 0 && <div class="lantern-ledger-header-children">{children}</div>}
       </header>
     </>
@@ -39,7 +52,7 @@ const Header: QuartzComponent = (props: QuartzComponentProps) => {
 }
 
 Header.css = `${CampaignSpoilerGate.css ?? ""}
-#quartz-body.campaign-spoiler-pending > :not(.campaign-spoiler-gate):not(.campaign-spoiler-reset) {
+#quartz-body.campaign-spoiler-pending > :not(.campaign-spoiler-gate) {
   visibility: hidden !important;
   pointer-events: none !important;
 }
