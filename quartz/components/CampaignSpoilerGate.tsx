@@ -177,7 +177,7 @@ html.campaign-spoiler-locked {
 .campaign-spoiler-reset {
   display: block;
   width: fit-content;
-  margin: -0.8rem 0 1.25rem auto;
+  margin: 0.65rem 0 1.25rem auto;
   padding: 0.42rem 0.65rem;
   border-color: var(--lightgray);
   background: transparent;
@@ -191,6 +191,10 @@ html.campaign-spoiler-locked {
 }
 
 @media (max-width: 600px) {
+  .campaign-spoiler-reset {
+    margin-top: -0.8rem;
+  }
+
   .campaign-spoiler-actions {
     flex-direction: column;
   }
