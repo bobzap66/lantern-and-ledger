@@ -7,6 +7,9 @@ Quartz is a set of tools that helps you publish your [digital garden](https://jz
 ## Lantern and Ledger conventions
 
 - [Campaign character and vignette structure](docs/campaign-character-vignette-structure.md)
+- [Lantern and Ledger component reference](docs/lantern-and-ledger-components.md)
+
+These project-specific docs live in the Quartz repository and are not part of the public Lantern and Ledger site content.
 
 🔗 Read the documentation and get started: https://quartz.jzhao.xyz/
 
