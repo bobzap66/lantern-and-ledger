@@ -41,6 +41,27 @@
   const sameDate = (eventDate, target) =>
     eventDate && eventDate.month === target.month && eventDate.day === target.day
 
+  const normalizeCampaignKey = (value) =>
+    String(value || "")
+      .trim()
+      .toLowerCase()
+      .replace(/&/g, " and ")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+
+  const campaignAccessEnabled = (campaign) => {
+    const key = normalizeCampaignKey(campaign)
+    if (!key || typeof localStorage === "undefined") return false
+    try {
+      return localStorage.getItem(`isr-campaign-spoilers:${key}`) === "true"
+    } catch (_) {
+      return false
+    }
+  }
+
+  const eventVisibleToViewer = (event) =>
+    event.visibility !== "campaign-only" || campaignAccessEnabled(event.campaign)
+
   const formatEventRange = (event, months) => {
     const start = event.rangeStart
     const end = event.rangeEnd
@@ -58,7 +79,9 @@
     root.dataset.historyBrowserInitialized = "true"
 
     try {
-      const response = await fetch(`${siteBase()}/static/golarion-events.json`, { cache: "no-cache" })
+      const response = await fetch(`${siteBase()}/static/golarion-events.json`, {
+        cache: "no-cache",
+      })
       if (!response.ok) throw new Error(`HTTP ${response.status}`)
       const data = await response.json()
       const realToday = new Date()
@@ -79,6 +102,7 @@
         yearlyHistoryDeck = (data.events ?? [])
           .filter((event) => {
             if (event.kind !== "historical" || event.datePrecision !== "year") return false
+            if (!eventVisibleToViewer(event)) return false
             const yearsAgo = targetYear - event.year
             return yearsAgo >= 100 && yearsAgo % 100 === 0
           })
@@ -86,7 +110,10 @@
 
         for (let i = yearlyHistoryDeck.length - 1; i > 0; i -= 1) {
           const j = Math.floor(Math.random() * (i + 1))
-          ;[yearlyHistoryDeck[i], yearlyHistoryDeck[j]] = [yearlyHistoryDeck[j], yearlyHistoryDeck[i]]
+          ;[yearlyHistoryDeck[i], yearlyHistoryDeck[j]] = [
+            yearlyHistoryDeck[j],
+            yearlyHistoryDeck[i],
+          ]
         }
 
         yearlyHistoryDeckYear = targetYear
@@ -103,7 +130,12 @@
 
         const grouped = new Map()
         for (const event of data.events ?? []) {
-          if (event.year > selected.year || event.month !== selected.month || event.day !== selected.day)
+          if (!eventVisibleToViewer(event)) continue
+          if (
+            event.year > selected.year ||
+            event.month !== selected.month ||
+            event.day !== selected.day
+          )
             continue
           if (event.isMultiDay && event.rangeStart && event.rangeEnd) {
             const atStart = sameDate(event.rangeStart, selected)
@@ -115,7 +147,11 @@
           const existing = grouped.get(key)
           if (existing) {
             if (event.source && !existing.sources.some((source) => source.slug === event.source))
-              existing.sources.push({ slug: event.source, campaign: event.campaign, kind: event.kind })
+              existing.sources.push({
+                slug: event.source,
+                campaign: event.campaign,
+                kind: event.kind,
+              })
             continue
           }
           grouped.set(key, {
@@ -137,6 +173,7 @@
             (event) =>
               event.kind === "historical" &&
               event.datePrecision === "month" &&
+              eventVisibleToViewer(event) &&
               event.year <= selected.year &&
               event.month === selected.month,
           )
@@ -146,17 +183,32 @@
         const sourceLinks = (event) =>
           event.sources
             .map((source, index) => {
-              const label = source.campaign || (source.kind === "historical" ? "Time.Graphics" : index === 0 ? "Source" : `Source ${index + 1}`)
+              const label =
+                source.campaign ||
+                (source.kind === "historical"
+                  ? "Time.Graphics"
+                  : index === 0
+                    ? "Source"
+                    : `Source ${index + 1}`)
               const external = /^https?:\/\//i.test(source.slug)
               return `<a href="${sourceHref(source.slug)}"${external ? ' target="_blank" rel="noopener noreferrer"' : ""}>${escapeHtml(label)}</a>`
             })
             .join(" · ")
 
         const monthOptions = data.months
-          .map((month, index) => `<option value="${index}"${selected.month === index ? " selected" : ""}>${escapeHtml(month)}</option>`)
+          .map(
+            (month, index) =>
+              `<option value="${index}"${selected.month === index ? " selected" : ""}>${escapeHtml(month)}</option>`,
+          )
           .join("")
-        const dayOptions = Array.from({ length: monthLength(selected.year, selected.month) }, (_, index) => index + 1)
-          .map((day) => `<option value="${day}"${selected.day === day ? " selected" : ""}>${day}</option>`)
+        const dayOptions = Array.from(
+          { length: monthLength(selected.year, selected.month) },
+          (_, index) => index + 1,
+        )
+          .map(
+            (day) =>
+              `<option value="${day}"${selected.day === day ? " selected" : ""}>${day}</option>`,
+          )
           .join("")
 
         const holidayMarkup = holidays.length
@@ -164,10 +216,14 @@
           : '<p class="golarion-today-empty">No fixed-date holidays are recorded on this date.</p>'
 
         const anniversaryMarkup = anniversaries.length
-          ? `<ul class="golarion-today-list">${anniversaries.map((event) => {
-              const dateLabel = formatEventRange(event, data.months) || `${data.months[event.month]} ${event.day}, ${event.year} AR`
-              return `<li class="is-anniversary"><strong>${escapeHtml(event.name)}</strong><span>${event.yearsAgo === 0 ? "This year" : `${event.yearsAgo} ${event.yearsAgo === 1 ? "year" : "years"} ago`} · ${escapeHtml(dateLabel)}</span>${event.sources.length ? `<p class="golarion-today-sources">${sourceLinks(event)}</p>` : ""}</li>`
-            }).join("")}</ul>`
+          ? `<ul class="golarion-today-list">${anniversaries
+              .map((event) => {
+                const dateLabel =
+                  formatEventRange(event, data.months) ||
+                  `${data.months[event.month]} ${event.day}, ${event.year} AR`
+                return `<li class="is-anniversary"><strong>${escapeHtml(event.name)}</strong><span>${event.yearsAgo === 0 ? "This year" : `${event.yearsAgo} ${event.yearsAgo === 1 ? "year" : "years"} ago`} · ${escapeHtml(dateLabel)}</span>${event.sources.length ? `<p class="golarion-today-sources">${sourceLinks(event)}</p>` : ""}</li>`
+              })
+              .join("")}</ul>`
           : '<p class="golarion-today-empty">No anniversaries are recorded on this date.</p>'
 
         const monthlyMarkup = monthlyHistory.length
@@ -218,11 +274,13 @@
       render()
     } catch (error) {
       console.error("Failed to load browseable Golarion history", error)
-      root.innerHTML = '<p class="golarion-calendar-error">Golarion history could not be loaded.</p>'
+      root.innerHTML =
+        '<p class="golarion-calendar-error">Golarion history could not be loaded.</p>'
     }
   }
 
   document.addEventListener("nav", install)
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", install, { once: true })
+  if (document.readyState === "loading")
+    document.addEventListener("DOMContentLoaded", install, { once: true })
   else install()
 })()

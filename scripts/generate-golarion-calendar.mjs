@@ -146,7 +146,10 @@ function rangeIdentity(start, end) {
 }
 
 function normalizedName(value) {
-  return String(value ?? "").trim().toLocaleLowerCase().replace(/\s+/g, " ")
+  return String(value ?? "")
+    .trim()
+    .toLocaleLowerCase()
+    .replace(/\s+/g, " ")
 }
 
 function pushCampaignEvent(events, { start, end, name, category, campaign, source }) {
@@ -231,6 +234,9 @@ function normalizeHistoricalEvent(event) {
   }
   if (precision === "day" && !Number.isInteger(event.day)) return null
 
+  const campaign = typeof event.campaign === "string" ? event.campaign.trim() : ""
+  const visibility = event.visibility === "campaign-only" && campaign ? "campaign-only" : null
+
   const historicalEvent = {
     year: event.year,
     datePrecision: precision,
@@ -242,6 +248,12 @@ function normalizeHistoricalEvent(event) {
     sourceTitle: event.sourceTitle || null,
     verification: event.verification || null,
     timeGraphicsEventId: event.timeGraphicsEventId ?? null,
+    ...(typeof event.sourceCalendar === "string" && event.sourceCalendar.trim()
+      ? { sourceCalendar: event.sourceCalendar.trim() }
+      : {}),
+    ...(Number.isInteger(event.sourceYear) ? { sourceYear: event.sourceYear } : {}),
+    ...(campaign ? { campaign } : {}),
+    ...(visibility ? { visibility } : {}),
   }
   if (precision === "month" || precision === "day") {
     historicalEvent.month = event.month
@@ -341,7 +353,8 @@ for (const file of files) {
   const singleDate = parseDate(fm.event_date) || parseDate(fm.campaign_date)
   const start = rangeStart || singleDate
   if (!start) continue
-  const end = rangeStart && rangeEnd && serialDay(rangeEnd) > serialDay(rangeStart) ? rangeEnd : null
+  const end =
+    rangeStart && rangeEnd && serialDay(rangeEnd) > serialDay(rangeStart) ? rangeEnd : null
   const type = String(fm.type || "").toLowerCase()
 
   pendingFrontmatterEvents.push({

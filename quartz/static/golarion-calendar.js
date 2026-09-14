@@ -63,6 +63,30 @@
     }
   }
 
+  const normalizeCampaignKey = (value) =>
+    String(value || "")
+      .trim()
+      .toLowerCase()
+      .replace(/&/g, " and ")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+
+  const campaignAccessEnabled = (campaign) => {
+    const key = normalizeCampaignKey(campaign)
+    if (!key || typeof localStorage === "undefined") return false
+    try {
+      return localStorage.getItem(`isr-campaign-spoilers:${key}`) === "true"
+    } catch (_) {
+      return false
+    }
+  }
+
+  const eventVisibleToViewer = (event) =>
+    event.visibility !== "campaign-only" || campaignAccessEnabled(event.campaign)
+
+  const eventVisibleForFilter = (event, filter) =>
+    eventVisibleToViewer(event) && (filter === "all" || event.campaign === filter)
+
   const formatEventRange = (event, months) => {
     const start = event.rangeStart
     const end = event.rangeEnd
@@ -130,7 +154,7 @@
             event.year === targetYear &&
             event.month === targetMonth &&
             event.day === targetDay &&
-            (filter === "all" || event.campaign === filter),
+            eventVisibleForFilter(event, filter),
         )
         return [...holidayMatches, ...campaignMatches]
       }
@@ -150,25 +174,21 @@
         const details = root.querySelector(".golarion-calendar-details")
         if (!details) return
         const events = eventsForDate(year, month, selectedDay)
-        const monthHistory =
-          filter === "all"
-            ? campaignEvents.filter(
-                (event) =>
-                  event.kind === "historical" &&
-                  event.datePrecision === "month" &&
-                  event.year === year &&
-                  event.month === month,
-              )
-            : []
-        const yearHistory =
-          filter === "all"
-            ? campaignEvents.filter(
-                (event) =>
-                  event.kind === "historical" &&
-                  event.datePrecision === "year" &&
-                  event.year === year,
-              )
-            : []
+        const monthHistory = campaignEvents.filter(
+          (event) =>
+            event.kind === "historical" &&
+            event.datePrecision === "month" &&
+            event.year === year &&
+            event.month === month &&
+            eventVisibleForFilter(event, filter),
+        )
+        const yearHistory = campaignEvents.filter(
+          (event) =>
+            event.kind === "historical" &&
+            event.datePrecision === "year" &&
+            event.year === year &&
+            eventVisibleForFilter(event, filter),
+        )
         const precisionSection = (heading, matchingEvents, dateLabel) =>
           matchingEvents.length
             ? `<section class="golarion-calendar-period-history">
@@ -397,6 +417,7 @@
 
       const grouped = new Map()
       for (const event of data.events ?? []) {
+        if (!eventVisibleToViewer(event)) continue
         if (event.year > today.year || event.month !== today.month || event.day !== today.day)
           continue
         if (event.isMultiDay && event.rangeStart && event.rangeEnd) {
@@ -442,6 +463,7 @@
           (event) =>
             event.kind === "historical" &&
             event.datePrecision === "month" &&
+            eventVisibleToViewer(event) &&
             event.year <= today.year &&
             event.month === today.month,
         )
@@ -457,6 +479,7 @@
       const yearlyHistory = (data.events ?? [])
         .filter((event) => {
           if (event.kind !== "historical" || event.datePrecision !== "year") return false
+          if (!eventVisibleToViewer(event)) return false
           const yearsAgo = today.year - event.year
           return yearsAgo >= 100 && yearsAgo % 100 === 0
         })
