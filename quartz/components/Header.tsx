@@ -1,9 +1,17 @@
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 import { CampaignSpoilerGate, campaignFromSlug } from "./CampaignSpoilerGate"
 
+const CAMPAIGN_ACCENTS: Record<string, string> = {
+  kingmaker: "#b98532",
+  "abomination-vaults": "#4e9b86",
+  "season-of-ghosts": "#c68b2c",
+  "claws-of-the-tyrant": "#a94b46",
+}
+
 const Header: QuartzComponent = (props: QuartzComponentProps) => {
   const { children, cfg, ctx, fileData } = props
   const campaign = campaignFromSlug(fileData.slug)
+  const campaignAccent = campaign ? (CAMPAIGN_ACCENTS[campaign.key] ?? "#c58b2b") : null
   const siteRoot =
     ctx.argv.serve || !cfg.baseUrl
       ? ""
@@ -41,6 +49,15 @@ const Header: QuartzComponent = (props: QuartzComponentProps) => {
             data-campaign-name={campaign.name}
             data-spoiler-action="reset"
             hidden
+            style={{
+              backgroundColor: campaignAccent ?? "#c58b2b",
+              borderColor: campaignAccent ?? "#c58b2b",
+              borderWidth: "2px",
+              color: "#fff8e8",
+              boxShadow: "0 4px 12px rgba(35, 28, 20, 0.2)",
+              fontWeight: 700,
+              padding: "0.55rem 0.85rem",
+            }}
           >
             Hide {campaign.name} spoilers again
           </button>
