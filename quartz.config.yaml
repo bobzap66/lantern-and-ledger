@@ -180,7 +180,7 @@ plugins:
   - source: "@quartz-community/tag-page"
     enabled: true
   - source: "@quartz-community/explorer"
-    enabled: false
+    enabled: true
     layout:
       position: left
       priority: 50
@@ -259,65 +259,17 @@ plugins:
       priority: 50
   - source: "@quartz-community/recent-notes"
     enabled: false
-  - source: "@quartz-community/spacer"
-    enabled: true
-    options: {}
-    order: 25
     layout:
-      position: left
-      priority: 25
-      display: mobile-only
-  - source: "@quartz-community/bases-page"
-    enabled: true
-    options: {}
-    order: 50
+      position: right
+      priority: 20
   - source: "@quartz-community/note-properties"
-    enabled: true
-    options:
-      includeAll: false
-      includedProperties:
-        - description
-        - tags
-        - aliases
-        - session records
-      excludedProperties: []
-      hidePropertiesView: false
-      delimiters: ---
-      language: yaml
-    order: 5
+    enabled: false
     layout:
       position: beforeBody
-      priority: 15
-      display: all
-  - source: "@quartz-community/obsidian-plugin-excalidraw"
-    enabled: true
-    options:
-      enableInteraction: true
-      darkMode: auto
-      exportPadding: 20
-    order: 50
+      priority: 40
 layout:
   groups:
     toolbar:
-      priority: 35
-      direction: row
+      direction: horizontal
       gap: 0.5rem
-  byPageType:
-    "404":
-      positions:
-        beforeBody: []
-        left: []
-        right: []
-    content: {}
-    folder:
-      exclude:
-        - reader-mode
-      positions:
-        right: []
-    tag:
-      exclude:
-        - reader-mode
-      positions:
-        right: []
-    canvas: {}
-    bases: {}
+      align: center
