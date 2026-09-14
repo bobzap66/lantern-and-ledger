@@ -2,7 +2,7 @@ import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } fro
 
 const SMALL_WORDS = new Set(["a", "an", "and", "as", "at", "for", "in", "of", "on", "or", "the", "to"])
 
-function campaignFromSlug(slug: string | undefined) {
+export function campaignFromSlug(slug: string | undefined) {
   if (!slug) return null
 
   const directMatch = /^campaigns\/([^/]+)(?:\/|$)/i.exec(slug)
@@ -44,41 +44,29 @@ export const CampaignSpoilerGate: QuartzComponent = ({ fileData }: QuartzCompone
   if (!campaign) return null
 
   return (
-    <>
-      <div
-        class="campaign-spoiler-gate"
-        data-campaign-key={campaign.key}
-        data-campaign-name={campaign.name}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="campaign-spoiler-title"
-      >
-        <div class="campaign-spoiler-gate-card">
-          <p class="campaign-spoiler-eyebrow">Campaign Spoiler Warning</p>
-          <h1 id="campaign-spoiler-title">Warning: Spoilers for {campaign.name}</h1>
-          <p>
-            This section contains spoilers for the {campaign.name} campaign. Continue only if you
-            are a player in this campaign and want access to its archive.
-          </p>
-          <div class="campaign-spoiler-actions">
-            <button type="button" data-spoiler-action="back">Go Back</button>
-            <button class="is-primary" type="button" data-spoiler-action="opt-in">
-              Player in the {campaign.name} Campaign
-            </button>
-          </div>
+    <div
+      class="campaign-spoiler-gate"
+      data-campaign-key={campaign.key}
+      data-campaign-name={campaign.name}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="campaign-spoiler-title"
+    >
+      <div class="campaign-spoiler-gate-card">
+        <p class="campaign-spoiler-eyebrow">Campaign Spoiler Warning</p>
+        <h1 id="campaign-spoiler-title">Warning: Spoilers for {campaign.name}</h1>
+        <p>
+          This section contains spoilers for the {campaign.name} campaign. Continue only if you
+          are a player in this campaign and want access to its archive.
+        </p>
+        <div class="campaign-spoiler-actions">
+          <button type="button" data-spoiler-action="back">Go Back</button>
+          <button class="is-primary" type="button" data-spoiler-action="opt-in">
+            Player in the {campaign.name} Campaign
+          </button>
         </div>
       </div>
-      <button
-        class="campaign-spoiler-reset"
-        type="button"
-        data-campaign-key={campaign.key}
-        data-campaign-name={campaign.name}
-        data-spoiler-action="reset"
-        hidden
-      >
-        Hide {campaign.name} spoilers again
-      </button>
-    </>
+    </div>
   )
 }
 
@@ -175,18 +163,13 @@ html.campaign-spoiler-locked {
 }
 
 .campaign-spoiler-reset {
-  position: fixed;
-  top: 1rem;
-  right: 1rem;
-  z-index: 9999;
   display: block;
   width: fit-content;
-  margin: 0;
+  margin: 0.8rem 0 0 auto;
   padding: 0.42rem 0.65rem;
   border-color: var(--lightgray);
-  background: color-mix(in srgb, var(--light) 94%, var(--lightgray));
+  background: transparent;
   color: var(--darkgray);
-  box-shadow: 0 3px 10px rgba(35, 28, 20, 0.12);
   font-size: 0.72rem;
   font-weight: 600;
 }
@@ -196,13 +179,6 @@ html.campaign-spoiler-locked {
 }
 
 @media (max-width: 600px) {
-  .campaign-spoiler-reset {
-    position: static;
-    margin: -0.8rem 0 1.25rem auto;
-    background: transparent;
-    box-shadow: none;
-  }
-
   .campaign-spoiler-actions {
     flex-direction: column;
   }
