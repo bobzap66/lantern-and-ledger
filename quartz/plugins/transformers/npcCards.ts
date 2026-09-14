@@ -264,6 +264,19 @@ function initials(title: string) {
   return title.split(/\s+/).filter(Boolean).slice(0, 2).map((word) => word[0]?.toUpperCase() ?? "").join("") || "?"
 }
 
+function resolvePortraitPath(vaultRoot: string, portrait: string) {
+  const requested = path.resolve(vaultRoot, portrait)
+  if (fs.existsSync(requested)) return requested
+
+  const normalizedPortrait = portrait.replaceAll("\\", "/")
+  if (normalizedPortrait.startsWith("assets/world-anvil/")) {
+    const fallback = path.resolve(vaultRoot, "assets/images", path.posix.basename(normalizedPortrait))
+    if (fs.existsSync(fallback)) return fallback
+  }
+
+  return requested
+}
+
 export const NpcCards: QuartzTransformerPlugin = () => {
   let root = ""
   let npcs: NpcNote[] = []
@@ -349,8 +362,9 @@ export const NpcCards: QuartzTransformerPlugin = () => {
               const href = npcDirectory === currentDirectory
                 ? `./${escapeHtml(slugText.split("/").pop() ?? slugText)}`
                 : `./${escapeHtml(encodeRelativeUrl(nestedPath))}`
-              const image = portrait
-                ? `<img class="isr-npc-card-image" src="${encodeRelativeUrl(path.relative(sourceDirectory, path.resolve(vaultRoot, portrait)))}" alt="Portrait of ${escapeHtml(title)}" loading="lazy" decoding="async">`
+              const imagePath = portrait ? resolvePortraitPath(vaultRoot, portrait) : undefined
+              const image = imagePath
+                ? `<img class="isr-npc-card-image" src="${encodeRelativeUrl(path.relative(sourceDirectory, imagePath))}" alt="Portrait of ${escapeHtml(title)}" loading="lazy" decoding="async">`
                 : `<div class="isr-npc-card-placeholder" aria-hidden="true">${escapeHtml(initials(title))}</div>`
 
               return [
