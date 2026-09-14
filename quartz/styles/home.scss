@@ -123,19 +123,6 @@ body[data-slug="index"] {
       }
     }
 
-    #world-reference + ul {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 0.5rem 1.25rem;
-      list-style: none;
-      padding: 0;
-      a {
-        display: block;
-        padding: 0.65rem 0;
-        border-bottom: 1px solid var(--isr-rule);
-      }
-    }
-
     .home-recents {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -173,6 +160,72 @@ body[data-slug="index"] {
         text-transform: uppercase;
       }
     }
+
+    .home-reference-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .home-reference-card {
+      display: flex;
+      min-width: 0;
+      min-height: 11.5rem;
+      flex-direction: column;
+      padding: 1.15rem 1.15rem 1rem;
+      border: 1px solid var(--isr-rule);
+      border-top: 3px solid var(--tertiary);
+      border-radius: 0.4rem;
+      background: color-mix(in srgb, var(--light) 92%, var(--lightgray));
+      box-shadow: 0 5px 14px rgba(35, 28, 20, 0.06);
+    }
+
+    .home-reference-eyebrow {
+      margin-bottom: 0.35rem;
+      color: var(--tertiary);
+      font-size: 0.64rem;
+      font-weight: 700;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+    }
+
+    .home-reference-card h3 {
+      margin: 0;
+      color: var(--dark);
+      font-size: 1.2rem;
+      line-height: 1.25;
+    }
+
+    .home-reference-card p {
+      margin: 0.55rem 0 1rem;
+      color: var(--darkgray);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .home-reference-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      margin-top: auto;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--isr-rule);
+    }
+
+    .home-reference-links a {
+      display: inline-block;
+      width: fit-content;
+      font-size: 0.92rem;
+      font-weight: 600;
+      line-height: 1.35;
+      text-decoration: none;
+    }
+
+    .home-reference-links a:hover {
+      text-decoration: underline;
+      text-underline-offset: 0.16em;
+    }
   }
 
   @media (max-width: 800px) {
@@ -189,8 +242,11 @@ body[data-slug="index"] {
     .page > #quartz-body .page-header {
       margin-top: 1.25rem;
     }
-    article #world-reference + ul {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+    article .home-reference-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    article .home-reference-card {
+      min-height: 0;
     }
   }
 
