@@ -1,27 +1,123 @@
-/* Campaign timeline — Quartz */
+/* Campaign timeline — shared structure with campaign-specific themes. */
+
+#quartz-body {
+  --timeline-minor: #4f8767;
+  --timeline-major: #c69138;
+  --timeline-surface-accent: var(--tertiary);
+  --timeline-heading-accent: var(--tertiary);
+  --timeline-card-radius: 0.4rem;
+  --timeline-marker-radius: 0.08rem;
+  --timeline-marker-rotation: 45deg;
+  --timeline-heading-symbol: "◆";
+  --timeline-card-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* Kingmaker: republican chronicle, warm parchment, heraldic gold and green. */
+#quartz-body.campaign--kingmaker {
+  --timeline-minor: #4f7d45;
+  --timeline-major: #c59237;
+  --timeline-surface-accent: #b98532;
+  --timeline-heading-accent: #9a6d2f;
+  --timeline-card-radius: 0.38rem;
+  --timeline-marker-radius: 0.05rem;
+  --timeline-marker-rotation: 45deg;
+  --timeline-heading-symbol: "◆";
+}
+
+/* Abomination Vaults: cool stone, sea-glass teal, more architectural geometry. */
+#quartz-body.campaign--abomination-vaults {
+  --timeline-minor: #3f7f70;
+  --timeline-major: #5f94a3;
+  --timeline-surface-accent: #4e9b86;
+  --timeline-heading-accent: #3f7f70;
+  --timeline-card-radius: 0.16rem;
+  --timeline-marker-radius: 0.08rem;
+  --timeline-marker-rotation: 0deg;
+  --timeline-heading-symbol: "◇";
+  --timeline-card-shadow: 0 8px 18px rgba(24, 53, 59, 0.14);
+}
+
+/* Season of Ghosts: warmer ink-and-paper treatment with softer shapes. */
+#quartz-body.campaign--season-of-ghosts {
+  --timeline-minor: #a76043;
+  --timeline-major: #c68b2c;
+  --timeline-surface-accent: #c68b2c;
+  --timeline-heading-accent: #a96d25;
+  --timeline-card-radius: 0.62rem;
+  --timeline-marker-radius: 999px;
+  --timeline-marker-rotation: 0deg;
+  --timeline-heading-symbol: "●";
+  --timeline-card-shadow: 0 8px 18px rgba(81, 52, 29, 0.11);
+}
+
+/* Claws of the Tyrant: iron, ash, and crimson with harder edges. */
+#quartz-body.campaign--claws-of-the-tyrant {
+  --timeline-minor: #67636a;
+  --timeline-major: #a94b46;
+  --timeline-surface-accent: #8d4a47;
+  --timeline-heading-accent: #a94b46;
+  --timeline-card-radius: 0.12rem;
+  --timeline-marker-radius: 0;
+  --timeline-marker-rotation: 45deg;
+  --timeline-heading-symbol: "✦";
+  --timeline-card-shadow: 0 8px 20px rgba(48, 37, 38, 0.16);
+}
+
+/* Timeline group headings read as chapter markers instead of ordinary h2s. */
+#quartz-body[class*="campaign--"] article:has(.callout[data-callout^="timeline-"]) h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 3.2rem 0 1.65rem;
+  padding: 0;
+  border: 0;
+  color: var(--timeline-heading-accent);
+  font-size: clamp(1.45rem, 3vw, 1.9rem);
+  letter-spacing: 0.025em;
+}
+
+#quartz-body[class*="campaign--"] article:has(.callout[data-callout^="timeline-"]) h2::before {
+  content: var(--timeline-heading-symbol);
+  flex: 0 0 auto;
+  color: var(--timeline-heading-accent);
+  font-family: Georgia, serif;
+  font-size: 0.7em;
+  line-height: 1;
+}
+
+#quartz-body[class*="campaign--"] article:has(.callout[data-callout^="timeline-"]) h2::after {
+  content: "";
+  flex: 1 1 auto;
+  height: 1px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--timeline-heading-accent) 62%, transparent), transparent);
+}
 
 article .callout[data-callout^="timeline-"] {
-  --timeline-minor: #20a86b;
-  --timeline-major: #e2ad2f;
   --timeline-color: var(--timeline-minor);
   position: relative;
   box-sizing: border-box;
   width: calc(50% - 2.4rem);
   margin: 2.4rem 0;
-  border: 1px solid color-mix(in srgb, var(--timeline-color) 55%, transparent);
-  border-top: 3px solid var(--timeline-color);
-  border-radius: 0;
-  background: color-mix(in srgb, var(--light) 90%, var(--lightgray) 10%);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.14);
   overflow: visible;
+  border: 1px solid color-mix(in srgb, var(--timeline-color) 48%, var(--isr-rule) 52%);
+  border-top: 3px solid var(--timeline-color);
+  border-radius: var(--timeline-card-radius);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--light) 88%, var(--timeline-surface-accent) 12%), var(--light) 68%);
+  box-shadow: var(--timeline-card-shadow);
 }
 
 [saved-theme="dark"] article .callout[data-callout^="timeline-"] {
-  background: color-mix(in srgb, var(--light) 92%, black 8%);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--light) 90%, var(--timeline-surface-accent) 10%), color-mix(in srgb, var(--light) 94%, black 6%) 68%);
 }
 
 article .callout[data-callout^="timeline-major-"] {
   --timeline-color: var(--timeline-major);
+  border-top-width: 4px;
+  box-shadow:
+    0 10px 24px rgba(0, 0, 0, 0.14),
+    inset 0 0 0 1px color-mix(in srgb, var(--timeline-color) 11%, transparent);
 }
 
 article .callout[data-callout^="timeline-"] .callout-icon {
@@ -38,6 +134,10 @@ article .callout[data-callout^="timeline-"] .callout-title {
   text-align: center;
 }
 
+article .callout[data-callout^="timeline-major-"] .callout-title {
+  font-size: 1.13rem;
+}
+
 article .callout[data-callout^="timeline-"] .callout-content {
   color: var(--darkgray);
   text-align: center;
@@ -45,14 +145,26 @@ article .callout[data-callout^="timeline-"] .callout-content {
 
 article .callout[data-callout^="timeline-"] .callout-content > p:first-child {
   margin-top: 0.2rem;
-  color: var(--gray);
-  font-size: 0.72rem;
+  color: color-mix(in srgb, var(--timeline-color) 72%, var(--darkgray) 28%);
+  font-size: 0.7rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.07em;
 }
 
 article .callout[data-callout^="timeline-"] .callout-content strong {
   color: var(--dark);
+}
+
+article .callout[data-callout^="timeline-"] .callout-content a {
+  color: color-mix(in srgb, var(--timeline-color) 78%, var(--dark) 22%);
+  font-weight: 600;
+  text-decoration-color: color-mix(in srgb, var(--timeline-color) 55%, transparent);
+}
+
+article .callout[data-callout^="timeline-"] .callout-content a:hover {
+  color: var(--timeline-color);
+  text-decoration-color: var(--timeline-color);
 }
 
 article .callout[data-callout$="-left"] {
@@ -69,9 +181,10 @@ article .callout[data-callout^="timeline-"]::before {
   position: absolute;
   top: -2.55rem;
   bottom: -2.55rem;
+  z-index: 0;
   width: 5px;
   background: var(--timeline-color);
-  z-index: 0;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--timeline-color) 20%, transparent);
 }
 
 article .callout[data-callout$="-left"]::before {
@@ -100,17 +213,25 @@ article .callout[data-callout$="-right"]::after {
   left: -2.45rem;
 }
 
-/* Diamond marker on the central spine. */
+/* Campaign-themed marker on the central spine. */
 article .callout[data-callout^="timeline-"] .callout-title::after {
   content: "";
   position: absolute;
   top: -0.03rem;
+  z-index: 2;
   width: 0.72rem;
   height: 0.72rem;
+  border-radius: var(--timeline-marker-radius);
   background: var(--timeline-color);
-  transform: rotate(45deg);
-  box-shadow: 0 0 0 2px var(--light);
-  z-index: 2;
+  box-shadow:
+    0 0 0 2px var(--light),
+    0 0 0 3px color-mix(in srgb, var(--timeline-color) 45%, transparent);
+  transform: rotate(var(--timeline-marker-rotation));
+}
+
+article .callout[data-callout^="timeline-major-"] .callout-title::after {
+  width: 0.86rem;
+  height: 0.86rem;
 }
 
 article .callout[data-callout$="-left"] .callout-title::after {
@@ -122,25 +243,30 @@ article .callout[data-callout$="-right"] .callout-title::after {
 }
 
 @media (max-width: 800px) {
+  #quartz-body[class*="campaign--"] article:has(.callout[data-callout^="timeline-"]) h2 {
+    margin-top: 2.5rem;
+    font-size: 1.45rem;
+  }
+
   article .callout[data-callout^="timeline-"] {
     width: calc(100% - 2.8rem);
     margin: 2rem 0 2rem 2.8rem;
   }
 
   article .callout[data-callout^="timeline-"]::before {
-    left: -1.65rem;
     right: auto;
+    left: -1.65rem;
   }
 
   article .callout[data-callout^="timeline-"]::after {
-    left: -1.65rem;
     right: auto;
+    left: -1.65rem;
     width: 1.65rem;
   }
 
   article .callout[data-callout^="timeline-"] .callout-title::after {
-    left: -2.43rem;
     right: auto;
+    left: -2.43rem;
   }
 }
 
