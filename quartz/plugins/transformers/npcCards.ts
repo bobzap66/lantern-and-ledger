@@ -221,8 +221,32 @@ function markdownFiles(directory: string): string[] {
   return result
 }
 
+function values(value: unknown): string[] {
+  if (value == null) return []
+  return (Array.isArray(value) ? value : [value])
+    .map((item) => String(item).trim())
+    .filter(Boolean)
+}
+
+function normalized(value: unknown): string[] {
+  return values(value).map((item) => item.toLowerCase())
+}
+
+function matchesAny(source: unknown, wanted: unknown) {
+  const targets = normalized(wanted)
+  if (targets.length === 0) return true
+  const available = normalized(source)
+  return targets.some((target) => available.includes(target))
+}
+
+function titleMatches(title: string, wanted: unknown) {
+  const targets = normalized(wanted)
+  if (targets.length === 0) return true
+  return targets.includes(title.trim().toLowerCase())
+}
+
 function subtitleFor(fm: Record<string, any>) {
-  const value = fm.card_subtitle ?? fm.npc_role ?? fm.occupation ?? fm.title_role ?? fm.office
+  const value = fm.card_subtitle ?? fm.occupation ?? fm.title_role ?? fm.office ?? fm.npc_role
   if (Array.isArray(value)) return value.map(String).filter(Boolean).join(" · ")
   return typeof value === "string" ? value.trim() : ""
 }
@@ -241,8 +265,12 @@ export const NpcCards: QuartzTransformerPlugin = () => {
     npcs = markdownFiles(vaultRoot).flatMap((absolutePath) => {
       const source = readSource(absolutePath)
       const frontmatter = readFrontmatter(source)
-      if (String(frontmatter?.role ?? "").toLowerCase() !== "non-player-character") return []
       const relativePath = path.relative(vaultRoot, absolutePath).replaceAll("\\", "/")
+      const isPerson = String(frontmatter?.type ?? "").toLowerCase() === "person"
+      const hasNpcRole = frontmatter?.npc_role != null
+      const explicitNpc = String(frontmatter?.role ?? "").toLowerCase() === "non-player-character"
+      const inNpcFolder = relativePath.split("/").some((segment) => segment.toLowerCase() === "npcs")
+      if (!isPerson || (!explicitNpc && !hasNpcRole && !inNpcFolder)) return []
       return [{
         absolutePath,
         relativePath,
@@ -272,7 +300,11 @@ export const NpcCards: QuartzTransformerPlugin = () => {
 
           let query: Record<string, any> = {}
           try { query = YAML.parse(String(node.value ?? "")) ?? {} } catch { query = {} }
-          const wantedStatus = typeof query.status === "string" ? query.status.trim().toLowerCase() : ""
+          const wantedStatus = query.status ?? query.npc_status
+          const wantedRoles = query.npc_role ?? query.npc_roles
+          const wantedAffiliations = query.affiliation ?? query.affiliations ?? query.npc_affiliation ?? query.npc_affiliations
+          const include = query.include
+          const exclude = query.exclude
           const recursive = query.recursive === true
 
           const cards = npcs
@@ -280,14 +312,26 @@ export const NpcCards: QuartzTransformerPlugin = () => {
               const npcDirectory = path.dirname(npc.relativePath).replaceAll("\\", "/")
               return npcDirectory === currentDirectory || (recursive && npcDirectory.startsWith(`${currentDirectory}/`))
             })
-            .filter((npc) => !wantedStatus || String(npc.frontmatter?.status ?? "").trim().toLowerCase() === wantedStatus)
+            .filter((npc) => {
+              const title = String(npc.frontmatter?.title ?? path.basename(npc.relativePath, ".md"))
+              return titleMatches(title, include)
+            })
+            .filter((npc) => {
+              const title = String(npc.frontmatter?.title ?? path.basename(npc.relativePath, ".md"))
+              const excluded = normalized(exclude)
+              return excluded.length === 0 || !excluded.includes(title.trim().toLowerCase())
+            })
+            .filter((npc) => matchesAny(npc.frontmatter?.status ?? npc.frontmatter?.npc_status, wantedStatus))
+            .filter((npc) => matchesAny(npc.frontmatter?.npc_role, wantedRoles))
+            .filter((npc) => matchesAny(npc.frontmatter?.npc_affiliations, wantedAffiliations))
             .sort((a, b) => Number(a.frontmatter?.card_order ?? 999) - Number(b.frontmatter?.card_order ?? 999) || String(a.frontmatter?.title ?? "").localeCompare(String(b.frontmatter?.title ?? "")))
             .map((npc) => {
               const fm = npc.frontmatter
               const title = String(fm.title ?? path.basename(npc.relativePath, ".md"))
               const portrait = typeof fm.portrait === "string" ? fm.portrait : undefined
               const subtitle = subtitleFor(fm)
-              const status = typeof fm.status === "string" ? fm.status : ""
+              const statusValue = fm.status ?? fm.npc_status
+              const status = typeof statusValue === "string" ? statusValue : ""
               const npcDirectory = path.dirname(npc.relativePath).replaceAll("\\", "/")
               const nestedPath = path.posix.relative(currentDirectory, npc.relativePath.replace(/\.md$/i, ""))
               const slugText = String(npc.slug).replaceAll("\\", "/")
