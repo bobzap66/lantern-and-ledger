@@ -245,6 +245,15 @@ function titleMatches(title: string, wanted: unknown) {
   return targets.includes(title.trim().toLowerCase())
 }
 
+function descriptionOverride(title: string, overrides: unknown) {
+  if (!overrides || typeof overrides !== "object" || Array.isArray(overrides)) return ""
+  const titleKey = title.trim().toLowerCase()
+  for (const [key, value] of Object.entries(overrides as Record<string, unknown>)) {
+    if (key.trim().toLowerCase() === titleKey && typeof value === "string") return value.trim()
+  }
+  return ""
+}
+
 function subtitleFor(fm: Record<string, any>) {
   const value = fm.card_subtitle ?? fm.occupation ?? fm.title_role ?? fm.office ?? fm.npc_role
   if (Array.isArray(value)) return value.map(String).filter(Boolean).join(" · ")
@@ -305,6 +314,7 @@ export const NpcCards: QuartzTransformerPlugin = () => {
           const wantedAffiliations = query.affiliation ?? query.affiliations ?? query.npc_affiliation ?? query.npc_affiliations
           const include = query.include
           const exclude = query.exclude
+          const descriptionOverrides = query.descriptions
           const recursive = query.recursive === true
 
           const cards = npcs
@@ -330,6 +340,7 @@ export const NpcCards: QuartzTransformerPlugin = () => {
               const title = String(fm.title ?? path.basename(npc.relativePath, ".md"))
               const portrait = typeof fm.portrait === "string" ? fm.portrait : undefined
               const subtitle = subtitleFor(fm)
+              const description = descriptionOverride(title, descriptionOverrides) || npc.description
               const statusValue = fm.status ?? fm.npc_status
               const status = typeof statusValue === "string" ? statusValue : ""
               const npcDirectory = path.dirname(npc.relativePath).replaceAll("\\", "/")
@@ -349,7 +360,7 @@ export const NpcCards: QuartzTransformerPlugin = () => {
                 '<div class="isr-npc-card-copy">',
                 `<p class="isr-npc-card-name">${escapeHtml(title)}</p>`,
                 subtitle ? `<p class="isr-npc-card-subtitle">${escapeHtml(subtitle)}</p>` : "",
-                npc.description ? `<p class="isr-npc-card-description">${escapeHtml(npc.description)}</p>` : "",
+                description ? `<p class="isr-npc-card-description">${escapeHtml(description)}</p>` : "",
                 status ? `<div class="isr-npc-card-meta"><span class="isr-npc-card-status">${escapeHtml(status)}</span></div>` : "",
                 "</div>",
                 "</a>",
