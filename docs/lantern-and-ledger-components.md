@@ -92,7 +92,7 @@ Implementation:
 quartz/plugins/transformers/npcCards.ts
 ```
 
-Purpose: render a compact, portrait-driven NPC directory suitable for larger casts.
+Purpose: render a compact, portrait-driven NPC directory suitable for larger casts and for repeated editorial groupings.
 
 Basic usage:
 
@@ -101,29 +101,61 @@ Basic usage:
 ```
 ````
 
-Supported query options:
+Supported query options include:
 
 ```yaml
+# Either status or npc_status may be used.
 status: active
+
+# Match any listed NPC role.
+npc_role:
+  - official
+  - ruler
+
+# Singular/plural affiliation aliases are accepted.
+affiliations:
+  - Republic of Thumping Waters
+
+# Curate an exact group by title. This is useful when a person
+# intentionally appears in more than one editorial section.
+include:
+  - Akiros Insmort
+  - Jubilost Narthropple
+
+# Remove specific titles from an otherwise metadata-driven group.
+exclude:
+  - Example NPC
+
+# Include NPC notes in child folders.
 recursive: true
+
+# Per-directory description overrides. Keys are NPC titles.
+descriptions:
+  Granny Hu: Retired imperial guard captain, Willowshore elder, and uncompromising advocate for preparedness.
 ```
 
-NPC records must use:
+The affiliation query accepts `affiliation`, `affiliations`, `npc_affiliation`, or `npc_affiliations`. `npc_role` and `npc_roles` are both accepted. Query lists use OR matching: an NPC matches when any requested role or affiliation is present.
 
-```yaml
-type: person
-role: non-player-character
-```
+NPC records are recognized when they are `type: person` and are explicitly marked `role: non-player-character`, carry `npc_role` metadata, or live in an `NPCs` folder. This supports both the newer campaign schema and older Kingmaker records.
 
-Useful optional fields:
+Useful optional fields include:
 
 ```yaml
 title: Granny Hu
 status: active
+# Older records may instead use:
+npc_status: alive
+
 portrait: assets/images/season-of-ghosts/npcs/granny-hu.webp
 card_order: 10
 card_subtitle: Retired Imperial Guard Captain
 card_description: Willowshore elder, hard-edged defender, and one of the principal witnesses to the town's oral history.
+
+npc_role:
+  - ally
+  - official
+npc_affiliations:
+  - Republic of Thumping Waters
 ```
 
 ### NPC subtitle fallback
@@ -132,28 +164,25 @@ The displayed subtitle uses the first available value from:
 
 ```text
 card_subtitle
-npc_role
 occupation
 title_role
 office
+npc_role
 ```
 
 Arrays are joined with a centered dot.
 
 ### NPC description fallback
 
-The displayed short description prefers the first available explicit field from:
+Description precedence is:
 
-```text
-card_description
-card_summary
-summary
-description
-```
+1. a matching `descriptions:` override in the current `npc-cards` block;
+2. the first available explicit NPC field from `card_description`, `card_summary`, `summary`, or `description`;
+3. the first sentence of the first meaningful body paragraph, limited when unusually long.
 
-If none exists, the component derives a short description from the first meaningful body paragraph, taking its first sentence and limiting unusually long text. This lets existing NPC records render useful cards immediately while still allowing hand-written `card_description` text for better editorial control.
+This allows a directory to curate concise browsing copy without rewriting every NPC article, while still allowing `card_description` on individual records when the description should travel with the NPC everywhere.
 
-If an NPC has no portrait, the card renders an initials placeholder.
+The status pill reads from `status` first and falls back to `npc_status`. If an NPC has no portrait, the card renders an initials placeholder.
 
 NPC card appearance inherits the current campaign theme.
 
