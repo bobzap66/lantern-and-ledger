@@ -253,6 +253,7 @@ plugins:
     options:
       links:
         Home: https://bobzap66.github.io/lantern-and-ledger/
+        Preferences: https://bobzap66.github.io/lantern-and-ledger/Preferences
         Source: https://github.com/bobzap66/lantern-and-ledger
     layout:
       position: footer
