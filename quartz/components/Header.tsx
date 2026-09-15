@@ -9,6 +9,8 @@ const Header: QuartzComponent = (props: QuartzComponentProps) => {
       : new URL(`https://${cfg.baseUrl}`).pathname.replace(/\/$/, "")
   const homePath = `${siteRoot}/`
   const spoilerControllerPath = `${siteRoot}/static/campaign-spoilers.js`
+  const preferencesControllerPath = `${siteRoot}/static/preferences.js`
+  const preferencesStylesPath = `${siteRoot}/static/preferences.css`
   // Quartz's Assets emitter slugifies file paths as it copies them into public/.
   // The source folder is "lantern and ledger branding", so its published path is
   // "lantern-and-ledger-branding" rather than a URL-encoded space-separated path.
@@ -18,7 +20,9 @@ const Header: QuartzComponent = (props: QuartzComponentProps) => {
 
   return (
     <>
+      <link rel="stylesheet" href={preferencesStylesPath} />
       <script src={spoilerControllerPath}></script>
+      <script src={preferencesControllerPath}></script>
       <header class="lantern-ledger-site-header">
         <a class="lantern-ledger-masthead" href={homePath} aria-label="Campaign site home">
           <picture>
