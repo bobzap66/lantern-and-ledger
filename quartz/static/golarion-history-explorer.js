@@ -243,10 +243,12 @@
                 const sourceLabel =
                   event.campaign || (event.kind === "historical" ? "Golarion History" : "Source")
                 const external = source && /^https?:\/\//i.test(source)
+                const milestoneBadge =
+                  event.timelineMetadata || event.recordType === "milestone" ? "<span>Milestone</span>" : ""
                 return `<article class="golarion-history-event ${event.kind === "historical" ? "is-history" : "is-campaign"}">
                   <div class="golarion-history-event-date">${escapeHtml(formatDate(event, data.months))}</div>
                   <div class="golarion-history-event-body">
-                    <div class="golarion-history-event-meta"><span>${escapeHtml(sourceLabel)}</span>${event.category ? `<span>${escapeHtml(event.category)}</span>` : ""}</div>
+                    <div class="golarion-history-event-meta"><span>${escapeHtml(sourceLabel)}</span>${milestoneBadge}${event.category ? `<span>${escapeHtml(event.category)}</span>` : ""}</div>
                     <h3>${escapeHtml(event.name)}</h3>
                     ${event.description ? `<p>${escapeHtml(event.description)}</p>` : ""}
                     ${source ? `<p class="golarion-history-source"><a href="${escapeHtml(source)}"${external ? ' target="_blank" rel="noopener noreferrer"' : ""}>View source</a></p>` : ""}
