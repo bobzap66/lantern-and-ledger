@@ -207,16 +207,44 @@ function toTimelineEvent(fields, metadataFile, campaign, campaignSource) {
   return { event }
 }
 
+function upgradeToMilestone(existingEvents, milestone) {
+  for (const event of existingEvents) {
+    event.timelineMetadata = true
+    event.recordType = "milestone"
+    event.dateLabel = milestone.dateLabel
+    if (milestone.description) event.description = milestone.description
+    if (milestone.label) event.label = milestone.label
+    if (milestone.importance) event.importance = milestone.importance
+    if (
+      milestone.category &&
+      (!event.category ||
+        event.category === "Campaign Events" ||
+        event.category === "Miscellaneous Events" ||
+        event.category === "Session Reports")
+    )
+      event.category = milestone.category
+    if (!event.source && milestone.source) event.source = milestone.source
+  }
+}
+
 const timelineFiles = await walk(CAMPAIGNS_ROOT)
 const payload = JSON.parse(await fs.readFile(STATIC_OUTPUT, "utf8"))
 const campaignSources = new Map(
   (payload.campaigns ?? []).map((campaign) => [campaign.id, campaign.source]).filter(([, source]) => source),
 )
-const seen = new Set((payload.events ?? []).filter((event) => event.kind === "campaign-event").map(eventKey))
-const counts = new Map()
+const existingByKey = new Map()
+for (const event of payload.events ?? []) {
+  if (event.kind !== "campaign-event") continue
+  const key = eventKey(event)
+  if (!existingByKey.has(key)) existingByKey.set(key, [])
+  existingByKey.get(key).push(event)
+}
+
+const addedCounts = new Map()
+const upgradedCounts = new Map()
 const warnings = []
 let added = 0
-let duplicate = 0
+let upgraded = 0
 
 for (const file of timelineFiles) {
   const text = await fs.readFile(file, "utf8")
@@ -233,14 +261,19 @@ for (const file of timelineFiles) {
       warnings.push(`${rel} block ${blockNumber}: ${parsed.error}`)
       continue
     }
+
     const key = eventKey(parsed.event)
-    if (seen.has(key)) {
-      duplicate += 1
+    const existing = existingByKey.get(key)
+    if (existing?.length) {
+      upgradeToMilestone(existing, parsed.event)
+      upgraded += 1
+      upgradedCounts.set(campaign, (upgradedCounts.get(campaign) || 0) + 1)
       continue
     }
-    seen.add(key)
+
     payload.events.push(parsed.event)
-    counts.set(campaign, (counts.get(campaign) || 0) + 1)
+    existingByKey.set(key, [parsed.event])
+    addedCounts.set(campaign, (addedCounts.get(campaign) || 0) + 1)
     added += 1
   }
 }
@@ -259,9 +292,15 @@ for (const target of [STATIC_OUTPUT, PUBLIC_OUTPUT]) {
   await fs.writeFile(target, output, "utf8")
 }
 
-console.log(`Merged ${added} campaign timeline metadata records (${duplicate} exact duplicates suppressed).`)
-for (const [campaign, count] of [...counts.entries()].sort((a, b) => a[0].localeCompare(b[0])))
-  console.log(`  ${campaign}: +${count}`)
+console.log(
+  `Merged ${added} new campaign timeline metadata records and upgraded ${upgraded} existing event definitions to milestones.`,
+)
+const campaigns = new Set([...addedCounts.keys(), ...upgradedCounts.keys()])
+for (const campaign of [...campaigns].sort((a, b) => a.localeCompare(b))) {
+  console.log(
+    `  ${campaign}: +${addedCounts.get(campaign) || 0} new; ${upgradedCounts.get(campaign) || 0} upgraded`,
+  )
+}
 if (warnings.length) {
   console.warn(`Skipped ${warnings.length} timeline metadata blocks:`)
   for (const warning of warnings) console.warn(`  ${warning}`)
