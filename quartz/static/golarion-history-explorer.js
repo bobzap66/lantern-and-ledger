@@ -162,7 +162,41 @@
 
       if (state.campaign !== "all" && !campaigns.includes(state.campaign)) state.campaign = "all"
 
-      const render = () => {
+      const campaignOptions = campaigns
+        .map(
+          (campaign) =>
+            `<option value="${escapeHtml(campaign)}"${state.campaign === campaign ? " selected" : ""}>${escapeHtml(campaign)}</option>`,
+        )
+        .join("")
+
+      root.innerHTML = `
+        <section class="golarion-history-shell" aria-label="Golarion history explorer">
+          <div class="golarion-history-controls">
+            <label class="golarion-history-search">Search <input type="search" data-history-query value="${escapeHtml(state.query)}" placeholder="Search people, places, events…"></label>
+            <label>Record <select data-history-kind>
+              <option value="all"${state.kind === "all" ? " selected" : ""}>All history</option>
+              <option value="historical"${state.kind === "historical" ? " selected" : ""}>Golarion history</option>
+              <option value="campaign"${state.kind === "campaign" ? " selected" : ""}>Campaign history</option>
+            </select></label>
+            <label>Campaign <select data-history-campaign><option value="all">All campaigns</option>${campaignOptions}</select></label>
+            <label>From year <input type="number" data-history-from value="${escapeHtml(state.from)}" inputmode="numeric"></label>
+            <label>To year <input type="number" data-history-to value="${escapeHtml(state.to)}" inputmode="numeric"></label>
+            <button type="button" data-history-clear>Clear filters</button>
+          </div>
+          <p class="golarion-history-count" data-history-count aria-live="polite"></p>
+          <div class="golarion-history-results" data-history-results></div>
+        </section>`
+
+      const queryInput = root.querySelector("[data-history-query]")
+      const kindSelect = root.querySelector("[data-history-kind]")
+      const campaignSelect = root.querySelector("[data-history-campaign]")
+      const fromInput = root.querySelector("[data-history-from]")
+      const toInput = root.querySelector("[data-history-to]")
+      const clearButton = root.querySelector("[data-history-clear]")
+      const countNode = root.querySelector("[data-history-count]")
+      const resultsNode = root.querySelector("[data-history-results]")
+
+      const renderResults = () => {
         const query = state.query.trim().toLocaleLowerCase()
         const from = state.from === "" ? null : Number(state.from)
         const to = state.to === "" ? null : Number(state.to)
@@ -194,13 +228,6 @@
           grouped.get(event.year).push(event)
         }
 
-        const campaignOptions = campaigns
-          .map(
-            (campaign) =>
-              `<option value="${escapeHtml(campaign)}"${state.campaign === campaign ? " selected" : ""}>${escapeHtml(campaign)}</option>`,
-          )
-          .join("")
-
         const yearsMarkup = [...grouped.entries()]
           .map(([year, events]) => {
             const eventMarkup = events
@@ -224,66 +251,52 @@
           })
           .join("")
 
-        root.innerHTML = `
-          <section class="golarion-history-shell" aria-label="Golarion history explorer">
-            <div class="golarion-history-controls">
-              <label class="golarion-history-search">Search <input type="search" data-history-query value="${escapeHtml(state.query)}" placeholder="Search people, places, events…"></label>
-              <label>Record <select data-history-kind>
-                <option value="all"${state.kind === "all" ? " selected" : ""}>All history</option>
-                <option value="historical"${state.kind === "historical" ? " selected" : ""}>Golarion history</option>
-                <option value="campaign"${state.kind === "campaign" ? " selected" : ""}>Campaign history</option>
-              </select></label>
-              <label>Campaign <select data-history-campaign><option value="all">All campaigns</option>${campaignOptions}</select></label>
-              <label>From year <input type="number" data-history-from value="${escapeHtml(state.from)}" inputmode="numeric"></label>
-              <label>To year <input type="number" data-history-to value="${escapeHtml(state.to)}" inputmode="numeric"></label>
-              <button type="button" data-history-clear>Clear filters</button>
-            </div>
-            <p class="golarion-history-count" aria-live="polite">${filtered.length} ${filtered.length === 1 ? "record" : "records"}</p>
-            <div class="golarion-history-results">${yearsMarkup || '<p class="golarion-history-empty">No historical records match these filters.</p>'}</div>
-          </section>`
-
-        const rerender = () => {
-          writeParams(state)
-          render()
-        }
-
-        root.querySelector("[data-history-query]")?.addEventListener("input", (event) => {
-          state.query = event.target.value
-          writeParams(state)
-          render()
-          requestAnimationFrame(() => {
-            const input = root.querySelector("[data-history-query]")
-            input?.focus()
-            input?.setSelectionRange(state.query.length, state.query.length)
-          })
-        })
-        root.querySelector("[data-history-kind]")?.addEventListener("change", (event) => {
-          state.kind = event.target.value
-          rerender()
-        })
-        root.querySelector("[data-history-campaign]")?.addEventListener("change", (event) => {
-          state.campaign = event.target.value
-          rerender()
-        })
-        root.querySelector("[data-history-from]")?.addEventListener("change", (event) => {
-          state.from = event.target.value
-          rerender()
-        })
-        root.querySelector("[data-history-to]")?.addEventListener("change", (event) => {
-          state.to = event.target.value
-          rerender()
-        })
-        root.querySelector("[data-history-clear]")?.addEventListener("click", () => {
-          state.query = ""
-          state.kind = "all"
-          state.campaign = "all"
-          state.from = ""
-          state.to = ""
-          rerender()
-        })
+        if (countNode)
+          countNode.textContent = `${filtered.length} ${filtered.length === 1 ? "record" : "records"}`
+        if (resultsNode)
+          resultsNode.innerHTML = yearsMarkup || '<p class="golarion-history-empty">No historical records match these filters.</p>'
       }
 
-      render()
+      const updateResults = () => {
+        writeParams(state)
+        renderResults()
+      }
+
+      queryInput?.addEventListener("input", (event) => {
+        state.query = event.target.value
+        updateResults()
+      })
+      kindSelect?.addEventListener("change", (event) => {
+        state.kind = event.target.value
+        updateResults()
+      })
+      campaignSelect?.addEventListener("change", (event) => {
+        state.campaign = event.target.value
+        updateResults()
+      })
+      fromInput?.addEventListener("change", (event) => {
+        state.from = event.target.value
+        updateResults()
+      })
+      toInput?.addEventListener("change", (event) => {
+        state.to = event.target.value
+        updateResults()
+      })
+      clearButton?.addEventListener("click", () => {
+        state.query = ""
+        state.kind = "all"
+        state.campaign = "all"
+        state.from = ""
+        state.to = ""
+        if (queryInput) queryInput.value = ""
+        if (kindSelect) kindSelect.value = "all"
+        if (campaignSelect) campaignSelect.value = "all"
+        if (fromInput) fromInput.value = ""
+        if (toInput) toInput.value = ""
+        updateResults()
+      })
+
+      renderResults()
     } catch (error) {
       console.error("Failed to load Golarion history explorer", error)
       root.innerHTML = '<p class="golarion-calendar-error">Golarion history could not be loaded.</p>'
