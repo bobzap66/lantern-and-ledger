@@ -64,7 +64,7 @@ function attributesFromTag(tag) {
 }
 
 function isLeapYear(year) {
-  return year % 8 === 0
+  return year % 4 === 0
 }
 
 function monthLength(year, month) {
@@ -73,14 +73,30 @@ function monthLength(year, month) {
 
 function parseDate(value) {
   const text = String(value ?? "").trim()
+  const yearOnly = /^(\-?\d+)(?:\s+AR)?$/i.exec(text)
+  if (yearOnly) return { year: Number(yearOnly[1]), datePrecision: "year" }
+
+  const monthOnly = /^(\-?\d+)-([A-Za-z]+)$/.exec(text)
+  if (monthOnly) {
+    const year = Number(monthOnly[1])
+    const month = MONTHS.findIndex((item) => item.toLowerCase() === monthOnly[2].toLowerCase())
+    if (!Number.isInteger(year) || month < 0) return null
+    return { year, month, datePrecision: "month" }
+  }
+
   const named = /^(\-?\d+)-([A-Za-z]+)-(\d{1,2})$/.exec(text)
   const numeric = /^(\-?\d+)-(\d{1,2})-(\d{1,2})$/.exec(text)
-  if (!named && !numeric) return null
+  const natural = /^([A-Za-z]+)\s+(\d{1,2}),?\s+(\-?\d+)(?:\s+AR)?$/i.exec(text)
+  if (!named && !numeric && !natural) return null
 
-  const match = named ?? numeric
-  const year = Number(match[1])
-  const month = named ? MONTHS.indexOf(named[2]) : Number(numeric[2]) - 1
-  const day = Number(match[3])
+  const match = named ?? numeric ?? natural
+  const year = Number(natural ? match[3] : match[1])
+  const month = named
+    ? MONTHS.findIndex((item) => item.toLowerCase() === named[2].toLowerCase())
+    : numeric
+      ? Number(numeric[2]) - 1
+      : MONTHS.findIndex((item) => item.toLowerCase() === natural[1].toLowerCase())
+  const day = Number(natural ? match[2] : match[3])
   if (
     month < 0 ||
     month >= MONTHS.length ||
@@ -90,7 +106,7 @@ function parseDate(value) {
     day > monthLength(year, month)
   )
     return null
-  return { year, month, day }
+  return { year, month, day, datePrecision: "day" }
 }
 
 function increment(map, key, amount = 1) {
@@ -126,7 +142,8 @@ for (const file of files) {
     if (!parseDate(startValue)) {
       inlineDateParseFailures.push({
         file: relative(file),
-        field: attrs.date !== undefined ? "data-date" : attrs.from !== undefined ? "data-from" : "start",
+        field:
+          attrs.date !== undefined ? "data-date" : attrs.from !== undefined ? "data-from" : "start",
         value: String(startValue ?? ""),
       })
       continue
@@ -246,5 +263,7 @@ if (inlineDateParseFailures.length) {
 
 const otherParseFailures = parseFailures.length - relevantParseFailures.length
 if (otherParseFailures > 0) {
-  console.warn(`${otherParseFailures} additional Markdown file(s) have YAML parse failures but no recognized campaign date fields.`)
+  console.warn(
+    `${otherParseFailures} additional Markdown file(s) have YAML parse failures but no recognized campaign date fields.`,
+  )
 }

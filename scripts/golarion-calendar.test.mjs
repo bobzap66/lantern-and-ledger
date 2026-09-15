@@ -77,6 +77,14 @@ test("On This Date in History renders holidays and deduplicated anniversaries", 
         campaign: "First Campaign",
       },
       {
+        name: "Implicitly Restricted Campaign Record",
+        year: 4721,
+        month: 8,
+        day: 3,
+        kind: "campaign-event",
+        campaign: "First Campaign",
+      },
+      {
         name: "A Month-Level Historic Event",
         year: 4700,
         month: 8,
@@ -175,6 +183,7 @@ test("On This Date in History renders holidays and deduplicated anniversaries", 
   assert.doesNotMatch(root.innerHTML, /A Campaign-Only Spoiler/)
   assert.doesNotMatch(root.innerHTML, /A Campaign-Only Day/)
   assert.doesNotMatch(root.innerHTML, /A Campaign-Only Month/)
+  assert.doesNotMatch(root.innerHTML, /Implicitly Restricted Campaign Record/)
   assert.equal((root.innerHTML.match(/<strong>A Historic Event<\/strong>/g) ?? []).length, 1)
 })
 
@@ -469,4 +478,217 @@ test("Campaign-only day, month, and year history appears under its campaign filt
   assert.match(details.innerHTML, /Restricted month/)
   assert.match(details.innerHTML, /Belcorra awakens/)
   assert.doesNotMatch(details.innerHTML, /Global history/)
+})
+
+test("all Golarion calendar paths use the four-year leap rule", async () => {
+  const files = [
+    "generate-golarion-calendar.mjs",
+    "merge-golarion-timeline-metadata.mjs",
+    "diagnose-golarion-calendar.mjs",
+    "../quartz/static/golarion-history-browser.js",
+    "../quartz/static/golarion-calendar.js",
+  ]
+
+  for (const file of files) {
+    const source = await readFile(new URL(file, import.meta.url), "utf8")
+    assert.match(source, /year % 4 === 0/, `${file} should use the four-year leap rule`)
+    assert.doesNotMatch(source, /year % 8 === 0/, `${file} still contains the old leap rule`)
+  }
+
+  const generator = await readFile(
+    new URL("generate-golarion-calendar.mjs", import.meta.url),
+    "utf8",
+  )
+  assert.match(generator, /leapRule: \{ interval: 4, month: 1 \}/)
+})
+
+test("History explorer displays a mixed-precision campaign range", async () => {
+  const results = { innerHTML: "" }
+  const count = { textContent: "" }
+  const jump = {
+    innerHTML: "",
+    querySelector: () => ({ addEventListener() {} }),
+  }
+  let densityChange
+  const control = () => ({ value: "", addEventListener() {} })
+  const controls = {
+    "[data-history-query]": control(),
+    "[data-history-kind]": control(),
+    "[data-history-campaign]": control(),
+    "[data-history-from]": control(),
+    "[data-history-to]": control(),
+    "[data-history-density]": {
+      value: "expanded",
+      addEventListener: (_type, handler) => {
+        densityChange = handler
+      },
+    },
+    "[data-history-future]": { checked: false, addEventListener() {} },
+    "[data-history-clear]": control(),
+    "[data-history-count]": count,
+    "[data-history-jump]": jump,
+    "[data-history-results]": results,
+  }
+  const root = {
+    dataset: {},
+    innerHTML: "",
+    querySelector(selector) {
+      return controls[selector] ?? null
+    },
+  }
+  const source = await readFile(
+    new URL("../quartz/static/golarion-history-explorer.js", import.meta.url),
+    "utf8",
+  )
+  const data = {
+    months: [
+      "Abadius",
+      "Calistril",
+      "Pharast",
+      "Gozran",
+      "Desnus",
+      "Sarenith",
+      "Erastus",
+      "Arodus",
+      "Rova",
+      "Lamashan",
+      "Neth",
+      "Kuthona",
+    ],
+    campaigns: [
+      {
+        id: "Claws of the Tyrant",
+        name: "Claws of the Tyrant",
+        currentDate: { year: 4725, month: 8, day: 22, datePrecision: "day" },
+        source: "campaigns/claws-of-the-tyrant",
+      },
+    ],
+    events: [
+      {
+        year: 4719,
+        datePrecision: "year",
+        name: "Six Years Beneath Yua's Hope",
+        campaign: "Claws of the Tyrant",
+        kind: "campaign-event",
+        source: "campaigns/claws-of-the-tyrant/articles/six-years-beneath-yua's-hope",
+        isMultiDay: true,
+        rangeStart: { year: 4719, datePrecision: "year" },
+        rangeEnd: { year: 4725, month: 8, day: 16, datePrecision: "day" },
+      },
+      {
+        year: -5293,
+        datePrecision: "year",
+        name: "Earthfall",
+        kind: "historical",
+      },
+      {
+        year: 4725,
+        month: 8,
+        day: 22,
+        datePrecision: "day",
+        name: "A Detailed Record",
+        campaign: "Claws of the Tyrant",
+        kind: "campaign-event",
+      },
+      {
+        year: 4725,
+        month: 8,
+        day: 22,
+        datePrecision: "day",
+        name: "The Corlach Milestone",
+        campaign: "Claws of the Tyrant",
+        kind: "campaign-event",
+        recordType: "milestone",
+      },
+      {
+        year: 4725,
+        month: 8,
+        day: 22,
+        datePrecision: "day",
+        name: "A Canonical Event That Day",
+        kind: "historical",
+        source: "https://example.com/exact",
+      },
+      {
+        year: 4725,
+        datePrecision: "year",
+        name: "A Canonical Event That Year",
+        kind: "historical",
+        source: "https://example.com/year",
+      },
+      {
+        year: 4725,
+        month: 8,
+        day: 22,
+        datePrecision: "day",
+        name: "Another Detailed Record",
+        campaign: "Claws of the Tyrant",
+        kind: "campaign-event",
+      },
+      {
+        year: 4725,
+        month: 8,
+        day: 23,
+        datePrecision: "day",
+        name: "A Future Campaign Record",
+        campaign: "Claws of the Tyrant",
+        kind: "campaign-event",
+      },
+      {
+        year: 4725,
+        month: 8,
+        day: 22,
+        datePrecision: "day",
+        name: "A Third Detailed Record",
+        campaign: "Claws of the Tyrant",
+        kind: "campaign-event",
+      },
+    ],
+  }
+  const context = {
+    console,
+    URLSearchParams,
+    history: { replaceState() {} },
+    location: { pathname: "/inner-sea-region/history-of-golarion", search: "", hash: "" },
+    localStorage: {
+      getItem: (key) => (key === "isr-campaign-spoilers:claws-of-the-tyrant" ? "true" : null),
+    },
+    fetch: async () => ({ ok: true, json: async () => data }),
+    document: {
+      body: { dataset: { basepath: "/inner-sea-region" } },
+      scripts: [],
+      readyState: "complete",
+      addEventListener() {},
+      querySelector(selector) {
+        return selector === "#golarion-history-explorer" ? root : null
+      },
+    },
+  }
+
+  vm.runInNewContext(source, context)
+  await new Promise((resolve) => setImmediate(resolve))
+
+  assert.match(results.innerHTML, /4719 AR–Rova 16, 4725 AR/)
+  assert.match(results.innerHTML, /Six Years Beneath Yua&#039;s Hope/)
+  assert.ok(
+    results.innerHTML.indexOf("The Corlach Milestone") <
+      results.innerHTML.indexOf("A Detailed Record"),
+  )
+  assert.match(results.innerHTML, /<details class="golarion-history-related">/)
+  assert.match(results.innerHTML, />3 related records<\/summary>/)
+  assert.match(results.innerHTML, /Campaign current date/)
+  assert.match(results.innerHTML, /Meanwhile in Golarion/)
+  assert.match(results.innerHTML, /A Canonical Event That Day/)
+  assert.match(results.innerHTML, /A Canonical Event That Year/)
+  assert.doesNotMatch(results.innerHTML, /A Future Campaign Record/)
+  assert.match(count.textContent, /1 future record hidden/)
+  assert.match(results.innerHTML, /Age of Lost Omens/)
+  assert.match(results.innerHTML, /Age of Darkness/)
+  assert.match(jump.innerHTML, /Jump to era/)
+  assert.match(jump.innerHTML, /history-year-4725/)
+
+  densityChange({ target: { value: "compact" } })
+  assert.match(results.innerHTML, /is-compact/)
+  assert.doesNotMatch(results.innerHTML, /Meanwhile in Golarion/)
+  assert.doesNotMatch(results.innerHTML, />View source<\/a>/)
 })

@@ -39,7 +39,7 @@ async function walk(dir) {
 }
 
 function isLeapYear(year) {
-  return year % 8 === 0
+  return year % 4 === 0
 }
 
 function monthLength(year, month) {
@@ -54,16 +54,23 @@ function parseFlexibleDate(value) {
   match = /^(\-?\d+)-([A-Za-z]+)$/.exec(text)
   if (match) {
     const year = Number(match[1])
-    const month = MONTHS.indexOf(match[2])
+    const month = MONTHS.findIndex((item) => item.toLowerCase() === match[2].toLowerCase())
     if (!Number.isInteger(year) || month < 0) return null
     return { year, month, monthName: MONTHS[month], datePrecision: "month" }
   }
 
-  match = /^(\-?\d+)-([A-Za-z]+)-(\d{1,2})$/.exec(text)
-  if (!match) return null
-  const year = Number(match[1])
-  const month = MONTHS.indexOf(match[2])
-  const day = Number(match[3])
+  const named = /^(\-?\d+)-([A-Za-z]+)-(\d{1,2})$/.exec(text)
+  const numeric = /^(\-?\d+)-(\d{1,2})-(\d{1,2})$/.exec(text)
+  const natural = /^([A-Za-z]+)\s+(\d{1,2}),?\s+(\-?\d+)(?:\s+AR)?$/i.exec(text)
+  if (!named && !numeric && !natural) return null
+  match = named ?? numeric ?? natural
+  const year = Number(natural ? match[3] : match[1])
+  const month = named
+    ? MONTHS.findIndex((item) => item.toLowerCase() === named[2].toLowerCase())
+    : numeric
+      ? Number(numeric[2]) - 1
+      : MONTHS.findIndex((item) => item.toLowerCase() === natural[1].toLowerCase())
+  const day = Number(natural ? match[2] : match[3])
   if (
     !Number.isInteger(year) ||
     month < 0 ||
@@ -120,7 +127,9 @@ function eventKey(event) {
     datePrecision: event.datePrecision || "day",
   }
   const end = event.rangeEnd || null
-  return [event.campaign || "", normalizedName(event.name), pointKey(start), pointKey(end)].join("|")
+  return [event.campaign || "", normalizedName(event.name), pointKey(start), pointKey(end)].join(
+    "|",
+  )
 }
 
 function formatPoint(point) {
@@ -139,11 +148,7 @@ function formatRange(start, end) {
     start.month === end.month
   )
     return `${MONTHS[start.month]} ${start.day}–${end.day}, ${start.year} AR`
-  if (
-    start.datePrecision === "month" &&
-    end.datePrecision === "month" &&
-    start.year === end.year
-  )
+  if (start.datePrecision === "month" && end.datePrecision === "month" && start.year === end.year)
     return `${MONTHS[start.month]}–${MONTHS[end.month]} ${start.year} AR`
   return `${formatPoint(start)}–${formatPoint(end)}`
 }
@@ -169,10 +174,13 @@ function defaultCampaignSource(metadataFile, campaign) {
 function toTimelineEvent(fields, metadataFile, campaign, campaignSource) {
   const start = parseFlexibleDate(fields.start || fields.date)
   const end = fields.end ? parseFlexibleDate(fields.end) : null
-  if (!start) return { error: `unrecognized start/date: ${fields.start || fields.date || "(missing)"}` }
+  if (!start)
+    return { error: `unrecognized start/date: ${fields.start || fields.date || "(missing)"}` }
   if (fields.end && !end) return { error: `unrecognized end: ${fields.end}` }
 
-  const title = stripWikiLinks(fields.calendar_event_name || fields.title || "Untitled campaign event")
+  const title = stripWikiLinks(
+    fields.calendar_event_name || fields.title || "Untitled campaign event",
+  )
   const dateLabel = stripWikiLinks(fields.date_label) || formatRange(start, end)
   const source =
     linkedSource(metadataFile, fields.links) ||
@@ -188,6 +196,7 @@ function toTimelineEvent(fields, metadataFile, campaign, campaignSource) {
     campaign,
     kind: "campaign-event",
     source,
+    visibility: "campaign-only",
     dateLabel,
     timelineMetadata: true,
     recordType: "milestone",
@@ -211,6 +220,7 @@ function upgradeToMilestone(existingEvents, milestone) {
   for (const event of existingEvents) {
     event.timelineMetadata = true
     event.recordType = "milestone"
+    event.visibility = "campaign-only"
     event.dateLabel = milestone.dateLabel
     if (milestone.description) event.description = milestone.description
     if (milestone.label) event.label = milestone.label
@@ -230,7 +240,9 @@ function upgradeToMilestone(existingEvents, milestone) {
 const timelineFiles = await walk(CAMPAIGNS_ROOT)
 const payload = JSON.parse(await fs.readFile(STATIC_OUTPUT, "utf8"))
 const campaignSources = new Map(
-  (payload.campaigns ?? []).map((campaign) => [campaign.id, campaign.source]).filter(([, source]) => source),
+  (payload.campaigns ?? [])
+    .map((campaign) => [campaign.id, campaign.source])
+    .filter(([, source]) => source),
 )
 const existingByKey = new Map()
 for (const event of payload.events ?? []) {
