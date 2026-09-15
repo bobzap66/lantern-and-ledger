@@ -502,6 +502,21 @@ test("all Golarion calendar paths use the four-year leap rule", async () => {
   assert.match(generator, /leapRule: \{ interval: 4, month: 1 \}/)
 })
 
+test("History explorer controls wrap inside their bordered panel", async () => {
+  const styles = await readFile(
+    new URL("../quartz/static/golarion-history-explorer.css", import.meta.url),
+    "utf8",
+  )
+  const controls = styles.match(/\.golarion-history-controls \{(?<rules>[\s\S]*?)\n\}/)?.groups
+    ?.rules
+
+  assert.ok(controls)
+  assert.match(controls, /display: flex/)
+  assert.match(controls, /flex-wrap: wrap/)
+  assert.match(controls, /box-sizing: border-box/)
+  assert.match(controls, /max-width: 100%/)
+})
+
 test("History explorer displays a mixed-precision campaign range", async () => {
   const results = { innerHTML: "" }
   const count = { textContent: "" }

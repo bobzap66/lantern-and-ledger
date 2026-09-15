@@ -3,10 +3,12 @@
 }
 
 .golarion-history-controls {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 0.75rem;
   align-items: end;
+  box-sizing: border-box;
+  max-width: 100%;
   padding: 1rem;
   border: 1px solid var(--lightgray);
   border-radius: 0.75rem;
@@ -14,13 +16,15 @@
 }
 
 .golarion-history-search {
-  grid-column: span 2;
+  flex: 2 1 18rem;
 }
 
 .golarion-history-controls label {
   display: flex;
+  flex: 1 1 9rem;
   flex-direction: column;
   gap: 0.3rem;
+  min-width: 0;
   font-size: 0.8rem;
   font-weight: 600;
 }
@@ -38,10 +42,14 @@
 
 .golarion-history-controls input,
 .golarion-history-controls select {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
   padding: 0.4rem 0.55rem;
 }
 
 .golarion-history-controls button {
+  flex: 0 1 auto;
   padding: 0.45rem 0.8rem;
   cursor: pointer;
 }
@@ -55,6 +63,7 @@
 }
 
 .golarion-history-controls .golarion-history-future input {
+  width: auto;
   min-height: auto;
 }
 
@@ -372,23 +381,10 @@
   color: var(--gray);
 }
 
-@media (max-width: 1100px) {
-  .golarion-history-controls {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .golarion-history-search {
-    grid-column: 1 / -1;
-  }
-}
-
 @media (max-width: 700px) {
-  .golarion-history-controls {
-    grid-template-columns: 1fr;
-  }
-
-  .golarion-history-search {
-    grid-column: auto;
+  .golarion-history-controls label,
+  .golarion-history-controls button {
+    flex-basis: 100%;
   }
 
   .golarion-history-event {
