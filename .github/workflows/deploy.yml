@@ -74,6 +74,9 @@ jobs:
       - name: Generate Golarion calendar data
         run: node scripts/generate-golarion-calendar.mjs
 
+      - name: Merge campaign timeline metadata
+        run: node scripts/merge-timeline-metadata.mjs
+
       - name: Diagnose Golarion calendar data
         run: node scripts/diagnose-golarion-calendar.mjs | tee golarion-calendar-diagnostic.txt
 
