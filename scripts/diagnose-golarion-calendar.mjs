@@ -72,13 +72,18 @@ function monthLength(year, month) {
 }
 
 function parseDate(value) {
-  const match = /^(\-?\d+)-([A-Za-z]+)-(\d{1,2})$/.exec(String(value ?? ""))
-  if (!match) return null
+  const text = String(value ?? "").trim()
+  const named = /^(\-?\d+)-([A-Za-z]+)-(\d{1,2})$/.exec(text)
+  const numeric = /^(\-?\d+)-(\d{1,2})-(\d{1,2})$/.exec(text)
+  if (!named && !numeric) return null
+
+  const match = named ?? numeric
   const year = Number(match[1])
-  const month = MONTHS.indexOf(match[2])
+  const month = named ? MONTHS.indexOf(named[2]) : Number(numeric[2]) - 1
   const day = Number(match[3])
   if (
     month < 0 ||
+    month >= MONTHS.length ||
     !Number.isInteger(year) ||
     !Number.isInteger(day) ||
     day < 1 ||
@@ -96,6 +101,7 @@ const files = await walk(CONTENT_ROOT)
 const campaignDirectories = new Set()
 const datedFrontmatterFiles = new Map()
 const inlineCalendarFiles = new Map()
+const timelineMetadataBlocks = new Map()
 const parseFailures = []
 const dateParseFailures = []
 const inlineDateParseFailures = []
@@ -106,6 +112,9 @@ for (const file of files) {
   campaignDirectories.add(campaign)
 
   const text = await fs.readFile(file, "utf8")
+  const timelineBlocks = [...text.matchAll(/<!--\s*timeline-event\s*[\s\S]*?-->/gi)].length
+  if (timelineBlocks) increment(timelineMetadataBlocks, campaign, timelineBlocks)
+
   const spanRe = /<span\b[^>]*data-calendar\s*=\s*(["'])Calendar of Golarion\1[^>]*><\/span>/gi
   let spanMatch
   let hasValidInlineCalendar = false
@@ -168,12 +177,14 @@ for (const file of files) {
 const payload = JSON.parse(await fs.readFile(GENERATED_DATA, "utf8"))
 const generatedCampaignRows = new Map()
 const generatedAllCampaignRows = new Map()
+const generatedTimelineMetadataRows = new Map()
 const generatedKinds = new Map()
 
 for (const event of payload.events ?? []) {
   if (!event.campaign) continue
   increment(generatedAllCampaignRows, event.campaign)
   if (event.kind === "campaign-event") increment(generatedCampaignRows, event.campaign)
+  if (event.timelineMetadata === true) increment(generatedTimelineMetadataRows, event.campaign)
   const kindKey = `${event.campaign}\u0000${event.kind ?? "unknown"}`
   increment(generatedKinds, kindKey)
 }
@@ -195,8 +206,10 @@ for (const campaign of [...campaignNames].sort((a, b) => a.localeCompare(b))) {
     .join(", ")
   console.log(
     `- ${campaign}: generated campaign-event rows=${generatedCampaignRows.get(campaign) ?? 0}; ` +
+      `merged timeline milestone rows=${generatedTimelineMetadataRows.get(campaign) ?? 0}; ` +
       `all generated rows with campaign=${generatedAllCampaignRows.get(campaign) ?? 0}; ` +
       `dated frontmatter files=${datedFrontmatterFiles.get(campaign) ?? 0}; ` +
+      `timeline metadata blocks=${timelineMetadataBlocks.get(campaign) ?? 0}; ` +
       `valid inline calendar files=${inlineCalendarFiles.get(campaign) ?? 0}; ` +
       `registered campaign=${registeredCampaignIds.has(campaign) ? "yes" : "no"}` +
       (kindCounts ? `; kinds: ${kindCounts}` : ""),
