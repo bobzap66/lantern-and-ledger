@@ -160,6 +160,12 @@ article .campaign-directory__card--archived {
 }
 
 @media (max-width: 800px) {
+  /* The Explorer drawer is absolutely positioned inside the left sidebar. Keep
+   * that entire stacking context above the campaign cards' full-card links. */
+  .page > #quartz-body .sidebar.left:has(.explorer) {
+    z-index: 1000;
+  }
+
   .campaign-directory__grid,
   .campaign-directory__grid--archived {
     grid-template-columns: 1fr;
