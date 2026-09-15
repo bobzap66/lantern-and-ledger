@@ -1,0 +1,220 @@
+;(() => {
+  const scriptBase = (() => {
+    const script = [...document.scripts].find((item) =>
+      /\/static\/golarion-history-explorer\.js(?:\?|$)/.test(item.src),
+    )
+    if (!script?.src) return ""
+    try {
+      return new URL(script.src, location.href).pathname
+        .replace(/\/static\/golarion-history-explorer\.js$/, "")
+        .replace(/\/$/, "")
+    } catch (_) {
+      return ""
+    }
+  })()
+
+  const siteBase = () =>
+    (document.body?.dataset?.basepath || scriptBase || "").replace(/\/$/, "")
+
+  const escapeHtml = (value) =>
+    String(value ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;")
+
+  const normalizeCampaignKey = (value) =>
+    String(value || "")
+      .trim()
+      .toLowerCase()
+      .replace(/&/g, " and ")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+
+  const campaignAccessEnabled = (campaign) => {
+    const key = normalizeCampaignKey(campaign)
+    if (!key || typeof localStorage === "undefined") return false
+    try {
+      return localStorage.getItem(`isr-campaign-spoilers:${key}`) === "true"
+    } catch (_) {
+      return false
+    }
+  }
+
+  const eventVisibleToViewer = (event) =>
+    event.visibility !== "campaign-only" || campaignAccessEnabled(event.campaign)
+
+  const sourceHref = (source) => {
+    if (!source) return null
+    if (/^https?:\/\//i.test(source)) return source
+    const slug = String(source).replace(/^\/+|\/+$/g, "")
+    return `${siteBase()}/${slug}`.replace(/\/+/g, "/")
+  }
+
+  const formatDate = (event, months) => {
+    if (event.datePrecision === "year" || !Number.isInteger(event.month)) return `${event.year} AR`
+    if (event.datePrecision === "month" || !Number.isInteger(event.day))
+      return `${months[event.month]} ${event.year} AR`
+    return `${months[event.month]} ${event.day}, ${event.year} AR`
+  }
+
+  const writeParams = (state) => {
+    const params = new URLSearchParams()
+    if (state.query) params.set("q", state.query)
+    if (state.kind !== "all") params.set("kind", state.kind)
+    if (state.campaign !== "all") params.set("campaign", state.campaign)
+    if (state.from !== "") params.set("from", state.from)
+    if (state.to !== "") params.set("to", state.to)
+    const next = `${location.pathname}${params.toString() ? `?${params}` : ""}${location.hash}`
+    history.replaceState(null, "", next)
+  }
+
+  const install = async () => {
+    const root = document.querySelector("#golarion-history-explorer")
+    if (!root || root.dataset.historyExplorerInitialized === "true") return
+    root.dataset.historyExplorerInitialized = "true"
+
+    try {
+      const response = await fetch(`${siteBase()}/static/golarion-events.json`, { cache: "no-cache" })
+      if (!response.ok) throw new Error(`HTTP ${response.status}`)
+      const data = await response.json()
+      const params = new URLSearchParams(location.search)
+      const state = {
+        query: params.get("q") || "",
+        kind: params.get("kind") || "all",
+        campaign: params.get("campaign") || "all",
+        from: params.get("from") || "",
+        to: params.get("to") || "",
+      }
+
+      const campaigns = [...new Set((data.events ?? []).map((event) => event.campaign).filter(Boolean))]
+        .sort((a, b) => a.localeCompare(b))
+
+      const render = () => {
+        const query = state.query.trim().toLocaleLowerCase()
+        const from = state.from === "" ? null : Number(state.from)
+        const to = state.to === "" ? null : Number(state.to)
+
+        const filtered = (data.events ?? [])
+          .filter(eventVisibleToViewer)
+          .filter((event) => {
+            if (state.kind === "historical" && event.kind !== "historical") return false
+            if (state.kind === "campaign" && event.kind !== "campaign-event") return false
+            if (state.campaign !== "all" && event.campaign !== state.campaign) return false
+            if (Number.isFinite(from) && event.year < from) return false
+            if (Number.isFinite(to) && event.year > to) return false
+            if (!query) return true
+            return [event.name, event.description, event.category, event.campaign]
+              .filter(Boolean)
+              .some((value) => String(value).toLocaleLowerCase().includes(query))
+          })
+          .sort(
+            (a, b) =>
+              b.year - a.year ||
+              (b.month ?? -1) - (a.month ?? -1) ||
+              (b.day ?? -1) - (a.day ?? -1) ||
+              a.name.localeCompare(b.name),
+          )
+
+        const grouped = new Map()
+        for (const event of filtered) {
+          if (!grouped.has(event.year)) grouped.set(event.year, [])
+          grouped.get(event.year).push(event)
+        }
+
+        const campaignOptions = campaigns
+          .map((campaign) => `<option value="${escapeHtml(campaign)}"${state.campaign === campaign ? " selected" : ""}>${escapeHtml(campaign)}</option>`)
+          .join("")
+
+        const yearsMarkup = [...grouped.entries()]
+          .map(([year, events]) => {
+            const eventMarkup = events
+              .map((event) => {
+                const source = sourceHref(event.source)
+                const sourceLabel = event.campaign || (event.kind === "historical" ? "Golarion History" : "Source")
+                const external = source && /^https?:\/\//i.test(source)
+                return `<article class="golarion-history-event ${event.kind === "historical" ? "is-history" : "is-campaign"}">
+                  <div class="golarion-history-event-date">${escapeHtml(formatDate(event, data.months))}</div>
+                  <div class="golarion-history-event-body">
+                    <div class="golarion-history-event-meta"><span>${escapeHtml(sourceLabel)}</span>${event.category ? `<span>${escapeHtml(event.category)}</span>` : ""}</div>
+                    <h3>${escapeHtml(event.name)}</h3>
+                    ${event.description ? `<p>${escapeHtml(event.description)}</p>` : ""}
+                    ${source ? `<p class="golarion-history-source"><a href="${escapeHtml(source)}"${external ? ' target="_blank" rel="noopener noreferrer"' : ""}>View source</a></p>` : ""}
+                  </div>
+                </article>`
+              })
+              .join("")
+            return `<section class="golarion-history-year"><h2>${year} AR</h2>${eventMarkup}</section>`
+          })
+          .join("")
+
+        root.innerHTML = `
+          <section class="golarion-history-shell" aria-label="Golarion history explorer">
+            <div class="golarion-history-controls">
+              <label class="golarion-history-search">Search <input type="search" data-history-query value="${escapeHtml(state.query)}" placeholder="Search people, places, events…"></label>
+              <label>Record <select data-history-kind>
+                <option value="all"${state.kind === "all" ? " selected" : ""}>All history</option>
+                <option value="historical"${state.kind === "historical" ? " selected" : ""}>Golarion history</option>
+                <option value="campaign"${state.kind === "campaign" ? " selected" : ""}>Campaign history</option>
+              </select></label>
+              <label>Campaign <select data-history-campaign><option value="all">All campaigns</option>${campaignOptions}</select></label>
+              <label>From year <input type="number" data-history-from value="${escapeHtml(state.from)}" inputmode="numeric"></label>
+              <label>To year <input type="number" data-history-to value="${escapeHtml(state.to)}" inputmode="numeric"></label>
+              <button type="button" data-history-clear>Clear filters</button>
+            </div>
+            <p class="golarion-history-count">${filtered.length} ${filtered.length === 1 ? "record" : "records"}</p>
+            <div class="golarion-history-results">${yearsMarkup || '<p class="golarion-history-empty">No historical records match these filters.</p>'}</div>
+          </section>`
+
+        const rerender = () => {
+          writeParams(state)
+          render()
+        }
+        root.querySelector("[data-history-query]")?.addEventListener("input", (event) => {
+          state.query = event.target.value
+          writeParams(state)
+          render()
+          requestAnimationFrame(() => {
+            const input = root.querySelector("[data-history-query]")
+            input?.focus()
+            input?.setSelectionRange(state.query.length, state.query.length)
+          })
+        })
+        root.querySelector("[data-history-kind]")?.addEventListener("change", (event) => {
+          state.kind = event.target.value
+          rerender()
+        })
+        root.querySelector("[data-history-campaign]")?.addEventListener("change", (event) => {
+          state.campaign = event.target.value
+          rerender()
+        })
+        root.querySelector("[data-history-from]")?.addEventListener("change", (event) => {
+          state.from = event.target.value
+          rerender()
+        })
+        root.querySelector("[data-history-to]")?.addEventListener("change", (event) => {
+          state.to = event.target.value
+          rerender()
+        })
+        root.querySelector("[data-history-clear]")?.addEventListener("click", () => {
+          state.query = ""
+          state.kind = "all"
+          state.campaign = "all"
+          state.from = ""
+          state.to = ""
+          rerender()
+        })
+      }
+
+      render()
+    } catch (error) {
+      console.error("Failed to load Golarion history explorer", error)
+      root.innerHTML = '<p class="golarion-calendar-error">Golarion history could not be loaded.</p>'
+    }
+  }
+
+  document.addEventListener("nav", install)
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", install, { once: true })
+  else install()
+})()
