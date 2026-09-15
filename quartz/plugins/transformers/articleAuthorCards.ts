@@ -291,6 +291,10 @@ function publicationRank(value: unknown) {
   return Number.isFinite(iso) ? iso : 0
 }
 
+function publicationDate(frontmatter: Record<string, any> | undefined) {
+  return frontmatter?.publication_date ?? frontmatter?.publication_date_ar
+}
+
 function relativeSlugHref(fromRelativePath: string, toSlug: any) {
   const fromSlug = simplifySlug(slugifyFilePath(fromRelativePath as any))
   const normalizedFromSlug = String(fromSlug).replaceAll("\\", "/")
@@ -352,12 +356,12 @@ export const ArticleAuthorCards: QuartzTransformerPlugin = () => {
     }
 
     for (const list of articlesByAuthor.values()) {
-      list.sort((a, b) => publicationRank(a.frontmatter?.publication_date) - publicationRank(b.frontmatter?.publication_date)
+      list.sort((a, b) => publicationRank(publicationDate(b.frontmatter)) - publicationRank(publicationDate(a.frontmatter))
         || String(a.frontmatter?.title ?? "").localeCompare(String(b.frontmatter?.title ?? "")))
     }
 
     for (const list of contributionsByAuthor.values()) {
-      list.sort((a, b) => publicationRank(a.frontmatter?.publication_date ?? a.frontmatter?.date) - publicationRank(b.frontmatter?.publication_date ?? b.frontmatter?.date)
+      list.sort((a, b) => publicationRank(publicationDate(b.frontmatter)) - publicationRank(publicationDate(a.frontmatter))
         || String(a.frontmatter?.title ?? "").localeCompare(String(b.frontmatter?.title ?? "")))
     }
   }
@@ -388,7 +392,7 @@ export const ArticleAuthorCards: QuartzTransformerPlugin = () => {
           if (articles.length > 0) {
             const items = articles.map((article) => {
               const title = String(article.frontmatter?.title ?? path.basename(article.relativePath, ".md"))
-              const date = String(article.frontmatter?.publication_date ?? "").trim()
+              const date = String(publicationDate(article.frontmatter) ?? "").trim()
               const href = relativeSlugHref(relativeSource, article.slug)
               return `<li><a href="${escapeHtml(href)}">${escapeHtml(title)}</a>${date ? ` <span class="isr-author-article-date">— ${escapeHtml(date)}</span>` : ""}</li>`
             }).join("\n")
@@ -403,7 +407,7 @@ export const ArticleAuthorCards: QuartzTransformerPlugin = () => {
           if (contributions.length > 0) {
             const items = contributions.map((note) => {
               const title = String(note.frontmatter?.title ?? path.basename(note.relativePath, ".md"))
-              const date = String(note.frontmatter?.publication_date ?? note.frontmatter?.date ?? "").trim()
+              const date = String(publicationDate(note.frontmatter) ?? "").trim()
               const href = relativeSlugHref(relativeSource, note.slug)
               return `<li><a href="${escapeHtml(href)}">${escapeHtml(title)}</a>${date ? ` <span class="isr-author-article-date">— ${escapeHtml(date)}</span>` : ""}</li>`
             }).join("\n")
