@@ -54,6 +54,11 @@
   cursor: pointer;
 }
 
+.golarion-history-controls .golarion-history-future {
+  flex: 0 1 16rem;
+  min-width: 12rem;
+}
+
 .golarion-history-controls .golarion-history-future > span:last-child {
   display: flex;
   min-height: 2.35rem;
@@ -62,9 +67,15 @@
   white-space: nowrap;
 }
 
-.golarion-history-controls .golarion-history-future input {
+.golarion-history-controls .golarion-history-future input[type="checkbox"] {
+  position: static;
+  flex: 0 0 auto;
   width: auto;
+  min-width: auto;
   min-height: auto;
+  margin: 0;
+  padding: 0;
+  transform: none;
 }
 
 .golarion-history-count {
@@ -385,6 +396,10 @@
   .golarion-history-controls label,
   .golarion-history-controls button {
     flex-basis: 100%;
+  }
+
+  .golarion-history-controls .golarion-history-future {
+    min-width: 0;
   }
 
   .golarion-history-event {
