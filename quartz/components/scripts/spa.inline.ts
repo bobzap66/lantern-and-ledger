@@ -204,9 +204,28 @@ function createRouter() {
   })()
 }
 
+function normalizeGoatcounterPath(pathname: string) {
+  let path = pathname || "/"
+  if (path.length > 1 && path.endsWith("/")) path = path.slice(0, -1)
+
+  const basePath = (document.body.dataset.basepath ?? "").replace(/\/$/, "")
+  if (basePath && (path === basePath || path.startsWith(`${basePath}/`))) {
+    path = path.slice(basePath.length) || "/"
+  }
+
+  return path
+}
+
 function getGoatcounterPath() {
-  const path = location.pathname
-  return path.length > 1 && path.endsWith("/") ? path.slice(0, -1) : path
+  return normalizeGoatcounterPath(location.pathname)
+}
+
+function getGoatcounterLookupPaths() {
+  const canonicalPath = getGoatcounterPath()
+  let rawPath = location.pathname || "/"
+  if (rawPath.length > 1 && rawPath.endsWith("/")) rawPath = rawPath.slice(0, -1)
+
+  return [...new Set([canonicalPath, rawPath])]
 }
 
 async function updateArchiveConsultations() {
@@ -214,8 +233,7 @@ async function updateArchiveConsultations() {
 
   const path = getGoatcounterPath()
   const meta = document.querySelector(".content-meta")
-  const basePath = (document.body.dataset.basepath ?? "").replace(/\/$/, "")
-  const isHomepage = path === (basePath || "/")
+  const isHomepage = path === "/"
   const homepageHeading = isHomepage ? document.querySelector(".center h1") : null
   if (!meta && !homepageHeading) return
 
@@ -225,15 +243,24 @@ async function updateArchiveConsultations() {
       document.querySelector<HTMLScriptElement>("script[data-goatcounter]")?.dataset.goatcounter
     if (!endpoint) return
 
-    const counterUrl = `${new URL(endpoint).origin}/counter/${encodeURIComponent(path)}.json`
-    const response = await fetch(counterUrl)
-    if (!response.ok) return
+    const counterOrigin = new URL(endpoint).origin
+    let numericCount = 0
 
-    const data = (await response.json()) as { count?: string }
-    if (!data.count) return
+    for (const lookupPath of getGoatcounterLookupPaths()) {
+      const counterUrl = `${counterOrigin}/counter/${encodeURIComponent(lookupPath)}.json`
+      const response = await fetch(counterUrl)
+      if (!response.ok) continue
 
-    const numericCount = Number(data.count.replace(/[^0-9]/g, ""))
-    if (!Number.isFinite(numericCount) || numericCount < 5) return
+      const data = (await response.json()) as { count?: string }
+      if (!data.count) continue
+
+      const candidateCount = Number(data.count.replace(/[^0-9]/g, ""))
+      if (Number.isFinite(candidateCount)) {
+        numericCount = Math.max(numericCount, candidateCount)
+      }
+    }
+
+    if (numericCount < 5) return
     if (getGoatcounterPath() !== path) return
 
     const consultations = document.createElement("span")
