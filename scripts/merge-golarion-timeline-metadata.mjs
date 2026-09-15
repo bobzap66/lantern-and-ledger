@@ -166,7 +166,7 @@ function defaultCampaignSource(metadataFile, campaign) {
   return sourceSlug(path.join(campaignDir, `${campaign}.md`))
 }
 
-function toTimelineEvent(fields, metadataFile, campaign) {
+function toTimelineEvent(fields, metadataFile, campaign, campaignSource) {
   const start = parseFlexibleDate(fields.start || fields.date)
   const end = fields.end ? parseFlexibleDate(fields.end) : null
   if (!start) return { error: `unrecognized start/date: ${fields.start || fields.date || "(missing)"}` }
@@ -174,7 +174,10 @@ function toTimelineEvent(fields, metadataFile, campaign) {
 
   const title = stripWikiLinks(fields.calendar_event_name || fields.title || "Untitled campaign event")
   const dateLabel = stripWikiLinks(fields.date_label) || formatRange(start, end)
-  const source = linkedSource(metadataFile, fields.links) || defaultCampaignSource(metadataFile, campaign)
+  const source =
+    linkedSource(metadataFile, fields.links) ||
+    campaignSource ||
+    defaultCampaignSource(metadataFile, campaign)
 
   const event = {
     year: start.year,
@@ -187,6 +190,7 @@ function toTimelineEvent(fields, metadataFile, campaign) {
     source,
     dateLabel,
     timelineMetadata: true,
+    recordType: "milestone",
     ...(fields.importance ? { importance: fields.importance.trim() } : {}),
     ...(fields.label ? { label: stripWikiLinks(fields.label) } : {}),
   }
@@ -205,6 +209,9 @@ function toTimelineEvent(fields, metadataFile, campaign) {
 
 const timelineFiles = await walk(CAMPAIGNS_ROOT)
 const payload = JSON.parse(await fs.readFile(STATIC_OUTPUT, "utf8"))
+const campaignSources = new Map(
+  (payload.campaigns ?? []).map((campaign) => [campaign.id, campaign.source]).filter(([, source]) => source),
+)
 const seen = new Set((payload.events ?? []).filter((event) => event.kind === "campaign-event").map(eventKey))
 const counts = new Map()
 const warnings = []
@@ -221,7 +228,7 @@ for (const file of timelineFiles) {
   while ((match = blockRe.exec(text)) !== null) {
     blockNumber += 1
     const fields = parseBlock(match[1])
-    const parsed = toTimelineEvent(fields, file, campaign)
+    const parsed = toTimelineEvent(fields, file, campaign, campaignSources.get(campaign))
     if (parsed.error) {
       warnings.push(`${rel} block ${blockNumber}: ${parsed.error}`)
       continue
