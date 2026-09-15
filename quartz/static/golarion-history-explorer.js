@@ -61,6 +61,7 @@
   const formatPointDate = (date, months) => `${months[date.month]} ${date.day}, ${date.year} AR`
 
   const formatDate = (event, months) => {
+    if (event.dateLabel) return event.dateLabel
     if (event.isMultiDay && event.rangeStart && event.rangeEnd) {
       const start = event.rangeStart
       const end = event.rangeEnd
@@ -75,6 +76,11 @@
       return `${months[event.month]} ${event.year} AR`
     return `${months[event.month]} ${event.day}, ${event.year} AR`
   }
+
+  const eventYearBounds = (event) => ({
+    startYear: event.rangeStart?.year ?? event.year,
+    endYear: event.rangeEnd?.year ?? event.year,
+  })
 
   const prepareRecords = (events) => {
     const records = []
@@ -207,10 +213,11 @@
             if (state.kind === "historical" && event.kind !== "historical") return false
             if (state.kind === "campaign" && event.kind !== "campaign-event") return false
             if (state.campaign !== "all" && event.campaign !== state.campaign) return false
-            if (Number.isFinite(from) && event.year < from) return false
-            if (Number.isFinite(to) && event.year > to) return false
+            const { startYear, endYear } = eventYearBounds(event)
+            if (Number.isFinite(from) && endYear < from) return false
+            if (Number.isFinite(to) && startYear > to) return false
             if (!query) return true
-            return [event.name, event.description, event.category, event.campaign]
+            return [event.name, event.description, event.category, event.campaign, event.label]
               .filter(Boolean)
               .some((value) => String(value).toLocaleLowerCase().includes(query))
           })
