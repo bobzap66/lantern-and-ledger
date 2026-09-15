@@ -396,9 +396,12 @@
         }
 
         const renderEvent = (event) => {
+          const campaignClass = event.campaign
+            ? ` history-campaign--${normalizeCampaignKey(event.campaign)}`
+            : ""
           if (event.kind === "campaign-now") {
             const source = sourceHref(event.source)
-            return `<aside class="golarion-history-now">
+            return `<aside class="golarion-history-now${campaignClass}">
               <span>Campaign current date</span>
               <strong>${source ? `<a href="${escapeHtml(source)}">${escapeHtml(event.name)}</a>` : escapeHtml(event.name)}</strong>
               <time>${escapeHtml(formatDate(event, data.months))}</time>
@@ -411,7 +414,7 @@
           const milestone = isMilestone(event)
           const milestoneBadge = milestone ? "<span>Milestone</span>" : ""
           const expanded = state.density === "expanded"
-          return `<article class="golarion-history-event ${event.kind === "historical" ? "is-history" : "is-campaign"}${milestone ? " is-milestone" : ""}${expanded ? "" : " is-compact"}">
+          return `<article class="golarion-history-event ${event.kind === "historical" ? "is-history" : "is-campaign"}${campaignClass}${milestone ? " is-milestone" : ""}${expanded ? "" : " is-compact"}">
             <div class="golarion-history-event-date">${escapeHtml(formatDate(event, data.months))}</div>
             <div class="golarion-history-event-body">
               <div class="golarion-history-event-meta"><span>${escapeHtml(sourceLabel)}</span>${milestoneBadge}${event.category ? `<span>${escapeHtml(event.category)}</span>` : ""}</div>

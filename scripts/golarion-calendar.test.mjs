@@ -670,6 +670,7 @@ test("History explorer displays a mixed-precision campaign range", async () => {
 
   assert.match(results.innerHTML, /4719 AR–Rova 16, 4725 AR/)
   assert.match(results.innerHTML, /Six Years Beneath Yua&#039;s Hope/)
+  assert.match(results.innerHTML, /history-campaign--claws-of-the-tyrant/)
   assert.ok(
     results.innerHTML.indexOf("The Corlach Milestone") <
       results.innerHTML.indexOf("A Detailed Record"),
