@@ -228,14 +228,20 @@ function getGoatcounterLookupPaths() {
   return [...new Set([canonicalPath, rawPath])]
 }
 
+function getConsultationAnchor() {
+  return (
+    document.querySelector<HTMLElement>(".center .article-title") ??
+    document.querySelector<HTMLElement>(".center > .page-header") ??
+    document.querySelector<HTMLElement>(".center h1")
+  )
+}
+
 async function updateArchiveConsultations() {
   document.querySelector(".archive-consultations")?.remove()
 
   const path = getGoatcounterPath()
-  const meta = document.querySelector(".content-meta")
-  const isHomepage = path === "/"
-  const homepageHeading = isHomepage ? document.querySelector(".center h1") : null
-  if (!meta && !homepageHeading) return
+  const anchor = getConsultationAnchor()
+  if (!anchor) return
 
   try {
     const endpoint =
@@ -263,19 +269,17 @@ async function updateArchiveConsultations() {
     if (numericCount < 5) return
     if (getGoatcounterPath() !== path) return
 
-    const consultations = document.createElement("span")
+    const consultations = document.createElement("div")
     consultations.className = "archive-consultations"
     consultations.textContent = `${numericCount.toLocaleString("en-US")} archive consultations`
+    consultations.style.margin = "0.35rem 0 1rem"
+    consultations.style.color = "var(--gray)"
+    consultations.style.fontSize = "0.82rem"
+    consultations.style.letterSpacing = "0.045em"
+    consultations.style.textTransform = "uppercase"
     consultations.style.whiteSpace = "nowrap"
 
-    if (meta) {
-      consultations.style.marginInlineStart = "0.75rem"
-      meta.appendChild(consultations)
-    } else if (homepageHeading) {
-      consultations.style.display = "block"
-      consultations.style.marginBlock = "-0.5rem 1rem"
-      homepageHeading.insertAdjacentElement("afterend", consultations)
-    }
+    anchor.insertAdjacentElement("afterend", consultations)
   } catch {
     // Analytics should never interfere with page rendering.
   }
