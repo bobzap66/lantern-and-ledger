@@ -32,6 +32,12 @@
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-+|-+$/g, "")
 
+  const normalizedName = (value) =>
+    String(value || "")
+      .trim()
+      .toLocaleLowerCase()
+      .replace(/\s+/g, " ")
+
   const campaignAccessEnabled = (campaign) => {
     const key = normalizeCampaignKey(campaign)
     if (!key || typeof localStorage === "undefined") return false
@@ -52,11 +58,65 @@
     return `${siteBase()}/${slug}`.replace(/\/+/g, "/")
   }
 
+  const formatPointDate = (date, months) => `${months[date.month]} ${date.day}, ${date.year} AR`
+
   const formatDate = (event, months) => {
+    if (event.isMultiDay && event.rangeStart && event.rangeEnd) {
+      const start = event.rangeStart
+      const end = event.rangeEnd
+      if (start.year === end.year && start.month === end.month)
+        return `${months[start.month]} ${start.day}–${end.day}, ${start.year} AR`
+      if (start.year === end.year)
+        return `${months[start.month]} ${start.day}–${months[end.month]} ${end.day}, ${start.year} AR`
+      return `${formatPointDate(start, months)}–${formatPointDate(end, months)}`
+    }
     if (event.datePrecision === "year" || !Number.isInteger(event.month)) return `${event.year} AR`
     if (event.datePrecision === "month" || !Number.isInteger(event.day))
       return `${months[event.month]} ${event.year} AR`
     return `${months[event.month]} ${event.day}, ${event.year} AR`
+  }
+
+  const prepareRecords = (events) => {
+    const records = []
+    const seen = new Set()
+
+    for (const original of events ?? []) {
+      let event = original
+      let identity
+
+      if (event.isMultiDay && event.rangeStart && event.rangeEnd) {
+        const start = event.rangeStart
+        const end = event.rangeEnd
+        identity = [
+          event.kind,
+          event.campaign || "",
+          normalizedName(event.name),
+          start.year,
+          start.month,
+          start.day,
+          end.year,
+          end.month,
+          end.day,
+        ].join("|")
+        event = { ...event, year: start.year, month: start.month, day: start.day }
+      } else {
+        identity = [
+          event.kind,
+          event.campaign || "",
+          event.datePrecision || "day",
+          event.year,
+          event.month ?? "",
+          event.day ?? "",
+          normalizedName(event.name),
+        ].join("|")
+      }
+
+      if (seen.has(identity)) continue
+      seen.add(identity)
+      records.push(event)
+    }
+
+    return records
   }
 
   const writeParams = (state) => {
@@ -79,6 +139,7 @@
       const response = await fetch(`${siteBase()}/static/golarion-events.json`, { cache: "no-cache" })
       if (!response.ok) throw new Error(`HTTP ${response.status}`)
       const data = await response.json()
+      const records = prepareRecords(data.events)
       const params = new URLSearchParams(location.search)
       const state = {
         query: params.get("q") || "",
@@ -88,15 +149,25 @@
         to: params.get("to") || "",
       }
 
-      const campaigns = [...new Set((data.events ?? []).map((event) => event.campaign).filter(Boolean))]
-        .sort((a, b) => a.localeCompare(b))
+      if (!["all", "historical", "campaign"].includes(state.kind)) state.kind = "all"
+
+      const campaigns = [
+        ...new Set(
+          records
+            .filter(eventVisibleToViewer)
+            .map((event) => event.campaign)
+            .filter(Boolean),
+        ),
+      ].sort((a, b) => a.localeCompare(b))
+
+      if (state.campaign !== "all" && !campaigns.includes(state.campaign)) state.campaign = "all"
 
       const render = () => {
         const query = state.query.trim().toLocaleLowerCase()
         const from = state.from === "" ? null : Number(state.from)
         const to = state.to === "" ? null : Number(state.to)
 
-        const filtered = (data.events ?? [])
+        const filtered = records
           .filter(eventVisibleToViewer)
           .filter((event) => {
             if (state.kind === "historical" && event.kind !== "historical") return false
@@ -124,7 +195,10 @@
         }
 
         const campaignOptions = campaigns
-          .map((campaign) => `<option value="${escapeHtml(campaign)}"${state.campaign === campaign ? " selected" : ""}>${escapeHtml(campaign)}</option>`)
+          .map(
+            (campaign) =>
+              `<option value="${escapeHtml(campaign)}"${state.campaign === campaign ? " selected" : ""}>${escapeHtml(campaign)}</option>`,
+          )
           .join("")
 
         const yearsMarkup = [...grouped.entries()]
@@ -132,7 +206,8 @@
             const eventMarkup = events
               .map((event) => {
                 const source = sourceHref(event.source)
-                const sourceLabel = event.campaign || (event.kind === "historical" ? "Golarion History" : "Source")
+                const sourceLabel =
+                  event.campaign || (event.kind === "historical" ? "Golarion History" : "Source")
                 const external = source && /^https?:\/\//i.test(source)
                 return `<article class="golarion-history-event ${event.kind === "historical" ? "is-history" : "is-campaign"}">
                   <div class="golarion-history-event-date">${escapeHtml(formatDate(event, data.months))}</div>
@@ -163,7 +238,7 @@
               <label>To year <input type="number" data-history-to value="${escapeHtml(state.to)}" inputmode="numeric"></label>
               <button type="button" data-history-clear>Clear filters</button>
             </div>
-            <p class="golarion-history-count">${filtered.length} ${filtered.length === 1 ? "record" : "records"}</p>
+            <p class="golarion-history-count" aria-live="polite">${filtered.length} ${filtered.length === 1 ? "record" : "records"}</p>
             <div class="golarion-history-results">${yearsMarkup || '<p class="golarion-history-empty">No historical records match these filters.</p>'}</div>
           </section>`
 
@@ -171,6 +246,7 @@
           writeParams(state)
           render()
         }
+
         root.querySelector("[data-history-query]")?.addEventListener("input", (event) => {
           state.query = event.target.value
           writeParams(state)
@@ -215,6 +291,7 @@
   }
 
   document.addEventListener("nav", install)
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", install, { once: true })
+  if (document.readyState === "loading")
+    document.addEventListener("DOMContentLoaded", install, { once: true })
   else install()
 })()
