@@ -58,22 +58,36 @@
     return `${siteBase()}/${slug}`.replace(/\/+/g, "/")
   }
 
-  const formatPointDate = (date, months) => `${months[date.month]} ${date.day}, ${date.year} AR`
+  const pointPrecision = (date) =>
+    date?.datePrecision ||
+    (Number.isInteger(date?.day) ? "day" : Number.isInteger(date?.month) ? "month" : "year")
+
+  const formatPointDate = (date, months) => {
+    const precision = pointPrecision(date)
+    if (precision === "year" || !Number.isInteger(date?.month)) return `${date.year} AR`
+    if (precision === "month" || !Number.isInteger(date?.day))
+      return `${months[date.month]} ${date.year} AR`
+    return `${months[date.month]} ${date.day}, ${date.year} AR`
+  }
 
   const formatDate = (event, months) => {
-    if (event.isMultiDay && event.rangeStart && event.rangeEnd) {
+    if ((event.isMultiDay || event.isRange) && event.rangeStart && event.rangeEnd) {
       const start = event.rangeStart
       const end = event.rangeEnd
-      if (start.year === end.year && start.month === end.month)
+      const startPrecision = pointPrecision(start)
+      const endPrecision = pointPrecision(end)
+      if (
+        startPrecision === "day" &&
+        endPrecision === "day" &&
+        start.year === end.year &&
+        start.month === end.month
+      )
         return `${months[start.month]} ${start.day}–${end.day}, ${start.year} AR`
-      if (start.year === end.year)
+      if (startPrecision === "day" && endPrecision === "day" && start.year === end.year)
         return `${months[start.month]} ${start.day}–${months[end.month]} ${end.day}, ${start.year} AR`
       return `${formatPointDate(start, months)}–${formatPointDate(end, months)}`
     }
-    if (event.datePrecision === "year" || !Number.isInteger(event.month)) return `${event.year} AR`
-    if (event.datePrecision === "month" || !Number.isInteger(event.day))
-      return `${months[event.month]} ${event.year} AR`
-    return `${months[event.month]} ${event.day}, ${event.year} AR`
+    return formatPointDate(event, months)
   }
 
   const prepareRecords = (events) => {
@@ -84,21 +98,29 @@
       let event = original
       let identity
 
-      if (event.isMultiDay && event.rangeStart && event.rangeEnd) {
+      if ((event.isMultiDay || event.isRange) && event.rangeStart && event.rangeEnd) {
         const start = event.rangeStart
         const end = event.rangeEnd
         identity = [
           event.kind,
           event.campaign || "",
           normalizedName(event.name),
+          pointPrecision(start),
           start.year,
-          start.month,
-          start.day,
+          start.month ?? "",
+          start.day ?? "",
+          pointPrecision(end),
           end.year,
-          end.month,
-          end.day,
+          end.month ?? "",
+          end.day ?? "",
         ].join("|")
-        event = { ...event, year: start.year, month: start.month, day: start.day }
+        event = {
+          ...event,
+          year: start.year,
+          ...(Number.isInteger(start.month) ? { month: start.month } : {}),
+          ...(Number.isInteger(start.day) ? { day: start.day } : {}),
+          datePrecision: pointPrecision(start),
+        }
       } else {
         identity = [
           event.kind,
@@ -207,10 +229,20 @@
             if (state.kind === "historical" && event.kind !== "historical") return false
             if (state.kind === "campaign" && event.kind !== "campaign-event") return false
             if (state.campaign !== "all" && event.campaign !== state.campaign) return false
-            if (Number.isFinite(from) && event.year < from) return false
-            if (Number.isFinite(to) && event.year > to) return false
+            const rangeStartYear = event.rangeStart?.year ?? event.year
+            const rangeEndYear = event.rangeEnd?.year ?? event.year
+            if (Number.isFinite(from) && rangeEndYear < from) return false
+            if (Number.isFinite(to) && rangeStartYear > to) return false
             if (!query) return true
-            return [event.name, event.description, event.category, event.campaign]
+            return [
+              event.name,
+              event.description,
+              event.category,
+              event.campaign,
+              event.timelineLabel,
+              event.importance,
+              event.dateLabel,
+            ]
               .filter(Boolean)
               .some((value) => String(value).toLocaleLowerCase().includes(query))
           })
