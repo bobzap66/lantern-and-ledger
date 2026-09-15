@@ -55,6 +55,14 @@ function frontmatterBlock(text) {
   return /^---\s*\n([\s\S]*?)\n---/.exec(text)?.[1] ?? null
 }
 
+function attributesFromTag(tag) {
+  const attrs = {}
+  const attrRe = /data-([a-z-]+)\s*=\s*(["'])(.*?)\2/gi
+  let match
+  while ((match = attrRe.exec(tag)) !== null) attrs[match[1]] = match[3]
+  return attrs
+}
+
 function isLeapYear(year) {
   return year % 8 === 0
 }
@@ -90,6 +98,7 @@ const datedFrontmatterFiles = new Map()
 const inlineCalendarFiles = new Map()
 const parseFailures = []
 const dateParseFailures = []
+const inlineDateParseFailures = []
 
 for (const file of files) {
   const campaign = campaignFromFile(file)
@@ -97,9 +106,36 @@ for (const file of files) {
   campaignDirectories.add(campaign)
 
   const text = await fs.readFile(file, "utf8")
-  if (text.includes(`data-calendar="${CALENDAR_NAME}"`) || text.includes(`data-calendar='${CALENDAR_NAME}'`)) {
-    increment(inlineCalendarFiles, campaign)
+  const spanRe = /<span\b[^>]*data-calendar\s*=\s*(["'])Calendar of Golarion\1[^>]*><\/span>/gi
+  let spanMatch
+  let hasValidInlineCalendar = false
+  while ((spanMatch = spanRe.exec(text)) !== null) {
+    const attrs = attributesFromTag(spanMatch[0])
+    if (attrs.calendar !== CALENDAR_NAME) continue
+
+    const startValue = attrs.date || attrs.from
+    if (!parseDate(startValue)) {
+      inlineDateParseFailures.push({
+        file: relative(file),
+        field: attrs.date !== undefined ? "data-date" : attrs.from !== undefined ? "data-from" : "start",
+        value: String(startValue ?? ""),
+      })
+      continue
+    }
+
+    const endValue = attrs["end-date"] || attrs.to
+    if (endValue && !parseDate(endValue)) {
+      inlineDateParseFailures.push({
+        file: relative(file),
+        field: attrs["end-date"] !== undefined ? "data-end-date" : "data-to",
+        value: String(endValue),
+      })
+      continue
+    }
+
+    hasValidInlineCalendar = true
   }
+  if (hasValidInlineCalendar) increment(inlineCalendarFiles, campaign)
 
   const rawFrontmatter = frontmatterBlock(text)
   if (rawFrontmatter === null) continue
@@ -116,7 +152,9 @@ for (const file of files) {
     continue
   }
 
-  const presentDateFields = DATE_FIELDS.filter((field) => fm[field] !== undefined && fm[field] !== null && fm[field] !== "")
+  const presentDateFields = DATE_FIELDS.filter(
+    (field) => fm[field] !== undefined && fm[field] !== null && fm[field] !== "",
+  )
   if (!presentDateFields.length) continue
   increment(datedFrontmatterFiles, campaign)
 
@@ -159,7 +197,7 @@ for (const campaign of [...campaignNames].sort((a, b) => a.localeCompare(b))) {
     `- ${campaign}: generated campaign-event rows=${generatedCampaignRows.get(campaign) ?? 0}; ` +
       `all generated rows with campaign=${generatedAllCampaignRows.get(campaign) ?? 0}; ` +
       `dated frontmatter files=${datedFrontmatterFiles.get(campaign) ?? 0}; ` +
-      `inline calendar files=${inlineCalendarFiles.get(campaign) ?? 0}; ` +
+      `valid inline calendar files=${inlineCalendarFiles.get(campaign) ?? 0}; ` +
       `registered campaign=${registeredCampaignIds.has(campaign) ? "yes" : "no"}` +
       (kindCounts ? `; kinds: ${kindCounts}` : ""),
   )
@@ -182,6 +220,15 @@ if (dateParseFailures.length) {
   }
 } else {
   console.log("No campaign date fields were rejected by the generator's date format.")
+}
+
+if (inlineDateParseFailures.length) {
+  console.warn("\nInline calendar date attributes rejected by the generator's date format:")
+  for (const failure of inlineDateParseFailures) {
+    console.warn(`- ${failure.file}: ${failure.field}=${JSON.stringify(failure.value)}`)
+  }
+} else {
+  console.log("No inline calendar date attributes were rejected by the generator's date format.")
 }
 
 const otherParseFailures = parseFailures.length - relevantParseFailures.length
