@@ -326,9 +326,10 @@ for (const file of files) {
   while ((match = spanRe.exec(text)) !== null) {
     const attrs = attributesFromTag(match[0])
     if (attrs.calendar !== CALENDAR_NAME) continue
-    const start = parseDate(attrs.date)
+    const start = parseDate(attrs.date || attrs.from)
     if (!start) continue
-    const parsedEnd = attrs["end-date"] ? parseDate(attrs["end-date"]) : null
+    const endValue = attrs["end-date"] || attrs.to
+    const parsedEnd = endValue ? parseDate(endValue) : null
     const end = parsedEnd && serialDay(parsedEnd) > serialDay(start) ? parsedEnd : null
     const name = attrs.name || "Untitled event"
     const eventKey = `${campaign}|${rangeIdentity(start, end ?? start)}|${normalizedName(name)}`
