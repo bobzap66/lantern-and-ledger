@@ -1,17 +1,8 @@
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
-import { CampaignSpoilerGate, campaignFromSlug } from "./CampaignSpoilerGate"
-
-const CAMPAIGN_ACCENTS: Record<string, string> = {
-  kingmaker: "#b98532",
-  "abomination-vaults": "#4e9b86",
-  "season-of-ghosts": "#c68b2c",
-  "claws-of-the-tyrant": "#a94b46",
-}
+import { CampaignSpoilerGate } from "./CampaignSpoilerGate"
 
 const Header: QuartzComponent = (props: QuartzComponentProps) => {
-  const { children, cfg, ctx, fileData } = props
-  const campaign = campaignFromSlug(fileData.slug)
-  const campaignAccent = campaign ? (CAMPAIGN_ACCENTS[campaign.key] ?? "#c58b2b") : null
+  const { children, cfg, ctx } = props
   const siteRoot =
     ctx.argv.serve || !cfg.baseUrl
       ? ""
@@ -41,27 +32,6 @@ const Header: QuartzComponent = (props: QuartzComponentProps) => {
         <div class="lantern-ledger-archive-rule" aria-hidden="true">
           <span>THE LANTERN AND LEDGER · ARCHIVES</span>
         </div>
-        {campaign && (
-          <button
-            class="campaign-spoiler-reset"
-            type="button"
-            data-campaign-key={campaign.key}
-            data-campaign-name={campaign.name}
-            data-spoiler-action="reset"
-            hidden
-            style={{
-              backgroundColor: campaignAccent ?? "#c58b2b",
-              borderColor: campaignAccent ?? "#c58b2b",
-              borderWidth: "2px",
-              color: "#fff8e8",
-              boxShadow: "0 4px 12px rgba(35, 28, 20, 0.2)",
-              fontWeight: 700,
-              padding: "0.55rem 0.85rem",
-            }}
-          >
-            Hide {campaign.name} spoilers again
-          </button>
-        )}
         {children.length > 0 && <div class="lantern-ledger-header-children">{children}</div>}
       </header>
     </>
@@ -190,26 +160,6 @@ Header.css = `${CampaignSpoilerGate.css ?? ""}
     margin-top: 0.55rem;
     font-size: 0.6rem;
     letter-spacing: 0.12em;
-  }
-
-  .lantern-ledger-site-header > .campaign-spoiler-reset {
-    position: static !important;
-    inset: auto !important;
-    float: none !important;
-    clear: both;
-    display: block;
-    box-sizing: border-box;
-    width: 100% !important;
-    max-width: none !important;
-    margin: 0.75rem 0 0 !important;
-    line-height: 1.35;
-    text-align: center;
-    white-space: normal;
-    transform: none !important;
-  }
-
-  .lantern-ledger-site-header > .campaign-spoiler-reset[hidden] {
-    display: none !important;
   }
 }
 
