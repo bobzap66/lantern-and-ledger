@@ -75,7 +75,14 @@ jobs:
         run: node scripts/generate-golarion-calendar.mjs
 
       - name: Diagnose Golarion calendar data
-        run: node scripts/diagnose-golarion-calendar.mjs
+        run: node scripts/diagnose-golarion-calendar.mjs | tee golarion-calendar-diagnostic.txt
+
+      - name: Upload calendar diagnostic
+        uses: actions/upload-artifact@v4
+        with:
+          name: golarion-calendar-diagnostic
+          path: golarion-calendar-diagnostic.txt
+          retention-days: 1
 
       - name: Canonicalize rendered note links
         run: node scripts/canonicalize-built-note-links.mjs
