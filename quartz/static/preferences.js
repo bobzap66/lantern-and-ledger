@@ -1,5 +1,11 @@
 ;(() => {
   const SPOILER_PREFIX = "isr-campaign-spoilers:"
+  const CAMPAIGNS = [
+    ["kingmaker", "Kingmaker"],
+    ["claws-of-the-tyrant", "Claws of the Tyrant"],
+    ["season-of-ghosts", "Season of Ghosts"],
+    ["abomination-vaults", "Abomination Vaults"],
+  ]
 
   const setTheme = (theme) => {
     if (theme !== "light" && theme !== "dark") return
@@ -38,6 +44,51 @@
         detail: { campaign: key, enabled },
       }),
     )
+  }
+
+  const campaignRow = (key, name) => `
+    <article class="preference-campaign" data-campaign-key="${key}" data-campaign-name="${name}">
+      <div>
+        <p class="preference-campaign__name">${name}</p>
+        <p class="preference-campaign__status"></p>
+      </div>
+      <div class="preference-campaign__controls">
+        <span class="preference-campaign__badge"></span>
+        <button class="preference-action" type="button" data-spoiler-toggle></button>
+      </div>
+    </article>`
+
+  const renderPreferencesMarkup = (root) => {
+    if (root.dataset.preferencesMarkup === "true") return
+    root.dataset.preferencesMarkup = "true"
+    root.innerHTML = `
+      <section class="reader-preferences__section" aria-labelledby="preferences-appearance">
+        <h2 id="preferences-appearance">Appearance</h2>
+        <p>Choose the color scheme used by the archive. The sun/moon control in the sidebar changes the same setting.</p>
+        <div class="preference-choice-group" role="group" aria-label="Color scheme">
+          <button class="preference-choice" type="button" data-preference-theme="light" aria-pressed="false">Light</button>
+          <button class="preference-choice" type="button" data-preference-theme="dark" aria-pressed="false">Dark</button>
+        </div>
+      </section>
+      <section class="reader-preferences__section" aria-labelledby="preferences-spoilers">
+        <div class="preference-section-heading">
+          <h2 id="preferences-spoilers">Campaign spoilers</h2>
+          <button class="preference-action" type="button" data-hide-all-spoilers>Hide all spoilers</button>
+        </div>
+        <p>Campaign archives remain behind their spoiler warning until you choose to unlock them. You can unlock a campaign here or directly from its warning screen.</p>
+        <p class="preference-status-summary" data-spoiler-summary></p>
+        <div class="preference-campaign-group" data-spoiler-group="visible">
+          <h3>Currently showing spoilers</h3>
+          <div class="preference-campaign-list"></div>
+        </div>
+        <div class="preference-campaign-group" data-spoiler-group="hidden">
+          <h3>Spoilers hidden</h3>
+          <div class="preference-campaign-list">
+            ${CAMPAIGNS.map(([key, name]) => campaignRow(key, name)).join("")}
+          </div>
+        </div>
+        <p class="preference-note">Spoiler choices are remembered only on this browser and device.</p>
+      </section>`
   }
 
   const syncThemeControls = (root) => {
@@ -106,6 +157,7 @@
     if (!root || root.dataset.preferencesInstalled === "true") return
     root.dataset.preferencesInstalled = "true"
 
+    renderPreferencesMarkup(root)
     syncThemeControls(root)
     syncSpoilerControls(root)
 
