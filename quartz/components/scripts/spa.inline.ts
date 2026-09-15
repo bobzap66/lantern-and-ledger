@@ -237,7 +237,7 @@ function getConsultationAnchor() {
 }
 
 async function updateArchiveConsultations() {
-  document.querySelector(".archive-consultations")?.remove()
+  document.querySelectorAll(".archive-consultations").forEach((element) => element.remove())
 
   const path = getGoatcounterPath()
   const anchor = getConsultationAnchor()
@@ -269,14 +269,21 @@ async function updateArchiveConsultations() {
     if (numericCount < 5) return
     if (getGoatcounterPath() !== path) return
 
+    // A delayed refresh can overlap the initial request. Remove any result that
+    // finished while this request was in flight so the display remains singular.
+    document.querySelectorAll(".archive-consultations").forEach((element) => element.remove())
+
     const consultations = document.createElement("div")
     consultations.className = "archive-consultations"
     consultations.textContent = `${numericCount.toLocaleString("en-US")} archive consultations`
-    consultations.style.margin = "0.35rem 0 1rem"
+    consultations.style.margin = "0.4rem 0 1rem"
     consultations.style.color = "var(--gray)"
-    consultations.style.fontSize = "0.82rem"
-    consultations.style.letterSpacing = "0.045em"
-    consultations.style.textTransform = "uppercase"
+    consultations.style.fontFamily = "var(--bodyFont)"
+    consultations.style.fontSize = "0.9rem"
+    consultations.style.fontStyle = "italic"
+    consultations.style.letterSpacing = "0.01em"
+    consultations.style.lineHeight = "1.4"
+    consultations.style.textTransform = "none"
     consultations.style.whiteSpace = "nowrap"
 
     anchor.insertAdjacentElement("afterend", consultations)
