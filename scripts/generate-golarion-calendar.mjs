@@ -71,14 +71,19 @@ function monthLength(year, month) {
 }
 
 function parseDate(value) {
-  const match = /^(\-?\d+)-([A-Za-z]+)-(\d{1,2})$/.exec(value ?? "")
-  if (!match) return null
+  const text = String(value ?? "").trim()
+  const named = /^(\-?\d+)-([A-Za-z]+)-(\d{1,2})$/.exec(text)
+  const numeric = /^(\-?\d+)-(\d{1,2})-(\d{1,2})$/.exec(text)
+  if (!named && !numeric) return null
+
+  const match = named ?? numeric
   const year = Number(match[1])
-  const monthName = match[2]
-  const month = MONTHS.indexOf(monthName)
+  const month = named ? MONTHS.indexOf(named[2]) : Number(numeric[2]) - 1
+  const monthName = MONTHS[month]
   const day = Number(match[3])
   if (
     month < 0 ||
+    month >= MONTHS.length ||
     !Number.isInteger(year) ||
     !Number.isInteger(day) ||
     day < 1 ||
