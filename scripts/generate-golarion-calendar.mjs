@@ -402,7 +402,7 @@ const payload = {
   calendar: CALENDAR_NAME,
   months: MONTHS,
   weekdays: WEEKDAYS,
-  leapRule: { interval: 8, month: 1 },
+  leapRule: { interval: 4, month: 1 },
   realWorldYearOffset: 2700,
   campaigns: await readCampaigns(files),
   holidays: await readHolidays(),
