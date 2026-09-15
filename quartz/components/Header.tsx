@@ -191,6 +191,26 @@ Header.css = `${CampaignSpoilerGate.css ?? ""}
     font-size: 0.6rem;
     letter-spacing: 0.12em;
   }
+
+  .lantern-ledger-site-header > .campaign-spoiler-reset {
+    position: static !important;
+    inset: auto !important;
+    float: none !important;
+    clear: both;
+    display: block;
+    box-sizing: border-box;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0.75rem 0 0 !important;
+    line-height: 1.35;
+    text-align: center;
+    white-space: normal;
+    transform: none !important;
+  }
+
+  .lantern-ledger-site-header > .campaign-spoiler-reset[hidden] {
+    display: none !important;
+  }
 }
 
 @media (max-width: 430px) {
