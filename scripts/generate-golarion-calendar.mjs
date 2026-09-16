@@ -63,7 +63,7 @@ function attributesFromTag(tag) {
 }
 
 function isLeapYear(year) {
-  return year % 8 === 0
+  return year % 4 === 0
 }
 
 function monthLength(year, month) {
@@ -72,15 +72,31 @@ function monthLength(year, month) {
 
 function parseDate(value) {
   const text = String(value ?? "").trim()
+  const yearOnly = /^(\-?\d+)(?:\s+AR)?$/i.exec(text)
+  if (yearOnly) return { year: Number(yearOnly[1]), datePrecision: "year" }
+
+  const monthOnly = /^(\-?\d+)-([A-Za-z]+)$/.exec(text)
+  if (monthOnly) {
+    const year = Number(monthOnly[1])
+    const month = MONTHS.findIndex((item) => item.toLowerCase() === monthOnly[2].toLowerCase())
+    if (!Number.isInteger(year) || month < 0) return null
+    return { year, month, monthName: MONTHS[month], datePrecision: "month" }
+  }
+
   const named = /^(\-?\d+)-([A-Za-z]+)-(\d{1,2})$/.exec(text)
   const numeric = /^(\-?\d+)-(\d{1,2})-(\d{1,2})$/.exec(text)
-  if (!named && !numeric) return null
+  const natural = /^([A-Za-z]+)\s+(\d{1,2}),?\s+(\-?\d+)(?:\s+AR)?$/i.exec(text)
+  if (!named && !numeric && !natural) return null
 
-  const match = named ?? numeric
-  const year = Number(match[1])
-  const month = named ? MONTHS.indexOf(named[2]) : Number(numeric[2]) - 1
+  const match = named ?? numeric ?? natural
+  const year = Number(natural ? match[3] : match[1])
+  const month = named
+    ? MONTHS.findIndex((item) => item.toLowerCase() === named[2].toLowerCase())
+    : numeric
+      ? Number(numeric[2]) - 1
+      : MONTHS.findIndex((item) => item.toLowerCase() === natural[1].toLowerCase())
   const monthName = MONTHS[month]
-  const day = Number(match[3])
+  const day = Number(natural ? match[2] : match[3])
   if (
     month < 0 ||
     month >= MONTHS.length ||
@@ -90,7 +106,11 @@ function parseDate(value) {
     day > monthLength(year, month)
   )
     return null
-  return { year, month, monthName, day }
+  return { year, month, monthName, day, datePrecision: "day" }
+}
+
+function compareDatePoints(a, b) {
+  return a.year - b.year || (a.month ?? -1) - (b.month ?? -1) || (a.day ?? -1) - (b.day ?? -1)
 }
 
 function serialDay(date) {
@@ -147,7 +167,9 @@ function sameDate(a, b) {
 
 function rangeIdentity(start, end) {
   const finalEnd = end ?? start
-  return `${start.year}-${start.month}-${start.day}|${finalEnd.year}-${finalEnd.month}-${finalEnd.day}`
+  const pointIdentity = (point) =>
+    `${point.datePrecision || "day"}:${point.year}:${point.month ?? ""}:${point.day ?? ""}`
+  return `${pointIdentity(start)}|${pointIdentity(finalEnd)}`
 }
 
 function normalizedName(value) {
@@ -158,19 +180,22 @@ function normalizedName(value) {
 }
 
 function pushCampaignEvent(events, { start, end, name, category, campaign, source }) {
-  const validEnd = end && serialDay(end) > serialDay(start) ? end : null
-  const occurrenceDates = validEnd ? expandDateRange(start, validEnd) : [start]
+  const validEnd = end && compareDatePoints(end, start) > 0 ? end : null
+  const exactDayRange =
+    validEnd && start.datePrecision === "day" && validEnd.datePrecision === "day"
+  const occurrenceDates = exactDayRange ? expandDateRange(start, validEnd) : [start]
   const rangeStart = validEnd ? { ...start } : null
   const rangeEnd = validEnd ? { ...validEnd } : null
   for (const occurrenceDate of occurrenceDates) {
     events.push({
       ...occurrenceDate,
-      datePrecision: "day",
+      datePrecision: occurrenceDate.datePrecision || "day",
       name,
       category,
       campaign,
       kind: "campaign-event",
       source,
+      ...(campaign ? { visibility: "campaign-only" } : {}),
       ...(validEnd ? { isMultiDay: true, rangeStart, rangeEnd } : {}),
     })
   }
@@ -335,7 +360,7 @@ for (const file of files) {
     if (!start) continue
     const endValue = attrs["end-date"] || attrs.to
     const parsedEnd = endValue ? parseDate(endValue) : null
-    const end = parsedEnd && serialDay(parsedEnd) > serialDay(start) ? parsedEnd : null
+    const end = parsedEnd && compareDatePoints(parsedEnd, start) > 0 ? parsedEnd : null
     const name = attrs.name || "Untitled event"
     const eventKey = `${campaign}|${rangeIdentity(start, end ?? start)}|${normalizedName(name)}`
     if (canonicalCampaignEvents.has(eventKey)) continue
@@ -360,7 +385,7 @@ for (const file of files) {
   const start = rangeStart || singleDate
   if (!start) continue
   const end =
-    rangeStart && rangeEnd && serialDay(rangeEnd) > serialDay(rangeStart) ? rangeEnd : null
+    rangeStart && rangeEnd && compareDatePoints(rangeEnd, rangeStart) > 0 ? rangeEnd : null
   const type = String(fm.type || "").toLowerCase()
 
   pendingFrontmatterEvents.push({

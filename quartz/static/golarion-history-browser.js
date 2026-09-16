@@ -18,7 +18,7 @@
   const siteBase = () =>
     (document.body?.dataset?.basepath || calendarScriptBase || "").replace(/\/$/, "")
 
-  const isLeapYear = (year) => year % 8 === 0
+  const isLeapYear = (year) => year % 4 === 0
   const monthLength = (year, month) => (month === 1 && isLeapYear(year) ? 29 : MONTH_LENGTHS[month])
 
   const escapeHtml = (value) =>
@@ -59,8 +59,11 @@
     }
   }
 
-  const eventVisibleToViewer = (event) =>
-    event.visibility !== "campaign-only" || campaignAccessEnabled(event.campaign)
+  const eventVisibleToViewer = (event) => {
+    const requiresCampaignAccess =
+      event.visibility === "campaign-only" || (event.kind === "campaign-event" && event.campaign)
+    return !requiresCampaignAccess || campaignAccessEnabled(event.campaign)
+  }
 
   const formatEventRange = (event, months) => {
     const start = event.rangeStart

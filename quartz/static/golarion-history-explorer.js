@@ -1,4 +1,20 @@
 ;(() => {
+  const HISTORICAL_ERAS = [
+    { id: "before-ages", name: "Age Before Ages", start: Number.NEGATIVE_INFINITY },
+    { id: "darkness", name: "Age of Darkness", start: -5293 },
+    { id: "anguish", name: "Age of Anguish", start: -4294 },
+    { id: "destiny", name: "Age of Destiny", start: -3470 },
+    { id: "enthronement", name: "Age of Enthronement", start: 1 },
+    { id: "lost-omens", name: "Age of Lost Omens", start: 4606 },
+  ]
+
+  const eraForYear = (year) => {
+    for (let index = HISTORICAL_ERAS.length - 1; index >= 0; index -= 1) {
+      if (year >= HISTORICAL_ERAS[index].start) return HISTORICAL_ERAS[index]
+    }
+    return HISTORICAL_ERAS[0]
+  }
+
   const scriptBase = (() => {
     const script = [...document.scripts].find((item) =>
       /\/static\/golarion-history-explorer\.js(?:\?|$)/.test(item.src),
@@ -13,8 +29,7 @@
     }
   })()
 
-  const siteBase = () =>
-    (document.body?.dataset?.basepath || scriptBase || "").replace(/\/$/, "")
+  const siteBase = () => (document.body?.dataset?.basepath || scriptBase || "").replace(/\/$/, "")
 
   const escapeHtml = (value) =>
     String(value ?? "")
@@ -38,6 +53,8 @@
       .toLocaleLowerCase()
       .replace(/\s+/g, " ")
 
+  const isMilestone = (event) => event.timelineMetadata || event.recordType === "milestone"
+
   const campaignAccessEnabled = (campaign) => {
     const key = normalizeCampaignKey(campaign)
     if (!key || typeof localStorage === "undefined") return false
@@ -48,8 +65,11 @@
     }
   }
 
-  const eventVisibleToViewer = (event) =>
-    event.visibility !== "campaign-only" || campaignAccessEnabled(event.campaign)
+  const eventVisibleToViewer = (event) => {
+    const requiresCampaignAccess =
+      event.visibility === "campaign-only" || (event.kind === "campaign-event" && event.campaign)
+    return !requiresCampaignAccess || campaignAccessEnabled(event.campaign)
+  }
 
   const sourceHref = (source) => {
     if (!source) return null
@@ -58,17 +78,33 @@
     return `${siteBase()}/${slug}`.replace(/\/+/g, "/")
   }
 
-  const formatPointDate = (date, months) => `${months[date.month]} ${date.day}, ${date.year} AR`
+  const formatPointDate = (date, months) => {
+    if (date.datePrecision === "year" || !Number.isInteger(date.month)) return `${date.year} AR`
+    if (date.datePrecision === "month" || !Number.isInteger(date.day))
+      return `${months[date.month]} ${date.year} AR`
+    return `${months[date.month]} ${date.day}, ${date.year} AR`
+  }
 
   const formatDate = (event, months) => {
     if (event.dateLabel) return event.dateLabel
     if (event.isMultiDay && event.rangeStart && event.rangeEnd) {
       const start = event.rangeStart
       const end = event.rangeEnd
-      if (start.year === end.year && start.month === end.month)
+      if (
+        start.datePrecision === "day" &&
+        end.datePrecision === "day" &&
+        start.year === end.year &&
+        start.month === end.month
+      )
         return `${months[start.month]} ${start.day}–${end.day}, ${start.year} AR`
-      if (start.year === end.year)
+      if (start.datePrecision === "day" && end.datePrecision === "day" && start.year === end.year)
         return `${months[start.month]} ${start.day}–${months[end.month]} ${end.day}, ${start.year} AR`
+      if (
+        start.datePrecision === "month" &&
+        end.datePrecision === "month" &&
+        start.year === end.year
+      )
+        return `${months[start.month]}–${months[end.month]} ${start.year} AR`
       return `${formatPointDate(start, months)}–${formatPointDate(end, months)}`
     }
     if (event.datePrecision === "year" || !Number.isInteger(event.month)) return `${event.year} AR`
@@ -81,6 +117,11 @@
     startYear: event.rangeStart?.year ?? event.year,
     endYear: event.rangeEnd?.year ?? event.year,
   })
+
+  const eventStartPoint = (event) => event.rangeStart || event
+
+  const compareDatePoints = (a, b) =>
+    a.year - b.year || (a.month ?? -1) - (b.month ?? -1) || (a.day ?? -1) - (b.day ?? -1)
 
   const prepareRecords = (events) => {
     const records = []
@@ -132,6 +173,8 @@
     if (state.campaign !== "all") params.set("campaign", state.campaign)
     if (state.from !== "") params.set("from", state.from)
     if (state.to !== "") params.set("to", state.to)
+    if (state.future) params.set("future", "1")
+    if (state.density === "compact") params.set("view", "compact")
     const next = `${location.pathname}${params.toString() ? `?${params}` : ""}${location.hash}`
     history.replaceState(null, "", next)
   }
@@ -142,7 +185,9 @@
     root.dataset.historyExplorerInitialized = "true"
 
     try {
-      const response = await fetch(`${siteBase()}/static/golarion-events.json`, { cache: "no-cache" })
+      const response = await fetch(`${siteBase()}/static/golarion-events.json`, {
+        cache: "no-cache",
+      })
       if (!response.ok) throw new Error(`HTTP ${response.status}`)
       const data = await response.json()
       const records = prepareRecords(data.events)
@@ -153,6 +198,8 @@
         campaign: params.get("campaign") || "all",
         from: params.get("from") || "",
         to: params.get("to") || "",
+        future: params.get("future") === "1",
+        density: params.get("view") === "compact" ? "compact" : "expanded",
       }
 
       if (!["all", "historical", "campaign"].includes(state.kind)) state.kind = "all"
@@ -167,6 +214,13 @@
       ].sort((a, b) => a.localeCompare(b))
 
       if (state.campaign !== "all" && !campaigns.includes(state.campaign)) state.campaign = "all"
+
+      const campaignById = new Map(
+        (data.campaigns ?? []).map((campaign) => [campaign.id, campaign]),
+      )
+      const accessibleCampaigns = (data.campaigns ?? []).filter(
+        (campaign) => campaign.currentDate && campaignAccessEnabled(campaign.id),
+      )
 
       const campaignOptions = campaigns
         .map(
@@ -187,9 +241,15 @@
             <label>Campaign <select data-history-campaign><option value="all">All campaigns</option>${campaignOptions}</select></label>
             <label>From year <input type="number" data-history-from value="${escapeHtml(state.from)}" inputmode="numeric"></label>
             <label>To year <input type="number" data-history-to value="${escapeHtml(state.to)}" inputmode="numeric"></label>
+            <label>View <select data-history-density>
+              <option value="expanded"${state.density === "expanded" ? " selected" : ""}>Expanded</option>
+              <option value="compact"${state.density === "compact" ? " selected" : ""}>Compact</option>
+            </select></label>
+            ${accessibleCampaigns.length ? `<label class="golarion-history-future"><span>Campaign spoilers</span><span><input type="checkbox" data-history-future${state.future ? " checked" : ""}> Show future records</span></label>` : ""}
             <button type="button" data-history-clear>Clear filters</button>
           </div>
           <p class="golarion-history-count" data-history-count aria-live="polite"></p>
+          <nav class="golarion-history-jump" data-history-jump aria-label="Jump through filtered history"></nav>
           <div class="golarion-history-results" data-history-results></div>
         </section>`
 
@@ -198,8 +258,11 @@
       const campaignSelect = root.querySelector("[data-history-campaign]")
       const fromInput = root.querySelector("[data-history-from]")
       const toInput = root.querySelector("[data-history-to]")
+      const densitySelect = root.querySelector("[data-history-density]")
+      const futureInput = root.querySelector("[data-history-future]")
       const clearButton = root.querySelector("[data-history-clear]")
       const countNode = root.querySelector("[data-history-count]")
+      const jumpNode = root.querySelector("[data-history-jump]")
       const resultsNode = root.querySelector("[data-history-results]")
 
       const renderResults = () => {
@@ -207,63 +270,262 @@
         const from = state.from === "" ? null : Number(state.from)
         const to = state.to === "" ? null : Number(state.to)
 
-        const filtered = records
-          .filter(eventVisibleToViewer)
-          .filter((event) => {
-            if (state.kind === "historical" && event.kind !== "historical") return false
-            if (state.kind === "campaign" && event.kind !== "campaign-event") return false
-            if (state.campaign !== "all" && event.campaign !== state.campaign) return false
-            const { startYear, endYear } = eventYearBounds(event)
-            if (Number.isFinite(from) && endYear < from) return false
-            if (Number.isFinite(to) && startYear > to) return false
-            if (!query) return true
-            return [event.name, event.description, event.category, event.campaign, event.label]
-              .filter(Boolean)
-              .some((value) => String(value).toLocaleLowerCase().includes(query))
-          })
+        const matching = records.filter(eventVisibleToViewer).filter((event) => {
+          if (state.kind === "historical" && event.kind !== "historical") return false
+          if (state.kind === "campaign" && event.kind !== "campaign-event") return false
+          if (state.campaign !== "all" && event.campaign !== state.campaign) return false
+          const { startYear, endYear } = eventYearBounds(event)
+          if (Number.isFinite(from) && endYear < from) return false
+          if (Number.isFinite(to) && startYear > to) return false
+          if (!query) return true
+          return [event.name, event.description, event.category, event.campaign, event.label]
+            .filter(Boolean)
+            .some((value) => String(value).toLocaleLowerCase().includes(query))
+        })
+        const isFutureCampaignEvent = (event) => {
+          if (event.kind !== "campaign-event" || !event.campaign) return false
+          const currentDate = campaignById.get(event.campaign)?.currentDate
+          return currentDate ? compareDatePoints(eventStartPoint(event), currentDate) > 0 : false
+        }
+        const hiddenFutureCount = state.future ? 0 : matching.filter(isFutureCampaignEvent).length
+        const filtered = matching
+          .filter((event) => state.future || !isFutureCampaignEvent(event))
           .sort(
             (a, b) =>
               b.year - a.year ||
               (b.month ?? -1) - (a.month ?? -1) ||
               (b.day ?? -1) - (a.day ?? -1) ||
+              Number(isMilestone(b)) - Number(isMilestone(a)) ||
               a.name.localeCompare(b.name),
           )
 
+        const currentMarkers = accessibleCampaigns
+          .filter((campaign) => state.kind !== "historical")
+          .filter((campaign) => state.campaign === "all" || state.campaign === campaign.id)
+          .filter((campaign) => {
+            if (Number.isFinite(from) && campaign.currentDate.year < from) return false
+            if (Number.isFinite(to) && campaign.currentDate.year > to) return false
+            return true
+          })
+          .map((campaign) => ({
+            ...campaign.currentDate,
+            datePrecision: "day",
+            kind: "campaign-now",
+            campaign: campaign.id,
+            name: campaign.name,
+            source: campaign.source,
+          }))
+
+        const timelineItems = [...filtered, ...currentMarkers].sort(
+          (a, b) =>
+            b.year - a.year ||
+            (b.month ?? -1) - (a.month ?? -1) ||
+            (b.day ?? -1) - (a.day ?? -1) ||
+            Number(b.kind === "campaign-now") - Number(a.kind === "campaign-now") ||
+            Number(isMilestone(b)) - Number(isMilestone(a)) ||
+            a.name.localeCompare(b.name),
+        )
+
         const grouped = new Map()
-        for (const event of filtered) {
+        for (const event of timelineItems) {
           if (!grouped.has(event.year)) grouped.set(event.year, [])
           grouped.get(event.year).push(event)
         }
 
-        const yearsMarkup = [...grouped.entries()]
-          .map(([year, events]) => {
-            const eventMarkup = events
-              .map((event) => {
-                const source = sourceHref(event.source)
-                const sourceLabel =
-                  event.campaign || (event.kind === "historical" ? "Golarion History" : "Source")
-                const external = source && /^https?:\/\//i.test(source)
-                const milestoneBadge =
-                  event.timelineMetadata || event.recordType === "milestone" ? "<span>Milestone</span>" : ""
-                return `<article class="golarion-history-event ${event.kind === "historical" ? "is-history" : "is-campaign"}">
-                  <div class="golarion-history-event-date">${escapeHtml(formatDate(event, data.months))}</div>
-                  <div class="golarion-history-event-body">
-                    <div class="golarion-history-event-meta"><span>${escapeHtml(sourceLabel)}</span>${milestoneBadge}${event.category ? `<span>${escapeHtml(event.category)}</span>` : ""}</div>
-                    <h3>${escapeHtml(event.name)}</h3>
-                    ${event.description ? `<p>${escapeHtml(event.description)}</p>` : ""}
-                    ${source ? `<p class="golarion-history-source"><a href="${escapeHtml(source)}"${external ? ' target="_blank" rel="noopener noreferrer"' : ""}>View source</a></p>` : ""}
-                  </div>
-                </article>`
+        const canonicalRecords = records.filter(
+          (event) => event.kind === "historical" && !event.campaign,
+        )
+
+        const canonicalContext = (event) => {
+          if (!isMilestone(event)) return []
+          const point = eventStartPoint(event)
+          const matches = canonicalRecords
+            .map((candidate) => {
+              if (candidate.year !== point.year) return null
+              if (
+                point.datePrecision === "day" &&
+                candidate.datePrecision === "day" &&
+                candidate.month === point.month &&
+                candidate.day === point.day
+              )
+                return { candidate, rank: 0 }
+              if (Number.isInteger(point.month) && candidate.month === point.month) {
+                const distance =
+                  candidate.datePrecision === "day" && Number.isInteger(point.day)
+                    ? Math.abs(candidate.day - point.day)
+                    : -1
+                return { candidate, rank: 1, distance }
+              }
+              if (candidate.datePrecision === "year") return { candidate, rank: 2, distance: 0 }
+              return null
+            })
+            .filter(Boolean)
+            .sort(
+              (a, b) =>
+                a.rank - b.rank ||
+                (a.distance ?? 0) - (b.distance ?? 0) ||
+                a.candidate.name.localeCompare(b.candidate.name),
+            )
+
+          const seen = new Set()
+          const context = []
+          for (const match of matches) {
+            const name = normalizedName(match.candidate.name)
+            if (seen.has(name)) continue
+            seen.add(name)
+            context.push(match.candidate)
+            if (context.length === 3) break
+          }
+          return context
+        }
+
+        const renderCanonicalContext = (event) => {
+          const context = canonicalContext(event)
+          if (!context.length) return ""
+          const items = context
+            .map((item) => {
+              const href = sourceHref(item.source)
+              const external = href && /^https?:\/\//i.test(href)
+              const title = href
+                ? `<a href="${escapeHtml(href)}"${external ? ' target="_blank" rel="noopener noreferrer"' : ""}>${escapeHtml(item.name)}</a>`
+                : escapeHtml(item.name)
+              return `<li>${title}<span>${escapeHtml(formatDate(item, data.months))}</span></li>`
+            })
+            .join("")
+          return `<aside class="golarion-history-meanwhile"><strong>Meanwhile in Golarion</strong><ul>${items}</ul></aside>`
+        }
+
+        const renderEvent = (event) => {
+          const campaignClass = event.campaign
+            ? ` history-campaign--${normalizeCampaignKey(event.campaign)}`
+            : ""
+          if (event.kind === "campaign-now") {
+            const source = sourceHref(event.source)
+            return `<aside class="golarion-history-now${campaignClass}">
+              <span>Campaign current date</span>
+              <strong>${source ? `<a href="${escapeHtml(source)}">${escapeHtml(event.name)}</a>` : escapeHtml(event.name)}</strong>
+              <time>${escapeHtml(formatDate(event, data.months))}</time>
+            </aside>`
+          }
+          const source = sourceHref(event.source)
+          const sourceLabel =
+            event.campaign || (event.kind === "historical" ? "Golarion History" : "Source")
+          const external = source && /^https?:\/\//i.test(source)
+          const milestone = isMilestone(event)
+          const milestoneBadge = milestone ? "<span>Milestone</span>" : ""
+          const expanded = state.density === "expanded"
+          return `<article class="golarion-history-event ${event.kind === "historical" ? "is-history" : "is-campaign"}${campaignClass}${milestone ? " is-milestone" : ""}${expanded ? "" : " is-compact"}">
+            <div class="golarion-history-event-date">${escapeHtml(formatDate(event, data.months))}</div>
+            <div class="golarion-history-event-body">
+              <div class="golarion-history-event-meta"><span>${escapeHtml(sourceLabel)}</span>${milestoneBadge}${event.category ? `<span>${escapeHtml(event.category)}</span>` : ""}</div>
+              <h3>${escapeHtml(event.name)}</h3>
+              ${expanded && event.description ? `<p>${escapeHtml(event.description)}</p>` : ""}
+              ${expanded ? renderCanonicalContext(event) : ""}
+              ${expanded && source ? `<p class="golarion-history-source"><a href="${escapeHtml(source)}"${external ? ' target="_blank" rel="noopener noreferrer"' : ""}>View source</a></p>` : ""}
+            </div>
+          </article>`
+        }
+
+        const groupByDate = (events) => {
+          const groups = []
+          const byDate = new Map()
+          for (const event of events) {
+            if (event.datePrecision !== "day" || event.kind === "campaign-now") {
+              groups.push([event])
+              continue
+            }
+            const key = [event.kind, event.campaign || "", event.year, event.month, event.day].join(
+              "|",
+            )
+            let group = byDate.get(key)
+            if (!group) {
+              group = []
+              byDate.set(key, group)
+              groups.push(group)
+            }
+            group.push(event)
+          }
+          return groups
+        }
+
+        const renderDateGroup = (events) => {
+          if (events.length < 4) return events.map(renderEvent).join("")
+
+          const milestones = events.filter(isMilestone)
+          const featured = milestones.length ? milestones : events.slice(0, 2)
+          const featuredSet = new Set(featured)
+          const related = events.filter((event) => !featuredSet.has(event))
+          if (!related.length) return featured.map(renderEvent).join("")
+
+          const label = milestones.length
+            ? `${related.length} related ${related.length === 1 ? "record" : "records"}`
+            : `${related.length} more ${related.length === 1 ? "record" : "records"}`
+          return `<div class="golarion-history-cluster">
+            ${featured.map(renderEvent).join("")}
+            <details class="golarion-history-related"${query ? " open" : ""}>
+              <summary>${label}</summary>
+              <div class="golarion-history-related-records">${related.map(renderEvent).join("")}</div>
+            </details>
+          </div>`
+        }
+
+        const eraGroups = new Map()
+        for (const [year, events] of grouped.entries()) {
+          const era = eraForYear(year)
+          if (!eraGroups.has(era.id)) eraGroups.set(era.id, { era, years: [] })
+          eraGroups.get(era.id).years.push({ year, events })
+        }
+
+        const yearsMarkup = [...eraGroups.values()]
+          .map(({ era, years }) => {
+            const yearSections = years
+              .map(({ year, events }) => {
+                const eventMarkup = groupByDate(events).map(renderDateGroup).join("")
+                return `<section class="golarion-history-year" id="history-year-${year}"><h3>${year} AR</h3>${eventMarkup}</section>`
               })
               .join("")
-            return `<section class="golarion-history-year"><h2>${year} AR</h2>${eventMarkup}</section>`
+            return `<section class="golarion-history-era" id="history-era-${era.id}">
+              <header><span>Historical era</span><h2>${era.name}</h2></header>
+              ${yearSections}
+            </section>`
           })
           .join("")
 
+        if (jumpNode) {
+          const eraLinks = [...eraGroups.values()]
+            .map(
+              ({ era }) =>
+                `<a href="#history-era-${era.id}">${escapeHtml(era.name.replace(/^Age (of |Before )?/, ""))}</a>`,
+            )
+            .join("")
+          const yearOptions = [...eraGroups.values()]
+            .map(({ era, years }) => {
+              const options = years
+                .map(
+                  ({ year }) =>
+                    `<option value="history-year-${year}">${escapeHtml(`${year} AR`)}</option>`,
+                )
+                .join("")
+              return `<optgroup label="${escapeHtml(era.name)}">${options}</optgroup>`
+            })
+            .join("")
+          jumpNode.innerHTML = eraGroups.size
+            ? `<div class="golarion-history-era-links"><span>Jump to era</span>${eraLinks}</div>
+               <label>Year <select data-history-jump-year><option value="">Choose a year…</option>${yearOptions}</select></label>`
+            : ""
+          jumpNode
+            .querySelector("[data-history-jump-year]")
+            ?.addEventListener("change", (event) => {
+              if (event.target.value) location.hash = event.target.value
+            })
+        }
+
         if (countNode)
-          countNode.textContent = `${filtered.length} ${filtered.length === 1 ? "record" : "records"}`
+          countNode.textContent = `${filtered.length} ${filtered.length === 1 ? "record" : "records"}${hiddenFutureCount ? ` · ${hiddenFutureCount} future ${hiddenFutureCount === 1 ? "record" : "records"} hidden` : ""}`
         if (resultsNode)
-          resultsNode.innerHTML = yearsMarkup || '<p class="golarion-history-empty">No historical records match these filters.</p>'
+          resultsNode.innerHTML =
+            yearsMarkup ||
+            '<p class="golarion-history-empty">No historical records match these filters.</p>'
       }
 
       const updateResults = () => {
@@ -291,24 +553,37 @@
         state.to = event.target.value
         updateResults()
       })
+      densitySelect?.addEventListener("change", (event) => {
+        state.density = event.target.value === "compact" ? "compact" : "expanded"
+        updateResults()
+      })
+      futureInput?.addEventListener("change", (event) => {
+        state.future = event.target.checked
+        updateResults()
+      })
       clearButton?.addEventListener("click", () => {
         state.query = ""
         state.kind = "all"
         state.campaign = "all"
         state.from = ""
         state.to = ""
+        state.future = false
+        state.density = "expanded"
         if (queryInput) queryInput.value = ""
         if (kindSelect) kindSelect.value = "all"
         if (campaignSelect) campaignSelect.value = "all"
         if (fromInput) fromInput.value = ""
         if (toInput) toInput.value = ""
+        if (futureInput) futureInput.checked = false
+        if (densitySelect) densitySelect.value = "expanded"
         updateResults()
       })
 
       renderResults()
     } catch (error) {
       console.error("Failed to load Golarion history explorer", error)
-      root.innerHTML = '<p class="golarion-calendar-error">Golarion history could not be loaded.</p>'
+      root.innerHTML =
+        '<p class="golarion-calendar-error">Golarion history could not be loaded.</p>'
     }
   }
 

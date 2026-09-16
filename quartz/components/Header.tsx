@@ -1,23 +1,16 @@
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
-import { CampaignSpoilerGate, campaignFromSlug } from "./CampaignSpoilerGate"
-
-const CAMPAIGN_ACCENTS: Record<string, string> = {
-  kingmaker: "#b98532",
-  "abomination-vaults": "#4e9b86",
-  "season-of-ghosts": "#c68b2c",
-  "claws-of-the-tyrant": "#a94b46",
-}
+import { CampaignSpoilerGate } from "./CampaignSpoilerGate"
 
 const Header: QuartzComponent = (props: QuartzComponentProps) => {
-  const { children, cfg, ctx, fileData } = props
-  const campaign = campaignFromSlug(fileData.slug)
-  const campaignAccent = campaign ? (CAMPAIGN_ACCENTS[campaign.key] ?? "#c58b2b") : null
+  const { children, cfg, ctx } = props
   const siteRoot =
     ctx.argv.serve || !cfg.baseUrl
       ? ""
       : new URL(`https://${cfg.baseUrl}`).pathname.replace(/\/$/, "")
   const homePath = `${siteRoot}/`
   const spoilerControllerPath = `${siteRoot}/static/campaign-spoilers.js`
+  const preferencesControllerPath = `${siteRoot}/static/preferences.js`
+  const preferencesStylesPath = `${siteRoot}/static/preferences.css`
   // Quartz's Assets emitter slugifies file paths as it copies them into public/.
   // The source folder is "lantern and ledger branding", so its published path is
   // "lantern-and-ledger-branding" rather than a URL-encoded space-separated path.
@@ -27,7 +20,9 @@ const Header: QuartzComponent = (props: QuartzComponentProps) => {
 
   return (
     <>
+      <link rel="stylesheet" href={preferencesStylesPath} />
       <script src={spoilerControllerPath}></script>
+      <script src={preferencesControllerPath}></script>
       <header class="lantern-ledger-site-header">
         <a class="lantern-ledger-masthead" href={homePath} aria-label="Campaign site home">
           <picture>
@@ -41,27 +36,6 @@ const Header: QuartzComponent = (props: QuartzComponentProps) => {
         <div class="lantern-ledger-archive-rule" aria-hidden="true">
           <span>THE LANTERN AND LEDGER · ARCHIVES</span>
         </div>
-        {campaign && (
-          <button
-            class="campaign-spoiler-reset"
-            type="button"
-            data-campaign-key={campaign.key}
-            data-campaign-name={campaign.name}
-            data-spoiler-action="reset"
-            hidden
-            style={{
-              backgroundColor: campaignAccent ?? "#c58b2b",
-              borderColor: campaignAccent ?? "#c58b2b",
-              borderWidth: "2px",
-              color: "#fff8e8",
-              boxShadow: "0 4px 12px rgba(35, 28, 20, 0.2)",
-              fontWeight: 700,
-              padding: "0.55rem 0.85rem",
-            }}
-          >
-            Hide {campaign.name} spoilers again
-          </button>
-        )}
         {children.length > 0 && <div class="lantern-ledger-header-children">{children}</div>}
       </header>
     </>

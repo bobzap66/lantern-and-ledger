@@ -32,6 +32,15 @@ body[data-slug="index"] {
     display: none;
   }
 
+  .content-meta > .archive-consultations {
+    display: inline-block !important;
+    margin-inline-start: 0 !important;
+    color: var(--gray);
+    font-size: 0.82rem;
+    letter-spacing: 0.045em;
+    text-transform: uppercase;
+  }
+
   .page > #quartz-body .sidebar.right {
     display: none;
   }

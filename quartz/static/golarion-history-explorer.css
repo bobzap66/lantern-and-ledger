@@ -3,20 +3,28 @@
 }
 
 .golarion-history-controls {
-  display: grid;
-  grid-template-columns: minmax(14rem, 2fr) repeat(4, minmax(9rem, 1fr)) auto;
+  display: flex;
+  flex-wrap: wrap;
   gap: 0.75rem;
   align-items: end;
+  box-sizing: border-box;
+  max-width: 100%;
   padding: 1rem;
   border: 1px solid var(--lightgray);
   border-radius: 0.75rem;
   background: var(--light);
 }
 
+.golarion-history-search {
+  flex: 2 1 18rem;
+}
+
 .golarion-history-controls label {
   display: flex;
+  flex: 1 1 9rem;
   flex-direction: column;
   gap: 0.3rem;
+  min-width: 0;
   font-size: 0.8rem;
   font-weight: 600;
 }
@@ -34,12 +42,40 @@
 
 .golarion-history-controls input,
 .golarion-history-controls select {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
   padding: 0.4rem 0.55rem;
 }
 
 .golarion-history-controls button {
+  flex: 0 1 auto;
   padding: 0.45rem 0.8rem;
   cursor: pointer;
+}
+
+.golarion-history-controls .golarion-history-future {
+  flex: 0 1 16rem;
+  min-width: 12rem;
+}
+
+.golarion-history-controls .golarion-history-future > span:last-child {
+  display: flex;
+  min-height: 2.35rem;
+  gap: 0.45rem;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.golarion-history-controls .golarion-history-future input[type="checkbox"] {
+  position: static;
+  flex: 0 0 auto;
+  width: auto;
+  min-width: auto;
+  min-height: auto;
+  margin: 0;
+  padding: 0;
+  transform: none;
 }
 
 .golarion-history-count {
@@ -48,11 +84,88 @@
   font-size: 0.9rem;
 }
 
+.golarion-history-jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 0 1.35rem;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid var(--lightgray);
+  border-radius: 0.6rem;
+  background: var(--light);
+}
+
+.golarion-history-era-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.golarion-history-era-links > span,
+.golarion-history-jump > label {
+  color: var(--gray);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+
+.golarion-history-era-links a {
+  padding: 0.2rem 0.5rem;
+  border: 1px solid var(--lightgray);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 650;
+}
+
+.golarion-history-jump > label {
+  display: flex;
+  gap: 0.45rem;
+  align-items: center;
+}
+
+.golarion-history-jump select {
+  max-width: 10rem;
+  padding: 0.3rem 0.45rem;
+  border: 1px solid var(--lightgray);
+  border-radius: 0.4rem;
+  background: var(--light);
+  color: var(--dark);
+  font: inherit;
+  text-transform: none;
+}
+
+.golarion-history-era {
+  margin: 2.5rem 0 3.5rem;
+  scroll-margin-top: 1rem;
+}
+
+.golarion-history-era > header {
+  margin-bottom: 1rem;
+  padding-bottom: 0.55rem;
+  border-bottom: 2px solid var(--secondary);
+}
+
+.golarion-history-era > header span {
+  color: var(--secondary);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.golarion-history-era > header h2 {
+  margin: 0.1rem 0 0;
+}
+
 .golarion-history-year {
   margin: 2rem 0 2.75rem;
 }
 
-.golarion-history-year > h2 {
+.golarion-history-year > h3 {
   position: sticky;
   top: 0;
   z-index: 1;
@@ -60,6 +173,10 @@
   padding: 0.35rem 0;
   border-bottom: 1px solid var(--lightgray);
   background: var(--light);
+}
+
+.golarion-history-year {
+  scroll-margin-top: 1rem;
 }
 
 .golarion-history-event {
@@ -78,6 +195,15 @@
 .golarion-history-event-body h3 {
   margin: 0.2rem 0 0.35rem;
   font-size: 1.05rem;
+}
+
+.golarion-history-event.is-compact {
+  padding-top: 0.55rem;
+  padding-bottom: 0.55rem;
+}
+
+.golarion-history-event.is-compact .golarion-history-event-body h3 {
+  margin-bottom: 0;
 }
 
 .golarion-history-event-body p {
@@ -112,6 +238,149 @@
   color: var(--tertiary);
 }
 
+.golarion-history-event.is-milestone {
+  padding-left: 0.75rem;
+  border-left: 3px solid var(--secondary);
+  background: color-mix(in srgb, var(--secondary) 5%, transparent);
+}
+
+/* Reuse the campaign page identities without tinting canonical history. */
+.history-campaign--kingmaker {
+  --history-campaign-accent: #b98532;
+  --history-campaign-secondary: #557449;
+}
+
+.history-campaign--abomination-vaults {
+  --history-campaign-accent: #4e9b86;
+  --history-campaign-secondary: #527985;
+}
+
+.history-campaign--season-of-ghosts {
+  --history-campaign-accent: #c68b2c;
+  --history-campaign-secondary: #a76043;
+}
+
+.history-campaign--claws-of-the-tyrant {
+  --history-campaign-accent: #a94b46;
+  --history-campaign-secondary: #6d656a;
+}
+
+.golarion-history-event[class*="history-campaign--"] {
+  margin: 0.4rem 0;
+  padding: 0.8rem;
+  border: 1px solid color-mix(in srgb, var(--history-campaign-accent) 28%, var(--lightgray));
+  border-left: 3px solid var(--history-campaign-accent);
+  border-radius: 0.45rem;
+  background: color-mix(in srgb, var(--history-campaign-accent) 5%, var(--light));
+}
+
+.golarion-history-event[class*="history-campaign--"] .golarion-history-event-date {
+  color: var(--history-campaign-accent);
+}
+
+.golarion-history-event[class*="history-campaign--"] .golarion-history-event-meta span:first-child {
+  border-color: var(--history-campaign-secondary);
+  background: color-mix(in srgb, var(--history-campaign-secondary) 7%, transparent);
+  color: var(--history-campaign-secondary);
+}
+
+.golarion-history-event[class*="history-campaign--"].is-milestone {
+  border-left-width: 4px;
+  background: color-mix(in srgb, var(--history-campaign-accent) 9%, var(--light));
+}
+
+.golarion-history-now {
+  display: grid;
+  grid-template-columns: minmax(8.5rem, 11rem) minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: center;
+  margin: 0.45rem 0;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--secondary);
+  border-radius: 0.55rem;
+  background: color-mix(in srgb, var(--secondary) 9%, var(--light));
+}
+
+.golarion-history-now > span {
+  color: var(--secondary);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+}
+
+.golarion-history-now > time {
+  color: var(--gray);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.golarion-history-now[class*="history-campaign--"] {
+  border-color: var(--history-campaign-accent);
+  background: color-mix(in srgb, var(--history-campaign-accent) 9%, var(--light));
+}
+
+.golarion-history-now[class*="history-campaign--"] > span,
+.golarion-history-now[class*="history-campaign--"] > time {
+  color: var(--history-campaign-accent);
+}
+
+.golarion-history-meanwhile {
+  margin-top: 0.7rem;
+  padding: 0.65rem 0.75rem;
+  border-left: 2px solid var(--tertiary);
+  background: color-mix(in srgb, var(--tertiary) 6%, transparent);
+}
+
+.golarion-history-meanwhile > strong {
+  color: var(--tertiary);
+  font-size: 0.78rem;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+
+.golarion-history-meanwhile ul {
+  margin: 0.4rem 0 0;
+  padding-left: 1.1rem;
+}
+
+.golarion-history-meanwhile li {
+  margin: 0.22rem 0;
+}
+
+.golarion-history-meanwhile li span {
+  margin-left: 0.4rem;
+  color: var(--gray);
+  font-size: 0.78rem;
+}
+
+.golarion-history-related {
+  margin: 0.35rem 0 0.9rem min(12rem, 20%);
+  border: 1px solid var(--lightgray);
+  border-radius: 0.55rem;
+  background: color-mix(in srgb, var(--lightgray) 12%, transparent);
+}
+
+.golarion-history-related > summary {
+  padding: 0.65rem 0.8rem;
+  color: var(--gray);
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.golarion-history-related[open] > summary {
+  border-bottom: 1px solid var(--lightgray);
+}
+
+.golarion-history-related-records {
+  padding: 0 0.8rem;
+}
+
+.golarion-history-related-records .golarion-history-event:last-child {
+  border-bottom: 0;
+}
+
 .golarion-history-source {
   font-size: 0.82rem;
 }
@@ -123,27 +392,27 @@
   color: var(--gray);
 }
 
-@media (max-width: 1100px) {
-  .golarion-history-controls {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .golarion-history-search {
-    grid-column: 1 / -1;
-  }
-}
-
 @media (max-width: 700px) {
-  .golarion-history-controls {
-    grid-template-columns: 1fr;
+  .golarion-history-controls label,
+  .golarion-history-controls button {
+    flex-basis: 100%;
   }
 
-  .golarion-history-search {
-    grid-column: auto;
+  .golarion-history-controls .golarion-history-future {
+    min-width: 0;
   }
 
   .golarion-history-event {
     grid-template-columns: 1fr;
     gap: 0.3rem;
+  }
+
+  .golarion-history-related {
+    margin-left: 0;
+  }
+
+  .golarion-history-now {
+    grid-template-columns: 1fr;
+    gap: 0.2rem;
   }
 }
