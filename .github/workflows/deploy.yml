@@ -81,7 +81,7 @@ jobs:
         run: node scripts/diagnose-golarion-calendar.mjs | tee golarion-calendar-diagnostic.txt
 
       - name: Upload calendar diagnostic
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: golarion-calendar-diagnostic
           path: golarion-calendar-diagnostic.txt
@@ -112,4 +112,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
