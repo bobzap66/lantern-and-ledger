@@ -145,15 +145,33 @@ body[data-slug="index"] {
       box-shadow: 0 0.16rem 0.45rem color-mix(in srgb, var(--dark) 10%, transparent);
     }
 
-    .home-recent-campaign {
-      display: block;
+    .home-recent-meta {
+      display: flex;
+      min-width: 0;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0.3rem;
       margin-bottom: 0.2rem;
-      color: var(--tertiary);
       font-size: 0.64rem;
       font-weight: 700;
       letter-spacing: 0.1em;
       line-height: 1.2;
       text-transform: uppercase;
+    }
+
+    .home-recent-campaign {
+      display: inline;
+      color: var(--tertiary);
+    }
+
+    .home-recent-type {
+      display: inline;
+      color: var(--gray);
+    }
+
+    .home-recent-separator {
+      color: var(--gray);
+      font-size: 0.72em;
     }
 
     .home-recent-title {
