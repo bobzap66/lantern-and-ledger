@@ -393,6 +393,124 @@ The transformer matches author/contributor names case-insensitively. Published n
 
 This system is automatic; authors do not insert a fenced component block into the article body.
 
+## Related Records
+
+Implementation:
+
+```text
+quartz/components/RelatedRecords.tsx
+quartz/components/EditorialCard.tsx
+```
+
+Purpose: add a compact editorial strip of up to three genuinely related archive records after article content. The component is registered in `quartz.ts` as an `afterBody` component before `VignetteNavigation`, so vignette pages render in this order:
+
+```text
+article content
+Related Records
+previous / archive / next vignette navigation
+```
+
+Related Records uses the shared `EditorialCard` presentation, inherits the active campaign accent and rule colors, renders three columns on wider screens, and collapses to one column below 700px.
+
+### Automatic relationships
+
+When `related_records` is absent, the component only runs automatically on article-like records. Supported `type` values include:
+
+```text
+article
+report
+session
+session note
+vignette
+intelligence report
+intelligence dossier
+scholarly journal
+journal article
+academic paper
+scholarly article
+```
+
+The following `format` values are also eligible:
+
+```text
+oral history
+player fiction
+gm fiction
+```
+
+Automatic inference is intentionally conservative:
+
+1. Vignettes link to their `character` record, then to the campaign.
+2. Other eligible records first link to `narrator` when present; if there is no narrator, `character` is used when present.
+3. Records inside a `Session Notes` folder link to that session archive index.
+4. Campaign records are added as a final safe relationship.
+5. Unresolvable targets are skipped rather than occupying a card slot.
+6. At most three unique records are rendered, and the current page is never linked to itself.
+
+This keeps automatic results predictable and avoids trying to derive recommendations from every inline link or backlink in an article.
+
+### Curated `related_records`
+
+Any page can replace the automatic relationships by defining `related_records` in frontmatter. The simplest form is a list of record links or paths:
+
+```yaml
+related_records:
+  - "[[../Locations/Willowshore|Willowshore]]"
+  - "[[../Contributors/Granny Hu Ban-niang]]"
+  - "../Session Notes"
+```
+
+Each item may instead be an object when the displayed card needs editorial overrides:
+
+```yaml
+related_records:
+  - target: "[[../Locations/Willowshore|Willowshore]]"
+    eyebrow: Location
+    description: The isolated town at the center of the Willowshore oral history.
+    cta: View location
+  - target: "[[../Contributors/Granny Hu Ban-niang]]"
+    title: Granny Hu Ban-niang
+    kind: Contributor
+    meta: Oral-history narrator
+  - target: "../Session Notes"
+    record_type: Session archive
+```
+
+The target field may be named `target`, `link`, `record`, or `path`. Optional display fields are:
+
+```text
+title
+eyebrow
+kind
+record_type
+type
+description
+meta
+cta
+```
+
+`eyebrow`, `kind`, `record_type`, and `type` are aliases for the same card label override. If an override is omitted, the component uses the target record's metadata and inferred record kind.
+
+The target record supplies fallback description text in this order:
+
+```text
+card_description
+description
+short_bio
+card_summary
+summary
+role
+record-type fallback copy
+```
+
+Curated records fully replace automatic inference; they are not merged with it. An explicit empty list therefore suppresses the section on a page that would otherwise qualify automatically:
+
+```yaml
+related_records: []
+```
+
+Unresolved curated targets are skipped. If no configured target resolves, the Related Records section is not rendered.
+
 ## Character/vignette navigation and dossiers
 
 Implementation files include:
@@ -420,7 +538,9 @@ Custom Markdown transformers are registered in:
 quartz.ts
 ```
 
-A newly created transformer will not run simply because its file exists. It must also be imported and pushed into `config.plugins.transformers`.
+Local layout components such as `CharacterVignettes`, `RelatedRecords`, and `VignetteNavigation` are also imported, instantiated, registered in the component registry, and added to the appropriate `beforeBody` or `afterBody` layout arrays in `quartz.ts`.
+
+A newly created transformer or local layout component will not run simply because its file exists; it must also be registered in the corresponding configuration path.
 
 ## Styling rule
 
