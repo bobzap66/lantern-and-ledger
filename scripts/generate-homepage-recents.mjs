@@ -174,21 +174,6 @@ function chooseRecents(pool, excluded = new Set()) {
   return { brandNew, recentlyUpdated }
 }
 
-function renderSection(title, items, dateField, baseDir, { showCampaign = false } = {}) {
-  const lines = [`### ${title}`, ""]
-  if (items.length === 0) {
-    lines.push("- Nothing here yet.")
-  } else {
-    for (const item of items) {
-      const campaign = showCampaign && item.campaign
-        ? `<span class="home-recent-campaign">${item.campaign}</span> `
-        : ""
-      lines.push(`- ${campaign}[[${linkFrom(baseDir, item.rel)}|${item.title}]] — ${formatDate(item[dateField])}`)
-    }
-  }
-  return lines.join("\n")
-}
-
 function renderHomeSection(title, items, dateField, baseDir) {
   const lines = [
     '<section class="home-recent-column">',
@@ -222,6 +207,35 @@ function renderHomeSection(title, items, dateField, baseDir) {
   return lines.join("\n")
 }
 
+function renderCampaignSection(title, items, dateField, baseDir) {
+  const lines = [
+    '<section class="campaign-recent-column">',
+    `<h3>${escapeHtml(title)}</h3>`,
+    '<div class="campaign-recent-list">',
+  ]
+
+  if (items.length === 0) {
+    lines.push('<p class="campaign-recent-empty">Nothing here yet.</p>')
+  } else {
+    for (const item of items) {
+      const date = item[dateField]
+      const href = encodeURI(linkFrom(baseDir, item.rel))
+      const typeLabel = recentTypeLabel(item)
+
+      lines.push(
+        `<a class="campaign-recent-card" href="${escapeHtml(href)}">`,
+        typeLabel ? `<span class="campaign-recent-type">${escapeHtml(typeLabel)}</span>` : "",
+        `<span class="campaign-recent-title">${escapeHtml(item.title)}</span>`,
+        `<time class="campaign-recent-date" datetime="${escapeHtml(date.toISOString())}">${escapeHtml(formatDate(date))}</time>`,
+        "</a>",
+      )
+    }
+  }
+
+  lines.push("</div>", "</section>")
+  return lines.join("\n")
+}
+
 function renderBlock(start, end, recents, baseDir) {
   if (start === HOME_START) {
     return [
@@ -236,13 +250,16 @@ function renderBlock(start, end, recents, baseDir) {
       end,
     ].join("\n")
   }
+
   return [
     start,
-    "## What's New",
-    "",
-    renderSection("Brand New", recents.brandNew, "created", baseDir),
-    "",
-    renderSection("Recently Updated", recents.recentlyUpdated, "modified", baseDir),
+    '<section class="campaign-recents" aria-labelledby="campaign-whats-new">',
+    '<h2 id="campaign-whats-new">What\'s New</h2>',
+    '<div class="campaign-recent-columns">',
+    renderCampaignSection("Brand New", recents.brandNew, "created", baseDir),
+    renderCampaignSection("Recently Updated", recents.recentlyUpdated, "modified", baseDir),
+    "</div>",
+    "</section>",
     end,
   ].join("\n")
 }
