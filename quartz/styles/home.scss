@@ -298,3 +298,132 @@ body[data-slug="index"] {
     }
   }
 }
+
+/* Campaign landing pages use the same recent-card language without repeating the campaign name. */
+.center:has(.campaign-hero) {
+  .campaign-recents {
+    --campaign-recent-accent: var(--tertiary);
+    margin: 1.8rem 0 2.35rem;
+  }
+
+  .campaign-recents > h2 {
+    margin-bottom: 1rem;
+  }
+
+  .campaign-recent-columns {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.75rem;
+  }
+
+  .campaign-recent-column {
+    min-width: 0;
+  }
+
+  .campaign-recent-column h3 {
+    margin: 0 0 0.65rem;
+    font-size: 1.1rem;
+  }
+
+  .campaign-recent-list {
+    display: grid;
+    gap: 0.65rem;
+  }
+
+  article .campaign-recent-card {
+    display: flex;
+    min-width: 0;
+    min-height: 5.7rem;
+    flex-direction: column;
+    padding: 0.72rem 0.82rem;
+    border: 1px solid var(--lightgray);
+    border-radius: 0.6rem;
+    background: color-mix(in srgb, var(--light) 96%, var(--lightgray) 4%);
+    color: inherit;
+    text-decoration: none;
+    box-shadow: 0 0.08rem 0.25rem color-mix(in srgb, var(--dark) 5%, transparent);
+    transition:
+      transform 120ms ease,
+      box-shadow 120ms ease,
+      border-color 120ms ease;
+  }
+
+  article .campaign-recent-card:hover {
+    transform: translateY(-1px);
+    border-color: var(--campaign-recent-accent);
+    box-shadow: 0 0.16rem 0.45rem color-mix(in srgb, var(--dark) 10%, transparent);
+  }
+
+  article .campaign-recent-card:focus-visible {
+    outline: 2px solid var(--campaign-recent-accent);
+    outline-offset: 3px;
+  }
+
+  .campaign-recent-type {
+    display: block;
+    margin-bottom: 0.2rem;
+    color: var(--campaign-recent-accent);
+    font-size: 0.64rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  .campaign-recent-title {
+    display: block;
+    font-family: var(--headerFont);
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .campaign-recent-date {
+    display: block;
+    margin-top: auto;
+    padding-top: 0.35rem;
+    color: var(--gray);
+    font-size: 0.76rem;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  .campaign-recent-empty {
+    margin: 0;
+    color: var(--gray);
+    font-size: 0.88rem;
+  }
+}
+
+.center:has(.campaign-hero--kingmaker) .campaign-recents {
+  --campaign-recent-accent: #b98532;
+}
+
+.center:has(.campaign-hero--abomination-vaults) .campaign-recents {
+  --campaign-recent-accent: #4e9b86;
+}
+
+.center:has(.campaign-hero--season-of-ghosts) .campaign-recents {
+  --campaign-recent-accent: #c68b2c;
+}
+
+.center:has(.campaign-hero--claws-of-the-tyrant) .campaign-recents {
+  --campaign-recent-accent: #a94b46;
+}
+
+@media (max-width: 600px) {
+  .center:has(.campaign-hero) .campaign-recent-columns {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
+  }
+
+  .center:has(.campaign-hero) article .campaign-recent-card {
+    min-height: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .center:has(.campaign-hero) article .campaign-recent-card {
+    transition: none;
+  }
+}
