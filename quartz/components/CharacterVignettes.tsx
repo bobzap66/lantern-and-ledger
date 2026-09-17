@@ -1,3 +1,4 @@
+import { EditorialCard, editorialCardCss } from "./EditorialCard"
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 import { FullSlug, resolveRelative, simplifySlug } from "../util/path"
 
@@ -13,10 +14,7 @@ function isCharacterPage(fileData: QuartzComponentProps["fileData"]) {
   return Boolean(pageSlug.slice(markerIndex + marker.length))
 }
 
-function inferredVignetteSlug(
-  fileData: QuartzComponentProps["fileData"],
-  allFiles: QuartzComponentProps["allFiles"],
-) {
+function vignetteArchiveRoot(fileData: QuartzComponentProps["fileData"]) {
   if (!fileData.slug) return undefined
 
   const pageSlug = simplifySlug(fileData.slug)
@@ -28,14 +26,20 @@ function inferredVignetteSlug(
   const characterPath = pageSlug.slice(markerIndex + marker.length)
   if (!characterPath || characterPath === "index") return undefined
 
-  const characterSegment = characterPath.split("/").filter(Boolean).at(-1)
+  return `${campaignRoot}/vignettes/${characterPath}`
+}
+
+function inferredVignetteSlug(
+  fileData: QuartzComponentProps["fileData"],
+  allFiles: QuartzComponentProps["allFiles"],
+) {
+  const archiveRoot = vignetteArchiveRoot(fileData)
+  if (!archiveRoot) return undefined
+
+  const characterSegment = archiveRoot.split("/").filter(Boolean).at(-1)
   if (!characterSegment) return undefined
 
-  const candidates = [
-    `${campaignRoot}/vignettes/${characterPath}`,
-    `${campaignRoot}/vignettes/${characterPath}/index`,
-    `${campaignRoot}/vignettes/${characterPath}/${characterSegment}`,
-  ]
+  const candidates = [archiveRoot, `${archiveRoot}/index`, `${archiveRoot}/${characterSegment}`]
 
   for (const candidate of candidates) {
     const match = allFiles.find(
@@ -47,6 +51,14 @@ function inferredVignetteSlug(
   }
 
   return undefined
+}
+
+function matchedFile(target: string, allFiles: QuartzComponentProps["allFiles"]) {
+  return allFiles.find(
+    (file) =>
+      file.slug &&
+      (String(file.slug) === target || String(simplifySlug(file.slug)) === target),
+  )
 }
 
 export default (() => {
@@ -63,25 +75,49 @@ export default (() => {
     if (!target || !fileData.slug) return null
 
     const href = resolveRelative(fileData.slug, target as FullSlug)
+    const targetFile = matchedFile(target, allFiles)
+    const targetDescription =
+      typeof targetFile?.frontmatter?.description === "string"
+        ? targetFile.frontmatter.description.trim()
+        : ""
+    const description =
+      targetDescription || "Browse this character's collected scenes, side stories, and vignettes."
+
+    const archiveRoot = vignetteArchiveRoot(fileData)
+    const entryCount = archiveRoot
+      ? allFiles.filter((file) => {
+          if (!file.slug) return false
+          if (String(file.frontmatter?.type ?? "").toLowerCase() !== "vignette") return false
+          const slug = simplifySlug(file.slug)
+          return slug.startsWith(`${archiveRoot}/`)
+        }).length
+      : 0
+    const meta = entryCount > 0 ? `${entryCount} ${entryCount === 1 ? "entry" : "entries"}` : undefined
 
     return (
-      <p class={`character-vignettes ${displayClass ?? ""}`.trim()}>
-        <a href={href} class="internal">
-          Character Vignettes →
-        </a>
-      </p>
+      <div class={`character-vignettes ${displayClass ?? ""}`.trim()}>
+        <EditorialCard
+          href={href}
+          eyebrow="Character archive"
+          title="Character Vignettes"
+          description={description}
+          meta={meta}
+          cta="Browse vignettes"
+          className="character-vignettes__card"
+        />
+      </div>
     )
   }
 
   CharacterVignettes.css = `
+${editorialCardCss}
+
 .character-vignettes {
-  margin: 0.35rem 0 1.15rem;
-  font-size: 0.92rem;
+  margin: 0.55rem 0 1.35rem;
 }
 
-.character-vignettes a {
-  font-weight: 600;
-  text-decoration: none;
+.character-vignettes__card {
+  max-width: 42rem;
 }
 `
 
