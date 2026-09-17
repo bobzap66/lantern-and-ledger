@@ -517,19 +517,64 @@ test("History explorer controls wrap inside their bordered panel", async () => {
   assert.match(controls, /max-width: 100%/)
 })
 
+test("Golarion page scripts are available after SPA navigation", async () => {
+  const header = await readFile(new URL("../quartz/components/Header.tsx", import.meta.url), "utf8")
+  const loader = await readFile(
+    new URL("../quartz/static/golarion-page-loader.js", import.meta.url),
+    "utf8",
+  )
+
+  assert.match(header, /golarion-page-loader\.js/)
+  assert.match(loader, /document\.addEventListener\("nav", loadPageScript\)/)
+  assert.match(loader, /#golarion-calendar/)
+  assert.match(loader, /golarion-calendar\.js/)
+  assert.match(loader, /#golarion-history-explorer/)
+  assert.match(loader, /golarion-history-explorer\.js/)
+  assert.match(loader, /#golarion-today/)
+  assert.match(loader, /golarion-history-browser\.js/)
+  assert.match(loader, /script\.dataset\.golarionPageLoader === filename/)
+  assert.doesNotMatch(loader, /new URL\(script\.src/)
+})
+
 test("History explorer displays a mixed-precision campaign range", async () => {
   const results = { innerHTML: "" }
   const count = { textContent: "" }
   const jump = {
     innerHTML: "",
-    querySelector: () => ({ addEventListener() {} }),
+    querySelector(selector) {
+      if (selector === "[data-history-jump-year]") return jumpYearInput
+      if (selector === "[data-history-jump-year-go]") return jumpYearButton
+      if (selector === "[data-history-jump-status]") return jumpYearStatus
+      return null
+    },
   }
+  let jumpYearClick
+  let jumpYearKeydown
+  const jumpYearInput = {
+    value: "",
+    addEventListener: (type, handler) => {
+      if (type === "keydown") jumpYearKeydown = handler
+    },
+  }
+  const jumpYearButton = {
+    addEventListener: (type, handler) => {
+      if (type === "click") jumpYearClick = handler
+    },
+  }
+  const jumpYearStatus = { textContent: "" }
   let densityChange
+  let scopeChange
   const control = () => ({ value: "", addEventListener() {} })
   const controls = {
     "[data-history-query]": control(),
     "[data-history-kind]": control(),
     "[data-history-campaign]": control(),
+    "[data-history-scope]": {
+      value: "all",
+      addEventListener: (_type, handler) => {
+        scopeChange = handler
+      },
+    },
     "[data-history-from]": control(),
     "[data-history-to]": control(),
     "[data-history-density]": {
@@ -574,7 +619,7 @@ test("History explorer displays a mixed-precision campaign range", async () => {
       {
         id: "Claws of the Tyrant",
         name: "Claws of the Tyrant",
-        currentDate: { year: 4725, month: 8, day: 22, datePrecision: "day" },
+        currentDate: { year: 4725, month: 3, day: 9, datePrecision: "day" },
         source: "campaigns/claws-of-the-tyrant",
       },
     ],
@@ -588,7 +633,7 @@ test("History explorer displays a mixed-precision campaign range", async () => {
         source: "campaigns/claws-of-the-tyrant/articles/six-years-beneath-yua's-hope",
         isMultiDay: true,
         rangeStart: { year: 4719, datePrecision: "year" },
-        rangeEnd: { year: 4725, month: 8, day: 16, datePrecision: "day" },
+        rangeEnd: { year: 4725, month: 3, day: 3, datePrecision: "day" },
       },
       {
         year: -5293,
@@ -598,8 +643,8 @@ test("History explorer displays a mixed-precision campaign range", async () => {
       },
       {
         year: 4725,
-        month: 8,
-        day: 22,
+        month: 3,
+        day: 9,
         datePrecision: "day",
         name: "A Detailed Record",
         campaign: "Claws of the Tyrant",
@@ -607,8 +652,8 @@ test("History explorer displays a mixed-precision campaign range", async () => {
       },
       {
         year: 4725,
-        month: 8,
-        day: 22,
+        month: 3,
+        day: 9,
         datePrecision: "day",
         name: "The Corlach Milestone",
         campaign: "Claws of the Tyrant",
@@ -617,8 +662,8 @@ test("History explorer displays a mixed-precision campaign range", async () => {
       },
       {
         year: 4725,
-        month: 8,
-        day: 22,
+        month: 3,
+        day: 9,
         datePrecision: "day",
         name: "A Canonical Event That Day",
         kind: "historical",
@@ -633,8 +678,8 @@ test("History explorer displays a mixed-precision campaign range", async () => {
       },
       {
         year: 4725,
-        month: 8,
-        day: 22,
+        month: 3,
+        day: 9,
         datePrecision: "day",
         name: "Another Detailed Record",
         campaign: "Claws of the Tyrant",
@@ -642,8 +687,8 @@ test("History explorer displays a mixed-precision campaign range", async () => {
       },
       {
         year: 4725,
-        month: 8,
-        day: 23,
+        month: 3,
+        day: 10,
         datePrecision: "day",
         name: "A Future Campaign Record",
         campaign: "Claws of the Tyrant",
@@ -651,8 +696,8 @@ test("History explorer displays a mixed-precision campaign range", async () => {
       },
       {
         year: 4725,
-        month: 8,
-        day: 22,
+        month: 3,
+        day: 9,
         datePrecision: "day",
         name: "A Third Detailed Record",
         campaign: "Claws of the Tyrant",
@@ -660,10 +705,15 @@ test("History explorer displays a mixed-precision campaign range", async () => {
       },
     ],
   }
+  let replacedUrl = ""
   const context = {
     console,
     URLSearchParams,
-    history: { replaceState() {} },
+    history: {
+      replaceState: (_state, _title, url) => {
+        replacedUrl = url
+      },
+    },
     location: { pathname: "/inner-sea-region/history-of-golarion", search: "", hash: "" },
     localStorage: {
       getItem: (key) => (key === "isr-campaign-spoilers:claws-of-the-tyrant" ? "true" : null),
@@ -683,7 +733,7 @@ test("History explorer displays a mixed-precision campaign range", async () => {
   vm.runInNewContext(source, context)
   await new Promise((resolve) => setImmediate(resolve))
 
-  assert.match(results.innerHTML, /4719 AR–Rova 16, 4725 AR/)
+  assert.match(results.innerHTML, /4719 AR–Gozran 3, 4725 AR/)
   assert.match(results.innerHTML, /Six Years Beneath Yua&#039;s Hope/)
   assert.match(results.innerHTML, /history-campaign--claws-of-the-tyrant/)
   assert.ok(
@@ -701,10 +751,25 @@ test("History explorer displays a mixed-precision campaign range", async () => {
   assert.match(results.innerHTML, /Age of Lost Omens/)
   assert.match(results.innerHTML, /Age of Darkness/)
   assert.match(jump.innerHTML, /Jump to era/)
-  assert.match(jump.innerHTML, /history-year-4725/)
+  assert.match(jump.innerHTML, /Jump to year/)
+  assert.doesNotMatch(jump.innerHTML, /Choose a year/)
+
+  jumpYearInput.value = "4725"
+  jumpYearClick()
+  assert.equal(context.location.hash, "history-year-4725")
+  jumpYearInput.value = "4000"
+  jumpYearKeydown({ key: "Enter" })
+  assert.equal(jumpYearStatus.textContent, "No records for 4000 AR in this view.")
 
   densityChange({ target: { value: "compact" } })
   assert.match(results.innerHTML, /is-compact/)
   assert.doesNotMatch(results.innerHTML, /Meanwhile in Golarion/)
   assert.doesNotMatch(results.innerHTML, />View source<\/a>/)
+
+  scopeChange({ target: { value: "major" } })
+  assert.match(replacedUrl, /scope=major/)
+  assert.match(results.innerHTML, /The Corlach Milestone/)
+  assert.match(results.innerHTML, /A Canonical Event That Day/)
+  assert.doesNotMatch(results.innerHTML, /A Detailed Record/)
+  assert.doesNotMatch(results.innerHTML, /Another Detailed Record/)
 })

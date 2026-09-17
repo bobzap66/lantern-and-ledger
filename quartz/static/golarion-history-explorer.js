@@ -55,6 +55,8 @@
 
   const isMilestone = (event) => event.timelineMetadata || event.recordType === "milestone"
 
+  const isMajorRecord = (event) => event.kind === "historical" || isMilestone(event)
+
   const campaignAccessEnabled = (campaign) => {
     const key = normalizeCampaignKey(campaign)
     if (!key || typeof localStorage === "undefined") return false
@@ -175,6 +177,7 @@
     if (state.to !== "") params.set("to", state.to)
     if (state.future) params.set("future", "1")
     if (state.density === "compact") params.set("view", "compact")
+    if (state.scope === "major") params.set("scope", "major")
     const next = `${location.pathname}${params.toString() ? `?${params}` : ""}${location.hash}`
     history.replaceState(null, "", next)
   }
@@ -200,6 +203,7 @@
         to: params.get("to") || "",
         future: params.get("future") === "1",
         density: params.get("view") === "compact" ? "compact" : "expanded",
+        scope: params.get("scope") === "major" ? "major" : "all",
       }
 
       if (!["all", "historical", "campaign"].includes(state.kind)) state.kind = "all"
@@ -239,6 +243,10 @@
               <option value="campaign"${state.kind === "campaign" ? " selected" : ""}>Campaign history</option>
             </select></label>
             <label>Campaign <select data-history-campaign><option value="all">All campaigns</option>${campaignOptions}</select></label>
+            <label>Coverage <select data-history-scope>
+              <option value="all"${state.scope === "all" ? " selected" : ""}>All records</option>
+              <option value="major"${state.scope === "major" ? " selected" : ""}>Major events</option>
+            </select></label>
             <label>From year <input type="number" data-history-from value="${escapeHtml(state.from)}" inputmode="numeric"></label>
             <label>To year <input type="number" data-history-to value="${escapeHtml(state.to)}" inputmode="numeric"></label>
             <label>View <select data-history-density>
@@ -256,6 +264,7 @@
       const queryInput = root.querySelector("[data-history-query]")
       const kindSelect = root.querySelector("[data-history-kind]")
       const campaignSelect = root.querySelector("[data-history-campaign]")
+      const scopeSelect = root.querySelector("[data-history-scope]")
       const fromInput = root.querySelector("[data-history-from]")
       const toInput = root.querySelector("[data-history-to]")
       const densitySelect = root.querySelector("[data-history-density]")
@@ -274,6 +283,7 @@
           if (state.kind === "historical" && event.kind !== "historical") return false
           if (state.kind === "campaign" && event.kind !== "campaign-event") return false
           if (state.campaign !== "all" && event.campaign !== state.campaign) return false
+          if (state.scope === "major" && !isMajorRecord(event)) return false
           const { startYear, endYear } = eventYearBounds(event)
           if (Number.isFinite(from) && endYear < from) return false
           if (Number.isFinite(to) && startYear > to) return false
@@ -498,26 +508,35 @@
                 `<a href="#history-era-${era.id}">${escapeHtml(era.name.replace(/^Age (of |Before )?/, ""))}</a>`,
             )
             .join("")
-          const yearOptions = [...eraGroups.values()]
-            .map(({ era, years }) => {
-              const options = years
-                .map(
-                  ({ year }) =>
-                    `<option value="history-year-${year}">${escapeHtml(`${year} AR`)}</option>`,
-                )
-                .join("")
-              return `<optgroup label="${escapeHtml(era.name)}">${options}</optgroup>`
-            })
-            .join("")
           jumpNode.innerHTML = eraGroups.size
             ? `<div class="golarion-history-era-links"><span>Jump to era</span>${eraLinks}</div>
-               <label>Year <select data-history-jump-year><option value="">Choose a year…</option>${yearOptions}</select></label>`
+               <div class="golarion-history-year-jump">
+                 <label>Jump to year <input type="number" data-history-jump-year inputmode="numeric" placeholder="e.g. 4719"></label>
+                 <button type="button" data-history-jump-year-go>Go</button>
+                 <span data-history-jump-status aria-live="polite"></span>
+               </div>`
             : ""
+          const yearInput = jumpNode.querySelector("[data-history-jump-year]")
+          const yearStatus = jumpNode.querySelector("[data-history-jump-status]")
+          const jumpToYear = () => {
+            const year = Number(yearInput?.value)
+            if (!Number.isInteger(year)) {
+              if (yearStatus) yearStatus.textContent = "Enter a year."
+              return
+            }
+            if (!grouped.has(year)) {
+              if (yearStatus) yearStatus.textContent = `No records for ${year} AR in this view.`
+              return
+            }
+            if (yearStatus) yearStatus.textContent = ""
+            location.hash = `history-year-${year}`
+          }
           jumpNode
-            .querySelector("[data-history-jump-year]")
-            ?.addEventListener("change", (event) => {
-              if (event.target.value) location.hash = event.target.value
-            })
+            .querySelector("[data-history-jump-year-go]")
+            ?.addEventListener("click", jumpToYear)
+          yearInput?.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") jumpToYear()
+          })
         }
 
         if (countNode)
@@ -545,6 +564,10 @@
         state.campaign = event.target.value
         updateResults()
       })
+      scopeSelect?.addEventListener("change", (event) => {
+        state.scope = event.target.value === "major" ? "major" : "all"
+        updateResults()
+      })
       fromInput?.addEventListener("change", (event) => {
         state.from = event.target.value
         updateResults()
@@ -565,6 +588,7 @@
         state.query = ""
         state.kind = "all"
         state.campaign = "all"
+        state.scope = "all"
         state.from = ""
         state.to = ""
         state.future = false
@@ -572,6 +596,7 @@
         if (queryInput) queryInput.value = ""
         if (kindSelect) kindSelect.value = "all"
         if (campaignSelect) campaignSelect.value = "all"
+        if (scopeSelect) scopeSelect.value = "all"
         if (fromInput) fromInput.value = ""
         if (toInput) toInput.value = ""
         if (futureInput) futureInput.checked = false

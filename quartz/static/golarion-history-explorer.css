@@ -105,7 +105,7 @@
 }
 
 .golarion-history-era-links > span,
-.golarion-history-jump > label {
+.golarion-history-year-jump label {
   color: var(--gray);
   font-size: 0.75rem;
   font-weight: 700;
@@ -121,14 +121,22 @@
   font-weight: 650;
 }
 
-.golarion-history-jump > label {
+.golarion-history-year-jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.golarion-history-year-jump label {
   display: flex;
   gap: 0.45rem;
   align-items: center;
 }
 
-.golarion-history-jump select {
-  max-width: 10rem;
+.golarion-history-year-jump input {
+  box-sizing: border-box;
+  width: 7rem;
   padding: 0.3rem 0.45rem;
   border: 1px solid var(--lightgray);
   border-radius: 0.4rem;
@@ -136,6 +144,24 @@
   color: var(--dark);
   font: inherit;
   text-transform: none;
+}
+
+.golarion-history-year-jump button {
+  min-height: 2rem;
+  padding: 0.3rem 0.65rem;
+  border: 1px solid var(--lightgray);
+  border-radius: 0.4rem;
+  background: var(--light);
+  color: var(--dark);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+}
+
+.golarion-history-year-jump [data-history-jump-status] {
+  flex-basis: 100%;
+  color: var(--gray);
+  font-size: 0.78rem;
 }
 
 .golarion-history-era {

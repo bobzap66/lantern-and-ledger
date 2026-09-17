@@ -11,6 +11,7 @@ const Header: QuartzComponent = (props: QuartzComponentProps) => {
   const spoilerControllerPath = `${siteRoot}/static/campaign-spoilers.js`
   const preferencesControllerPath = `${siteRoot}/static/preferences.js`
   const preferencesStylesPath = `${siteRoot}/static/preferences.css`
+  const golarionPageLoaderPath = `${siteRoot}/static/golarion-page-loader.js`
   // Quartz's Assets emitter slugifies file paths as it copies them into public/.
   // The source folder is "lantern and ledger branding", so its published path is
   // "lantern-and-ledger-branding" rather than a URL-encoded space-separated path.
@@ -23,6 +24,7 @@ const Header: QuartzComponent = (props: QuartzComponentProps) => {
       <link rel="stylesheet" href={preferencesStylesPath} />
       <script src={spoilerControllerPath}></script>
       <script src={preferencesControllerPath}></script>
+      <script src={golarionPageLoaderPath}></script>
       <header class="lantern-ledger-site-header">
         <a class="lantern-ledger-masthead" href={homePath} aria-label="Campaign site home">
           <picture>
