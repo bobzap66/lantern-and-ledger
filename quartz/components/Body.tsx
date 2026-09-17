@@ -193,6 +193,7 @@ const Body: QuartzComponent = (props: QuartzComponentProps) => {
   const frontmatter = fileData.frontmatter as Record<string, unknown> | undefined
   const formalPublication = isFormalPublication(frontmatter, fileData.slug)
   const kicker = articleKicker(frontmatter, fileData.slug)
+  const articleTitle = String(frontmatter?.title ?? "").trim()
   const bodyClasses = [
     campaignClass,
     lockedByDefault ? "campaign-spoiler-pending" : "",
@@ -204,7 +205,12 @@ const Body: QuartzComponent = (props: QuartzComponentProps) => {
   const bodyStyle = kicker ? ({ "--article-kicker": JSON.stringify(kicker) } as any) : undefined
 
   return (
-    <div id="quartz-body" class={bodyClasses || undefined} style={bodyStyle}>
+    <div
+      id="quartz-body"
+      class={bodyClasses || undefined}
+      style={bodyStyle}
+      data-article-title={kicker && articleTitle ? articleTitle : undefined}
+    >
       {kicker && (
         <style>{`
           #quartz-body.has-article-kicker .article-title::before {
@@ -243,5 +249,32 @@ const Body: QuartzComponent = (props: QuartzComponentProps) => {
     </div>
   )
 }
+
+Body.afterDOMLoaded = `
+const normalizeEditorialHeading = (value) =>
+  String(value || "")
+    .replace(/\u00a0/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase()
+
+const hideDuplicateEditorialTitle = () => {
+  const body = document.querySelector("#quartz-body.has-article-kicker[data-article-title]")
+  if (!body) return
+
+  const title = normalizeEditorialHeading(body.dataset.articleTitle)
+  if (!title) return
+
+  const heading = body.querySelector(".center article > h1:first-child")
+  if (!heading) return
+
+  if (normalizeEditorialHeading(heading.textContent) === title) {
+    heading.hidden = true
+  }
+}
+
+document.addEventListener("nav", hideDuplicateEditorialTitle)
+hideDuplicateEditorialTitle()
+`
 
 export default (() => Body) satisfies QuartzComponentConstructor
