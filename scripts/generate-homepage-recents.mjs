@@ -33,6 +33,21 @@ const HOME_EDITORIAL_TYPES = new Set([
   "session",
   "vignette",
 ])
+const RECENT_TYPE_LABELS = new Map([
+  ["article", "Article"],
+  ["campaign-chapter", "Campaign Chapter"],
+  ["campaign-summary", "Campaign Summary"],
+  ["chronicle", "Chronicle"],
+  ["landmark", "Landmark"],
+  ["newspaper", "Newspaper"],
+  ["person", "Person"],
+  ["report", "Report"],
+  ["session", "Session"],
+  ["settlement", "Settlement"],
+  ["timeline", "Timeline"],
+  ["timeline-metadata", "Timeline Metadata"],
+  ["vignette", "Vignette"],
+])
 
 async function walk(dir) {
   const entries = await fs.readdir(dir, { withFileTypes: true })
@@ -114,6 +129,27 @@ function campaignFromRel(rel) {
   return /^Campaigns\/([^/]+)\//i.exec(rel)?.[1] ?? ""
 }
 
+function recentTypeLabel(note) {
+  const segments = note.rel.toLowerCase().split("/")
+
+  if (segments.includes("characters")) return "Character"
+  if (segments.includes("npcs")) return "NPC"
+  if (segments.includes("chronicles of the new roseguard")) return "Chronicle"
+  if (segments.includes("session notes")) return "Session Report"
+  if (segments.includes("vignettes")) return "Vignette"
+  if (segments.includes("campaign history")) return "Campaign History"
+
+  const type = String(note.type ?? "").trim().toLowerCase()
+  if (!type) return ""
+  if (RECENT_TYPE_LABELS.has(type)) return RECENT_TYPE_LABELS.get(type)
+
+  return type
+    .split(/[-_]+/)
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ")
+}
+
 function isHomepageEditorial(note) {
   if (!note.campaign) return false
   const type = String(note.type ?? "").toLowerCase()
@@ -166,9 +202,15 @@ function renderHomeSection(title, items, dateField, baseDir) {
     for (const item of items) {
       const date = item[dateField]
       const href = encodeURI(linkFrom(baseDir, item.rel))
+      const typeLabel = recentTypeLabel(item)
+      const meta = [
+        `<span class="home-recent-campaign">${escapeHtml(item.campaign)}</span>`,
+        typeLabel ? `<span class="home-recent-type">${escapeHtml(typeLabel)}</span>` : "",
+      ].filter(Boolean).join('<span class="home-recent-separator" aria-hidden="true">·</span>')
+
       lines.push(
         `<a class="home-recent-card" href="${escapeHtml(href)}">`,
-        `<span class="home-recent-campaign">${escapeHtml(item.campaign)}</span>`,
+        `<span class="home-recent-meta">${meta}</span>`,
         `<span class="home-recent-title">${escapeHtml(item.title)}</span>`,
         `<time class="home-recent-date" datetime="${escapeHtml(date.toISOString())}">${escapeHtml(formatDate(date))}</time>`,
         "</a>",
