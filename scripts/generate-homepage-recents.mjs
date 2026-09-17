@@ -93,6 +93,14 @@ function linkFrom(baseDir, targetRel) {
   return relative
 }
 
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+}
+
 function formatDate(date) {
   return new Intl.DateTimeFormat("en-US", {
     year: "numeric",
@@ -145,23 +153,42 @@ function renderSection(title, items, dateField, baseDir, { showCampaign = false 
   return lines.join("\n")
 }
 
+function renderHomeSection(title, items, dateField, baseDir) {
+  const lines = [
+    '<section class="home-recent-column">',
+    `<h3>${escapeHtml(title)}</h3>`,
+    '<div class="home-recent-list">',
+  ]
+
+  if (items.length === 0) {
+    lines.push('<p class="home-recent-empty">Nothing here yet.</p>')
+  } else {
+    for (const item of items) {
+      const date = item[dateField]
+      const href = encodeURI(linkFrom(baseDir, item.rel))
+      lines.push(
+        `<a class="home-recent-card" href="${escapeHtml(href)}">`,
+        `<span class="home-recent-campaign">${escapeHtml(item.campaign)}</span>`,
+        `<span class="home-recent-title">${escapeHtml(item.title)}</span>`,
+        `<time class="home-recent-date" datetime="${escapeHtml(date.toISOString())}">${escapeHtml(formatDate(date))}</time>`,
+        "</a>",
+      )
+    }
+  }
+
+  lines.push("</div>", "</section>")
+  return lines.join("\n")
+}
+
 function renderBlock(start, end, recents, baseDir) {
   if (start === HOME_START) {
     return [
       start,
       '<section class="home-recents" aria-labelledby="whats-new">',
-      "",
-      "## What's New",
-      "",
-      '<div class="home-recent-column">',
-      "",
-      renderSection("Brand New", recents.brandNew, "created", baseDir, { showCampaign: true }),
-      "",
-      "</div>",
-      '<div class="home-recent-column">',
-      "",
-      renderSection("Recently Revised", recents.recentlyUpdated, "modified", baseDir, { showCampaign: true }),
-      "",
+      '<h2 id="whats-new">What\'s New</h2>',
+      '<div class="home-recent-columns">',
+      renderHomeSection("Brand New", recents.brandNew, "created", baseDir),
+      renderHomeSection("Recently Revised", recents.recentlyUpdated, "modified", baseDir),
       "</div>",
       "</section>",
       end,
