@@ -3,7 +3,9 @@ import path from "node:path"
 
 const CONTENT_ROOT = path.resolve(process.argv[2] ?? "content")
 const IGNORED_DIRS = new Set([".git", ".obsidian", "node_modules", "private", "templates"])
-const RESOURCE_EXTENSIONS = /\.(?:png|jpe?g|webp|gif|svg|pdf|json|ya?ml|css|js|mjs|cjs|mp3|mp4|webm|ogg|wav|zip|stl|3mf|obj|xlsx?|docx?|pptx?|csv|txt)$/i
+const RESOURCE_EXTENSIONS =
+  /\.(?:png|jpe?g|webp|gif|svg|pdf|json|ya?ml|css|js|mjs|cjs|mp3|mp4|webm|ogg|wav|zip|stl|3mf|obj|xlsx?|docx?|pptx?|csv|txt)$/i
+let noteTargets = new Set()
 
 function toPosix(value) {
   return value.split(path.sep).join("/")
@@ -42,7 +44,10 @@ function decodePath(value) {
 
 function relativeTarget(file, vaultTarget) {
   const [rawPath, anchor = ""] = vaultTarget.split(/(?=#)/, 2)
-  const decoded = decodePath(rawPath).replace(/^\/+/, "").replace(/\.md$/i, "")
+  let decoded = decodePath(rawPath).replace(/^\/+/, "").replace(/\.md$/i, "")
+  if (!noteTargets.has(decoded) && noteTargets.has(`${decoded}/index`)) {
+    decoded = `${decoded}/index`
+  }
   const fromDir = path.dirname(path.relative(CONTENT_ROOT, file))
   let rel = toPosix(path.relative(fromDir, decoded))
   if (!rel.startsWith(".")) rel = `./${rel}`
@@ -71,7 +76,13 @@ function normalizeWikilinks(file, text) {
 function normalizeMarkdownNoteLinks(file, text) {
   return text.replace(/(?<!!)\[([^\]]+)\]\((<?[^)\n]+>?)\)/g, (whole, label, rawDestination) => {
     const destination = String(rawDestination).replace(/^<|>$/g, "").trim()
-    if (!destination || destination.startsWith("#") || isExternal(destination) || isResource(destination)) return whole
+    if (
+      !destination ||
+      destination.startsWith("#") ||
+      isExternal(destination) ||
+      isResource(destination)
+    )
+      return whole
 
     const [pathPart, anchor = ""] = destination.split(/(?=#)/, 2)
     if (!/\.md$/i.test(pathPart)) return whole
@@ -84,6 +95,9 @@ function normalizeMarkdownNoteLinks(file, text) {
 }
 
 const files = await walk(CONTENT_ROOT)
+noteTargets = new Set(
+  files.map((file) => toPosix(path.relative(CONTENT_ROOT, file)).replace(/\.md$/i, "")),
+)
 let changed = 0
 
 for (const file of files) {
