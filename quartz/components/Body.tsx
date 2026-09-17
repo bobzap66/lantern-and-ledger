@@ -33,6 +33,109 @@ function isCampaignPage(slug: string | undefined) {
   return Boolean(campaignKeyFromSlug(slug))
 }
 
+function normalizeFrontmatterValue(value: unknown) {
+  if (Array.isArray(value)) {
+    return value.map((item) => String(item ?? "")).join(" ").trim().toLowerCase()
+  }
+
+  return String(value ?? "").trim().toLowerCase()
+}
+
+function normalizedEditorialValue(value: unknown) {
+  return normalizeFrontmatterValue(value).replace(/[_-]+/g, " ").replace(/\s+/g, " ").trim()
+}
+
+function campaignLabel(
+  frontmatter: Record<string, unknown> | undefined,
+  slug: string | undefined,
+) {
+  const campaignLabels: Record<string, string> = {
+    kingmaker: "KINGMAKER",
+    "abomination-vaults": "ABOMINATION VAULTS",
+    "abomination-vaults-curtains-call": "ABOMINATION VAULTS",
+    "season-of-ghosts": "SEASON OF GHOSTS",
+    "claws-of-the-tyrant": "CLAWS OF THE TYRANT",
+  }
+
+  const key = campaignKeyFromSlug(slug)
+  if (key && campaignLabels[key]) return campaignLabels[key]
+
+  const campaign = String(frontmatter?.campaign ?? "").trim()
+  return campaign ? campaign.toUpperCase() : null
+}
+
+function sessionNumberFromFrontmatter(
+  frontmatter: Record<string, unknown> | undefined,
+  slug: string | undefined,
+) {
+  const directValue =
+    frontmatter?.session_number ?? frontmatter?.sessionNumber ?? frontmatter?.session
+  const direct = String(directValue ?? "").trim()
+
+  if (/^\d+[a-z]?$/i.test(direct)) return direct.toUpperCase()
+
+  const title = String(frontmatter?.title ?? "")
+  const titleMatch = /\bsession\s+(\d+[a-z]?)\b/i.exec(title)
+  if (titleMatch?.[1]) return titleMatch[1].toUpperCase()
+
+  const slugMatch = /(?:^|\/)session[-_\s]+(\d+[a-z]?)(?:[-_\s/]|$)/i.exec(slug ?? "")
+  return slugMatch?.[1]?.toUpperCase() ?? null
+}
+
+function articleKicker(
+  frontmatter: Record<string, unknown> | undefined,
+  slug: string | undefined,
+) {
+  if (!frontmatter) return null
+
+  const type = normalizedEditorialValue(frontmatter.type)
+  const format = normalizedEditorialValue(frontmatter.format)
+  const articleType = normalizedEditorialValue(frontmatter.article_type)
+  const categoryPath = normalizedEditorialValue(frontmatter.category_path)
+  const normalizedSlug = normalizeFrontmatterValue(slug)
+  const sessionNumber = sessionNumberFromFrontmatter(frontmatter, slug)
+  const isVignette = type === "vignette"
+
+  let label: string | null = null
+
+  if (
+    format === "oral history" ||
+    type === "oral history" ||
+    articleType === "oral history" ||
+    categoryPath.includes("oral history")
+  ) {
+    label = "ORAL HISTORY"
+  } else if (
+    format === "player fiction" ||
+    type === "player fiction" ||
+    articleType === "player fiction" ||
+    (isVignette && normalizedSlug.includes("/vignettes/character-vignettes/"))
+  ) {
+    label = "PLAYER FICTION"
+  } else if (
+    format === "gm fiction" ||
+    type === "gm fiction" ||
+    articleType === "gm fiction" ||
+    (isVignette && normalizedSlug.includes("/vignettes/gm-vignettes/"))
+  ) {
+    label = "GM FICTION"
+  } else if (
+    sessionNumber ||
+    type === "session" ||
+    ((type === "report" || type === "session-note" || type === "session note") &&
+      normalizedSlug.includes("/session-notes/"))
+  ) {
+    label = sessionNumber ? `SESSION ${sessionNumber}` : "SESSION"
+  } else if (isVignette) {
+    label = "VIGNETTE"
+  }
+
+  if (!label) return null
+
+  const campaign = campaignLabel(frontmatter, slug)
+  return campaign ? `${label} · ${campaign}` : label
+}
+
 function isFormalPublication(
   frontmatter: Record<string, unknown> | undefined,
   slug: string | undefined,
@@ -89,16 +192,43 @@ const Body: QuartzComponent = (props: QuartzComponentProps) => {
   const campaignClass = campaignClassFromSlug(fileData.slug)
   const frontmatter = fileData.frontmatter as Record<string, unknown> | undefined
   const formalPublication = isFormalPublication(frontmatter, fileData.slug)
+  const kicker = articleKicker(frontmatter, fileData.slug)
   const bodyClasses = [
     campaignClass,
     lockedByDefault ? "campaign-spoiler-pending" : "",
     formalPublication ? "formal-publication" : "",
+    kicker ? "has-article-kicker" : "",
   ]
     .filter(Boolean)
     .join(" ")
+  const bodyStyle = kicker ? ({ "--article-kicker": JSON.stringify(kicker) } as any) : undefined
 
   return (
-    <div id="quartz-body" class={bodyClasses || undefined}>
+    <div id="quartz-body" class={bodyClasses || undefined} style={bodyStyle}>
+      {kicker && (
+        <style>{`
+          #quartz-body.has-article-kicker .article-title::before {
+            content: var(--article-kicker);
+            display: block;
+            margin-bottom: 0.5rem;
+            font-family: var(--codeFont, var(--bodyFont));
+            font-size: 0.72rem;
+            font-weight: 600;
+            line-height: 1.3;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--campaign-page-accent, var(--tertiary));
+          }
+
+          @media (max-width: 600px) {
+            #quartz-body.has-article-kicker .article-title::before {
+              margin-bottom: 0.42rem;
+              font-size: 0.68rem;
+              letter-spacing: 0.1em;
+            }
+          }
+        `}</style>
+      )}
       {formalPublication && (
         <style>{`
           #quartz-body.formal-publication .center article p {
