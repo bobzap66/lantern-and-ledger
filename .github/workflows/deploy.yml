@@ -59,6 +59,9 @@ jobs:
           npm install --no-save github:quartz-community/explorer#07de53f210f86287f41f0b349271c036bdc0b7c4
           npm install --no-save @quartz-community/utils@0.1.1
 
+      - name: Optimize published images
+        run: node scripts/optimize-vault-images.mjs content --apply
+
       - name: Normalize content asset paths
         run: node scripts/normalize-content-asset-paths.mjs
 
@@ -92,6 +95,9 @@ jobs:
 
       - name: Check internal links
         run: node scripts/check-built-links.mjs
+
+      - name: Check Pages artifact size
+        run: node scripts/check-pages-artifact-size.mjs public
 
       - name: Setup Pages
         uses: actions/configure-pages@v6
