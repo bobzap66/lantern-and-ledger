@@ -10,19 +10,22 @@ import { ImageMetadataCarousel } from "./quartz/plugins/transformers/imageMetada
 import { VignetteIndexes } from "./quartz/plugins/transformers/vignetteIndexes"
 import CharacterVignettes from "./quartz/components/CharacterVignettes"
 import RelatedRecords from "./quartz/components/RelatedRecords"
+import SessionNavigation from "./quartz/components/SessionNavigation"
 import VignetteNavigation from "./quartz/components/VignetteNavigation"
 import { componentRegistry } from "./quartz/components/registry"
 
 const characterVignettes = CharacterVignettes()
 const relatedRecords = RelatedRecords()
+const sessionNavigation = SessionNavigation()
 const vignetteNavigation = VignetteNavigation()
 const localLayout = {
   beforeBody: [characterVignettes],
-  afterBody: [relatedRecords, vignetteNavigation],
+  afterBody: [relatedRecords, sessionNavigation, vignetteNavigation],
 }
 
 componentRegistry.register("character-vignettes", characterVignettes, "local")
 componentRegistry.register("related-records", relatedRecords, "local")
+componentRegistry.register("session-navigation", sessionNavigation, "local")
 componentRegistry.register("vignette-navigation", vignetteNavigation, "local")
 
 const config = await loadQuartzConfig(undefined, localLayout)
