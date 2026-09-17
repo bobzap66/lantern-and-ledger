@@ -104,8 +104,13 @@ export default (() => {
   }
 
   SessionNavigation.css = `
-body[data-slug^="${SESSION_ROOT}/"] .related-records {
+body[data-slug^="${SESSION_ROOT}/"] .related-records__card[href$="/session-notes"],
+body[data-slug^="${SESSION_ROOT}/"] .related-records__card[href$="/session-notes/"] {
   display: none;
+}
+
+body[data-slug^="${SESSION_ROOT}/"] .related-records__grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .session-navigation {
@@ -167,6 +172,10 @@ body[data-slug^="${SESSION_ROOT}/"] .related-records {
 }
 
 @media (max-width: 700px) {
+  body[data-slug^="${SESSION_ROOT}/"] .related-records__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .session-nav-grid {
     grid-template-columns: 1fr 1fr;
   }
