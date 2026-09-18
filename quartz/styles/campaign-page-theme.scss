@@ -164,42 +164,56 @@
 }
 
 
-/* Kingmaker — crown and growing wilderness.
-   Major headings carry a small heraldic crown; lesser elements use leaf and
-   vine forms so rulership never overwhelms the Stolen Lands themselves. */
+/* Kingmaker — crown nested in growing wilderness.
+   The emblem is pure CSS: a small heraldic crown framed by paired leaves.
+   Major dividers stretch the foliage outward while secondary elements use
+   leaves alone, keeping the crown reserved for the campaign's hierarchy. */
+#quartz-body.campaign--kingmaker {
+  --kingmaker-leaf: var(--campaign-page-secondary);
+  --kingmaker-gold: var(--campaign-page-accent);
+}
+
 #quartz-body.campaign--kingmaker article:not(:has(.callout[data-callout^="timeline-"])) h2 {
   position: relative;
-  padding-left: 1.65rem;
+  padding-left: 2.55rem;
 }
 
 #quartz-body.campaign--kingmaker article:not(:has(.callout[data-callout^="timeline-"])) h2::before {
   content: "";
   position: absolute;
-  left: 0.08rem;
-  top: 0.16em;
-  width: 1rem;
-  height: 0.78rem;
-  background: var(--campaign-page-accent);
-  clip-path: polygon(
-    4% 22%, 25% 48%, 36% 10%, 50% 45%, 64% 10%, 75% 48%, 96% 22%,
-    84% 76%, 16% 76%
-  );
-  opacity: 0.76;
+  left: 0;
+  top: 0.12em;
+  width: 2rem;
+  height: 1.05rem;
+  background:
+    /* crown */
+    linear-gradient(var(--kingmaker-gold), var(--kingmaker-gold)) 50% 78% / 34% 14% no-repeat,
+    linear-gradient(115deg, transparent 43%, var(--kingmaker-gold) 44% 68%, transparent 69%) 39% 50% / 30% 72% no-repeat,
+    linear-gradient(65deg, transparent 43%, var(--kingmaker-gold) 44% 68%, transparent 69%) 61% 50% / 30% 72% no-repeat,
+    /* paired leaves */
+    radial-gradient(ellipse at 70% 70%, var(--kingmaker-leaf) 0 45%, transparent 47%) 4% 70% / 27% 45% no-repeat,
+    radial-gradient(ellipse at 30% 70%, var(--kingmaker-leaf) 0 45%, transparent 47%) 96% 70% / 27% 45% no-repeat,
+    radial-gradient(ellipse at 72% 72%, color-mix(in srgb, var(--kingmaker-leaf) 82%, transparent) 0 45%, transparent 47%) 16% 25% / 24% 42% no-repeat,
+    radial-gradient(ellipse at 28% 72%, color-mix(in srgb, var(--kingmaker-leaf) 82%, transparent) 0 45%, transparent 47%) 84% 25% / 24% 42% no-repeat;
+  opacity: 0.86;
 }
 
 #quartz-body.campaign--kingmaker article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
-  width: min(8rem, 36%);
+  width: min(9rem, 40%);
   height: 3px;
   background:
-    radial-gradient(ellipse at 8% 50%, var(--campaign-page-secondary) 0 8%, transparent 9%),
-    radial-gradient(ellipse at 92% 50%, var(--campaign-page-secondary) 0 8%, transparent 9%),
-    linear-gradient(90deg, transparent 0 8%, var(--campaign-page-accent) 8% 46%, var(--campaign-page-secondary) 46% 54%, var(--campaign-page-accent) 54% 92%, transparent 92%);
+    linear-gradient(90deg,
+      var(--kingmaker-gold) 0 38%,
+      var(--kingmaker-leaf) 38% 45%,
+      color-mix(in srgb, var(--kingmaker-gold) 72%, var(--kingmaker-leaf) 28%) 45% 55%,
+      var(--kingmaker-leaf) 55% 62%,
+      var(--kingmaker-gold) 62% 100%);
 }
 
 #quartz-body.campaign--kingmaker article h3::before {
   content: "❧";
   margin-right: 0.38em;
-  color: var(--campaign-page-secondary);
+  color: var(--kingmaker-leaf);
   font-size: 0.82em;
   opacity: 0.72;
 }
@@ -213,7 +227,7 @@
   position: absolute;
   top: 0.45rem;
   right: 0.65rem;
-  color: var(--campaign-page-secondary);
+  color: var(--kingmaker-leaf);
   font-size: 1rem;
   opacity: 0.25;
   transform: rotate(-18deg);
@@ -234,37 +248,55 @@
   position: absolute;
   right: 0.5rem;
   bottom: 0.38rem;
-  color: var(--campaign-page-secondary);
+  color: var(--kingmaker-leaf);
   font-size: 1rem;
   opacity: 0.2;
   transform: rotate(-24deg);
   pointer-events: none;
 }
 
+/* A longer crown-and-vine divider: the central crown is geometric while the
+   outward growth is suggested by tapered green/gold rules and leaf nodes. */
 #quartz-body.campaign--kingmaker article hr {
-  height: 1.1rem;
+  position: relative;
+  height: 1.2rem;
+  overflow: visible;
   background:
-    radial-gradient(ellipse at center, color-mix(in srgb, var(--campaign-page-secondary) 68%, transparent) 0 7%, transparent 8%),
-    linear-gradient(90deg, transparent 0 12%, color-mix(in srgb, var(--campaign-page-secondary) 52%, transparent) 12% 43%, transparent 43% 57%, color-mix(in srgb, var(--campaign-page-secondary) 52%, transparent) 57% 88%, transparent 88%);
+    radial-gradient(ellipse, var(--kingmaker-leaf) 0 45%, transparent 48%) 22% 32% / 0.7rem 0.38rem no-repeat,
+    radial-gradient(ellipse, var(--kingmaker-leaf) 0 45%, transparent 48%) 78% 32% / 0.7rem 0.38rem no-repeat,
+    radial-gradient(ellipse, color-mix(in srgb, var(--kingmaker-leaf) 78%, transparent) 0 45%, transparent 48%) 30% 72% / 0.58rem 0.34rem no-repeat,
+    radial-gradient(ellipse, color-mix(in srgb, var(--kingmaker-leaf) 78%, transparent) 0 45%, transparent 48%) 70% 72% / 0.58rem 0.34rem no-repeat,
+    linear-gradient(90deg,
+      transparent 0 10%,
+      color-mix(in srgb, var(--kingmaker-leaf) 48%, transparent) 10% 32%,
+      var(--kingmaker-gold) 32% 43%,
+      transparent 43% 57%,
+      var(--kingmaker-gold) 57% 68%,
+      color-mix(in srgb, var(--kingmaker-leaf) 48%, transparent) 68% 90%,
+      transparent 90%);
 }
 
 #quartz-body.campaign--kingmaker article hr::after {
   content: "";
   display: block;
-  width: 1.05rem;
-  height: 0.8rem;
-  margin: -0.42rem auto 0;
-  background: var(--campaign-page-accent);
+  width: 1.25rem;
+  height: 0.92rem;
+  margin: -0.35rem auto 0;
+  background: var(--kingmaker-gold);
   clip-path: polygon(
     4% 22%, 25% 48%, 36% 10%, 50% 45%, 64% 10%, 75% 48%, 96% 22%,
     84% 76%, 16% 76%
   );
-  opacity: 0.8;
+  opacity: 0.86;
 }
 
 @media (max-width: 520px) {
   #quartz-body.campaign--kingmaker article:not(:has(.callout[data-callout^="timeline-"])) h2 {
-    padding-left: 1.4rem;
+    padding-left: 2.3rem;
+  }
+
+  #quartz-body.campaign--kingmaker article:not(:has(.callout[data-callout^="timeline-"])) h2::before {
+    width: 1.8rem;
   }
 
   #quartz-body.campaign--kingmaker article .callout:not([data-callout^="timeline-"])::after {
