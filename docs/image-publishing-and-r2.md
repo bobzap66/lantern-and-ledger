@@ -57,4 +57,6 @@ R2 credentials live only as GitHub Actions secrets in the vault repository. The 
 
 Because the R2 sync uses `--delete`, the temporary normalized tree must always represent the complete intended published image library. The collision check and successful staging step occur before the R2 command for this reason.
 
-The site currently retains its build-time `optimize-vault-images.mjs` step. That predates R2 delivery and should be audited separately to determine whether its PNG-to-WebP and recompression behavior should remain in the Quartz build or move earlier into the canonical image pipeline.
+The former build-time `optimize-vault-images.mjs` step has been removed from the production deployment. R2 serves the canonical vault image files, so Quartz must not create a temporary, differently optimized image library during its build. Image-format conversion and recompression should be performed on the canonical vault assets before they are published to R2.
+
+At the time this architecture was adopted, the vault still contained two PNG files and hundreds of WebP files larger than 1 MiB. Those are source-library optimization opportunities rather than GitHub Pages artifact concerns; they should be normalized deliberately in the vault instead of being silently transformed during deployment.
