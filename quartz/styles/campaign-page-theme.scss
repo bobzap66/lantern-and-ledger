@@ -291,7 +291,7 @@
 #quartz-body.campaign--claws-of-the-tyrant article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
   width: clamp(15rem, 55vw, 25rem);
   height: clamp(1.25rem, 3.2vw, 1.7rem);
-  margin-top: 0.08rem;
+  margin-top: -0.35rem;
   background: url("/lantern-and-ledger/ornaments/claws-sword.svg") left center / contain no-repeat;
 }
 
