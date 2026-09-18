@@ -164,44 +164,45 @@
 }
 
 
-/* Kingmaker — purpose-built ornamental assets.
-   Theme ornaments live with Quartz static UI assets, not the campaign image
-   library. CSS controls placement and responsive sizing; SVG handles drawing. */
+/* Kingmaker — purpose-built Stolen Lands heraldry.
+   Crown, flowering oak vine, ceremonial divider, and oak/acorn flourish are
+   converted source artwork; CSS controls placement and responsive scale. */
 #quartz-body.campaign--kingmaker article:not(:has(.callout[data-callout^="timeline-"])) h2 {
   position: relative;
-  padding-left: clamp(3rem, 8vw, 4rem);
+  padding-left: clamp(3.2rem, 8vw, 4.35rem);
 }
 
 #quartz-body.campaign--kingmaker article:not(:has(.callout[data-callout^="timeline-"])) h2::before {
   content: "";
   position: absolute;
   left: 0;
-  top: 0.02em;
-  width: clamp(2.55rem, 7vw, 3.35rem);
-  aspect-ratio: 160 / 64;
-  background: url("/lantern-and-ledger/ornaments/kingmaker-crown-leaves.svg") center / contain no-repeat;
+  top: -0.08em;
+  width: clamp(2.65rem, 7vw, 3.55rem);
+  height: 1.45em;
+  background: url("/lantern-and-ledger/ornaments/kingmaker-crown.svg") center / contain no-repeat;
 }
 
 #quartz-body.campaign--kingmaker article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
-  width: clamp(10rem, 38vw, 18rem);
-  height: clamp(1.15rem, 3vw, 1.55rem);
-  margin-top: 0.28rem;
-  background: url("/lantern-and-ledger/ornaments/kingmaker-heading-vine.svg") left center / contain no-repeat;
+  width: clamp(15rem, 55vw, 25rem);
+  height: clamp(1.25rem, 3.2vw, 1.7rem);
+  margin-top: -0.22rem;
+  background: url("/lantern-and-ledger/ornaments/kingmaker-vine.svg") left center / contain no-repeat;
 }
 
 #quartz-body.campaign--kingmaker article h3 {
   position: relative;
-  padding-left: 1.65rem;
+  padding-left: 3rem;
 }
 
 #quartz-body.campaign--kingmaker article h3::before {
   content: "";
   position: absolute;
   left: 0;
-  top: 0.22em;
-  width: 1.35rem;
-  aspect-ratio: 72 / 34;
-  background: url("/lantern-and-ledger/ornaments/kingmaker-sprig.svg") center / contain no-repeat;
+  top: 0.04em;
+  width: 2.5rem;
+  height: 1.25em;
+  background: url("/lantern-and-ledger/ornaments/kingmaker-oak-ornament.svg") center / contain no-repeat;
+  opacity: 0.84;
 }
 
 #quartz-body.campaign--kingmaker article .callout:not([data-callout^="timeline-"]) {
@@ -213,10 +214,10 @@
   position: absolute;
   top: 0.55rem;
   right: 0.65rem;
-  width: 1.5rem;
-  aspect-ratio: 72 / 34;
-  background: url("/lantern-and-ledger/ornaments/kingmaker-sprig.svg") center / contain no-repeat;
-  opacity: 0.28;
+  width: 1.45rem;
+  height: 1.2rem;
+  background: url("/lantern-and-ledger/ornaments/kingmaker-oak-ornament.svg") center / contain no-repeat;
+  opacity: 0.2;
   pointer-events: none;
 }
 
@@ -232,18 +233,20 @@
 #quartz-body.campaign--kingmaker article .editorial-card::after {
   content: "";
   position: absolute;
-  right: 0.5rem;
-  bottom: 0.45rem;
-  width: 1.45rem;
-  aspect-ratio: 72 / 34;
-  background: url("/lantern-and-ledger/ornaments/kingmaker-sprig.svg") center / contain no-repeat;
-  opacity: 0.2;
+  right: 0.45rem;
+  bottom: 0.4rem;
+  width: 1.35rem;
+  height: 1.15rem;
+  background: url("/lantern-and-ledger/ornaments/kingmaker-oak-ornament.svg") center / contain no-repeat;
+  opacity: 0.16;
   pointer-events: none;
 }
 
 #quartz-body.campaign--kingmaker article hr {
-  height: clamp(2.2rem, 5vw, 3.2rem);
-  background: url("/lantern-and-ledger/ornaments/kingmaker-crown-vines.svg") center / min(34rem, 94%) auto no-repeat;
+  width: min(38rem, 96%);
+  height: clamp(4.4rem, 10vw, 6.4rem);
+  margin-block: clamp(2.6rem, 6vw, 4rem);
+  background: url("/lantern-and-ledger/ornaments/kingmaker-divider.svg") center / min(36rem, 96%) auto no-repeat;
 }
 
 #quartz-body.campaign--kingmaker article hr::after {
@@ -256,7 +259,7 @@
   }
 
   #quartz-body.campaign--kingmaker article:not(:has(.callout[data-callout^="timeline-"])) h2::before {
-    width: 2.4rem;
+    width: 2.35rem;
   }
 
   #quartz-body.campaign--kingmaker article .callout:not([data-callout^="timeline-"])::after {
@@ -264,8 +267,9 @@
   }
 
   #quartz-body.campaign--kingmaker article hr {
-    height: 2.4rem;
-    background-size: 98% auto;
+    width: 100%;
+    height: 4.8rem;
+    background-size: 96% auto;
   }
 }
 
