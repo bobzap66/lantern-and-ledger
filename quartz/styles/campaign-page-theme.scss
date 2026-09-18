@@ -163,6 +163,119 @@
   color: color-mix(in srgb, var(--campaign-page-accent) 78%, var(--dark) 22%);
 }
 
+
+/* Claws of the Tyrant — campaign-wide Lastwall heraldry.
+   Reuse the abstract split shield and broken martial rules across ordinary
+   campaign pages so the identity survives beyond the landing page. */
+#quartz-body.campaign--claws-of-the-tyrant article:not(:has(.callout[data-callout^="timeline-"])) h2 {
+  position: relative;
+  padding-left: 1.55rem;
+}
+
+#quartz-body.campaign--claws-of-the-tyrant article:not(:has(.callout[data-callout^="timeline-"])) h2::before {
+  content: "";
+  position: absolute;
+  left: 0.08rem;
+  top: 0.18em;
+  width: 0.82rem;
+  height: 0.94rem;
+  border: 1px solid color-mix(in srgb, var(--campaign-page-accent) 72%, var(--dark) 28%);
+  background:
+    linear-gradient(135deg, transparent 47%, color-mix(in srgb, var(--campaign-page-accent) 72%, transparent) 48% 52%, transparent 53%),
+    linear-gradient(45deg, transparent 47%, color-mix(in srgb, var(--campaign-page-accent) 72%, transparent) 48% 52%, transparent 53%);
+  clip-path: polygon(8% 0, 92% 0, 92% 58%, 50% 100%, 8% 58%);
+  opacity: 0.68;
+}
+
+#quartz-body.campaign--claws-of-the-tyrant article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
+  width: min(7rem, 32%);
+  background:
+    linear-gradient(90deg,
+      var(--campaign-page-accent) 0 34%,
+      transparent 34% 40%,
+      var(--campaign-page-accent) 40% 66%,
+      transparent 66% 72%,
+      color-mix(in srgb, var(--campaign-page-accent) 58%, transparent) 72% 84%,
+      transparent 84%);
+}
+
+#quartz-body.campaign--claws-of-the-tyrant article h3::before {
+  content: "◆";
+  margin-right: 0.42em;
+  color: var(--campaign-page-accent);
+  font-size: 0.52em;
+  vertical-align: 0.18em;
+  opacity: 0.62;
+}
+
+#quartz-body.campaign--claws-of-the-tyrant article .callout:not([data-callout^="timeline-"]) {
+  position: relative;
+  border-right-color: color-mix(in srgb, var(--campaign-page-accent) 24%, var(--isr-rule) 76%);
+}
+
+#quartz-body.campaign--claws-of-the-tyrant article .callout:not([data-callout^="timeline-"])::after {
+  content: "";
+  position: absolute;
+  top: 0.62rem;
+  right: 0.7rem;
+  width: 0.62rem;
+  height: 0.72rem;
+  border: 1px solid var(--campaign-page-accent);
+  clip-path: polygon(8% 0, 92% 0, 92% 58%, 50% 100%, 8% 58%);
+  opacity: 0.28;
+  pointer-events: none;
+}
+
+#quartz-body.campaign--claws-of-the-tyrant article .isr-character-card,
+#quartz-body.campaign--claws-of-the-tyrant article .isr-npc-card,
+#quartz-body.campaign--claws-of-the-tyrant article .editorial-card {
+  position: relative;
+  overflow: hidden;
+}
+
+#quartz-body.campaign--claws-of-the-tyrant article .isr-character-card::after,
+#quartz-body.campaign--claws-of-the-tyrant article .isr-npc-card::after,
+#quartz-body.campaign--claws-of-the-tyrant article .editorial-card::after {
+  content: "";
+  position: absolute;
+  right: 0.55rem;
+  bottom: 0.5rem;
+  width: 0.68rem;
+  height: 0.78rem;
+  border: 1px solid var(--campaign-page-accent);
+  clip-path: polygon(8% 0, 92% 0, 92% 58%, 50% 100%, 8% 58%);
+  opacity: 0.22;
+  pointer-events: none;
+}
+
+#quartz-body.campaign--claws-of-the-tyrant article hr {
+  height: 3px;
+  background:
+    linear-gradient(90deg,
+      transparent 0 8%,
+      color-mix(in srgb, var(--campaign-page-accent) 45%, transparent) 8% 35%,
+      transparent 35% 39%,
+      var(--campaign-page-accent) 39% 61%,
+      transparent 61% 65%,
+      color-mix(in srgb, var(--campaign-page-accent) 45%, transparent) 65% 92%,
+      transparent 92%);
+}
+
+@media (max-width: 520px) {
+  #quartz-body.campaign--claws-of-the-tyrant article:not(:has(.callout[data-callout^="timeline-"])) h2 {
+    padding-left: 1.3rem;
+  }
+
+  #quartz-body.campaign--claws-of-the-tyrant article:not(:has(.callout[data-callout^="timeline-"])) h2::before {
+    width: 0.68rem;
+    height: 0.78rem;
+  }
+
+  #quartz-body.campaign--claws-of-the-tyrant article .callout:not([data-callout^="timeline-"])::after {
+    display: none;
+  }
+}
+
 /* Campaign identity should survive dark mode without becoming neon. */
 [saved-theme="dark"] #quartz-body[class*="campaign--"] {
   --campaign-page-soft: color-mix(in srgb, var(--campaign-page-accent) 13%, transparent);
