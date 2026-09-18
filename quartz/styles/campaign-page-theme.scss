@@ -653,6 +653,49 @@
   }
 }
 
+/* Campaign heading ornaments share a full-width editorial rule.
+   The source art differs by campaign, but each H2 ornament now occupies the
+   available article width rather than reading as a short decorative icon. */
+#quartz-body.campaign--kingmaker article:not(:has(.callout[data-callout^="timeline-"])) h2::after,
+#quartz-body.campaign--abomination-vaults article:not(:has(.callout[data-callout^="timeline-"])) h2::after,
+#quartz-body.campaign--season-of-ghosts article:not(:has(.callout[data-callout^="timeline-"])) h2::after,
+#quartz-body.campaign--claws-of-the-tyrant article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
+  width: 100%;
+  max-width: none;
+  height: clamp(2.15rem, 4.2vw, 3rem);
+  margin-top: -0.28rem;
+  background-size: 100% auto;
+  background-position: left center;
+}
+
+#quartz-body.campaign--kingmaker article h3,
+#quartz-body.campaign--abomination-vaults article h3,
+#quartz-body.campaign--season-of-ghosts article h3,
+#quartz-body.campaign--claws-of-the-tyrant article h3 {
+  padding-left: 3.7rem;
+}
+
+#quartz-body.campaign--kingmaker article h3::before,
+#quartz-body.campaign--abomination-vaults article h3::before,
+#quartz-body.campaign--season-of-ghosts article h3::before,
+#quartz-body.campaign--claws-of-the-tyrant article h3::before {
+  width: 3.15rem;
+  height: 1.55em;
+  top: -0.1em;
+}
+
+@media (max-width: 520px) {
+  #quartz-body.campaign--kingmaker article:not(:has(.callout[data-callout^="timeline-"])) h2::after,
+  #quartz-body.campaign--abomination-vaults article:not(:has(.callout[data-callout^="timeline-"])) h2::after,
+  #quartz-body.campaign--season-of-ghosts article:not(:has(.callout[data-callout^="timeline-"])) h2::after,
+  #quartz-body.campaign--claws-of-the-tyrant article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
+    width: 100%;
+    height: 2.8rem;
+    margin-top: -0.2rem;
+    background-size: 100% auto;
+  }
+}
+
 /* Campaign identity should survive dark mode without becoming neon. */
 [saved-theme="dark"] #quartz-body[class*="campaign--"] {
   --campaign-page-soft: color-mix(in srgb, var(--campaign-page-accent) 13%, transparent);
