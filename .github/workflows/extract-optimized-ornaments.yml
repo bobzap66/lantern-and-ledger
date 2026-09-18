@@ -1,0 +1,27 @@
+name: Extract optimized ornaments
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Extract optimized WebP ornaments
+        run: |
+          unzip -o quartz/static/ornaments/lantern-and-ledger-optimized-ornaments.zip -d quartz/static/ornaments
+          rm quartz/static/ornaments/lantern-and-ledger-optimized-ornaments.zip
+
+      - name: Commit optimized ornaments
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add quartz/static/ornaments
+          git commit -m "Extract optimized campaign ornament assets"
+          git push
