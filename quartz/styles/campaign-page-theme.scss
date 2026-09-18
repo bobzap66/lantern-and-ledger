@@ -179,7 +179,7 @@
   top: 0.02em;
   width: clamp(2.55rem, 7vw, 3.35rem);
   aspect-ratio: 160 / 64;
-  background: url("/ornaments/kingmaker-crown-leaves.svg") center / contain no-repeat;
+  background: url("/lantern-and-ledger/ornaments/kingmaker-crown-leaves.svg") center / contain no-repeat;
 }
 
 #quartz-body.campaign--kingmaker article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
@@ -205,7 +205,7 @@
   top: 0.22em;
   width: 1.35rem;
   aspect-ratio: 72 / 34;
-  background: url("/ornaments/kingmaker-sprig.svg") center / contain no-repeat;
+  background: url("/lantern-and-ledger/ornaments/kingmaker-sprig.svg") center / contain no-repeat;
 }
 
 #quartz-body.campaign--kingmaker article .callout:not([data-callout^="timeline-"]) {
@@ -219,7 +219,7 @@
   right: 0.65rem;
   width: 1.5rem;
   aspect-ratio: 72 / 34;
-  background: url("/ornaments/kingmaker-sprig.svg") center / contain no-repeat;
+  background: url("/lantern-and-ledger/ornaments/kingmaker-sprig.svg") center / contain no-repeat;
   opacity: 0.28;
   pointer-events: none;
 }
@@ -240,14 +240,14 @@
   bottom: 0.45rem;
   width: 1.45rem;
   aspect-ratio: 72 / 34;
-  background: url("/ornaments/kingmaker-sprig.svg") center / contain no-repeat;
+  background: url("/lantern-and-ledger/ornaments/kingmaker-sprig.svg") center / contain no-repeat;
   opacity: 0.2;
   pointer-events: none;
 }
 
 #quartz-body.campaign--kingmaker article hr {
   height: clamp(2.2rem, 5vw, 3.2rem);
-  background: url("/ornaments/kingmaker-crown-vines.svg") center / min(34rem, 94%) auto no-repeat;
+  background: url("/lantern-and-ledger/ornaments/kingmaker-crown-vines.svg") center / min(34rem, 94%) auto no-repeat;
 }
 
 #quartz-body.campaign--kingmaker article hr::after {
