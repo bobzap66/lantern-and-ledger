@@ -356,7 +356,7 @@
   position: relative;
   overflow: visible;
   width: min(38rem, 96%);
-  height: clamp(3.8rem, 9vw, 5.8rem);
+  height: clamp(4.4rem, 10vw, 6.4rem);
   margin-block: clamp(2.6rem, 6vw, 4rem);
   background:
     url("/lantern-and-ledger/ornaments/claws-shield.svg") center / auto 88% no-repeat,
@@ -400,8 +400,8 @@
 
   #quartz-body.campaign--claws-of-the-tyrant article hr {
     width: 100%;
-    height: 4rem;
-    background-size: auto 82%, 82% auto, 100% auto;
+    height: 4.6rem;
+    background-size: auto 78%, 82% auto, 96% auto;
   }
 
   #quartz-body.campaign--claws-of-the-tyrant article hr::before,
