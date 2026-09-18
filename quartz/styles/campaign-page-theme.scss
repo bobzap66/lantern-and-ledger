@@ -611,6 +611,48 @@
   }
 }
 
+
+/* Shared mobile ornament scale.
+   Generated campaign artwork needs more visual weight than the original icon-sized treatment. */
+@media (max-width: 520px) {
+  #quartz-body.campaign--kingmaker article:not(:has(.callout[data-callout^="timeline-"])) h2,
+  #quartz-body.campaign--abomination-vaults article:not(:has(.callout[data-callout^="timeline-"])) h2,
+  #quartz-body.campaign--claws-of-the-tyrant article:not(:has(.callout[data-callout^="timeline-"])) h2 {
+    padding-left: 4.15rem;
+  }
+
+  #quartz-body.campaign--kingmaker article:not(:has(.callout[data-callout^="timeline-"])) h2::before,
+  #quartz-body.campaign--abomination-vaults article:not(:has(.callout[data-callout^="timeline-"])) h2::before,
+  #quartz-body.campaign--claws-of-the-tyrant article:not(:has(.callout[data-callout^="timeline-"])) h2::before {
+    top: -0.22em;
+    width: 3.55rem;
+    height: 1.8em;
+  }
+
+  #quartz-body.campaign--kingmaker article:not(:has(.callout[data-callout^="timeline-"])) h2::after,
+  #quartz-body.campaign--abomination-vaults article:not(:has(.callout[data-callout^="timeline-"])) h2::after,
+  #quartz-body.campaign--claws-of-the-tyrant article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
+    width: min(20rem, 88vw);
+    height: 2.45rem;
+    margin-top: -0.2rem;
+    background-size: contain;
+  }
+
+  #quartz-body.campaign--kingmaker article h3,
+  #quartz-body.campaign--abomination-vaults article h3,
+  #quartz-body.campaign--claws-of-the-tyrant article h3 {
+    padding-left: 4rem;
+  }
+
+  #quartz-body.campaign--kingmaker article h3::before,
+  #quartz-body.campaign--abomination-vaults article h3::before,
+  #quartz-body.campaign--claws-of-the-tyrant article h3::before {
+    top: -0.16em;
+    width: 3.35rem;
+    height: 1.7em;
+  }
+}
+
 /* Campaign identity should survive dark mode without becoming neon. */
 [saved-theme="dark"] #quartz-body[class*="campaign--"] {
   --campaign-page-soft: color-mix(in srgb, var(--campaign-page-accent) 13%, transparent);
