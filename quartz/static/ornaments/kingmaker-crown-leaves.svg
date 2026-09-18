@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 82" role="img" aria-label="Kingmaker crown and foliage ornament">
-<style>.g{fill:#b98532;stroke:#e0b45c;stroke-width:1}.l{fill:#557449;stroke:#78936a;stroke-width:.8}.v{fill:none;stroke:#557449;stroke-width:3;stroke-linecap:round}.d{fill:none;stroke:#7d5b25;stroke-width:1.3}</style>
-<path class="v" d="M8 60C32 32 56 30 75 43M192 60C168 32 144 30 125 43"/>
-<g class="l"><path d="M17 55c7-13 18-16 27-12-6 11-16 17-27 12Z"/><path d="M31 38c3-13 12-20 23-19-1 12-9 21-23 19Z"/><path d="M48 54c7-11 17-14 27-9-6 10-16 14-27 9Z"/><path d="M183 55c-7-13-18-16-27-12 6 11 16 17 27 12Z"/><path d="M169 38c-3-13-12-20-23-19 1 12 9 21 23 19Z"/><path d="M152 54c-7-11-17-14-27-9 6 10 16 14 27 9Z"/></g>
-<path class="g" d="M69 52 64 20l20 18 16-30 16 30 20-18-5 32Z"/><path class="d" d="M72 48h56M80 37l4-9 16 15 16-15 4 9"/><path class="g" d="M69 55h62l-4 13H73Z"/><circle class="g" cx="64" cy="18" r="3"/><circle class="g" cx="100" cy="6" r="3"/><circle class="g" cx="136" cy="18" r="3"/>
-</svg>

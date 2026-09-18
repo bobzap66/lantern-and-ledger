@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 96" role="img" aria-label="Kingmaker crown and flowering vine divider">
-<style>.g{fill:#b98532;stroke:#e0b45c;stroke-width:1}.l{fill:#557449;stroke:#78936a;stroke-width:.8}.v{fill:none;stroke:#557449;stroke-width:3;stroke-linecap:round}.r{fill:none;stroke:#b98532;stroke-width:2}.d{fill:none;stroke:#7d5b25;stroke-width:1.3}</style>
-<path class="r" d="M8 51h104M528 51h104"/><path class="v" d="M112 51c38-35 88-35 151-5M528 51c-38-35-88-35-151-5"/>
-<g class="l"><path d="M129 47c7-15 19-20 31-16-6 14-18 20-31 16Z"/><path d="M153 30c2-15 12-24 25-24 0 14-10 24-25 24Z"/><path d="M180 51c8-14 20-17 32-11-7 12-19 17-32 11Z"/><path d="M208 29c4-14 15-21 27-18-3 13-13 21-27 18Z"/><path d="M511 47c-7-15-19-20-31-16 6 14 18 20 31 16Z"/><path d="M487 30c-2-15-12-24-25-24 0 14 10 24 25 24Z"/><path d="M460 51c-8-14-20-17-32-11 7 12 19 17 32 11Z"/><path d="M432 29c-4-14-15-21-27-18 3 13 13 21 27 18Z"/></g>
-<path class="g" d="M281 62 275 25l22 19 23-37 23 37 22-19-6 37Z"/><path class="d" d="M285 57h70M294 44l4-10 22 17 22-17 4 10"/><path class="g" d="M281 65h78l-5 16h-68Z"/><circle class="g" cx="275" cy="23" r="3.5"/><circle class="g" cx="320" cy="5" r="3.5"/><circle class="g" cx="365" cy="23" r="3.5"/>
-<path class="r" d="M20 46l-7 5 7 5M620 46l7 5-7 5"/>
-</svg>
