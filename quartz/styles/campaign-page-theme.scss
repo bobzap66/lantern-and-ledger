@@ -289,24 +289,24 @@
 }
 
 #quartz-body.campaign--claws-of-the-tyrant article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
-  width: clamp(10rem, 38vw, 18rem);
-  height: clamp(1rem, 2.6vw, 1.35rem);
-  margin-top: 0.28rem;
+  width: clamp(15rem, 55vw, 25rem);
+  height: clamp(1.25rem, 3.2vw, 1.7rem);
+  margin-top: 0.08rem;
   background: url("/lantern-and-ledger/ornaments/claws-sword.svg") left center / contain no-repeat;
 }
 
 #quartz-body.campaign--claws-of-the-tyrant article h3 {
   position: relative;
-  padding-left: 2.2rem;
+  padding-left: 3rem;
 }
 
 #quartz-body.campaign--claws-of-the-tyrant article h3::before {
   content: "";
   position: absolute;
   left: 0;
-  top: 0.12em;
-  width: 1.7rem;
-  height: 1.05em;
+  top: 0.04em;
+  width: 2.5rem;
+  height: 1.25em;
   margin: 0;
   background: url("/lantern-and-ledger/ornaments/claws-ornament.svg") center / contain no-repeat;
   opacity: 0.82;
