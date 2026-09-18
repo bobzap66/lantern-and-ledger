@@ -854,3 +854,18 @@
   background-image: url("/lantern-and-ledger/ornaments/claws-of-the-tyrant-major-divider.webp");
   background-repeat: no-repeat;
 }
+
+/* Standardized H2 underlines span the full available article width.
+   The source assets are intentionally 8:1, so filling the box preserves their geometry. */
+#quartz-body.campaign--kingmaker article:not(:has(.callout[data-callout^="timeline-"])) h2::after,
+#quartz-body.campaign--abomination-vaults article:not(:has(.callout[data-callout^="timeline-"])) h2::after,
+#quartz-body.campaign--season-of-ghosts article:not(:has(.callout[data-callout^="timeline-"])) h2::after,
+#quartz-body.campaign--claws-of-the-tyrant article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
+  width: 100%;
+  max-width: none;
+  aspect-ratio: 8 / 1;
+  height: auto;
+  background-size: 100% 100%;
+  background-position: left center;
+  background-repeat: no-repeat;
+}
