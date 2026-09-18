@@ -273,6 +273,94 @@
   }
 }
 
+/* Season of Ghosts — Willowshore woodblock ornamentation.
+   Lantern for section identity, maple-and-mist branch for heading rules,
+   bell/charm for minor headings, and spirit procession for ceremonial breaks. */
+#quartz-body.campaign--season-of-ghosts article:not(:has(.callout[data-callout^="timeline-"])) h2 {
+  position: relative;
+  padding-left: clamp(3.1rem, 8vw, 4.2rem);
+}
+
+#quartz-body.campaign--season-of-ghosts article:not(:has(.callout[data-callout^="timeline-"])) h2::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: -0.12em;
+  width: clamp(2.45rem, 7vw, 3.2rem);
+  height: 1.5em;
+  background: url("/lantern-and-ledger/ornaments/season-of-ghosts-lantern.webp") center / contain no-repeat;
+}
+
+#quartz-body.campaign--season-of-ghosts article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
+  width: clamp(15rem, 55vw, 25rem);
+  height: clamp(1.25rem, 3.2vw, 1.7rem);
+  margin-top: -0.25rem;
+  background: url("/lantern-and-ledger/ornaments/season-of-ghosts-vine.webp") left center / contain no-repeat;
+}
+
+#quartz-body.campaign--season-of-ghosts article h3 {
+  position: relative;
+  padding-left: 3rem;
+}
+
+#quartz-body.campaign--season-of-ghosts article h3::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: -0.02em;
+  width: 2.35rem;
+  height: 1.35em;
+  background: url("/lantern-and-ledger/ornaments/season-of-ghosts-ornament.webp") center / contain no-repeat;
+  opacity: 0.86;
+}
+
+#quartz-body.campaign--season-of-ghosts article .callout:not([data-callout^="timeline-"]) {
+  position: relative;
+}
+
+#quartz-body.campaign--season-of-ghosts article .callout:not([data-callout^="timeline-"])::after {
+  content: "";
+  position: absolute;
+  top: 0.5rem;
+  right: 0.6rem;
+  width: 1.25rem;
+  height: 1.4rem;
+  background: url("/lantern-and-ledger/ornaments/season-of-ghosts-lantern.webp") center / contain no-repeat;
+  opacity: 0.16;
+  pointer-events: none;
+}
+
+#quartz-body.campaign--season-of-ghosts article hr {
+  width: min(42rem, 100%);
+  height: clamp(4.5rem, 10vw, 6.5rem);
+  margin-block: clamp(2.6rem, 6vw, 4rem);
+  background: url("/lantern-and-ledger/ornaments/season-of-ghosts-divider.webp") center / min(40rem, 98%) auto no-repeat;
+}
+
+#quartz-body.campaign--season-of-ghosts article hr::after {
+  content: none;
+}
+
+@media (max-width: 520px) {
+  #quartz-body.campaign--season-of-ghosts article:not(:has(.callout[data-callout^="timeline-"])) h2 {
+    padding-left: 2.8rem;
+  }
+
+  #quartz-body.campaign--season-of-ghosts article:not(:has(.callout[data-callout^="timeline-"])) h2::before {
+    width: 2.3rem;
+  }
+
+  #quartz-body.campaign--season-of-ghosts article .callout:not([data-callout^="timeline-"])::after {
+    display: none;
+  }
+
+  #quartz-body.campaign--season-of-ghosts article hr {
+    width: 100%;
+    height: 4.8rem;
+    background-size: 98% auto;
+  }
+}
+
 /* Claws of the Tyrant — purpose-built Lastwall heraldry.
    The converted source artwork remains reusable: shield for section identity,
    sword for heading rules, heraldic ornament for minor headings, and layered
