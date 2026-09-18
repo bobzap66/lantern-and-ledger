@@ -175,14 +175,14 @@
   top: -0.08em;
   width: clamp(2.65rem, 7vw, 3.55rem);
   height: 1.45em;
-  background: url("/lantern-and-ledger/ornaments/kingmaker-crown.webp") center / contain no-repeat;
+  background: url("/lantern-and-ledger/ornaments/kingmaker-h2-emblem.webp") center / contain no-repeat;
 }
 
 #quartz-body.campaign--kingmaker article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
   width: clamp(15rem, 55vw, 25rem);
   height: clamp(1.25rem, 3.2vw, 1.7rem);
   margin-top: -0.22rem;
-  background: url("/lantern-and-ledger/ornaments/kingmaker-vine.webp") left center / contain no-repeat;
+  background: url("/lantern-and-ledger/ornaments/kingmaker-h2-underline.webp") left center / contain no-repeat;
 }
 
 #quartz-body.campaign--kingmaker article h3 {
@@ -197,7 +197,7 @@
   top: 0.04em;
   width: 2.5rem;
   height: 1.25em;
-  background: url("/lantern-and-ledger/ornaments/kingmaker-oak-ornament.webp") center / contain no-repeat;
+  background: url("/lantern-and-ledger/ornaments/kingmaker-h3-ornament.webp") center / contain no-repeat;
   opacity: 0.84;
 }
 
@@ -212,7 +212,7 @@
   right: 0.65rem;
   width: 1.45rem;
   height: 1.2rem;
-  background: url("/lantern-and-ledger/ornaments/kingmaker-oak-ornament.webp") center / contain no-repeat;
+  background: url("/lantern-and-ledger/ornaments/kingmaker-h3-ornament.webp") center / contain no-repeat;
   opacity: 0.2;
   pointer-events: none;
 }
@@ -233,7 +233,7 @@
   bottom: 0.4rem;
   width: 1.35rem;
   height: 1.15rem;
-  background: url("/lantern-and-ledger/ornaments/kingmaker-oak-ornament.webp") center / contain no-repeat;
+  background: url("/lantern-and-ledger/ornaments/kingmaker-h3-ornament.webp") center / contain no-repeat;
   opacity: 0.16;
   pointer-events: none;
 }
@@ -242,7 +242,7 @@
   width: min(38rem, 96%);
   height: clamp(6.2rem, 14vw, 8.6rem);
   margin-block: clamp(2.6rem, 6vw, 4rem);
-  background: url("/lantern-and-ledger/ornaments/kingmaker-divider.webp") center / min(36rem, 96%) auto no-repeat;
+  background: url("/lantern-and-ledger/ornaments/kingmaker-major-divider.webp") center / min(36rem, 96%) auto no-repeat;
 }
 
 #quartz-body.campaign--kingmaker article hr::after {
@@ -285,14 +285,14 @@
   top: -0.12em;
   width: clamp(2.45rem, 7vw, 3.2rem);
   height: 1.5em;
-  background: url("/lantern-and-ledger/ornaments/abomination-vaults-gauntlight.webp") center / contain no-repeat;
+  background: url("/lantern-and-ledger/ornaments/abomination-vaults-h2-emblem.webp") center / contain no-repeat;
 }
 
 #quartz-body.campaign--abomination-vaults article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
   width: clamp(15rem, 55vw, 25rem);
   height: clamp(1.25rem, 3.2vw, 1.7rem);
   margin-top: -0.25rem;
-  background: url("/lantern-and-ledger/ornaments/abomination-vaults-masonry.webp") left center / contain no-repeat;
+  background: url("/lantern-and-ledger/ornaments/abomination-vaults-h2-underline.webp") left center / contain no-repeat;
 }
 
 #quartz-body.campaign--abomination-vaults article h3 {
@@ -322,7 +322,7 @@
   right: 0.6rem;
   width: 1.35rem;
   height: 1.35rem;
-  background: url("/lantern-and-ledger/ornaments/abomination-vaults-gauntlight.webp") center / contain no-repeat;
+  background: url("/lantern-and-ledger/ornaments/abomination-vaults-h2-emblem.webp") center / contain no-repeat;
   opacity: 0.16;
   pointer-events: none;
 }
@@ -331,7 +331,7 @@
   width: min(42rem, 100%);
   height: clamp(4.6rem, 10vw, 6.7rem);
   margin-block: clamp(2.6rem, 6vw, 4rem);
-  background: url("/lantern-and-ledger/ornaments/abomination-vaults-divider.webp") center / min(40rem, 98%) auto no-repeat;
+  background: url("/lantern-and-ledger/ornaments/abomination-vaults-major-divider.webp") center / min(40rem, 98%) auto no-repeat;
 }
 
 #quartz-body.campaign--abomination-vaults article hr::after {
@@ -373,14 +373,14 @@
   top: -0.12em;
   width: clamp(2.45rem, 7vw, 3.2rem);
   height: 1.5em;
-  background: url("/lantern-and-ledger/ornaments/season-of-ghosts-lantern.webp") center / contain no-repeat;
+  background: url("/lantern-and-ledger/ornaments/season-of-ghosts-h2-emblem.webp") center / contain no-repeat;
 }
 
 #quartz-body.campaign--season-of-ghosts article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
   width: clamp(15rem, 55vw, 25rem);
   height: clamp(1.25rem, 3.2vw, 1.7rem);
   margin-top: -0.25rem;
-  background: url("/lantern-and-ledger/ornaments/season-of-ghosts-vine.webp") left center / contain no-repeat;
+  background: url("/lantern-and-ledger/ornaments/season-of-ghosts-h2-underline.webp") left center / contain no-repeat;
 }
 
 #quartz-body.campaign--season-of-ghosts article h3 {
@@ -395,7 +395,7 @@
   top: -0.02em;
   width: 2.35rem;
   height: 1.35em;
-  background: url("/lantern-and-ledger/ornaments/season-of-ghosts-ornament.webp") center / contain no-repeat;
+  background: url("/lantern-and-ledger/ornaments/season-of-ghosts-h3-ornament.webp") center / contain no-repeat;
   opacity: 0.86;
 }
 
@@ -410,7 +410,7 @@
   right: 0.6rem;
   width: 1.25rem;
   height: 1.4rem;
-  background: url("/lantern-and-ledger/ornaments/season-of-ghosts-lantern.webp") center / contain no-repeat;
+  background: url("/lantern-and-ledger/ornaments/season-of-ghosts-h2-emblem.webp") center / contain no-repeat;
   opacity: 0.16;
   pointer-events: none;
 }
@@ -419,7 +419,7 @@
   width: min(42rem, 100%);
   height: clamp(4.5rem, 10vw, 6.5rem);
   margin-block: clamp(2.6rem, 6vw, 4rem);
-  background: url("/lantern-and-ledger/ornaments/season-of-ghosts-divider.webp") center / min(40rem, 98%) auto no-repeat;
+  background: url("/lantern-and-ledger/ornaments/season-of-ghosts-major-divider.webp") center / min(40rem, 98%) auto no-repeat;
 }
 
 #quartz-body.campaign--season-of-ghosts article hr::after {
@@ -781,5 +781,103 @@
   #quartz-body[class*="campaign--"] article .isr-character-card-copy {
     min-width: 0;
     padding: 0.7rem 0.75rem;
+  }
+}
+/* Standardized campaign ornament geometry — 2026-09.
+   Kingmaker, Abomination Vaults, and Season of Ghosts now use source assets
+   built specifically for the four shared roles: 1:1 H2 emblem, 8:1 H2 rule,
+   2:1 H3 ornament, and 4:1 major divider. Keep them proportional; do not
+   stretch them to compensate for source geometry. */
+#quartz-body.campaign--kingmaker,
+#quartz-body.campaign--abomination-vaults,
+#quartz-body.campaign--season-of-ghosts {
+  --campaign-h2-emblem-size: clamp(3rem, 6vw, 3.8rem);
+  --campaign-h3-ornament-width: clamp(3.4rem, 7vw, 4.5rem);
+}
+
+#quartz-body.campaign--kingmaker article:not(:has(.callout[data-callout^="timeline-"])) h2,
+#quartz-body.campaign--abomination-vaults article:not(:has(.callout[data-callout^="timeline-"])) h2,
+#quartz-body.campaign--season-of-ghosts article:not(:has(.callout[data-callout^="timeline-"])) h2 {
+  padding-left: calc(var(--campaign-h2-emblem-size) + 0.7rem);
+}
+
+#quartz-body.campaign--kingmaker article:not(:has(.callout[data-callout^="timeline-"])) h2::before,
+#quartz-body.campaign--abomination-vaults article:not(:has(.callout[data-callout^="timeline-"])) h2::before,
+#quartz-body.campaign--season-of-ghosts article:not(:has(.callout[data-callout^="timeline-"])) h2::before {
+  top: 50%;
+  width: var(--campaign-h2-emblem-size);
+  height: var(--campaign-h2-emblem-size);
+  transform: translateY(-58%);
+  background-size: contain;
+  background-position: center;
+}
+
+#quartz-body.campaign--kingmaker article:not(:has(.callout[data-callout^="timeline-"])) h2::after,
+#quartz-body.campaign--abomination-vaults article:not(:has(.callout[data-callout^="timeline-"])) h2::after,
+#quartz-body.campaign--season-of-ghosts article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
+  width: 100%;
+  height: clamp(1.7rem, 3.8vw, 2.6rem);
+  margin-top: -0.18rem;
+  background-size: contain;
+  background-position: left center;
+  background-repeat: no-repeat;
+}
+
+#quartz-body.campaign--kingmaker article h3,
+#quartz-body.campaign--abomination-vaults article h3,
+#quartz-body.campaign--season-of-ghosts article h3 {
+  padding-left: calc(var(--campaign-h3-ornament-width) + 0.55rem);
+}
+
+#quartz-body.campaign--kingmaker article h3::before,
+#quartz-body.campaign--abomination-vaults article h3::before,
+#quartz-body.campaign--season-of-ghosts article h3::before {
+  top: 50%;
+  width: var(--campaign-h3-ornament-width);
+  height: calc(var(--campaign-h3-ornament-width) / 2);
+  transform: translateY(-50%);
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+#quartz-body.campaign--kingmaker article hr,
+#quartz-body.campaign--abomination-vaults article hr,
+#quartz-body.campaign--season-of-ghosts article hr {
+  width: min(100%, 52rem);
+  height: auto;
+  min-height: 0;
+  aspect-ratio: 4 / 1;
+  margin-block: clamp(2.6rem, 6vw, 4rem);
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+@media (max-width: 520px) {
+  #quartz-body.campaign--kingmaker,
+  #quartz-body.campaign--abomination-vaults,
+  #quartz-body.campaign--season-of-ghosts {
+    --campaign-h2-emblem-size: 3.35rem;
+    --campaign-h3-ornament-width: 3.7rem;
+  }
+
+  #quartz-body.campaign--kingmaker article:not(:has(.callout[data-callout^="timeline-"])) h2::after,
+  #quartz-body.campaign--abomination-vaults article:not(:has(.callout[data-callout^="timeline-"])) h2::after,
+  #quartz-body.campaign--season-of-ghosts article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
+    width: 100%;
+    height: 2rem;
+    margin-top: -0.08rem;
+    background-size: contain;
+  }
+
+  #quartz-body.campaign--kingmaker article hr,
+  #quartz-body.campaign--abomination-vaults article hr,
+  #quartz-body.campaign--season-of-ghosts article hr {
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 4 / 1;
+    background-size: contain;
   }
 }
