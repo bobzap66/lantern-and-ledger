@@ -306,6 +306,21 @@ article .campaign-primary-nav__item:focus-visible {
   font-size: 1.05rem;
 }
 
+.campaign-archive-group > p {
+  margin: 0.5rem 0;
+  color: var(--darkgray);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.campaign-archive-group > p:first-of-type {
+  margin-top: 0;
+}
+
+.campaign-archive-group > p:last-child {
+  margin-bottom: 0;
+}
+
 .campaign-archive-group ul {
   margin: 0;
   padding-left: 1.15rem;
@@ -386,8 +401,17 @@ article .campaign-primary-nav__item:focus-visible {
 
 @media (max-width: 520px) {
   .campaign-hero {
-    min-height: 25rem;
+    min-height: clamp(18rem, 88vw, 23rem);
     border-radius: 0.45rem;
+  }
+
+  .campaign-hero::after {
+    background:
+      linear-gradient(0deg, rgba(6, 8, 9, 0.9) 0%, rgba(6, 8, 9, 0.5) 48%, rgba(6, 8, 9, 0.08) 100%);
+  }
+
+  .campaign-hero__image {
+    object-position: center center;
   }
 
   .campaign-hero__copy {
@@ -399,6 +423,15 @@ article .campaign-primary-nav__item:focus-visible {
 
   .campaign-hero__kicker {
     font-size: 0.62rem;
+  }
+
+  .campaign-hero__title {
+    font-size: clamp(2.15rem, 11vw, 3.35rem);
+    line-height: 0.94;
+  }
+
+  .campaign-hero__title::after {
+    margin: 0.6rem 0 0.65rem;
   }
 
   .campaign-hero__subtitle {
@@ -425,7 +458,12 @@ article .campaign-primary-nav__item:focus-visible {
   }
 
   .campaign-editorial-note {
+    margin-bottom: 1.8rem;
     padding: 1rem;
+  }
+
+  .campaign-editorial-note__links {
+    line-height: 1.65;
   }
 
   .campaign-archive-grid {
