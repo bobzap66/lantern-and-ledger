@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 64" role="img" aria-label="Kingmaker crown and leaves ornament">
+<style>.gold{fill:#b98532}.green{fill:#557449}.stem{fill:none;stroke:#557449;stroke-width:3;stroke-linecap:round}</style>
+<path class="stem" d="M8 48Q29 27 57 37M152 48Q131 27 103 37"/>
+<g class="green"><ellipse cx="20" cy="39" rx="11" ry="5" transform="rotate(-32 20 39)"/><ellipse cx="35" cy="28" rx="10" ry="5" transform="rotate(28 35 28)"/><ellipse cx="47" cy="43" rx="10" ry="5" transform="rotate(-24 47 43)"/><ellipse cx="140" cy="39" rx="11" ry="5" transform="rotate(32 140 39)"/><ellipse cx="125" cy="28" rx="10" ry="5" transform="rotate(-28 125 28)"/><ellipse cx="113" cy="43" rx="10" ry="5" transform="rotate(24 113 43)"/></g>
+<path class="gold" d="M55 43L50 18L65 32L80 8L95 32L110 18L105 43Z"/><path class="gold" d="M55 46H105V54H55Z"/>
+</svg>
