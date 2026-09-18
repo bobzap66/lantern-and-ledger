@@ -173,14 +173,17 @@
 }
 
 #quartz-body.campaign--kingmaker article:not(:has(.callout[data-callout^="timeline-"])) h2::before {
-  content: "♛";
+  content: "";
   position: absolute;
   left: 0.08rem;
-  top: 0.02em;
-  color: var(--campaign-page-accent);
-  font-family: Georgia, serif;
-  font-size: 0.82em;
-  line-height: 1;
+  top: 0.16em;
+  width: 1rem;
+  height: 0.78rem;
+  background: var(--campaign-page-accent);
+  clip-path: polygon(
+    4% 22%, 25% 48%, 36% 10%, 50% 45%, 64% 10%, 75% 48%, 96% 22%,
+    84% 76%, 16% 76%
+  );
   opacity: 0.76;
 }
 
@@ -246,13 +249,17 @@
 }
 
 #quartz-body.campaign--kingmaker article hr::after {
-  content: "♛";
+  content: "";
   display: block;
-  margin-top: -0.46rem;
-  color: var(--campaign-page-accent);
-  font-family: Georgia, serif;
-  font-size: 1rem;
-  text-align: center;
+  width: 1.05rem;
+  height: 0.8rem;
+  margin: -0.42rem auto 0;
+  background: var(--campaign-page-accent);
+  clip-path: polygon(
+    4% 22%, 25% 48%, 36% 10%, 50% 45%, 64% 10%, 75% 48%, 96% 22%,
+    84% 76%, 16% 76%
+  );
+  opacity: 0.8;
 }
 
 @media (max-width: 520px) {
