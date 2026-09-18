@@ -74,6 +74,13 @@ jobs:
       - name: Generate Golarion calendar data
         run: node scripts/generate-golarion-calendar.mjs
 
+      - name: Copy theme ornament assets
+        run: |
+          mkdir -p public/ornaments
+          cp quartz/static/ornaments/*.svg public/ornaments/
+          echo "Published theme ornaments:"
+          ls -la public/ornaments/
+
       - name: Merge campaign timeline metadata
         run: node scripts/merge-golarion-timeline-metadata.mjs
 
