@@ -269,48 +269,47 @@
   }
 }
 
-/* Claws of the Tyrant — campaign-wide Lastwall heraldry.
-   Reuse the abstract split shield and broken martial rules across ordinary
-   campaign pages so the identity survives beyond the landing page. */
+/* Claws of the Tyrant — purpose-built Lastwall heraldry.
+   The converted source artwork remains reusable: shield for section identity,
+   sword for heading rules, heraldic ornament for minor headings, and layered
+   banner/swords/shield for ceremonial breaks. */
 #quartz-body.campaign--claws-of-the-tyrant article:not(:has(.callout[data-callout^="timeline-"])) h2 {
   position: relative;
-  padding-left: 1.55rem;
+  padding-left: clamp(3.1rem, 8vw, 4.25rem);
 }
 
 #quartz-body.campaign--claws-of-the-tyrant article:not(:has(.callout[data-callout^="timeline-"])) h2::before {
   content: "";
   position: absolute;
-  left: 0.08rem;
-  top: 0.18em;
-  width: 0.82rem;
-  height: 0.94rem;
-  border: 1px solid color-mix(in srgb, var(--campaign-page-accent) 72%, var(--dark) 28%);
-  background:
-    linear-gradient(135deg, transparent 47%, color-mix(in srgb, var(--campaign-page-accent) 72%, transparent) 48% 52%, transparent 53%),
-    linear-gradient(45deg, transparent 47%, color-mix(in srgb, var(--campaign-page-accent) 72%, transparent) 48% 52%, transparent 53%);
-  clip-path: polygon(8% 0, 92% 0, 92% 58%, 50% 100%, 8% 58%);
-  opacity: 0.68;
+  left: 0;
+  top: -0.12em;
+  width: clamp(2.45rem, 7vw, 3.25rem);
+  height: 1.45em;
+  background: url("/lantern-and-ledger/ornaments/claws-shield.svg") center / contain no-repeat;
 }
 
 #quartz-body.campaign--claws-of-the-tyrant article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
-  width: min(7rem, 32%);
-  background:
-    linear-gradient(90deg,
-      var(--campaign-page-accent) 0 34%,
-      transparent 34% 40%,
-      var(--campaign-page-accent) 40% 66%,
-      transparent 66% 72%,
-      color-mix(in srgb, var(--campaign-page-accent) 58%, transparent) 72% 84%,
-      transparent 84%);
+  width: clamp(10rem, 38vw, 18rem);
+  height: clamp(1rem, 2.6vw, 1.35rem);
+  margin-top: 0.28rem;
+  background: url("/lantern-and-ledger/ornaments/claws-sword.svg") left center / contain no-repeat;
+}
+
+#quartz-body.campaign--claws-of-the-tyrant article h3 {
+  position: relative;
+  padding-left: 2.2rem;
 }
 
 #quartz-body.campaign--claws-of-the-tyrant article h3::before {
-  content: "◆";
-  margin-right: 0.42em;
-  color: var(--campaign-page-accent);
-  font-size: 0.52em;
-  vertical-align: 0.18em;
-  opacity: 0.62;
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.12em;
+  width: 1.7rem;
+  height: 1.05em;
+  margin: 0;
+  background: url("/lantern-and-ledger/ornaments/claws-ornament.svg") center / contain no-repeat;
+  opacity: 0.82;
 }
 
 #quartz-body.campaign--claws-of-the-tyrant article .callout:not([data-callout^="timeline-"]) {
@@ -321,13 +320,12 @@
 #quartz-body.campaign--claws-of-the-tyrant article .callout:not([data-callout^="timeline-"])::after {
   content: "";
   position: absolute;
-  top: 0.62rem;
-  right: 0.7rem;
-  width: 0.62rem;
-  height: 0.72rem;
-  border: 1px solid var(--campaign-page-accent);
-  clip-path: polygon(8% 0, 92% 0, 92% 58%, 50% 100%, 8% 58%);
-  opacity: 0.28;
+  top: 0.55rem;
+  right: 0.65rem;
+  width: 1.35rem;
+  height: 1.35rem;
+  background: url("/lantern-and-ledger/ornaments/claws-shield.svg") center / contain no-repeat;
+  opacity: 0.22;
   pointer-events: none;
 }
 
@@ -343,41 +341,73 @@
 #quartz-body.campaign--claws-of-the-tyrant article .editorial-card::after {
   content: "";
   position: absolute;
-  right: 0.55rem;
-  bottom: 0.5rem;
-  width: 0.68rem;
-  height: 0.78rem;
-  border: 1px solid var(--campaign-page-accent);
-  clip-path: polygon(8% 0, 92% 0, 92% 58%, 50% 100%, 8% 58%);
-  opacity: 0.22;
+  right: 0.45rem;
+  bottom: 0.4rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  background: url("/lantern-and-ledger/ornaments/claws-shield.svg") center / contain no-repeat;
+  opacity: 0.16;
   pointer-events: none;
 }
 
+/* A major Claws divider is assembled from the reusable source pieces:
+   banner at the rear, crossed copies of the same sword, shield in front. */
 #quartz-body.campaign--claws-of-the-tyrant article hr {
-  height: 3px;
+  position: relative;
+  overflow: visible;
+  width: min(38rem, 96%);
+  height: clamp(3.8rem, 9vw, 5.8rem);
+  margin-block: clamp(2.6rem, 6vw, 4rem);
   background:
-    linear-gradient(90deg,
-      transparent 0 8%,
-      color-mix(in srgb, var(--campaign-page-accent) 45%, transparent) 8% 35%,
-      transparent 35% 39%,
-      var(--campaign-page-accent) 39% 61%,
-      transparent 61% 65%,
-      color-mix(in srgb, var(--campaign-page-accent) 45%, transparent) 65% 92%,
-      transparent 92%);
+    url("/lantern-and-ledger/ornaments/claws-shield.svg") center / auto 88% no-repeat,
+    url("/lantern-and-ledger/ornaments/claws-sword.svg") center / min(27rem, 78%) auto no-repeat,
+    url("/lantern-and-ledger/ornaments/claws-banner.svg") center / min(35rem, 96%) auto no-repeat;
+}
+
+#quartz-body.campaign--claws-of-the-tyrant article hr::before,
+#quartz-body.campaign--claws-of-the-tyrant article hr::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  top: 50%;
+  width: min(25rem, 72vw);
+  height: 2.25rem;
+  background: url("/lantern-and-ledger/ornaments/claws-sword.svg") center / contain no-repeat;
+  transform-origin: center;
+}
+
+#quartz-body.campaign--claws-of-the-tyrant article hr::before {
+  transform: translate(-50%, -50%) rotate(14deg);
+}
+
+#quartz-body.campaign--claws-of-the-tyrant article hr::after {
+  transform: translate(-50%, -50%) rotate(166deg);
 }
 
 @media (max-width: 520px) {
   #quartz-body.campaign--claws-of-the-tyrant article:not(:has(.callout[data-callout^="timeline-"])) h2 {
-    padding-left: 1.3rem;
+    padding-left: 2.75rem;
   }
 
   #quartz-body.campaign--claws-of-the-tyrant article:not(:has(.callout[data-callout^="timeline-"])) h2::before {
-    width: 0.68rem;
-    height: 0.78rem;
+    width: 2.25rem;
   }
 
   #quartz-body.campaign--claws-of-the-tyrant article .callout:not([data-callout^="timeline-"])::after {
     display: none;
+  }
+
+  #quartz-body.campaign--claws-of-the-tyrant article hr {
+    width: 100%;
+    height: 4rem;
+    background-size: auto 82%, 82% auto, 100% auto;
+  }
+
+  #quartz-body.campaign--claws-of-the-tyrant article hr::before,
+  #quartz-body.campaign--claws-of-the-tyrant article hr::after {
+    width: 76vw;
+    height: 1.7rem;
   }
 }
 
