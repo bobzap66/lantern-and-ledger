@@ -273,6 +273,95 @@
   }
 }
 
+/* Abomination Vaults — Gauntlight ruin ornamentation.
+   A ruined Gauntlight aperture marks major headings, spectral masonry forms
+   the heading rule, Nhimbaloth's skull marks minor headings, and the descent
+   beneath Gauntlight becomes the ceremonial section break. */
+#quartz-body.campaign--abomination-vaults article:not(:has(.callout[data-callout^="timeline-"])) h2 {
+  position: relative;
+  padding-left: clamp(3.1rem, 8vw, 4.2rem);
+}
+
+#quartz-body.campaign--abomination-vaults article:not(:has(.callout[data-callout^="timeline-"])) h2::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: -0.12em;
+  width: clamp(2.45rem, 7vw, 3.2rem);
+  height: 1.5em;
+  background: url("/lantern-and-ledger/ornaments/abomination-vaults-gauntlight.webp") center / contain no-repeat;
+}
+
+#quartz-body.campaign--abomination-vaults article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
+  width: clamp(15rem, 55vw, 25rem);
+  height: clamp(1.25rem, 3.2vw, 1.7rem);
+  margin-top: -0.25rem;
+  background: url("/lantern-and-ledger/ornaments/abomination-vaults-masonry.webp") left center / contain no-repeat;
+}
+
+#quartz-body.campaign--abomination-vaults article h3 {
+  position: relative;
+  padding-left: 3rem;
+}
+
+#quartz-body.campaign--abomination-vaults article h3::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.02em;
+  width: 2.5rem;
+  height: 1.25em;
+  background: url("/lantern-and-ledger/ornaments/abomination-vaults-ornament.webp") center / contain no-repeat;
+  opacity: 0.86;
+}
+
+#quartz-body.campaign--abomination-vaults article .callout:not([data-callout^="timeline-"]) {
+  position: relative;
+}
+
+#quartz-body.campaign--abomination-vaults article .callout:not([data-callout^="timeline-"])::after {
+  content: "";
+  position: absolute;
+  top: 0.5rem;
+  right: 0.6rem;
+  width: 1.35rem;
+  height: 1.35rem;
+  background: url("/lantern-and-ledger/ornaments/abomination-vaults-gauntlight.webp") center / contain no-repeat;
+  opacity: 0.16;
+  pointer-events: none;
+}
+
+#quartz-body.campaign--abomination-vaults article hr {
+  width: min(42rem, 100%);
+  height: clamp(4.6rem, 10vw, 6.7rem);
+  margin-block: clamp(2.6rem, 6vw, 4rem);
+  background: url("/lantern-and-ledger/ornaments/abomination-vaults-divider.webp") center / min(40rem, 98%) auto no-repeat;
+}
+
+#quartz-body.campaign--abomination-vaults article hr::after {
+  content: none;
+}
+
+@media (max-width: 520px) {
+  #quartz-body.campaign--abomination-vaults article:not(:has(.callout[data-callout^="timeline-"])) h2 {
+    padding-left: 2.8rem;
+  }
+
+  #quartz-body.campaign--abomination-vaults article:not(:has(.callout[data-callout^="timeline-"])) h2::before {
+    width: 2.3rem;
+  }
+
+  #quartz-body.campaign--abomination-vaults article .callout:not([data-callout^="timeline-"])::after {
+    display: none;
+  }
+
+  #quartz-body.campaign--abomination-vaults article hr {
+    width: 100%;
+    height: 4.9rem;
+    background-size: 98% auto;
+  }
+}
+
 /* Season of Ghosts — Willowshore woodblock ornamentation.
    Lantern for section identity, maple-and-mist branch for heading rules,
    bell/charm for minor headings, and spirit procession for ceremonial breaks. */
