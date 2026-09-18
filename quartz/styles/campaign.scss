@@ -123,6 +123,58 @@
   --campaign-accent: #c7655f;
 }
 
+/* Claws of the Tyrant: restrained Lastwall heraldry.
+   The split shield is intentionally abstract rather than a literal faction badge. */
+.center:has(.campaign-hero--claws-of-the-tyrant) .campaign-editorial-note::before,
+.center:has(.campaign-hero--claws-of-the-tyrant) .campaign-archive-group::before {
+  content: "";
+  display: block;
+  width: 1.05rem;
+  height: 1.2rem;
+  margin: 0 0 0.55rem;
+  border: 1px solid color-mix(in srgb, var(--campaign-nav-accent) 72%, var(--dark) 28%);
+  background:
+    linear-gradient(135deg, transparent 47%, color-mix(in srgb, var(--campaign-nav-accent) 72%, transparent) 48% 52%, transparent 53%),
+    linear-gradient(45deg, transparent 47%, color-mix(in srgb, var(--campaign-nav-accent) 72%, transparent) 48% 52%, transparent 53%);
+  clip-path: polygon(8% 0, 92% 0, 92% 58%, 50% 100%, 8% 58%);
+  opacity: 0.72;
+}
+
+.center:has(.campaign-hero--claws-of-the-tyrant) .campaign-editorial-note {
+  position: relative;
+}
+
+.center:has(.campaign-hero--claws-of-the-tyrant) .campaign-editorial-note::before {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.3rem;
+  width: 1.2rem;
+  height: 1.38rem;
+  margin: 0;
+  opacity: 0.55;
+}
+
+.center:has(.campaign-hero--claws-of-the-tyrant) .campaign-archive-group {
+  position: relative;
+}
+
+.center:has(.campaign-hero--claws-of-the-tyrant) .campaign-archive-group h3 {
+  margin-top: -1.75rem;
+  padding-left: 1.55rem;
+}
+
+.center:has(.campaign-hero--claws-of-the-tyrant) .campaign-primary-nav__item::before {
+  content: "";
+  position: absolute;
+  top: 0.72rem;
+  right: 0.72rem;
+  width: 0.62rem;
+  height: 0.72rem;
+  border: 1px solid var(--campaign-nav-accent);
+  clip-path: polygon(8% 0, 92% 0, 92% 58%, 50% 100%, 8% 58%);
+  opacity: 0.34;
+}
+
 .campaign-hero--abomination-vaults .campaign-hero__image {
   object-position: center;
 }
@@ -464,6 +516,15 @@ article .campaign-primary-nav__item:focus-visible {
 
   .campaign-editorial-note__links {
     line-height: 1.65;
+  }
+
+  .center:has(.campaign-hero--claws-of-the-tyrant) .campaign-editorial-note::before {
+    top: 1rem;
+    right: 1rem;
+  }
+
+  .center:has(.campaign-hero--claws-of-the-tyrant) .campaign-primary-nav__item::before {
+    display: none;
   }
 
   .campaign-archive-grid {
