@@ -649,6 +649,22 @@
   }
 }
 
+/* Abomination Vaults masonry is also an underline, not a wall-sized banner.
+   Keep the full-width architectural read while compressing its vertical footprint. */
+#quartz-body.campaign--abomination-vaults article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
+  height: clamp(1.35rem, 2.4vw, 1.75rem);
+  margin-top: -0.08rem;
+  background-size: 100% 100%;
+}
+
+@media (max-width: 520px) {
+  #quartz-body.campaign--abomination-vaults article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
+    height: 1.55rem;
+    margin-top: -0.04rem;
+    background-size: 100% 100%;
+  }
+}
+
 /* Kingmaker's flowering vine is an underline, not a second banner. */
 #quartz-body.campaign--kingmaker article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
   height: clamp(1rem, 1.8vw, 1.35rem);
