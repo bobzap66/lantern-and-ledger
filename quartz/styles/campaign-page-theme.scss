@@ -183,14 +183,10 @@
 }
 
 #quartz-body.campaign--kingmaker article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
-  width: min(10rem, 42%);
-  height: 3px;
-  background: linear-gradient(90deg,
-    var(--campaign-page-accent) 0 38%,
-    var(--campaign-page-secondary) 38% 45%,
-    color-mix(in srgb, var(--campaign-page-accent) 72%, var(--campaign-page-secondary) 28%) 45% 55%,
-    var(--campaign-page-secondary) 55% 62%,
-    var(--campaign-page-accent) 62% 100%);
+  width: clamp(10rem, 38vw, 18rem);
+  height: clamp(1.15rem, 3vw, 1.55rem);
+  margin-top: 0.28rem;
+  background: url("/lantern-and-ledger/ornaments/kingmaker-heading-vine.svg") left center / contain no-repeat;
 }
 
 #quartz-body.campaign--kingmaker article h3 {
