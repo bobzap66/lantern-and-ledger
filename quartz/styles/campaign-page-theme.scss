@@ -179,14 +179,14 @@
   top: -0.08em;
   width: clamp(2.65rem, 7vw, 3.55rem);
   height: 1.45em;
-  background: url("/lantern-and-ledger/ornaments/kingmaker-crown.svg") center / contain no-repeat;
+  background: url("/lantern-and-ledger/ornaments/kingmaker-crown.webp") center / contain no-repeat;
 }
 
 #quartz-body.campaign--kingmaker article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
   width: clamp(15rem, 55vw, 25rem);
   height: clamp(1.25rem, 3.2vw, 1.7rem);
   margin-top: -0.22rem;
-  background: url("/lantern-and-ledger/ornaments/kingmaker-vine.svg") left center / contain no-repeat;
+  background: url("/lantern-and-ledger/ornaments/kingmaker-vine.webp") left center / contain no-repeat;
 }
 
 #quartz-body.campaign--kingmaker article h3 {
@@ -201,7 +201,7 @@
   top: 0.04em;
   width: 2.5rem;
   height: 1.25em;
-  background: url("/lantern-and-ledger/ornaments/kingmaker-oak-ornament.svg") center / contain no-repeat;
+  background: url("/lantern-and-ledger/ornaments/kingmaker-oak-ornament.webp") center / contain no-repeat;
   opacity: 0.84;
 }
 
@@ -216,7 +216,7 @@
   right: 0.65rem;
   width: 1.45rem;
   height: 1.2rem;
-  background: url("/lantern-and-ledger/ornaments/kingmaker-oak-ornament.svg") center / contain no-repeat;
+  background: url("/lantern-and-ledger/ornaments/kingmaker-oak-ornament.webp") center / contain no-repeat;
   opacity: 0.2;
   pointer-events: none;
 }
@@ -237,7 +237,7 @@
   bottom: 0.4rem;
   width: 1.35rem;
   height: 1.15rem;
-  background: url("/lantern-and-ledger/ornaments/kingmaker-oak-ornament.svg") center / contain no-repeat;
+  background: url("/lantern-and-ledger/ornaments/kingmaker-oak-ornament.webp") center / contain no-repeat;
   opacity: 0.16;
   pointer-events: none;
 }
@@ -246,7 +246,7 @@
   width: min(38rem, 96%);
   height: clamp(4.4rem, 10vw, 6.4rem);
   margin-block: clamp(2.6rem, 6vw, 4rem);
-  background: url("/lantern-and-ledger/ornaments/kingmaker-divider.svg") center / min(36rem, 96%) auto no-repeat;
+  background: url("/lantern-and-ledger/ornaments/kingmaker-divider.webp") center / min(36rem, 96%) auto no-repeat;
 }
 
 #quartz-body.campaign--kingmaker article hr::after {
@@ -289,14 +289,14 @@
   top: -0.12em;
   width: clamp(2.45rem, 7vw, 3.25rem);
   height: 1.45em;
-  background: url("/lantern-and-ledger/ornaments/claws-shield.svg") center / contain no-repeat;
+  background: url("/lantern-and-ledger/ornaments/claws-shield.webp") center / contain no-repeat;
 }
 
 #quartz-body.campaign--claws-of-the-tyrant article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
   width: clamp(15rem, 55vw, 25rem);
   height: clamp(1.25rem, 3.2vw, 1.7rem);
   margin-top: -0.35rem;
-  background: url("/lantern-and-ledger/ornaments/claws-sword.svg") left center / contain no-repeat;
+  background: url("/lantern-and-ledger/ornaments/claws-sword.webp") left center / contain no-repeat;
 }
 
 #quartz-body.campaign--claws-of-the-tyrant article h3 {
@@ -312,7 +312,7 @@
   width: 2.5rem;
   height: 1.25em;
   margin: 0;
-  background: url("/lantern-and-ledger/ornaments/claws-ornament.svg") center / contain no-repeat;
+  background: url("/lantern-and-ledger/ornaments/claws-ornament.webp") center / contain no-repeat;
   opacity: 0.82;
 }
 
@@ -328,7 +328,7 @@
   right: 0.65rem;
   width: 1.35rem;
   height: 1.35rem;
-  background: url("/lantern-and-ledger/ornaments/claws-shield.svg") center / contain no-repeat;
+  background: url("/lantern-and-ledger/ornaments/claws-shield.webp") center / contain no-repeat;
   opacity: 0.22;
   pointer-events: none;
 }
@@ -349,7 +349,7 @@
   bottom: 0.4rem;
   width: 1.25rem;
   height: 1.25rem;
-  background: url("/lantern-and-ledger/ornaments/claws-shield.svg") center / contain no-repeat;
+  background: url("/lantern-and-ledger/ornaments/claws-shield.webp") center / contain no-repeat;
   opacity: 0.16;
   pointer-events: none;
 }
@@ -363,9 +363,9 @@
   height: clamp(4.4rem, 10vw, 6.4rem);
   margin-block: clamp(2.6rem, 6vw, 4rem);
   background:
-    url("/lantern-and-ledger/ornaments/claws-shield.svg") center / auto 88% no-repeat,
-    url("/lantern-and-ledger/ornaments/claws-sword.svg") center / min(27rem, 78%) auto no-repeat,
-    url("/lantern-and-ledger/ornaments/claws-banner.svg") center / min(35rem, 96%) auto no-repeat;
+    url("/lantern-and-ledger/ornaments/claws-shield.webp") center / auto 88% no-repeat,
+    url("/lantern-and-ledger/ornaments/claws-sword.webp") center / min(27rem, 78%) auto no-repeat,
+    url("/lantern-and-ledger/ornaments/claws-banner.webp") center / min(35rem, 96%) auto no-repeat;
 }
 
 #quartz-body.campaign--claws-of-the-tyrant article hr::before,
@@ -377,7 +377,7 @@
   top: 50%;
   width: min(25rem, 72vw);
   height: 2.25rem;
-  background: url("/lantern-and-ledger/ornaments/claws-sword.svg") center / contain no-repeat;
+  background: url("/lantern-and-ledger/ornaments/claws-sword.webp") center / contain no-repeat;
   transform-origin: center;
 }
 
