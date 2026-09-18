@@ -653,6 +653,24 @@
   }
 }
 
+/* Detailed campaign dividers need enough vertical room to show their full artwork.
+   Width and campaign-specific composition remain unchanged. */
+#quartz-body.campaign--kingmaker article hr,
+#quartz-body.campaign--abomination-vaults article hr,
+#quartz-body.campaign--season-of-ghosts article hr,
+#quartz-body.campaign--claws-of-the-tyrant article hr {
+  min-height: clamp(7rem, 15vw, 9.5rem);
+}
+
+@media (max-width: 520px) {
+  #quartz-body.campaign--kingmaker article hr,
+  #quartz-body.campaign--abomination-vaults article hr,
+  #quartz-body.campaign--season-of-ghosts article hr,
+  #quartz-body.campaign--claws-of-the-tyrant article hr {
+    min-height: 7rem;
+  }
+}
+
 /* Campaign heading ornaments share a full-width editorial rule.
    The source art differs by campaign, but each H2 ornament now occupies the
    available article width rather than reading as a short decorative icon. */
