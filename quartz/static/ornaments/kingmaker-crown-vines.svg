@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 72" role="img" aria-label="Kingmaker crown and vines divider">
+<style>.gold{fill:#b98532}.green{fill:#557449}.vine{fill:none;stroke:#557449;stroke-width:3;stroke-linecap:round}.rule{fill:none;stroke:#b98532;stroke-width:2}</style>
+<path class="rule" d="M8 38H104M416 38H512"/><path class="vine" d="M104 38Q145 10 210 35M416 38Q375 10 310 35"/>
+<g class="green"><ellipse cx="126" cy="27" rx="12" ry="5" transform="rotate(-32 126 27)"/><ellipse cx="151" cy="43" rx="12" ry="5" transform="rotate(29 151 43)"/><ellipse cx="176" cy="22" rx="11" ry="5" transform="rotate(-28 176 22)"/><ellipse cx="199" cy="42" rx="10" ry="5" transform="rotate(25 199 42)"/><ellipse cx="394" cy="27" rx="12" ry="5" transform="rotate(32 394 27)"/><ellipse cx="369" cy="43" rx="12" ry="5" transform="rotate(-29 369 43)"/><ellipse cx="344" cy="22" rx="11" ry="5" transform="rotate(28 344 22)"/><ellipse cx="321" cy="42" rx="10" ry="5" transform="rotate(-25 321 42)"/></g>
+<path class="gold" d="M224 46L218 18L239 34L260 5L281 34L302 18L296 46Z"/><path class="gold" d="M224 49H296V59H224Z"/>
+</svg>
