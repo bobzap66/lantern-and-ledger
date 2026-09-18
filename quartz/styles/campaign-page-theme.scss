@@ -164,24 +164,22 @@
 }
 
 
-/* Kingmaker — responsive crown-and-foliage heraldry.
-   These ornaments are vector SVG data URIs rather than image assets: they scale
-   cleanly with the heading and viewport, remain outside the image library, and
-   avoid device-dependent font glyphs or CSS-gradient approximations. */
+/* Kingmaker — purpose-built ornamental assets.
+   Theme ornaments live with Quartz static UI assets, not the campaign image
+   library. CSS controls placement and responsive sizing; SVG handles drawing. */
 #quartz-body.campaign--kingmaker article:not(:has(.callout[data-callout^="timeline-"])) h2 {
   position: relative;
-  padding-left: clamp(2.7rem, 7vw, 3.4rem);
+  padding-left: clamp(3rem, 8vw, 4rem);
 }
 
 #quartz-body.campaign--kingmaker article:not(:has(.callout[data-callout^="timeline-"])) h2::before {
   content: "";
   position: absolute;
   left: 0;
-  top: 0.05em;
-  width: clamp(2.2rem, 6vw, 2.8rem);
-  aspect-ratio: 120 / 54;
-  background: url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 120 54%27%3E%3Cg fill=%27%23557449%27%3E%3Cpath d=%27M6 38C14 25 23 22 34 26C24 29 18 35 15 44Z%27/%3E%3Cpath d=%27M17 20C25 16 32 18 38 24C29 25 23 24 17 20Z%27/%3E%3Cpath d=%27M114 38C106 25 97 22 86 26C96 29 102 35 105 44Z%27/%3E%3Cpath d=%27M103 20C95 16 88 18 82 24C91 25 97 24 103 20Z%27/%3E%3Cpath d=%27M14 39Q29 25 43 30L42 34Q28 30 16 44Z%27/%3E%3Cpath d=%27M106 39Q91 25 77 30L78 34Q92 30 104 44Z%27/%3E%3C/g%3E%3Cpath fill=%27%23b98532%27 d=%27M39 37L35 15L49 27L60 7L71 27L85 15L81 37Z%27/%3E%3Cpath fill=%27%23b98532%27 d=%27M40 40H80V47H40Z%27/%3E%3Cpath fill=%27%23f5efe0%27 fill-opacity=%27.5%27 d=%27M45 42H75V44H45Z%27/%3E%3C/svg%3E") center / contain no-repeat;
-  opacity: 0.92;
+  top: 0.02em;
+  width: clamp(2.55rem, 7vw, 3.35rem);
+  aspect-ratio: 160 / 64;
+  background: url("/static/ornaments/kingmaker-crown-leaves.svg") center / contain no-repeat;
 }
 
 #quartz-body.campaign--kingmaker article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
@@ -195,12 +193,19 @@
     var(--campaign-page-accent) 62% 100%);
 }
 
+#quartz-body.campaign--kingmaker article h3 {
+  position: relative;
+  padding-left: 1.65rem;
+}
+
 #quartz-body.campaign--kingmaker article h3::before {
-  content: "❧";
-  margin-right: 0.38em;
-  color: var(--campaign-page-secondary);
-  font-size: 0.82em;
-  opacity: 0.72;
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.22em;
+  width: 1.35rem;
+  aspect-ratio: 72 / 34;
+  background: url("/static/ornaments/kingmaker-sprig.svg") center / contain no-repeat;
 }
 
 #quartz-body.campaign--kingmaker article .callout:not([data-callout^="timeline-"]) {
@@ -208,14 +213,14 @@
 }
 
 #quartz-body.campaign--kingmaker article .callout:not([data-callout^="timeline-"])::after {
-  content: "❧";
+  content: "";
   position: absolute;
-  top: 0.45rem;
+  top: 0.55rem;
   right: 0.65rem;
-  color: var(--campaign-page-secondary);
-  font-size: 1rem;
-  opacity: 0.25;
-  transform: rotate(-18deg);
+  width: 1.5rem;
+  aspect-ratio: 72 / 34;
+  background: url("/static/ornaments/kingmaker-sprig.svg") center / contain no-repeat;
+  opacity: 0.28;
   pointer-events: none;
 }
 
@@ -229,20 +234,20 @@
 #quartz-body.campaign--kingmaker article .isr-character-card::after,
 #quartz-body.campaign--kingmaker article .isr-npc-card::after,
 #quartz-body.campaign--kingmaker article .editorial-card::after {
-  content: "❧";
+  content: "";
   position: absolute;
   right: 0.5rem;
-  bottom: 0.38rem;
-  color: var(--campaign-page-secondary);
-  font-size: 1rem;
+  bottom: 0.45rem;
+  width: 1.45rem;
+  aspect-ratio: 72 / 34;
+  background: url("/static/ornaments/kingmaker-sprig.svg") center / contain no-repeat;
   opacity: 0.2;
-  transform: rotate(-24deg);
   pointer-events: none;
 }
 
 #quartz-body.campaign--kingmaker article hr {
-  height: clamp(1.5rem, 4vw, 2rem);
-  background: url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 300 42%27%3E%3Cg fill=%27none%27 stroke=%27%23557449%27 stroke-width=%273%27 stroke-linecap=%27round%27%3E%3Cpath d=%27M12 26Q64 8 119 24%27/%3E%3Cpath d=%27M288 26Q236 8 181 24%27/%3E%3C/g%3E%3Cg fill=%27%23557449%27%3E%3Cellipse cx=%2738%27 cy=%2718%27 rx=%279%27 ry=%274%27 transform=%27rotate(-28 38 18)%27/%3E%3Cellipse cx=%2765%27 cy=%2727%27 rx=%279%27 ry=%274%27 transform=%27rotate(28 65 27)%27/%3E%3Cellipse cx=%2791%27 cy=%2715%27 rx=%278%27 ry=%274%27 transform=%27rotate(-24 91 15)%27/%3E%3Cellipse cx=%27262%27 cy=%2718%27 rx=%279%27 ry=%274%27 transform=%27rotate(28 262 18)%27/%3E%3Cellipse cx=%27235%27 cy=%2727%27 rx=%279%27 ry=%274%27 transform=%27rotate(-28 235 27)%27/%3E%3Cellipse cx=%27209%27 cy=%2715%27 rx=%278%27 ry=%274%27 transform=%27rotate(24 209 15)%27/%3E%3C/g%3E%3Cpath fill=%27%23b98532%27 d=%27M129 30L126 12L137 22L150 4L163 22L174 12L171 30Z%27/%3E%3Cpath fill=%27%23b98532%27 d=%27M130 32H170V38H130Z%27/%3E%3C/svg%3E") center / min(24rem, 82%) auto no-repeat;
+  height: clamp(2.2rem, 5vw, 3.2rem);
+  background: url("/static/ornaments/kingmaker-crown-vines.svg") center / min(34rem, 94%) auto no-repeat;
 }
 
 #quartz-body.campaign--kingmaker article hr::after {
@@ -251,11 +256,11 @@
 
 @media (max-width: 520px) {
   #quartz-body.campaign--kingmaker article:not(:has(.callout[data-callout^="timeline-"])) h2 {
-    padding-left: 2.55rem;
+    padding-left: 2.8rem;
   }
 
   #quartz-body.campaign--kingmaker article:not(:has(.callout[data-callout^="timeline-"])) h2::before {
-    width: 2.15rem;
+    width: 2.4rem;
   }
 
   #quartz-body.campaign--kingmaker article .callout:not([data-callout^="timeline-"])::after {
@@ -263,7 +268,8 @@
   }
 
   #quartz-body.campaign--kingmaker article hr {
-    background-size: min(19rem, 94%) auto;
+    height: 2.4rem;
+    background-size: 98% auto;
   }
 }
 
