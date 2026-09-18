@@ -164,56 +164,41 @@
 }
 
 
-/* Kingmaker — crown nested in growing wilderness.
-   The emblem is pure CSS: a small heraldic crown framed by paired leaves.
-   Major dividers stretch the foliage outward while secondary elements use
-   leaves alone, keeping the crown reserved for the campaign's hierarchy. */
-#quartz-body.campaign--kingmaker {
-  --kingmaker-leaf: var(--campaign-page-secondary);
-  --kingmaker-gold: var(--campaign-page-accent);
-}
-
+/* Kingmaker — responsive crown-and-foliage heraldry.
+   These ornaments are vector SVG data URIs rather than image assets: they scale
+   cleanly with the heading and viewport, remain outside the image library, and
+   avoid device-dependent font glyphs or CSS-gradient approximations. */
 #quartz-body.campaign--kingmaker article:not(:has(.callout[data-callout^="timeline-"])) h2 {
   position: relative;
-  padding-left: 2.55rem;
+  padding-left: clamp(2.7rem, 7vw, 3.4rem);
 }
 
 #quartz-body.campaign--kingmaker article:not(:has(.callout[data-callout^="timeline-"])) h2::before {
   content: "";
   position: absolute;
   left: 0;
-  top: 0.12em;
-  width: 2rem;
-  height: 1.05rem;
-  background:
-    /* crown */
-    linear-gradient(var(--kingmaker-gold), var(--kingmaker-gold)) 50% 78% / 34% 14% no-repeat,
-    linear-gradient(115deg, transparent 43%, var(--kingmaker-gold) 44% 68%, transparent 69%) 39% 50% / 30% 72% no-repeat,
-    linear-gradient(65deg, transparent 43%, var(--kingmaker-gold) 44% 68%, transparent 69%) 61% 50% / 30% 72% no-repeat,
-    /* paired leaves */
-    radial-gradient(ellipse at 70% 70%, var(--kingmaker-leaf) 0 45%, transparent 47%) 4% 70% / 27% 45% no-repeat,
-    radial-gradient(ellipse at 30% 70%, var(--kingmaker-leaf) 0 45%, transparent 47%) 96% 70% / 27% 45% no-repeat,
-    radial-gradient(ellipse at 72% 72%, color-mix(in srgb, var(--kingmaker-leaf) 82%, transparent) 0 45%, transparent 47%) 16% 25% / 24% 42% no-repeat,
-    radial-gradient(ellipse at 28% 72%, color-mix(in srgb, var(--kingmaker-leaf) 82%, transparent) 0 45%, transparent 47%) 84% 25% / 24% 42% no-repeat;
-  opacity: 0.86;
+  top: 0.05em;
+  width: clamp(2.2rem, 6vw, 2.8rem);
+  aspect-ratio: 120 / 54;
+  background: url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 120 54%27%3E%3Cg fill=%27%23557449%27%3E%3Cpath d=%27M6 38C14 25 23 22 34 26C24 29 18 35 15 44Z%27/%3E%3Cpath d=%27M17 20C25 16 32 18 38 24C29 25 23 24 17 20Z%27/%3E%3Cpath d=%27M114 38C106 25 97 22 86 26C96 29 102 35 105 44Z%27/%3E%3Cpath d=%27M103 20C95 16 88 18 82 24C91 25 97 24 103 20Z%27/%3E%3Cpath d=%27M14 39Q29 25 43 30L42 34Q28 30 16 44Z%27/%3E%3Cpath d=%27M106 39Q91 25 77 30L78 34Q92 30 104 44Z%27/%3E%3C/g%3E%3Cpath fill=%27%23b98532%27 d=%27M39 37L35 15L49 27L60 7L71 27L85 15L81 37Z%27/%3E%3Cpath fill=%27%23b98532%27 d=%27M40 40H80V47H40Z%27/%3E%3Cpath fill=%27%23f5efe0%27 fill-opacity=%27.5%27 d=%27M45 42H75V44H45Z%27/%3E%3C/svg%3E") center / contain no-repeat;
+  opacity: 0.92;
 }
 
 #quartz-body.campaign--kingmaker article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
-  width: min(9rem, 40%);
+  width: min(10rem, 42%);
   height: 3px;
-  background:
-    linear-gradient(90deg,
-      var(--kingmaker-gold) 0 38%,
-      var(--kingmaker-leaf) 38% 45%,
-      color-mix(in srgb, var(--kingmaker-gold) 72%, var(--kingmaker-leaf) 28%) 45% 55%,
-      var(--kingmaker-leaf) 55% 62%,
-      var(--kingmaker-gold) 62% 100%);
+  background: linear-gradient(90deg,
+    var(--campaign-page-accent) 0 38%,
+    var(--campaign-page-secondary) 38% 45%,
+    color-mix(in srgb, var(--campaign-page-accent) 72%, var(--campaign-page-secondary) 28%) 45% 55%,
+    var(--campaign-page-secondary) 55% 62%,
+    var(--campaign-page-accent) 62% 100%);
 }
 
 #quartz-body.campaign--kingmaker article h3::before {
   content: "❧";
   margin-right: 0.38em;
-  color: var(--kingmaker-leaf);
+  color: var(--campaign-page-secondary);
   font-size: 0.82em;
   opacity: 0.72;
 }
@@ -227,7 +212,7 @@
   position: absolute;
   top: 0.45rem;
   right: 0.65rem;
-  color: var(--kingmaker-leaf);
+  color: var(--campaign-page-secondary);
   font-size: 1rem;
   opacity: 0.25;
   transform: rotate(-18deg);
@@ -248,59 +233,37 @@
   position: absolute;
   right: 0.5rem;
   bottom: 0.38rem;
-  color: var(--kingmaker-leaf);
+  color: var(--campaign-page-secondary);
   font-size: 1rem;
   opacity: 0.2;
   transform: rotate(-24deg);
   pointer-events: none;
 }
 
-/* A longer crown-and-vine divider: the central crown is geometric while the
-   outward growth is suggested by tapered green/gold rules and leaf nodes. */
 #quartz-body.campaign--kingmaker article hr {
-  position: relative;
-  height: 1.2rem;
-  overflow: visible;
-  background:
-    radial-gradient(ellipse, var(--kingmaker-leaf) 0 45%, transparent 48%) 22% 32% / 0.7rem 0.38rem no-repeat,
-    radial-gradient(ellipse, var(--kingmaker-leaf) 0 45%, transparent 48%) 78% 32% / 0.7rem 0.38rem no-repeat,
-    radial-gradient(ellipse, color-mix(in srgb, var(--kingmaker-leaf) 78%, transparent) 0 45%, transparent 48%) 30% 72% / 0.58rem 0.34rem no-repeat,
-    radial-gradient(ellipse, color-mix(in srgb, var(--kingmaker-leaf) 78%, transparent) 0 45%, transparent 48%) 70% 72% / 0.58rem 0.34rem no-repeat,
-    linear-gradient(90deg,
-      transparent 0 10%,
-      color-mix(in srgb, var(--kingmaker-leaf) 48%, transparent) 10% 32%,
-      var(--kingmaker-gold) 32% 43%,
-      transparent 43% 57%,
-      var(--kingmaker-gold) 57% 68%,
-      color-mix(in srgb, var(--kingmaker-leaf) 48%, transparent) 68% 90%,
-      transparent 90%);
+  height: clamp(1.5rem, 4vw, 2rem);
+  background: url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 300 42%27%3E%3Cg fill=%27none%27 stroke=%27%23557449%27 stroke-width=%273%27 stroke-linecap=%27round%27%3E%3Cpath d=%27M12 26Q64 8 119 24%27/%3E%3Cpath d=%27M288 26Q236 8 181 24%27/%3E%3C/g%3E%3Cg fill=%27%23557449%27%3E%3Cellipse cx=%2738%27 cy=%2718%27 rx=%279%27 ry=%274%27 transform=%27rotate(-28 38 18)%27/%3E%3Cellipse cx=%2765%27 cy=%2727%27 rx=%279%27 ry=%274%27 transform=%27rotate(28 65 27)%27/%3E%3Cellipse cx=%2791%27 cy=%2715%27 rx=%278%27 ry=%274%27 transform=%27rotate(-24 91 15)%27/%3E%3Cellipse cx=%27262%27 cy=%2718%27 rx=%279%27 ry=%274%27 transform=%27rotate(28 262 18)%27/%3E%3Cellipse cx=%27235%27 cy=%2727%27 rx=%279%27 ry=%274%27 transform=%27rotate(-28 235 27)%27/%3E%3Cellipse cx=%27209%27 cy=%2715%27 rx=%278%27 ry=%274%27 transform=%27rotate(24 209 15)%27/%3E%3C/g%3E%3Cpath fill=%27%23b98532%27 d=%27M129 30L126 12L137 22L150 4L163 22L174 12L171 30Z%27/%3E%3Cpath fill=%27%23b98532%27 d=%27M130 32H170V38H130Z%27/%3E%3C/svg%3E") center / min(24rem, 82%) auto no-repeat;
 }
 
 #quartz-body.campaign--kingmaker article hr::after {
-  content: "";
-  display: block;
-  width: 1.25rem;
-  height: 0.92rem;
-  margin: -0.35rem auto 0;
-  background: var(--kingmaker-gold);
-  clip-path: polygon(
-    4% 22%, 25% 48%, 36% 10%, 50% 45%, 64% 10%, 75% 48%, 96% 22%,
-    84% 76%, 16% 76%
-  );
-  opacity: 0.86;
+  content: none;
 }
 
 @media (max-width: 520px) {
   #quartz-body.campaign--kingmaker article:not(:has(.callout[data-callout^="timeline-"])) h2 {
-    padding-left: 2.3rem;
+    padding-left: 2.55rem;
   }
 
   #quartz-body.campaign--kingmaker article:not(:has(.callout[data-callout^="timeline-"])) h2::before {
-    width: 1.8rem;
+    width: 2.15rem;
   }
 
   #quartz-body.campaign--kingmaker article .callout:not([data-callout^="timeline-"])::after {
     display: none;
+  }
+
+  #quartz-body.campaign--kingmaker article hr {
+    background-size: min(19rem, 94%) auto;
   }
 }
 
