@@ -1,6 +1,7 @@
 import fs from "node:fs"
 import path from "node:path"
 import YAML from "yaml"
+import { matchesImageTags, uniqueImageAssets, validImageTagQuery } from "../../util/imageTags"
 import { QuartzTransformerPlugin } from "../types"
 
 const IMAGE_EXTENSIONS = new Set([".avif", ".gif", ".jpeg", ".jpg", ".png", ".webp"])
@@ -121,6 +122,7 @@ type ImageRecord = {
   asset: string
   title: string
   caption?: string
+  alt?: string
   playerCharacters: string[]
   npcs: string[]
   subjects: string[]
@@ -189,7 +191,7 @@ function walk(directory: string): string[] {
     }
   }
   visit(directory)
-  return files
+  return files.sort()
 }
 
 export const ImageMetadataCarousel: QuartzTransformerPlugin = () => {
@@ -206,6 +208,7 @@ export const ImageMetadataCarousel: QuartzTransformerPlugin = () => {
         asset: fm.asset.replaceAll("\\", "/").replace(/^\/+/, ""),
         title: String(fm.title ?? path.basename(fm.asset, path.extname(fm.asset))),
         caption: typeof fm.caption === "string" ? fm.caption : undefined,
+        alt: typeof fm.alt === "string" && fm.alt.trim() ? fm.alt : undefined,
         playerCharacters: list(fm.player_character ?? fm.player_characters ?? fm.character ?? fm.characters),
         npcs: list(fm.npc ?? fm.npcs),
         subjects: list(fm.subject ?? fm.subjects),
@@ -213,7 +216,7 @@ export const ImageMetadataCarousel: QuartzTransformerPlugin = () => {
         groups: list(fm.group ?? fm.groups),
         locations: list(fm.location ?? fm.locations),
         events: list(fm.event ?? fm.events),
-        tags: list(fm.tag ?? fm.tags),
+        tags: [...list(fm.tag), ...list(fm.tags)],
         sessions: list(fm.session ?? fm.sessions),
         articles: list(fm.article ?? fm.articles),
         campaignDates: list(fm.campaign_date ?? fm.campaign_dates),
@@ -243,11 +246,12 @@ export const ImageMetadataCarousel: QuartzTransformerPlugin = () => {
               let query: Record<string, any> = {}
               try {
                 query = YAML.parse(String(node.value ?? "")) ?? {}
+                if (!validImageTagQuery(query)) throw new Error("Invalid tag query")
               } catch {
                 return { type: "html", value: '<p class="isr-metadata-carousel-empty">Invalid image-carousel query.</p>' }
               }
 
-              const found = records.filter((record) =>
+              const found = uniqueImageAssets(records.filter((record) =>
                 matches(record.playerCharacters, query.player_character ?? query.player_characters ?? query.character ?? query.characters) &&
                 matches(record.npcs, query.npc ?? query.npcs) &&
                 matches(record.subjects, query.subject ?? query.subjects) &&
@@ -255,11 +259,11 @@ export const ImageMetadataCarousel: QuartzTransformerPlugin = () => {
                 matches(record.groups, query.group ?? query.groups) &&
                 matches(record.locations, query.location ?? query.locations) &&
                 matches(record.events, query.event ?? query.events) &&
-                matches(record.tags, query.tag ?? query.tags) &&
+                matchesImageTags(record.tags, query.tag ?? query.tags, query.match) &&
                 matches(record.sessions, query.session ?? query.sessions) &&
                 matches(record.articles, query.article ?? query.articles) &&
                 matchesDate(record.campaignDates, query.campaign_date ?? query.campaign_dates)
-              )
+              ), (asset) => path.resolve(vaultRoot, asset))
 
               if (found.length === 0) {
                 return { type: "html", value: '<p class="isr-metadata-carousel-empty">No matching images are currently catalogued.</p>' }
@@ -270,7 +274,7 @@ export const ImageMetadataCarousel: QuartzTransformerPlugin = () => {
                 if ((!absoluteAsset.startsWith(vaultRoot + path.sep) && absoluteAsset !== vaultRoot) || !IMAGE_EXTENSIONS.has(path.extname(absoluteAsset).toLowerCase())) return ""
                 const src = encodeRelativeUrl(path.relative(sourceDirectory, absoluteAsset))
                 const caption = record.caption || record.title
-                return `<figure class="isr-gallery-slide"><img src="${src}" alt="${escapeHtml(caption)}" loading="${index === 0 ? "eager" : "lazy"}" decoding="async"><figcaption>${escapeHtml(caption)}</figcaption></figure>`
+                return `<figure class="isr-gallery-slide"><img src="${src}" alt="${escapeHtml(record.alt ?? caption)}" loading="${index === 0 ? "eager" : "lazy"}" decoding="async"><figcaption>${escapeHtml(caption)}</figcaption></figure>`
               }).filter(Boolean).join("\n")
 
               const rawInterval = Number(query.interval ?? 10)
