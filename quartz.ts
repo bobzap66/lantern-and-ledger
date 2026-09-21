@@ -11,6 +11,7 @@ import { VignetteIndexes } from "./quartz/plugins/transformers/vignetteIndexes"
 import CharacterVignettes from "./quartz/components/CharacterVignettes"
 import ReadingProgress from "./quartz/components/ReadingProgress"
 import RelatedRecords from "./quartz/components/RelatedRecords"
+import ArchiveReadingActions from "./quartz/components/ArchiveReadingActions"
 import SessionNavigation from "./quartz/components/SessionNavigation"
 import VignetteNavigation from "./quartz/components/VignetteNavigation"
 import { componentRegistry } from "./quartz/components/registry"
@@ -18,7 +19,7 @@ import { componentRegistry } from "./quartz/components/registry"
 const characterVignettes = CharacterVignettes()
 const readingProgress = ReadingProgress()
 const relatedRecords = RelatedRecords()
-const sessionArchiveActions = SessionNavigation({ mode: "archive" })
+const sessionArchiveActions = ArchiveReadingActions()
 const sessionNavigation = SessionNavigation()
 const vignetteNavigation = VignetteNavigation()
 const localLayout = {
