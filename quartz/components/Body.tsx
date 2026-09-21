@@ -347,7 +347,7 @@ const setupReadingProgress = () => {
     const articleHeight = article.scrollHeight
     const readableDistance = Math.max(1, articleHeight - window.innerHeight)
     const progress = Math.min(1, Math.max(0, (window.scrollY - articleTop) / readableDistance))
-    fill.style.transform = `scaleX(${progress})`
+    fill.style.transform = "scaleX(" + progress + ")"
   }
 
   const requestUpdate = () => {
