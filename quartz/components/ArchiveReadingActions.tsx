@@ -4,6 +4,9 @@ import { FullSlug, simplifySlug } from "../util/path"
 
 type ArchiveFile = QuartzComponentProps["allFiles"][number]
 
+const SEASON_OF_GHOSTS_ROOT = "campaigns/season-of-ghosts/session-notes"
+const KINGMAKER_ROOT = "campaigns/kingmaker/session-notes"
+
 function text(value: unknown) {
   return typeof value === "string" ? value.trim() : String(value ?? "").trim()
 }
@@ -16,12 +19,6 @@ function canonicalSlug(value: unknown) {
   const raw = text(value)
   if (!raw) return ""
   return String(simplifySlug(raw as FullSlug)).replace(/\/index$/i, "")
-}
-
-function optionalNumber(value: unknown) {
-  if (value === undefined || value === null || text(value) === "") return undefined
-  const number = Number(value)
-  return Number.isFinite(number) ? number : undefined
 }
 
 function sessionToken(file: ArchiveFile) {
@@ -95,20 +92,6 @@ function entriesForRoot(root: string, allFiles: ArchiveFile[]) {
     .sort(compareEntries)
 }
 
-function chaptersForRoot(root: string, allFiles: ArchiveFile[]) {
-  return allFiles
-    .filter((file) => {
-      if (!file.slug || normalized(file.frontmatter?.type) !== "series chapter") return false
-      return canonicalSlug(file.frontmatter?.series_root) === root
-    })
-    .sort((a, b) => {
-      const orderA = optionalNumber(a.frontmatter?.chapter_order) ?? Number.POSITIVE_INFINITY
-      const orderB = optionalNumber(b.frontmatter?.chapter_order) ?? Number.POSITIVE_INFINITY
-      if (orderA !== orderB) return orderA - orderB
-      return text(a.frontmatter?.title).localeCompare(text(b.frontmatter?.title))
-    })
-}
-
 function titleFor(file: ArchiveFile) {
   return text(file.frontmatter?.title) || "Archive entry"
 }
@@ -120,21 +103,6 @@ function hrefFor(root: string, file: ArchiveFile) {
   return target.startsWith(prefix) ? `./${target.slice(prefix.length)}` : "#"
 }
 
-function archiveAction(
-  root: string,
-  file: ArchiveFile,
-  eyebrow: string,
-  cta: string,
-) {
-  return (
-    <a href={hrefFor(root, file)} class="series-archive-action internal">
-      <span class="series-archive-action__eyebrow">{eyebrow}</span>
-      <span class="series-archive-action__title">{titleFor(file)}</span>
-      <span class="series-archive-action__cta">{cta} <span aria-hidden="true">→</span></span>
-    </a>
-  )
-}
-
 export default (() => {
   const genericArchiveActions = SessionNavigation({ mode: "archive" })
 
@@ -143,56 +111,45 @@ export default (() => {
     if (!fileData.slug) return null
 
     const root = canonicalSlug(fileData.slug)
-    const chapters = chaptersForRoot(root, allFiles)
-    if (chapters.length === 0) return genericArchiveActions(props)
+    const isSeasonOfGhosts = root === SEASON_OF_GHOSTS_ROOT
+    const isKingmaker = root === KINGMAKER_ROOT
+
+    if (!isSeasonOfGhosts && !isKingmaker) {
+      return genericArchiveActions(props)
+    }
 
     const entries = entriesForRoot(root, allFiles)
-    if (entries.length === 0) return null
+    if (entries.length === 0) return genericArchiveActions(props)
 
     const first = entries[0]
     const latest = entries.at(-1)!
-    const complete = normalized(fileData.frontmatter?.series_status) === "complete"
-    const currentChapter = complete
-      ? chapters.filter((chapter) => normalized(chapter.frontmatter?.chapter_status) !== "upcoming").at(-1)
-      : chapters.find((chapter) => chapter.frontmatter?.current_chapter === true) ??
-        chapters.filter((chapter) => normalized(chapter.frontmatter?.chapter_status) !== "upcoming").at(-1)
-
-    if (!currentChapter) return genericArchiveActions(props)
-
     const noun = text(fileData.frontmatter?.series_entry_noun) || "entry"
-    const middleLabel = complete ? "Final chapter" : "Current chapter"
-    const latestLabel = complete ? `Final ${noun}` : `Most recent ${noun}`
-    const intro = complete
-      ? "Start with the first entry, browse the final chapter, or jump to the end of the record."
-      : "Start with the first entry, browse the current chapter, or jump to the most recent record."
 
     return (
       <section
-        class={`series-archive-actions series-archive-actions--three ${displayClass ?? ""}`.trim()}
+        class={`series-archive-actions ${displayClass ?? ""}`.trim()}
         aria-label="Series reading shortcuts"
       >
         <div class="series-archive-actions__heading">Read the Series</div>
-        <p class="series-archive-actions__intro">{intro}</p>
+        <p class="series-archive-actions__intro">
+          Start with the first {noun}, or jump directly to the most recent one.
+        </p>
         <div class="series-archive-actions__grid">
-          {archiveAction(root, first, "Start from the beginning", `Read first ${noun}`)}
-          {archiveAction(root, currentChapter, middleLabel, "Browse chapter")}
-          {archiveAction(root, latest, latestLabel, complete ? `Read final ${noun}` : `Read latest ${noun}`)}
+          <a href={hrefFor(root, first)} class="series-archive-action internal">
+            <span class="series-archive-action__eyebrow">Start from the beginning</span>
+            <span class="series-archive-action__title">{titleFor(first)}</span>
+            <span class="series-archive-action__cta">Read first {noun} <span aria-hidden="true">→</span></span>
+          </a>
+          <a href={hrefFor(root, latest)} class="series-archive-action internal">
+            <span class="series-archive-action__eyebrow">Most recent {noun}</span>
+            <span class="series-archive-action__title">{titleFor(latest)}</span>
+            <span class="series-archive-action__cta">Read latest {noun} <span aria-hidden="true">→</span></span>
+          </a>
         </div>
       </section>
     )
   }
 
-  ArchiveReadingActions.css = `${genericArchiveActions.css ?? ""}
-.series-archive-actions--three .series-archive-actions__grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-@media (max-width: 850px) {
-  .series-archive-actions--three .series-archive-actions__grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-`
-
+  ArchiveReadingActions.css = genericArchiveActions.css
   return ArchiveReadingActions
 }) satisfies QuartzComponentConstructor
