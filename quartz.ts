@@ -9,21 +9,24 @@ import { ImageMetadataGallery } from "./quartz/plugins/transformers/imageMetadat
 import { ImageMetadataCarousel } from "./quartz/plugins/transformers/imageMetadataCarousel"
 import { VignetteIndexes } from "./quartz/plugins/transformers/vignetteIndexes"
 import CharacterVignettes from "./quartz/components/CharacterVignettes"
+import ReadingProgress from "./quartz/components/ReadingProgress"
 import RelatedRecords from "./quartz/components/RelatedRecords"
 import SessionNavigation from "./quartz/components/SessionNavigation"
 import VignetteNavigation from "./quartz/components/VignetteNavigation"
 import { componentRegistry } from "./quartz/components/registry"
 
 const characterVignettes = CharacterVignettes()
+const readingProgress = ReadingProgress()
 const relatedRecords = RelatedRecords()
 const sessionArchiveActions = SessionNavigation({ mode: "archive" })
 const sessionNavigation = SessionNavigation()
 const vignetteNavigation = VignetteNavigation()
 const localLayout = {
-  beforeBody: [characterVignettes, sessionArchiveActions],
+  beforeBody: [readingProgress, characterVignettes, sessionArchiveActions],
   afterBody: [relatedRecords, sessionNavigation, vignetteNavigation],
 }
 
+componentRegistry.register("reading-progress", readingProgress, "local")
 componentRegistry.register("character-vignettes", characterVignettes, "local")
 componentRegistry.register("related-records", relatedRecords, "local")
 componentRegistry.register("session-archive-actions", sessionArchiveActions, "local")
