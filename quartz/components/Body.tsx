@@ -186,18 +186,39 @@ function isFormalPublication(
   return formalTypes.has(type) || formalTypes.has(articleType)
 }
 
+function hasReadingProgress(
+  frontmatter: Record<string, unknown> | undefined,
+  formalPublication: boolean,
+) {
+  if (!frontmatter) return false
+
+  const type = normalizedEditorialValue(frontmatter.type)
+  if (type === "index") return false
+
+  return (
+    formalPublication ||
+    type === "session note" ||
+    type === "session" ||
+    type === "report" ||
+    type === "vignette" ||
+    type === "oral history"
+  )
+}
+
 const Body: QuartzComponent = (props: QuartzComponentProps) => {
   const { children, fileData } = props
   const lockedByDefault = isCampaignPage(fileData.slug)
   const campaignClass = campaignClassFromSlug(fileData.slug)
   const frontmatter = fileData.frontmatter as Record<string, unknown> | undefined
   const formalPublication = isFormalPublication(frontmatter, fileData.slug)
+  const readingProgress = hasReadingProgress(frontmatter, formalPublication)
   const kicker = articleKicker(frontmatter, fileData.slug)
   const articleTitle = String(frontmatter?.title ?? "").trim()
   const bodyClasses = [
     campaignClass,
     lockedByDefault ? "campaign-spoiler-pending" : "",
     formalPublication ? "formal-publication" : "",
+    readingProgress ? "has-reading-progress" : "",
     kicker ? "has-article-kicker" : "",
   ]
     .filter(Boolean)
@@ -211,6 +232,40 @@ const Body: QuartzComponent = (props: QuartzComponentProps) => {
       style={bodyStyle}
       data-article-title={kicker && articleTitle ? articleTitle : undefined}
     >
+      {readingProgress && (
+        <div class="reading-progress" aria-hidden="true">
+          <span class="reading-progress__fill" />
+        </div>
+      )}
+      {readingProgress && (
+        <style>{`
+          #quartz-body.has-reading-progress .reading-progress {
+            position: fixed;
+            inset: 0 0 auto 0;
+            z-index: 9999;
+            height: 3px;
+            overflow: hidden;
+            pointer-events: none;
+            background: color-mix(in srgb, var(--campaign-page-rule, var(--lightgray)) 42%, transparent);
+          }
+
+          #quartz-body.has-reading-progress .reading-progress__fill {
+            display: block;
+            width: 100%;
+            height: 100%;
+            transform: scaleX(0);
+            transform-origin: left center;
+            background: var(--campaign-page-accent, var(--secondary));
+            will-change: transform;
+          }
+
+          @media (prefers-reduced-motion: reduce) {
+            #quartz-body.has-reading-progress .reading-progress__fill {
+              will-change: auto;
+            }
+          }
+        `}</style>
+      )}
       {kicker && (
         <style>{`
           #quartz-body.has-article-kicker .article-title::before {
@@ -273,8 +328,48 @@ const hideDuplicateEditorialTitle = () => {
   }
 }
 
+const setupReadingProgress = () => {
+  if (window.__lanternReadingProgressCleanup) {
+    window.__lanternReadingProgressCleanup()
+    window.__lanternReadingProgressCleanup = null
+  }
+
+  const body = document.querySelector("#quartz-body.has-reading-progress")
+  const article = body?.querySelector(".center article")
+  const fill = body?.querySelector(".reading-progress__fill")
+  if (!article || !fill) return
+
+  let frame = 0
+
+  const update = () => {
+    frame = 0
+    const articleTop = article.getBoundingClientRect().top + window.scrollY
+    const articleHeight = article.scrollHeight
+    const readableDistance = Math.max(1, articleHeight - window.innerHeight)
+    const progress = Math.min(1, Math.max(0, (window.scrollY - articleTop) / readableDistance))
+    fill.style.transform = `scaleX(${progress})`
+  }
+
+  const requestUpdate = () => {
+    if (frame) return
+    frame = window.requestAnimationFrame(update)
+  }
+
+  window.addEventListener("scroll", requestUpdate, { passive: true })
+  window.addEventListener("resize", requestUpdate, { passive: true })
+  requestUpdate()
+
+  window.__lanternReadingProgressCleanup = () => {
+    window.removeEventListener("scroll", requestUpdate)
+    window.removeEventListener("resize", requestUpdate)
+    if (frame) window.cancelAnimationFrame(frame)
+  }
+}
+
 document.addEventListener("nav", hideDuplicateEditorialTitle)
+document.addEventListener("nav", setupReadingProgress)
 hideDuplicateEditorialTitle()
+setupReadingProgress()
 `
 
 export default (() => Body) satisfies QuartzComponentConstructor
