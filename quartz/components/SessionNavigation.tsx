@@ -312,7 +312,12 @@ function archiveAction(
 ) {
   if (!file.slug) return null
 
-  const href = resolveRelative(currentSlug, canonicalPageSlug(file.slug))
+  const targetSlug = canonicalPageSlug(file.slug)
+  const descendantPrefix = `${currentSlug}/`
+  const href = targetSlug.startsWith(descendantPrefix)
+    ? `./${targetSlug.slice(descendantPrefix.length)}`
+    : resolveRelative(`${currentSlug}/index` as FullSlug, targetSlug)
+
   return (
     <a href={href} class={`series-archive-action internal ${extraClass}`.trim()}>
       <span class="series-archive-action__eyebrow">{eyebrow}</span>
