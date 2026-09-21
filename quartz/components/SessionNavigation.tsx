@@ -3,12 +3,32 @@ import { FullSlug, resolveRelative, simplifySlug } from "../util/path"
 
 type SessionFile = QuartzComponentProps["allFiles"][number]
 
-const SESSION_ROOT = "campaigns/season-of-ghosts/session-notes"
+type SessionSeries = {
+  root: FullSlug
+  archiveTitle: string
+  ariaLabel: string
+}
 
-function isSeasonOfGhostsSession(file: SessionFile) {
-  if (!file.slug) return false
+const SEASON_OF_GHOSTS: SessionSeries = {
+  root: "campaigns/season-of-ghosts/session-notes" as FullSlug,
+  archiveTitle: "Oral History",
+  ariaLabel: "Oral History session navigation",
+}
+
+const KINGMAKER: SessionSeries = {
+  root: "campaigns/kingmaker/session-notes" as FullSlug,
+  archiveTitle: "Kingmaker Session Notes",
+  ariaLabel: "Kingmaker session navigation",
+}
+
+function sessionSeries(file: SessionFile) {
+  if (!file.slug) return undefined
+  if (String(file.frontmatter?.type ?? "").trim().toLowerCase() !== "session-note") return undefined
+
   const slug = simplifySlug(file.slug)
-  return slug.startsWith(`${SESSION_ROOT}/`)
+  if (slug.startsWith(`${SEASON_OF_GHOSTS.root}/`)) return SEASON_OF_GHOSTS
+  if (slug.startsWith(`${KINGMAKER.root}/`)) return KINGMAKER
+  return undefined
 }
 
 function sessionNumber(file: SessionFile) {
@@ -46,11 +66,14 @@ export default (() => {
     allFiles,
     displayClass,
   }: QuartzComponentProps) => {
-    if (!fileData.slug || !isSeasonOfGhostsSession(fileData as SessionFile)) return null
+    if (!fileData.slug) return null
+
+    const series = sessionSeries(fileData as SessionFile)
+    if (!series) return null
 
     const currentSlug = simplifySlug(fileData.slug)
     const sessions = allFiles
-      .filter(isSeasonOfGhostsSession)
+      .filter((file) => sessionSeries(file)?.root === series.root)
       .sort((a, b) => {
         const numberDiff = sessionNumber(a) - sessionNumber(b)
         if (numberDiff !== 0) return numberDiff
@@ -86,16 +109,16 @@ export default (() => {
     return (
       <nav
         class={`session-navigation ${displayClass ?? ""}`.trim()}
-        aria-label="Oral History session navigation"
+        aria-label={series.ariaLabel}
       >
         <div class="session-nav-grid">
           {item(previous, "previous")}
           <a
-            href={resolveRelative(fileData.slug, SESSION_ROOT as FullSlug)}
+            href={resolveRelative(fileData.slug, series.root)}
             class="session-nav-back internal"
           >
             <span class="session-nav-label">Session Archive</span>
-            <span class="session-nav-title">Oral History</span>
+            <span class="session-nav-title">{series.archiveTitle}</span>
           </a>
           {item(next, "next")}
         </div>
@@ -104,12 +127,12 @@ export default (() => {
   }
 
   SessionNavigation.css = `
-body[data-slug^="${SESSION_ROOT}/"] .related-records__card[href$="/session-notes"],
-body[data-slug^="${SESSION_ROOT}/"] .related-records__card[href$="/session-notes/"] {
+body[data-slug^="${SEASON_OF_GHOSTS.root}/"] .related-records__card[href$="/session-notes"],
+body[data-slug^="${SEASON_OF_GHOSTS.root}/"] .related-records__card[href$="/session-notes/"] {
   display: none;
 }
 
-body[data-slug^="${SESSION_ROOT}/"] .related-records__grid {
+body[data-slug^="${SEASON_OF_GHOSTS.root}/"] .related-records__grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
@@ -172,7 +195,7 @@ body[data-slug^="${SESSION_ROOT}/"] .related-records__grid {
 }
 
 @media (max-width: 700px) {
-  body[data-slug^="${SESSION_ROOT}/"] .related-records__grid {
+  body[data-slug^="${SEASON_OF_GHOSTS.root}/"] .related-records__grid {
     grid-template-columns: minmax(0, 1fr);
   }
 
