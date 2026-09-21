@@ -25,6 +25,11 @@ function isSessionNote(file: SessionFile) {
   return String(file.frontmatter?.type ?? "").trim().toLowerCase() === "session-note"
 }
 
+function canonicalPageSlug(value: string | FullSlug) {
+  const simplified = simplifySlug(value as FullSlug)
+  return simplified.replace(/\/index$/i, "") as FullSlug
+}
+
 function parseWikiLink(value: unknown): WikiLink | undefined {
   const raw = String(value ?? "").trim()
   const match = /^\[\[([^\]|]+)(?:\|([^\]]+))?\]\]$/.exec(raw)
@@ -54,22 +59,48 @@ function slugLikePath(value: string) {
     .join("/")
 }
 
+function resolveWikiTargetFromFile(file: SessionFile, target: string) {
+  if (!file.slug) return undefined
+
+  if (!target.startsWith(".")) {
+    const absolute = slugLikePath(target)
+    return absolute ? canonicalPageSlug(absolute as FullSlug) : undefined
+  }
+
+  const current = canonicalPageSlug(file.slug)
+  const parts = current.split("/").slice(0, -1)
+  const targetParts = target.replace(/\\/g, "/").replace(/\.md$/i, "").split("/")
+
+  for (const part of targetParts) {
+    const trimmed = part.trim()
+    if (!trimmed || trimmed === ".") continue
+    if (trimmed === "..") {
+      parts.pop()
+      continue
+    }
+
+    const normalized = slugLikePath(trimmed)
+    if (normalized) parts.push(...normalized.split("/"))
+  }
+
+  return canonicalPageSlug(parts.join("/") as FullSlug)
+}
+
 function archiveRootFor(file: SessionFile) {
   if (!file.slug) return undefined
 
-  const slug = simplifySlug(file.slug)
-  const sessionNotesMarker = "/session-notes"
-  const sessionNotesIndex = slug.indexOf(sessionNotesMarker)
+  const slug = canonicalPageSlug(file.slug)
+  const segments = slug.split("/")
+  const sessionNotesIndex = segments.indexOf("session-notes")
 
   if (sessionNotesIndex >= 0) {
-    return slug.slice(0, sessionNotesIndex + sessionNotesMarker.length) as FullSlug
+    return segments.slice(0, sessionNotesIndex + 1).join("/") as FullSlug
   }
 
   const parent = parseWikiLink(file.frontmatter?.parent)
-  if (!parent?.target || parent.target.startsWith(".")) return undefined
+  if (!parent?.target) return undefined
 
-  const parentSlug = slugLikePath(parent.target)
-  return parentSlug ? (parentSlug as FullSlug) : undefined
+  return resolveWikiTargetFromFile(file, parent.target)
 }
 
 function campaignLabelFor(file: SessionFile) {
@@ -82,7 +113,7 @@ function archiveTitleFor(file: SessionFile, root: FullSlug, allFiles: SessionFil
   if (explicitSeries) return explicitSeries
 
   const archiveFile = allFiles.find(
-    (candidate) => candidate.slug && simplifySlug(candidate.slug) === root,
+    (candidate) => candidate.slug && canonicalPageSlug(candidate.slug) === root,
   )
   const archiveTitle = String(archiveFile?.frontmatter?.title ?? "").trim()
 
@@ -134,7 +165,7 @@ function sessionNumber(file: SessionFile) {
     return Number(titleMatch[1]) * 100 + suffix
   }
 
-  const slug = simplifySlug(file.slug ?? "")
+  const slug = canonicalPageSlug(file.slug ?? "")
   const slugMatch = /(?:^|\/)session-(\d+)([a-z]?)(?:-|$)/i.exec(slug)
   if (slugMatch) {
     const suffix = slugMatch[2] ? slugMatch[2].toLowerCase().charCodeAt(0) - 96 : 0
@@ -166,12 +197,12 @@ function chronologicalOrder(file: SessionFile) {
     if (normalized) return normalized
   }
 
-  const basename = simplifySlug(file.slug ?? "").split("/").at(-1) ?? ""
+  const basename = canonicalPageSlug(file.slug ?? "").split("/").at(-1) ?? ""
   return normalizeDateOrder(basename)
 }
 
 function titleFor(file: SessionFile) {
-  return String(file.frontmatter?.title ?? simplifySlug(file.slug!).split("/").at(-1) ?? "Session")
+  return String(file.frontmatter?.title ?? canonicalPageSlug(file.slug!).split("/").at(-1) ?? "Session")
 }
 
 function compareSessions(a: SessionFile, b: SessionFile) {
@@ -218,18 +249,18 @@ function auditSessionNavigation(allFiles: SessionFile[]) {
 
   for (const file of sessionNotes) {
     const series = sessionSeries(file, allFiles)
-    const slug = simplifySlug(file.slug ?? "unknown-session-note")
+    const slug = canonicalPageSlug(file.slug ?? "unknown-session-note")
 
     if (!series) {
       console.warn(
         `[SessionNavigation] ${slug} is type: session-note but no series archive could be determined. ` +
-          `Use a Session Notes path or an absolute parent wikilink.`,
+          `Use a Session Notes path or a parent wikilink.`,
       )
       continue
     }
 
     const archiveExists = allFiles.some(
-      (candidate) => candidate.slug && simplifySlug(candidate.slug) === series.root,
+      (candidate) => candidate.slug && canonicalPageSlug(candidate.slug) === series.root,
     )
     if (!archiveExists) {
       console.warn(
@@ -259,7 +290,7 @@ function auditSessionNavigation(allFiles: SessionFile[]) {
       const number = sessionNumber(file)
       if (number === undefined) continue
 
-      const slug = simplifySlug(file.slug ?? "unknown-session-note")
+      const slug = canonicalPageSlug(file.slug ?? "unknown-session-note")
       const previousSlug = seenNumbers.get(number)
       if (previousSlug) {
         console.warn(
@@ -281,7 +312,7 @@ function archiveAction(
 ) {
   if (!file.slug) return null
 
-  const href = resolveRelative(currentSlug, simplifySlug(file.slug) as FullSlug)
+  const href = resolveRelative(currentSlug, canonicalPageSlug(file.slug))
   return (
     <a href={href} class={`series-archive-action internal ${extraClass}`.trim()}>
       <span class="series-archive-action__eyebrow">{eyebrow}</span>
@@ -478,7 +509,7 @@ export default ((options?: SessionNavigationOptions) => {
     if (!fileData.slug) return null
 
     if (mode === "archive") {
-      const archiveSlug = simplifySlug(fileData.slug) as FullSlug
+      const archiveSlug = canonicalPageSlug(fileData.slug)
       const sessions = sessionsForRoot(archiveSlug, allFiles)
       if (sessions.length === 0) return null
 
@@ -512,11 +543,11 @@ export default ((options?: SessionNavigationOptions) => {
     const series = sessionSeries(fileData as SessionFile, allFiles)
     if (!series) return null
 
-    const currentSlug = simplifySlug(fileData.slug)
+    const currentSlug = canonicalPageSlug(fileData.slug)
     const sessions = sessionsForRoot(series.root, allFiles)
 
     const currentIndex = sessions.findIndex(
-      (file) => file.slug && simplifySlug(file.slug) === currentSlug,
+      (file) => file.slug && canonicalPageSlug(file.slug) === currentSlug,
     )
     if (currentIndex === -1) return null
 
@@ -530,7 +561,7 @@ export default ((options?: SessionNavigationOptions) => {
         )
       }
 
-      const href = resolveRelative(fileData.slug!, simplifySlug(file.slug) as FullSlug)
+      const href = resolveRelative(fileData.slug!, canonicalPageSlug(file.slug))
       return (
         <a href={href} class={`session-nav-item session-nav-${direction} internal`}>
           <span class="session-nav-label">
