@@ -18,7 +18,6 @@ type SessionNavigationOptions = {
   mode?: "article" | "archive"
 }
 
-const SEASON_OF_GHOSTS_ROOT = "campaigns/season-of-ghosts/session-notes"
 const auditedFileSets = new WeakSet<object>()
 
 function isSessionNote(file: SessionFile) {
@@ -146,7 +145,10 @@ function sessionSeries(file: SessionFile, allFiles: SessionFile[]): SessionSerie
 }
 
 function explicitSeriesOrder(file: SessionFile) {
-  const value = Number(file.frontmatter?.series_order)
+  const raw = file.frontmatter?.series_order
+  if (raw === undefined || raw === null || String(raw).trim() === "") return undefined
+
+  const value = Number(raw)
   return Number.isFinite(value) ? value : undefined
 }
 
@@ -328,15 +330,6 @@ function archiveAction(
 }
 
 const articleCss = `
-body[data-slug^="${SEASON_OF_GHOSTS_ROOT}/"] .related-records__card[href$="/session-notes"],
-body[data-slug^="${SEASON_OF_GHOSTS_ROOT}/"] .related-records__card[href$="/session-notes/"] {
-  display: none;
-}
-
-body[data-slug^="${SEASON_OF_GHOSTS_ROOT}/"] .related-records__grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
 .session-navigation {
   margin: 2.25rem 0 0.75rem;
   padding-top: 1.25rem;
@@ -396,10 +389,6 @@ body[data-slug^="${SEASON_OF_GHOSTS_ROOT}/"] .related-records__grid {
 }
 
 @media (max-width: 700px) {
-  body[data-slug^="${SEASON_OF_GHOSTS_ROOT}/"] .related-records__grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
   .session-nav-grid {
     grid-template-columns: 1fr 1fr;
   }

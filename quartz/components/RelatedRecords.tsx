@@ -244,7 +244,10 @@ function automaticSpecs(
     add(fm.narrator)
     if (!fm.narrator) add(fm.character)
 
-    if (slug.includes("/session-notes/")) {
+    // Session-note pages already expose their archive through SessionNavigation.
+    // Keep the inferred archive card only for other long-form records stored in a
+    // session-notes folder, where no dedicated series navigation is guaranteed.
+    if (type !== "session note" && slug.includes("/session-notes/")) {
       const parent = slug.split("/").slice(0, -1).join("/")
       if (parent) specs.push({ target: parent, eyebrow: "Session archive" })
     }
@@ -296,7 +299,7 @@ export default (() => {
 
     return (
       <section
-        class={`related-records ${displayClass ?? ""}`.trim()}
+        class={`related-records related-records--${cards.length} ${displayClass ?? ""}`.trim()}
         aria-labelledby="related-records-heading"
       >
         <div class="related-records__header">
@@ -355,6 +358,14 @@ ${editorialCardCss}
   margin-top: 0.85rem;
 }
 
+.related-records--1 .related-records__grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.related-records--2 .related-records__grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .related-records__card {
   height: 100%;
   box-sizing: border-box;
@@ -397,7 +408,8 @@ ${editorialCardCss}
     margin-top: 2.35rem;
   }
 
-  .related-records__grid {
+  .related-records__grid,
+  .related-records--2 .related-records__grid {
     grid-template-columns: minmax(0, 1fr);
   }
 }
