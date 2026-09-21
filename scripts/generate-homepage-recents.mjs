@@ -6,7 +6,8 @@ import { execFileSync } from "node:child_process"
 
 const CONTENT_ROOT = path.resolve(process.argv[2] ?? "content")
 const INDEX_FILE = path.join(CONTENT_ROOT, "index.md")
-const COUNT = 3
+const HOME_COUNT = 4
+const CAMPAIGN_COUNT = 3
 
 const HOME_START = "<!-- HOMEPAGE_RECENTS_START -->"
 const HOME_END = "<!-- HOMEPAGE_RECENTS_END -->"
@@ -29,8 +30,10 @@ const HOME_EDITORIAL_TYPES = new Set([
   "campaign-chapter",
   "chronicle",
   "newspaper",
+  "oral-history",
   "report",
   "session",
+  "session-note",
   "vignette",
 ])
 const RECENT_TYPE_LABELS = new Map([
@@ -40,9 +43,11 @@ const RECENT_TYPE_LABELS = new Map([
   ["chronicle", "Chronicle"],
   ["landmark", "Landmark"],
   ["newspaper", "Newspaper"],
+  ["oral-history", "Oral History"],
   ["person", "Person"],
   ["report", "Report"],
   ["session", "Session"],
+  ["session-note", "Session Report"],
   ["settlement", "Settlement"],
   ["timeline", "Timeline"],
   ["timeline-metadata", "Timeline Metadata"],
@@ -129,6 +134,30 @@ function campaignFromRel(rel) {
   return /^Campaigns\/([^/]+)\//i.exec(rel)?.[1] ?? ""
 }
 
+function cleanDescription(value) {
+  return String(value ?? "")
+    .trim()
+    .replace(/\[\[([^\]|]+)\|([^\]]+)\]\]/g, "$2")
+    .replace(/\[\[([^\]]+)\]\]/g, (_, target) => target.split("/").at(-1) ?? target)
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .replace(/[*_`]/g, "")
+    .replace(/\s+/g, " ")
+    .trim()
+}
+
+function descriptionFromFrontmatter(fm) {
+  for (const key of ["card_description", "description", "card_summary", "summary", "excerpt"]) {
+    const description = cleanDescription(fm[key])
+    if (description) return description
+  }
+  return ""
+}
+
+function sessionNumberFromFrontmatter(fm) {
+  const value = String(fm.session_number ?? "").trim()
+  return /^\d+[a-z]?$/i.test(value) ? value.toUpperCase() : ""
+}
+
 function recentTypeLabel(note) {
   const segments = note.rel.toLowerCase().split("/")
 
@@ -150,6 +179,21 @@ function recentTypeLabel(note) {
     .join(" ")
 }
 
+function homeTypeLabel(note) {
+  if (note.sessionNumber) return `Session ${note.sessionNumber}`
+  if (String(note.format ?? "").trim().toLowerCase() === "oral-history") return "Oral History"
+  return recentTypeLabel(note)
+}
+
+function campaignClass(campaign) {
+  return String(campaign ?? "")
+    .trim()
+    .toLowerCase()
+    .replace(/[’']/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+}
+
 function isHomepageEditorial(note) {
   if (!note.campaign) return false
   const type = String(note.type ?? "").toLowerCase()
@@ -159,26 +203,29 @@ function isHomepageEditorial(note) {
   return segments.some((segment) => HOME_EDITORIAL_FOLDERS.has(segment))
 }
 
-function chooseRecents(pool, excluded = new Set()) {
+function chooseRecents(pool, excluded = new Set(), count = CAMPAIGN_COUNT) {
   const brandNew = [...pool]
     .filter((note) => !excluded.has(note.rel))
     .sort((a, b) => b.created - a.created || a.title.localeCompare(b.title))
-    .slice(0, COUNT)
+    .slice(0, count)
 
   const brandNewPaths = new Set([...excluded, ...brandNew.map((note) => note.rel)])
   const recentlyUpdated = [...pool]
     .filter((note) => !brandNewPaths.has(note.rel))
     .sort((a, b) => b.modified - a.modified || a.title.localeCompare(b.title))
-    .slice(0, COUNT)
+    .slice(0, count)
 
   return { brandNew, recentlyUpdated }
 }
 
-function renderHomeSection(title, items, dateField, baseDir) {
+function renderHomeSection({ id, title, intro, items, dateField, dateLabel, baseDir }) {
   const lines = [
-    '<section class="home-recent-column">',
-    `<h3>${escapeHtml(title)}</h3>`,
-    '<div class="home-recent-list">',
+    `<section class="home-recent-section" aria-labelledby="${escapeHtml(id)}">`,
+    '<div class="home-recent-section__header">',
+    `<h2 id="${escapeHtml(id)}">${escapeHtml(title)}</h2>`,
+    `<p>${escapeHtml(intro)}</p>`,
+    "</div>",
+    '<div class="home-editorial-grid">',
   ]
 
   if (items.length === 0) {
@@ -187,17 +234,22 @@ function renderHomeSection(title, items, dateField, baseDir) {
     for (const item of items) {
       const date = item[dateField]
       const href = encodeURI(linkFrom(baseDir, item.rel))
-      const typeLabel = recentTypeLabel(item)
-      const meta = [
-        `<span class="home-recent-campaign">${escapeHtml(item.campaign)}</span>`,
-        typeLabel ? `<span class="home-recent-type">${escapeHtml(typeLabel)}</span>` : "",
-      ].filter(Boolean).join('<span class="home-recent-separator" aria-hidden="true">·</span>')
+      const typeLabel = homeTypeLabel(item)
+      const eyebrow = [item.campaign, typeLabel].filter(Boolean).join(" · ")
+      const campaignModifier = campaignClass(item.campaign)
+      const modifierClass = campaignModifier ? ` home-editorial-card--${campaignModifier}` : ""
 
       lines.push(
-        `<a class="home-recent-card" href="${escapeHtml(href)}">`,
-        `<span class="home-recent-meta">${meta}</span>`,
-        `<span class="home-recent-title">${escapeHtml(item.title)}</span>`,
-        `<time class="home-recent-date" datetime="${escapeHtml(date.toISOString())}">${escapeHtml(formatDate(date))}</time>`,
+        `<a class="editorial-card home-editorial-card${modifierClass} internal" href="${escapeHtml(href)}">`,
+        '<span class="editorial-card__copy">',
+        eyebrow ? `<span class="editorial-card__eyebrow">${escapeHtml(eyebrow)}</span>` : "",
+        `<span class="editorial-card__title">${escapeHtml(item.title)}</span>`,
+        item.description ? `<span class="editorial-card__description">${escapeHtml(item.description)}</span>` : "",
+        '<span class="editorial-card__footer">',
+        `<time class="editorial-card__meta" datetime="${escapeHtml(date.toISOString())}">${escapeHtml(dateLabel)} ${escapeHtml(formatDate(date))}</time>`,
+        '<span class="editorial-card__cta">Read <span aria-hidden="true">→</span></span>',
+        "</span>",
+        "</span>",
         "</a>",
       )
     }
@@ -240,13 +292,26 @@ function renderBlock(start, end, recents, baseDir) {
   if (start === HOME_START) {
     return [
       start,
-      '<section class="home-recents" aria-labelledby="whats-new">',
-      '<h2 id="whats-new">What\'s New</h2>',
-      '<div class="home-recent-columns">',
-      renderHomeSection("Brand New", recents.brandNew, "created", baseDir),
-      renderHomeSection("Recently Revised", recents.recentlyUpdated, "modified", baseDir),
+      '<div class="home-recents">',
+      renderHomeSection({
+        id: "whats-new",
+        title: "What's New",
+        intro: "Newly added reports, chronicles, and fiction from across the campaign archive.",
+        items: recents.brandNew,
+        dateField: "created",
+        dateLabel: "Published",
+        baseDir,
+      }),
+      renderHomeSection({
+        id: "recently-updated",
+        title: "Recently Updated",
+        intro: "Older records that have received meaningful revisions or new material.",
+        items: recents.recentlyUpdated,
+        dateField: "modified",
+        dateLabel: "Updated",
+        baseDir,
+      }),
       "</div>",
-      "</section>",
       end,
     ].join("\n")
   }
@@ -316,13 +381,16 @@ for (const file of await walk(CONTENT_ROOT)) {
     rel,
     title,
     type: String(fm.type ?? ""),
+    format: String(fm.format ?? ""),
+    sessionNumber: sessionNumberFromFrontmatter(fm),
+    description: descriptionFromFrontmatter(fm),
     campaign: campaignFromRel(rel),
     created,
     modified,
   })
 }
 
-const homeRecents = chooseRecents(notes.filter(isHomepageEditorial))
+const homeRecents = chooseRecents(notes.filter(isHomepageEditorial), new Set(), HOME_COUNT)
 await injectBlock(
   INDEX_FILE,
   HOME_START,
@@ -333,12 +401,12 @@ await injectBlock(
 
 console.log("Homepage recents generated")
 console.log("Brand New:", homeRecents.brandNew.map((note) => `${note.campaign}: ${note.title}`).join(", "))
-console.log("Recently Revised:", homeRecents.recentlyUpdated.map((note) => `${note.campaign}: ${note.title}`).join(", "))
+console.log("Recently Updated:", homeRecents.recentlyUpdated.map((note) => `${note.campaign}: ${note.title}`).join(", "))
 
 for (const campaign of campaigns) {
   const prefix = `${campaign.dir}/`
   const pool = notes.filter((note) => note.rel.startsWith(prefix))
-  const recents = chooseRecents(pool, new Set([campaign.rel]))
+  const recents = chooseRecents(pool, new Set([campaign.rel]), CAMPAIGN_COUNT)
   const block = renderBlock(CAMPAIGN_START, CAMPAIGN_END, recents, campaign.dir)
   await injectBlock(campaign.file, CAMPAIGN_START, CAMPAIGN_END, block)
   console.log(`${campaign.title} recents generated`)
