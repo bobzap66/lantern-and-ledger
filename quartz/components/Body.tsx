@@ -246,7 +246,7 @@ const Body: QuartzComponent = (props: QuartzComponentProps) => {
             height: 3px;
             overflow: hidden;
             pointer-events: none;
-            background: color-mix(in srgb, var(--campaign-page-rule, var(--lightgray)) 42%, transparent);
+            background: transparent;
           }
 
           #quartz-body.has-reading-progress .reading-progress__fill {
@@ -255,8 +255,19 @@ const Body: QuartzComponent = (props: QuartzComponentProps) => {
             height: 100%;
             transform: scaleX(0);
             transform-origin: left center;
-            background: var(--campaign-page-accent, var(--secondary));
+            background: color-mix(
+              in srgb,
+              var(--campaign-page-accent, var(--secondary)) 82%,
+              var(--dark) 18%
+            );
+            box-shadow: 0 1px 2px color-mix(in srgb, var(--dark) 18%, transparent);
             will-change: transform;
+          }
+
+          @media (max-width: 700px) {
+            #quartz-body.has-reading-progress .reading-progress {
+              height: 4px;
+            }
           }
 
           @media (prefers-reduced-motion: reduce) {
