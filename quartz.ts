@@ -16,15 +16,17 @@ import { componentRegistry } from "./quartz/components/registry"
 
 const characterVignettes = CharacterVignettes()
 const relatedRecords = RelatedRecords()
+const sessionArchiveActions = SessionNavigation({ mode: "archive" })
 const sessionNavigation = SessionNavigation()
 const vignetteNavigation = VignetteNavigation()
 const localLayout = {
-  beforeBody: [characterVignettes],
+  beforeBody: [characterVignettes, sessionArchiveActions],
   afterBody: [relatedRecords, sessionNavigation, vignetteNavigation],
 }
 
 componentRegistry.register("character-vignettes", characterVignettes, "local")
 componentRegistry.register("related-records", relatedRecords, "local")
+componentRegistry.register("session-archive-actions", sessionArchiveActions, "local")
 componentRegistry.register("session-navigation", sessionNavigation, "local")
 componentRegistry.register("vignette-navigation", vignetteNavigation, "local")
 
