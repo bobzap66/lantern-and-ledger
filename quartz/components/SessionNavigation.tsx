@@ -14,6 +14,10 @@ type WikiLink = {
   label?: string
 }
 
+type SessionNavigationOptions = {
+  mode?: "article" | "archive"
+}
+
 const SEASON_OF_GHOSTS_ROOT = "campaigns/season-of-ghosts/session-notes"
 const auditedFileSets = new WeakSet<object>()
 
@@ -199,6 +203,12 @@ function compareSessions(a: SessionFile, b: SessionFile) {
   return titleFor(a).localeCompare(titleFor(b))
 }
 
+function sessionsForRoot(root: FullSlug, allFiles: SessionFile[]) {
+  return allFiles
+    .filter((file) => sessionSeries(file, allFiles)?.root === root)
+    .sort(compareSessions)
+}
+
 function auditSessionNavigation(allFiles: SessionFile[]) {
   if (auditedFileSets.has(allFiles)) return
   auditedFileSets.add(allFiles)
@@ -262,71 +272,26 @@ function auditSessionNavigation(allFiles: SessionFile[]) {
   }
 }
 
-export default (() => {
-  const SessionNavigation: QuartzComponent = ({
-    fileData,
-    allFiles,
-    displayClass,
-  }: QuartzComponentProps) => {
-    auditSessionNavigation(allFiles)
+function archiveAction(
+  currentSlug: FullSlug,
+  file: SessionFile,
+  eyebrow: string,
+  cta: string,
+  extraClass = "",
+) {
+  if (!file.slug) return null
 
-    if (!fileData.slug) return null
+  const href = resolveRelative(currentSlug, simplifySlug(file.slug) as FullSlug)
+  return (
+    <a href={href} class={`series-archive-action internal ${extraClass}`.trim()}>
+      <span class="series-archive-action__eyebrow">{eyebrow}</span>
+      <span class="series-archive-action__title">{titleFor(file)}</span>
+      <span class="series-archive-action__cta">{cta} <span aria-hidden="true">→</span></span>
+    </a>
+  )
+}
 
-    const series = sessionSeries(fileData as SessionFile, allFiles)
-    if (!series) return null
-
-    const currentSlug = simplifySlug(fileData.slug)
-    const sessions = allFiles
-      .filter((file) => sessionSeries(file, allFiles)?.root === series.root)
-      .sort(compareSessions)
-
-    const currentIndex = sessions.findIndex(
-      (file) => file.slug && simplifySlug(file.slug) === currentSlug,
-    )
-    if (currentIndex === -1) return null
-
-    const previous = currentIndex > 0 ? sessions[currentIndex - 1] : undefined
-    const next = currentIndex < sessions.length - 1 ? sessions[currentIndex + 1] : undefined
-
-    const item = (file: SessionFile | undefined, direction: "previous" | "next") => {
-      if (!file?.slug) {
-        return (
-          <span class={`session-nav-item session-nav-${direction} is-empty`} aria-hidden="true" />
-        )
-      }
-
-      const href = resolveRelative(fileData.slug!, simplifySlug(file.slug) as FullSlug)
-      return (
-        <a href={href} class={`session-nav-item session-nav-${direction} internal`}>
-          <span class="session-nav-label">
-            {direction === "previous" ? "← Previous" : "Next →"}
-          </span>
-          <span class="session-nav-title">{titleFor(file)}</span>
-        </a>
-      )
-    }
-
-    return (
-      <nav
-        class={`session-navigation ${displayClass ?? ""}`.trim()}
-        aria-label={series.ariaLabel}
-      >
-        <div class="session-nav-grid">
-          {item(previous, "previous")}
-          <a
-            href={resolveRelative(fileData.slug, series.root)}
-            class="session-nav-back internal"
-          >
-            <span class="session-nav-label">Series Archive</span>
-            <span class="session-nav-title">{series.archiveTitle}</span>
-          </a>
-          {item(next, "next")}
-        </div>
-      </nav>
-    )
-  }
-
-  SessionNavigation.css = `
+const articleCss = `
 body[data-slug^="${SEASON_OF_GHOSTS_ROOT}/"] .related-records__card[href$="/session-notes"],
 body[data-slug^="${SEASON_OF_GHOSTS_ROOT}/"] .related-records__card[href$="/session-notes/"] {
   display: none;
@@ -413,5 +378,190 @@ body[data-slug^="${SEASON_OF_GHOSTS_ROOT}/"] .related-records__grid {
 }
 `
 
+const archiveCss = `
+.series-archive-actions {
+  margin: 0.75rem 0 1.75rem;
+  padding: 1rem;
+  border: 1px solid var(--campaign-page-rule, var(--lightgray));
+  border-radius: 0.7rem;
+  background: color-mix(in srgb, var(--light) 97%, var(--lightgray) 3%);
+}
+
+.series-archive-actions__heading {
+  margin: 0 0 0.2rem;
+  font-family: var(--headerFont);
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.series-archive-actions__intro {
+  margin: 0 0 0.8rem;
+  color: var(--gray);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.series-archive-actions__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.series-archive-action {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0.85rem 0.95rem;
+  border: 1px solid var(--campaign-page-rule, var(--lightgray));
+  border-radius: 0.55rem;
+  background: color-mix(in srgb, var(--light) 94%, var(--lightgray) 6%);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 120ms ease, transform 120ms ease, box-shadow 120ms ease;
+}
+
+.series-archive-action:hover {
+  transform: translateY(-1px);
+  border-color: var(--campaign-page-accent, var(--secondary));
+  box-shadow: 0 0.16rem 0.45rem color-mix(in srgb, var(--dark) 10%, transparent);
+}
+
+.series-archive-action--single {
+  grid-column: 1 / -1;
+}
+
+.series-archive-action__eyebrow {
+  color: var(--campaign-page-accent, var(--gray));
+  font-size: 0.69rem;
+  font-weight: 700;
+  letter-spacing: 0.065em;
+  text-transform: uppercase;
+}
+
+.series-archive-action__title {
+  margin-top: 0.2rem;
+  font-family: var(--headerFont);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.series-archive-action__cta {
+  margin-top: 0.4rem;
+  color: var(--secondary);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+@media (max-width: 700px) {
+  .series-archive-actions__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .series-archive-action--single {
+    grid-column: auto;
+  }
+}
+`
+
+export default ((options?: SessionNavigationOptions) => {
+  const mode = options?.mode ?? "article"
+
+  const SessionNavigation: QuartzComponent = ({
+    fileData,
+    allFiles,
+    displayClass,
+  }: QuartzComponentProps) => {
+    auditSessionNavigation(allFiles)
+
+    if (!fileData.slug) return null
+
+    if (mode === "archive") {
+      const archiveSlug = simplifySlug(fileData.slug) as FullSlug
+      const sessions = sessionsForRoot(archiveSlug, allFiles)
+      if (sessions.length === 0) return null
+
+      const first = sessions[0]
+      const latest = sessions[sessions.length - 1]
+      const isSingleEntry = first.slug === latest.slug
+
+      return (
+        <section
+          class={`series-archive-actions ${displayClass ?? ""}`.trim()}
+          aria-label="Series reading shortcuts"
+        >
+          <div class="series-archive-actions__heading">Read the Series</div>
+          <p class="series-archive-actions__intro">
+            Start with the first entry, or jump directly to the most recent one.
+          </p>
+          <div class="series-archive-actions__grid">
+            {isSingleEntry ? (
+              archiveAction(archiveSlug, first, "Read the series", "Open entry", "series-archive-action--single")
+            ) : (
+              <>
+                {archiveAction(archiveSlug, first, "Start from the beginning", "Read first entry")}
+                {archiveAction(archiveSlug, latest, "Latest entry", "Jump to latest")}
+              </>
+            )}
+          </div>
+        </section>
+      )
+    }
+
+    const series = sessionSeries(fileData as SessionFile, allFiles)
+    if (!series) return null
+
+    const currentSlug = simplifySlug(fileData.slug)
+    const sessions = sessionsForRoot(series.root, allFiles)
+
+    const currentIndex = sessions.findIndex(
+      (file) => file.slug && simplifySlug(file.slug) === currentSlug,
+    )
+    if (currentIndex === -1) return null
+
+    const previous = currentIndex > 0 ? sessions[currentIndex - 1] : undefined
+    const next = currentIndex < sessions.length - 1 ? sessions[currentIndex + 1] : undefined
+
+    const item = (file: SessionFile | undefined, direction: "previous" | "next") => {
+      if (!file?.slug) {
+        return (
+          <span class={`session-nav-item session-nav-${direction} is-empty`} aria-hidden="true" />
+        )
+      }
+
+      const href = resolveRelative(fileData.slug!, simplifySlug(file.slug) as FullSlug)
+      return (
+        <a href={href} class={`session-nav-item session-nav-${direction} internal`}>
+          <span class="session-nav-label">
+            {direction === "previous" ? "← Previous" : "Next →"}
+          </span>
+          <span class="session-nav-title">{titleFor(file)}</span>
+        </a>
+      )
+    }
+
+    return (
+      <nav
+        class={`session-navigation ${displayClass ?? ""}`.trim()}
+        aria-label={series.ariaLabel}
+      >
+        <div class="session-nav-grid">
+          {item(previous, "previous")}
+          <a
+            href={resolveRelative(fileData.slug, series.root)}
+            class="session-nav-back internal"
+          >
+            <span class="session-nav-label">Series Archive</span>
+            <span class="session-nav-title">{series.archiveTitle}</span>
+          </a>
+          {item(next, "next")}
+        </div>
+      </nav>
+    )
+  }
+
+  SessionNavigation.css = mode === "archive" ? archiveCss : articleCss
+
   return SessionNavigation
-}) satisfies QuartzComponentConstructor
+}) satisfies QuartzComponentConstructor<SessionNavigationOptions | undefined>
