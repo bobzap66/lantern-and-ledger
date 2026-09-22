@@ -265,14 +265,14 @@ const Body: QuartzComponent = (props: QuartzComponentProps) => {
       )}
       {formalPublication && (
         <style>{`
-          #quartz-body.formal-publication .center article p {
+          #quartz-body.formal-publication .center article > p {
             text-align: justify !important;
             text-justify: inter-word;
             hyphens: auto;
           }
 
           @media (max-width: 700px) {
-            #quartz-body.formal-publication .center article p {
+            #quartz-body.formal-publication .center article > p {
               text-align: left !important;
               text-justify: auto;
               hyphens: none;
