@@ -137,17 +137,21 @@ function archiveAction(root: string, file: ArchiveFile, eyebrow: string, cta: st
 }
 
 export default (() => {
-  const legacyArchiveActions = SessionNavigation({ mode: "archive" })
+  // Reuse SessionNavigation's archive styles, but ArchiveReadingActions is the
+  // sole renderer for explicitly configured series archive indexes.
+  const archiveStyles = SessionNavigation({ mode: "archive" })
 
   const ArchiveReadingActions: QuartzComponent = (props: QuartzComponentProps) => {
     const { fileData, allFiles, displayClass } = props
     const root = canonicalSlug(fileData.frontmatter?.series_root)
-    const isSeriesArchive = truthy(fileData.frontmatter?.series_archive) || Boolean(root)
+    const isSeriesArchive =
+      truthy(fileData.frontmatter?.series_archive) &&
+      normalized(fileData.frontmatter?.type) === "index"
 
-    if (!isSeriesArchive || !root) return legacyArchiveActions(props)
+    if (!isSeriesArchive || !root) return null
 
     const entries = entriesForRoot(root, allFiles)
-    if (entries.length === 0) return legacyArchiveActions(props)
+    if (entries.length === 0) return null
 
     const chapters = chaptersForRoot(root, allFiles)
     const complete = normalized(fileData.frontmatter?.series_status) === "complete"
@@ -191,7 +195,7 @@ export default (() => {
     )
   }
 
-  ArchiveReadingActions.css = `${legacyArchiveActions.css ?? ""}
+  ArchiveReadingActions.css = `${archiveStyles.css ?? ""}
 .series-archive-actions--three .series-archive-actions__grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
