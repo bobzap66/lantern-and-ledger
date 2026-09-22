@@ -3,6 +3,9 @@ import SessionNavigation from "./SessionNavigation"
 
 type ArchiveFile = QuartzComponentProps["allFiles"][number]
 
+// Reusable archive contract: an index declares series_archive, series_root,
+// series_status, and series_entry_noun. Entries and chapter pages are then
+// discovered from their existing type/series_root metadata with no campaign-specific code.
 function text(value: unknown) {
   return typeof value === "string" ? value.trim() : String(value ?? "").trim()
 }
