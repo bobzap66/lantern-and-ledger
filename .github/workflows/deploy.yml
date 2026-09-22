@@ -4,9 +4,6 @@ on:
   repository_dispatch:
     types:
       - vault-updated
-  push:
-    branches:
-      - main
   workflow_dispatch:
 
 permissions:
