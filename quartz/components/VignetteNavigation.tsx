@@ -9,6 +9,14 @@ function wikilinkTarget(value: unknown) {
   return (match ? match[1] : text).replaceAll("\\", "/").replace(/\.md$/i, "")
 }
 
+function normalizedTitle(value: unknown) {
+  return String(value ?? "")
+    .replace(/[‘’]/g, "'")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLocaleLowerCase()
+}
+
 function vignetteDirectory(slug: string) {
   const simplified = simplifySlug(slug)
   const parts = simplified.split("/").filter(Boolean)
@@ -26,6 +34,34 @@ function isVignettePage(file: QuartzComponentProps["allFiles"][number]) {
 function dateRank(frontmatter: Record<string, any> | undefined) {
   const date = vignetteDate(frontmatter ?? {})
   return date.sortGroup * 10_000_000_000 + date.rank
+}
+
+function explicitSeries(
+  fileData: QuartzComponentProps["fileData"],
+  allFiles: QuartzComponentProps["allFiles"],
+) {
+  const currentTitle = normalizedTitle(fileData.frontmatter?.title)
+  if (!currentTitle) return undefined
+
+  for (const archive of allFiles) {
+    const configuredEntries = archive.frontmatter?.series_entries
+    if (!Array.isArray(configuredEntries)) continue
+
+    const orderedTitles = configuredEntries.map(normalizedTitle).filter(Boolean)
+    if (!orderedTitles.includes(currentTitle)) continue
+
+    const siblings = orderedTitles
+      .map((title) =>
+        allFiles.find((file) => file.slug && normalizedTitle(file.frontmatter?.title) === title),
+      )
+      .filter(
+        (file): file is QuartzComponentProps["allFiles"][number] => Boolean(file?.slug),
+      )
+
+    return { archive, siblings }
+  }
+
+  return undefined
 }
 
 function inferredArchive(
@@ -58,24 +94,30 @@ export default (() => {
     allFiles,
     displayClass,
   }: QuartzComponentProps) => {
-    if (!fileData.slug || !isVignettePage(fileData as QuartzComponentProps["allFiles"][number]))
-      return null
+    if (!fileData.slug) return null
+
+    const configuredSeries = explicitSeries(fileData, allFiles)
+    const standardVignette = isVignettePage(
+      fileData as QuartzComponentProps["allFiles"][number],
+    )
+    if (!configuredSeries && !standardVignette) return null
 
     const fm = fileData.frontmatter ?? {}
     const group = vignetteDirectory(fileData.slug)
-    if (!group) return null
 
-    const siblings = allFiles
-      .filter((file) => isVignettePage(file))
-      .filter((file) => file.slug && vignetteDirectory(file.slug) === group)
-      .filter((file) => file.slug)
-      .sort((a, b) => {
-        const dateDiff = dateRank(a.frontmatter) - dateRank(b.frontmatter)
-        if (dateDiff !== 0) return dateDiff
-        const aTitle = String(a.frontmatter?.title ?? simplifySlug(a.slug!))
-        const bTitle = String(b.frontmatter?.title ?? simplifySlug(b.slug!))
-        return aTitle.localeCompare(bTitle)
-      })
+    const siblings = configuredSeries
+      ? configuredSeries.siblings
+      : allFiles
+          .filter((file) => isVignettePage(file))
+          .filter((file) => file.slug && vignetteDirectory(file.slug) === group)
+          .filter((file) => file.slug)
+          .sort((a, b) => {
+            const dateDiff = dateRank(a.frontmatter) - dateRank(b.frontmatter)
+            if (dateDiff !== 0) return dateDiff
+            const aTitle = String(a.frontmatter?.title ?? simplifySlug(a.slug!))
+            const bTitle = String(b.frontmatter?.title ?? simplifySlug(b.slug!))
+            return aTitle.localeCompare(bTitle)
+          })
 
     const currentSlug = simplifySlug(fileData.slug)
     const currentIndex = siblings.findIndex(
@@ -95,7 +137,7 @@ export default (() => {
               simplifySlug(file.slug).endsWith(`/${configuredParent}`)),
         )
       : undefined
-    const archive = parentMatch ?? inferredArchive(fileData, allFiles)
+    const archive = configuredSeries?.archive ?? parentMatch ?? inferredArchive(fileData, allFiles)
     const archiveSlug = archive?.slug ? simplifySlug(archive.slug) : undefined
 
     const characterName =
@@ -106,6 +148,9 @@ export default (() => {
         .at(-1)
         ?.trim() || "Character"
     const archiveTitle = String(archive?.frontmatter?.title ?? `${characterName} Vignettes`)
+    const archiveLabel = String(
+      archive?.frontmatter?.series_navigation_label ?? "Vignette Archive",
+    )
 
     const item = (file: (typeof siblings)[number] | undefined, direction: "previous" | "next") => {
       if (!file?.slug)
@@ -133,7 +178,8 @@ export default (() => {
     return (
       <nav
         class={`vignette-navigation ${displayClass ?? ""}`.trim()}
-        aria-label="Vignette navigation"
+        aria-label={configuredSeries ? `${archiveTitle} navigation` : "Vignette navigation"}
+        data-series-navigation={configuredSeries ? "explicit" : "vignette"}
       >
         <div class="vignette-nav-grid">
           {item(previous, "previous")}
@@ -142,7 +188,7 @@ export default (() => {
               href={resolveRelative(fileData.slug, archiveSlug as FullSlug)}
               class="vignette-nav-back internal"
             >
-              <span class="vignette-nav-label">Vignette Archive</span>
+              <span class="vignette-nav-label">{archiveLabel}</span>
               <span class="vignette-nav-title">Back to {archiveTitle}</span>
             </a>
           ) : (
