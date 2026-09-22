@@ -261,15 +261,6 @@ function auditSessionNavigation(allFiles: SessionFile[]) {
       continue
     }
 
-    const archiveExists = allFiles.some(
-      (candidate) => candidate.slug && canonicalPageSlug(candidate.slug) === series.root,
-    )
-    if (!archiveExists) {
-      console.warn(
-        `[SessionNavigation] ${slug} resolves to archive ${series.root}, but that archive page was not found.`,
-      )
-    }
-
     const existing = bySeries.get(series.root) ?? []
     existing.push(file)
     bySeries.set(series.root, existing)
