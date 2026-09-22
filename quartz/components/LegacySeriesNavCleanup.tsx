@@ -23,18 +23,6 @@ const cleanSessionPublicationChrome = () => {
     paragraph.hidden = true
     paragraph.dataset.legacySeriesNavigation = "hidden"
   }
-
-  const contributors = contentRoot.querySelector(":scope > .isr-contributors")
-  if (contributors) {
-    const technicalHeading = Array.from(contentRoot.querySelectorAll(":scope > h2")).find((heading) => {
-      const label = String(heading.textContent || "").trim().toLowerCase()
-      return label === "art" || label === "images" || label === "table shots"
-    })
-
-    if (technicalHeading) {
-      contentRoot.insertBefore(contributors, technicalHeading)
-    }
-  }
 }
 
 document.addEventListener("nav", cleanSessionPublicationChrome)
