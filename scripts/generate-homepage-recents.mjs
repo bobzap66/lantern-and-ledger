@@ -17,6 +17,7 @@ const CAMPAIGN_END = "<!-- CAMPAIGN_RECENTS_END -->"
 const IGNORED_DIRS = new Set([".git", ".obsidian", "private", "templates", "image metadata"])
 const MAINTENANCE_COMMIT = /(autolink|wikilink|link conversion|resolver|homepage navigation|one-shot|migration|maintenance|script|quartz|workflow)/i
 const HIDDEN_RECENT_PATHS = ["campaigns/abomination vaults/reconstruction/"]
+const NON_RECENT_TYPES = new Set(["index", "series-chapter"])
 const HOME_EDITORIAL_FOLDERS = new Set([
   "session notes",
   "vignettes",
@@ -358,14 +359,15 @@ for (const file of await walk(CONTENT_ROOT)) {
 
   const text = await fs.readFile(file, "utf8")
   const fm = parseFrontmatter(text)
+  const noteType = String(fm.type ?? "").trim().toLowerCase()
 
-  if (String(fm.type ?? "").toLowerCase() === "campaign") {
+  if (noteType === "campaign") {
     const match = /^Campaigns\/([^/]+)\/[^/]+\.md$/i.exec(rel)
     if (match) campaigns.push({ file, rel, dir: path.posix.dirname(rel), title: String(fm.title || match[1]) })
   }
 
   if (rel.toLowerCase() === "index.md") continue
-  if (fm.draft === true || fm.publish === false || String(fm.type ?? "").toLowerCase() === "index") continue
+  if (fm.draft === true || fm.publish === false || NON_RECENT_TYPES.has(noteType)) continue
 
   const history = gitHistory(rel)
   if (history.length === 0) continue
