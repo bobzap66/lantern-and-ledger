@@ -146,11 +146,47 @@ function cleanDescription(value) {
     .trim()
 }
 
+function truncateDescription(value, limit = 220) {
+  const description = cleanDescription(value)
+  if (description.length <= limit) return description
+
+  const candidate = description.slice(0, limit + 1)
+  const sentenceEnds = [candidate.lastIndexOf(". "), candidate.lastIndexOf("! "), candidate.lastIndexOf("? ")]
+  const sentenceEnd = Math.max(...sentenceEnds)
+  if (sentenceEnd >= 100) return candidate.slice(0, sentenceEnd + 1).trim()
+
+  const wordEnd = candidate.lastIndexOf(" ")
+  const clipped = candidate.slice(0, wordEnd >= 120 ? wordEnd : limit).trim()
+  return `${clipped}…`
+}
+
 function descriptionFromFrontmatter(fm) {
   for (const key of ["card_description", "description", "card_summary", "summary", "excerpt"]) {
-    const description = cleanDescription(fm[key])
+    const description = truncateDescription(fm[key])
     if (description) return description
   }
+  return ""
+}
+
+function descriptionFromBody(text) {
+  const body = String(text ?? "")
+    .replace(/^---\s*\n[\s\S]*?\n---\s*/m, "")
+    .replace(/<!--[\s\S]*?-->/g, "")
+
+  for (const paragraph of body.split(/\n\s*\n/)) {
+    const raw = paragraph.trim()
+    if (!raw) continue
+    if (/^(?:#{1,6}\s|!\[|>|```|~~~|---\s*$|<)/.test(raw)) continue
+    if (raw.split(/\r?\n/).some((line) => /^\s*(?:#{1,6}\s|!\[|>|```|~~~|<)/.test(line))) continue
+
+    const description = truncateDescription(raw)
+    if (description.length < 80) continue
+    if (/^(?:by|recorded and arranged by|testimony of|the lantern and ledger)\b/i.test(description)) continue
+    if (/^(?:published|updated|session|campaign)\s*:/i.test(description)) continue
+
+    return description
+  }
+
   return ""
 }
 
@@ -385,7 +421,7 @@ for (const file of await walk(CONTENT_ROOT)) {
     type: String(fm.type ?? ""),
     format: String(fm.format ?? ""),
     sessionNumber: sessionNumberFromFrontmatter(fm),
-    description: descriptionFromFrontmatter(fm),
+    description: descriptionFromFrontmatter(fm) || descriptionFromBody(text),
     campaign: campaignFromRel(rel),
     created,
     modified,
