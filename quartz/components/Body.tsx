@@ -265,14 +265,14 @@ const Body: QuartzComponent = (props: QuartzComponentProps) => {
       )}
       {formalPublication && (
         <style>{`
-          #quartz-body.formal-publication .center article > p {
+          #quartz-body.formal-publication .center article > .markdown-preview-view > p {
             text-align: justify !important;
             text-justify: inter-word;
             hyphens: auto;
           }
 
           @media (max-width: 700px) {
-            #quartz-body.formal-publication .center article > p {
+            #quartz-body.formal-publication .center article > .markdown-preview-view > p {
               text-align: left !important;
               text-justify: auto;
               hyphens: none;
@@ -303,15 +303,16 @@ const hideDuplicateEditorialTitle = () => {
 
   const article = body.querySelector(".center article")
   if (!article) return
+  const contentRoot = article.querySelector(":scope > .markdown-preview-view") || article
 
-  const firstHeading = article.querySelector(":scope > h1:first-child")
+  const firstHeading = contentRoot.querySelector(":scope > h1")
   if (firstHeading && normalizeEditorialHeading(firstHeading.textContent) === title) {
     firstHeading.hidden = true
   }
 
   if (body.dataset.editorialFormat === "chronicle") {
     const series = normalizeEditorialHeading(body.dataset.editorialSeries)
-    const openingHeadings = Array.from(article.querySelectorAll(":scope > h1, :scope > h2")).slice(0, 2)
+    const openingHeadings = Array.from(contentRoot.querySelectorAll(":scope > h1, :scope > h2")).slice(0, 2)
 
     for (const heading of openingHeadings) {
       const headingText = normalizeEditorialHeading(heading.textContent)
