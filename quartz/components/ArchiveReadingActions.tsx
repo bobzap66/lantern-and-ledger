@@ -1,11 +1,7 @@
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 import SessionNavigation from "./SessionNavigation"
-import { FullSlug, simplifySlug } from "../util/path"
 
 type ArchiveFile = QuartzComponentProps["allFiles"][number]
-
-const SEASON_OF_GHOSTS_ROOT = "campaigns/season-of-ghosts/session-notes"
-const KINGMAKER_ROOT = "campaigns/kingmaker/session-notes"
 
 function text(value: unknown) {
   return typeof value === "string" ? value.trim() : String(value ?? "").trim()
@@ -16,9 +12,19 @@ function normalized(value: unknown) {
 }
 
 function canonicalSlug(value: unknown) {
-  const raw = text(value)
-  if (!raw) return ""
-  return String(simplifySlug(raw as FullSlug)).replace(/\/index$/i, "")
+  return text(value)
+    .replace(/^\/+|\/+$/g, "")
+    .replace(/\/index$/i, "")
+}
+
+function truthy(value: unknown) {
+  return value === true || normalized(value) === "true"
+}
+
+function optionalNumber(value: unknown) {
+  if (value === undefined || value === null || text(value) === "") return undefined
+  const number = Number(value)
+  return Number.isFinite(number) ? number : undefined
 }
 
 function sessionToken(file: ArchiveFile) {
@@ -92,6 +98,20 @@ function entriesForRoot(root: string, allFiles: ArchiveFile[]) {
     .sort(compareEntries)
 }
 
+function chaptersForRoot(root: string, allFiles: ArchiveFile[]) {
+  return allFiles
+    .filter((file) => {
+      if (!file.slug || normalized(file.frontmatter?.type) !== "series chapter") return false
+      return canonicalSlug(file.frontmatter?.series_root) === root
+    })
+    .sort((a, b) => {
+      const orderA = optionalNumber(a.frontmatter?.chapter_order) ?? Number.POSITIVE_INFINITY
+      const orderB = optionalNumber(b.frontmatter?.chapter_order) ?? Number.POSITIVE_INFINITY
+      if (orderA !== orderB) return orderA - orderB
+      return text(a.frontmatter?.title).localeCompare(text(b.frontmatter?.title))
+    })
+}
+
 function titleFor(file: ArchiveFile) {
   return text(file.frontmatter?.title) || "Archive entry"
 }
@@ -103,53 +123,82 @@ function hrefFor(root: string, file: ArchiveFile) {
   return target.startsWith(prefix) ? `./${target.slice(prefix.length)}` : "#"
 }
 
+function archiveAction(root: string, file: ArchiveFile, eyebrow: string, cta: string) {
+  return (
+    <a href={hrefFor(root, file)} class="series-archive-action internal">
+      <span class="series-archive-action__eyebrow">{eyebrow}</span>
+      <span class="series-archive-action__title">{titleFor(file)}</span>
+      <span class="series-archive-action__cta">{cta} <span aria-hidden="true">→</span></span>
+    </a>
+  )
+}
+
 export default (() => {
-  const genericArchiveActions = SessionNavigation({ mode: "archive" })
+  const legacyArchiveActions = SessionNavigation({ mode: "archive" })
 
   const ArchiveReadingActions: QuartzComponent = (props: QuartzComponentProps) => {
     const { fileData, allFiles, displayClass } = props
-    if (!fileData.slug) return null
+    const root = canonicalSlug(fileData.frontmatter?.series_root)
+    const isSeriesArchive = truthy(fileData.frontmatter?.series_archive) || Boolean(root)
 
-    const root = canonicalSlug(fileData.slug)
-    const isSeasonOfGhosts = root === SEASON_OF_GHOSTS_ROOT
-    const isKingmaker = root === KINGMAKER_ROOT
-
-    if (!isSeasonOfGhosts && !isKingmaker) {
-      return genericArchiveActions(props)
-    }
+    if (!isSeriesArchive || !root) return legacyArchiveActions(props)
 
     const entries = entriesForRoot(root, allFiles)
-    if (entries.length === 0) return genericArchiveActions(props)
+    if (entries.length === 0) return legacyArchiveActions(props)
+
+    const chapters = chaptersForRoot(root, allFiles)
+    const complete = normalized(fileData.frontmatter?.series_status) === "complete"
+    const availableChapters = chapters.filter(
+      (chapter) => normalized(chapter.frontmatter?.chapter_status) !== "upcoming",
+    )
+    const chapter = complete
+      ? availableChapters.at(-1)
+      : chapters.find((candidate) => truthy(candidate.frontmatter?.current_chapter)) ??
+        availableChapters.at(-1)
 
     const first = entries[0]
     const latest = entries.at(-1)!
     const noun = text(fileData.frontmatter?.series_entry_noun) || "entry"
+    const latestLabel = complete ? `Final ${noun}` : `Most recent ${noun}`
+    const latestCta = complete ? `Read final ${noun}` : `Read latest ${noun}`
+    const chapterLabel = complete ? "Final chapter" : "Current chapter"
+    const intro = chapter
+      ? complete
+        ? `Start with the first ${noun}, browse the final chapter, or jump directly to the final ${noun}.`
+        : `Start with the first ${noun}, browse the current chapter, or jump directly to the most recent ${noun}.`
+      : complete
+        ? `Start with the first ${noun}, or jump directly to the final ${noun}.`
+        : `Start with the first ${noun}, or jump directly to the most recent ${noun}.`
 
     return (
       <section
-        class={`series-archive-actions ${displayClass ?? ""}`.trim()}
+        class={`series-archive-actions ${chapter ? "series-archive-actions--three" : ""} ${displayClass ?? ""}`.trim()}
         aria-label="Series reading shortcuts"
+        data-series-root={root}
+        data-series-entry-count={String(entries.length)}
       >
         <div class="series-archive-actions__heading">Read the Series</div>
-        <p class="series-archive-actions__intro">
-          Start with the first {noun}, or jump directly to the most recent one.
-        </p>
+        <p class="series-archive-actions__intro">{intro}</p>
         <div class="series-archive-actions__grid">
-          <a href={hrefFor(root, first)} class="series-archive-action internal">
-            <span class="series-archive-action__eyebrow">Start from the beginning</span>
-            <span class="series-archive-action__title">{titleFor(first)}</span>
-            <span class="series-archive-action__cta">Read first {noun} <span aria-hidden="true">→</span></span>
-          </a>
-          <a href={hrefFor(root, latest)} class="series-archive-action internal">
-            <span class="series-archive-action__eyebrow">Most recent {noun}</span>
-            <span class="series-archive-action__title">{titleFor(latest)}</span>
-            <span class="series-archive-action__cta">Read latest {noun} <span aria-hidden="true">→</span></span>
-          </a>
+          {archiveAction(root, first, "Start from the beginning", `Read first ${noun}`)}
+          {chapter && archiveAction(root, chapter, chapterLabel, complete ? "Browse final chapter" : "Browse current chapter")}
+          {archiveAction(root, latest, latestLabel, latestCta)}
         </div>
       </section>
     )
   }
 
-  ArchiveReadingActions.css = genericArchiveActions.css
+  ArchiveReadingActions.css = `${legacyArchiveActions.css ?? ""}
+.series-archive-actions--three .series-archive-actions__grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (max-width: 850px) {
+  .series-archive-actions--three .series-archive-actions__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+`
+
   return ArchiveReadingActions
 }) satisfies QuartzComponentConstructor
