@@ -98,7 +98,10 @@ function articleKicker(
 
   let label: string | null = null
 
-  if (
+  if (format === "chronicle") {
+    const series = String(frontmatter.series ?? "").trim()
+    label = series ? series.toUpperCase() : "CHRONICLE"
+  } else if (
     format === "oral history" ||
     type === "oral history" ||
     articleType === "oral history" ||
@@ -214,6 +217,8 @@ const Body: QuartzComponent = (props: QuartzComponentProps) => {
   const readingProgress = hasReadingProgress(frontmatter, formalPublication)
   const kicker = articleKicker(frontmatter, fileData.slug)
   const articleTitle = String(frontmatter?.title ?? "").trim()
+  const editorialFormat = normalizedEditorialValue(frontmatter?.format)
+  const editorialSeries = String(frontmatter?.series ?? "").trim()
   const bodyClasses = [
     campaignClass,
     lockedByDefault ? "campaign-spoiler-pending" : "",
@@ -231,6 +236,8 @@ const Body: QuartzComponent = (props: QuartzComponentProps) => {
       class={bodyClasses || undefined}
       style={bodyStyle}
       data-article-title={kicker && articleTitle ? articleTitle : undefined}
+      data-editorial-format={editorialFormat || undefined}
+      data-editorial-series={editorialSeries || undefined}
     >
       {kicker && (
         <style>{`
@@ -263,6 +270,14 @@ const Body: QuartzComponent = (props: QuartzComponentProps) => {
             text-justify: inter-word;
             hyphens: auto;
           }
+
+          @media (max-width: 700px) {
+            #quartz-body.formal-publication .center article p {
+              text-align: left !important;
+              text-justify: auto;
+              hyphens: none;
+            }
+          }
         `}</style>
       )}
       {lockedByDefault && <CampaignSpoilerGate {...props} />}
@@ -286,11 +301,24 @@ const hideDuplicateEditorialTitle = () => {
   const title = normalizeEditorialHeading(body.dataset.articleTitle)
   if (!title) return
 
-  const heading = body.querySelector(".center article > h1:first-child")
-  if (!heading) return
+  const article = body.querySelector(".center article")
+  if (!article) return
 
-  if (normalizeEditorialHeading(heading.textContent) === title) {
-    heading.hidden = true
+  const firstHeading = article.querySelector(":scope > h1:first-child")
+  if (firstHeading && normalizeEditorialHeading(firstHeading.textContent) === title) {
+    firstHeading.hidden = true
+  }
+
+  if (body.dataset.editorialFormat === "chronicle") {
+    const series = normalizeEditorialHeading(body.dataset.editorialSeries)
+    const openingHeadings = Array.from(article.querySelectorAll(":scope > h1, :scope > h2")).slice(0, 2)
+
+    for (const heading of openingHeadings) {
+      const headingText = normalizeEditorialHeading(heading.textContent)
+      if ((series && headingText === series) || headingText === title) {
+        heading.hidden = true
+      }
+    }
   }
 }
 
