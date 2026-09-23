@@ -354,13 +354,26 @@ export default (() => {
     const rightSidebar = document.querySelector(".right.sidebar")
     if (!rightSidebar) return
 
-    rightSidebar
-      .querySelectorAll(":scope > .world-anvil-side-content")
-      .forEach((node) => node.remove())
-
-    const sideBlocks = document.querySelectorAll(
-      ".center article .callout[data-callout='side']",
+    const currentPath = window.location.pathname
+    const existingSideBlocks = Array.from(
+      rightSidebar.querySelectorAll(":scope > .world-anvil-side-content"),
     )
+    const sideBlocks = Array.from(
+      document.querySelectorAll(".center article .callout[data-callout='side']"),
+    )
+
+    // This initializer can run more than once for the same Quartz page. After the
+    // first run, the source blocks have already been moved out of the article, so
+    // do not delete them on a repeated initialization of the same route.
+    if (sideBlocks.length === 0) {
+      if (rightSidebar.dataset.isrSidePath === currentPath) return
+
+      existingSideBlocks.forEach((node) => node.remove())
+      rightSidebar.dataset.isrSidePath = currentPath
+      return
+    }
+
+    existingSideBlocks.forEach((node) => node.remove())
 
     const sidebarHeadingIds = new Set()
 
@@ -372,6 +385,8 @@ export default (() => {
       block.classList.add("world-anvil-side-content")
       rightSidebar.appendChild(block)
     })
+
+    rightSidebar.dataset.isrSidePath = currentPath
 
     if (sidebarHeadingIds.size > 0) {
       document.querySelectorAll(".toc a[href^='#']").forEach((link) => {
