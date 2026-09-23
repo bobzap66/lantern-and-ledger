@@ -144,6 +144,8 @@ export default (() => {
 }
 
 .random-advertisement__image {
+  display: grid;
+  place-items: center;
   min-width: 0;
   margin: 0;
   border-right: 1px solid var(--isr-rule, var(--lightgray));
@@ -152,14 +154,13 @@ export default (() => {
 .random-advertisement__image img {
   display: block;
   width: 100%;
-  height: 100%;
-  min-height: 14rem;
-  max-height: 24rem;
+  height: auto;
+  max-height: none;
   margin: 0;
   border: 0;
   border-radius: 0;
   box-shadow: none;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .random-advertisement__copy {
@@ -204,15 +205,12 @@ export default (() => {
   }
 
   .random-advertisement__image {
-    max-height: 18rem;
     border-right: 0;
     border-bottom: 1px solid var(--isr-rule, var(--lightgray));
   }
 
   .random-advertisement__image img {
-    min-height: 0;
-    max-height: 18rem;
-    object-position: center;
+    max-height: none;
   }
 
   .random-advertisement__copy {
