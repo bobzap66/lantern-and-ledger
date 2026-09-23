@@ -81,7 +81,7 @@ export default (() => {
       >
         <div class="random-advertisement__label">Paid Advertisement</div>
         <div class="random-advertisement__layout">
-          <figure class="random-advertisement__image">
+          <figure class="random-advertisement__image world-anvil-side-content">
             <img
               src={imageSrc}
               alt={advertisement.caption ?? `${advertisement.headline} advertisement`}
