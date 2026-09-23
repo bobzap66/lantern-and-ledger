@@ -14,6 +14,7 @@ import ChapterLanding from "./quartz/components/ChapterLanding"
 import HomepageEditorialCards from "./quartz/components/HomepageEditorialCards"
 import LegacySeriesNavCleanup from "./quartz/components/LegacySeriesNavCleanup"
 import ReadingProgress from "./quartz/components/ReadingProgress"
+import Advertisement from "./quartz/components/Advertisement"
 import RelatedRecords from "./quartz/components/RelatedRecords"
 import ArchiveReadingActions from "./quartz/components/ArchiveReadingActions"
 import ResponsiveCompatibility from "./quartz/components/ResponsiveCompatibility"
@@ -26,6 +27,7 @@ const chapterLanding = ChapterLanding()
 const homepageEditorialCards = HomepageEditorialCards()
 const legacySeriesNavCleanup = LegacySeriesNavCleanup()
 const readingProgress = ReadingProgress()
+const advertisement = Advertisement()
 const relatedRecords = RelatedRecords()
 const sessionArchiveActions = ArchiveReadingActions()
 const responsiveCompatibility = ResponsiveCompatibility()
@@ -40,7 +42,7 @@ const localLayout = {
     characterVignettes,
     sessionArchiveActions,
   ],
-  afterBody: [chapterLanding, relatedRecords, sessionNavigation, vignetteNavigation],
+  afterBody: [chapterLanding, advertisement, relatedRecords, sessionNavigation, vignetteNavigation],
 }
 
 componentRegistry.register("responsive-compatibility", responsiveCompatibility, "local")
@@ -49,6 +51,7 @@ componentRegistry.register("homepage-editorial-cards", homepageEditorialCards, "
 componentRegistry.register("reading-progress", readingProgress, "local")
 componentRegistry.register("character-vignettes", characterVignettes, "local")
 componentRegistry.register("chapter-landing", chapterLanding, "local")
+componentRegistry.register("advertisement", advertisement, "local")
 componentRegistry.register("related-records", relatedRecords, "local")
 componentRegistry.register("session-archive-actions", sessionArchiveActions, "local")
 componentRegistry.register("session-navigation", sessionNavigation, "local")
