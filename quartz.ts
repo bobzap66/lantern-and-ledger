@@ -42,7 +42,8 @@ const localLayout = {
     characterVignettes,
     sessionArchiveActions,
   ],
-  afterBody: [chapterLanding, advertisement, relatedRecords, sessionNavigation, vignetteNavigation],
+  right: [advertisement],
+  afterBody: [chapterLanding, relatedRecords, sessionNavigation, vignetteNavigation],
 }
 
 componentRegistry.register("responsive-compatibility", responsiveCompatibility, "local")
