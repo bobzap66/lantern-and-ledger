@@ -61,7 +61,7 @@ test("limits time-bound advertisements to their run window", () => {
   assert.equal(eligibleAdvertisements([limited], "4721-Gozran-11", ["Absalom"]).length, 0)
 })
 
-test("uses three of four deterministic buckets for limited-run advertisements", () => {
+test("uses half the deterministic buckets for limited-run advertisements", () => {
   const limited = advertisement("Lecture", {
     limitedRun: true,
     runStartDate: "4721-Abadius-1",
@@ -69,19 +69,19 @@ test("uses three of four deterministic buckets for limited-run advertisements", 
   })
   const ordinary = advertisement("Shop")
   const seeds = new Map<number, string>()
-  for (let index = 0; seeds.size < 4 && index < 1000; index += 1) {
+  for (let index = 0; seeds.size < 2 && index < 1000; index += 1) {
     const seed = `page-${index}`
-    seeds.set(stableBucket(`${seed}|limited-run-bucket`, 4), seed)
+    seeds.set(stableBucket(`${seed}|limited-run-bucket`, 2), seed)
   }
 
-  assert.equal(seeds.size, 4)
+  assert.equal(seeds.size, 2)
   for (const [bucket, seed] of seeds) {
     const selected = selectAdvertisement([limited, ordinary], {
       pageDate: "4721-Calistril-1",
       pageLocations: ["Absalom"],
       seed,
     })
-    assert.equal(selected?.limitedRun, bucket < 3)
+    assert.equal(selected?.limitedRun, bucket === 0)
   }
 })
 

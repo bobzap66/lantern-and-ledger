@@ -209,7 +209,7 @@ export function selectAdvertisement(
   const ordinary = eligible.filter((advertisement) => !advertisement.limitedRun)
   let pool = eligible
   if (limited.length > 0 && ordinary.length > 0) {
-    pool = stableBucket(`${selection.seed}|limited-run-bucket`, 4) < 3 ? limited : ordinary
+    pool = stableBucket(`${selection.seed}|limited-run-bucket`, 2) === 0 ? limited : ordinary
   } else if (limited.length > 0) {
     pool = limited
   } else if (ordinary.length > 0) {

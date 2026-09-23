@@ -111,7 +111,7 @@ export default (() => {
   Advertisement.css = `
 .random-advertisement {
   --advertisement-ink: var(--dark);
-  margin: 2.25rem 0 1.25rem;
+  margin: 1rem 0;
   overflow: hidden;
   border: 1px solid var(--isr-rule, var(--lightgray));
   border-top: 4px double var(--advertisement-ink);
@@ -134,7 +134,7 @@ export default (() => {
 
 .random-advertisement__layout {
   display: grid;
-  grid-template-columns: minmax(12rem, 38%) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   align-items: stretch;
 }
 
@@ -143,7 +143,7 @@ export default (() => {
   place-items: center;
   min-width: 0;
   margin: 0;
-  border-right: 1px solid var(--isr-rule, var(--lightgray));
+  border-bottom: 1px solid var(--isr-rule, var(--lightgray));
 }
 
 .random-advertisement__image img {
@@ -161,7 +161,7 @@ export default (() => {
 .random-advertisement__copy {
   align-self: center;
   min-width: 0;
-  padding: 1.1rem 1.2rem 1rem;
+  padding: 0.85rem 0.9rem 0.9rem;
   text-align: center;
 }
 
@@ -169,7 +169,7 @@ export default (() => {
   margin: 0 0 0.8rem;
   color: var(--advertisement-ink);
   font-family: var(--headerFont);
-  font-size: clamp(1.15rem, 3vw, 1.65rem);
+  font-size: 1.1rem;
   letter-spacing: 0.035em;
   line-height: 1.2;
   text-transform: uppercase;
@@ -184,33 +184,14 @@ export default (() => {
 .random-advertisement__copy p {
   margin: 0.52rem 0 0;
   color: var(--darkgray);
-  font-size: 0.9rem;
+  font-size: 0.82rem;
   line-height: 1.45;
 }
 
 .random-advertisement__copy p:first-of-type {
   color: var(--advertisement-ink);
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 650;
-}
-
-@media (max-width: 680px) {
-  .random-advertisement__layout {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .random-advertisement__image {
-    border-right: 0;
-    border-bottom: 1px solid var(--isr-rule, var(--lightgray));
-  }
-
-  .random-advertisement__image img {
-    max-height: none;
-  }
-
-  .random-advertisement__copy {
-    padding: 0.95rem 1rem 1rem;
-  }
 }
 `
 
