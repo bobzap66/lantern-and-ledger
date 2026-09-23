@@ -137,14 +137,22 @@ type ImageRecord = {
 }
 
 function escapeHtml(value: unknown) {
-  return String(value ?? "").replaceAll("&", "&amp;").replaceAll('"', "&quot;").replaceAll("<", "&lt;").replaceAll(">", "&gt;")
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
 }
 
 function encodeRelativeUrl(value: string) {
-  return value.replaceAll("\\", "/").split("/").map((segment) => {
-    if (segment === "." || segment === "..") return segment
-    return encodeURIComponent(segment).replaceAll("%2C", ",")
-  }).join("/")
+  return value
+    .replaceAll("\\", "/")
+    .split("/")
+    .map((segment) => {
+      if (segment === "." || segment === "..") return segment
+      return encodeURIComponent(segment).replaceAll("%2C", ",")
+    })
+    .join("/")
 }
 
 function list(value: unknown): string[] {
@@ -160,20 +168,24 @@ function semanticName(value: string) {
 function matches(values: string[], wanted: unknown) {
   if (wanted == null || wanted === "") return true
   const available = values.map(semanticName)
-  return list(wanted).map(semanticName).some((target) => available.includes(target))
+  return list(wanted)
+    .map(semanticName)
+    .some((target) => available.includes(target))
 }
 
 function matchesDate(values: string[], wanted: unknown) {
   if (wanted == null || wanted === "") return true
   const available = values.map(String)
-  return list(wanted).some((target) => available.some((value) => value === target || value.startsWith(target + "-")))
+  return list(wanted).some((target) =>
+    available.some((value) => value === target || value.startsWith(target + "-")),
+  )
 }
 
 function readFrontmatter(filePath: string): Record<string, any> {
   try {
     const source = fs.readFileSync(filePath, "utf8")
     const match = source.match(/^---\s*\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/)
-    return match ? YAML.parse(match[1]) ?? {} : {}
+    return match ? (YAML.parse(match[1]) ?? {}) : {}
   } catch {
     return {}
   }
@@ -204,23 +216,29 @@ export const ImageMetadataCarousel: QuartzTransformerPlugin = () => {
     records = walk(path.join(vaultRoot, "Image Metadata")).flatMap((filePath) => {
       const fm = readFrontmatter(filePath)
       if (fm.type !== "image" || typeof fm.asset !== "string") return []
-      return [{
-        asset: fm.asset.replaceAll("\\", "/").replace(/^\/+/, ""),
-        title: String(fm.title ?? path.basename(fm.asset, path.extname(fm.asset))),
-        caption: typeof fm.caption === "string" ? fm.caption : undefined,
-        alt: typeof fm.alt === "string" && fm.alt.trim() ? fm.alt : undefined,
-        playerCharacters: list(fm.player_character ?? fm.player_characters ?? fm.character ?? fm.characters),
-        npcs: list(fm.npc ?? fm.npcs),
-        subjects: list(fm.subject ?? fm.subjects),
-        campaigns: list(fm.campaign ?? fm.campaigns),
-        groups: list(fm.group ?? fm.groups),
-        locations: list(fm.location ?? fm.locations),
-        events: list(fm.event ?? fm.events),
-        tags: [...list(fm.tag), ...list(fm.tags)],
-        sessions: list(fm.session ?? fm.sessions),
-        articles: list(fm.article ?? fm.articles),
-        campaignDates: list(fm.campaign_date ?? fm.campaign_dates),
-      }]
+      const tags = [...list(fm.tag), ...list(fm.tags)]
+      if (tags.some((tag) => tag.trim().toLowerCase() === "advertisement")) return []
+      return [
+        {
+          asset: fm.asset.replaceAll("\\", "/").replace(/^\/+/, ""),
+          title: String(fm.title ?? path.basename(fm.asset, path.extname(fm.asset))),
+          caption: typeof fm.caption === "string" ? fm.caption : undefined,
+          alt: typeof fm.alt === "string" && fm.alt.trim() ? fm.alt : undefined,
+          playerCharacters: list(
+            fm.player_character ?? fm.player_characters ?? fm.character ?? fm.characters,
+          ),
+          npcs: list(fm.npc ?? fm.npcs),
+          subjects: list(fm.subject ?? fm.subjects),
+          campaigns: list(fm.campaign ?? fm.campaigns),
+          groups: list(fm.group ?? fm.groups),
+          locations: list(fm.location ?? fm.locations),
+          events: list(fm.event ?? fm.events),
+          tags,
+          sessions: list(fm.session ?? fm.sessions),
+          articles: list(fm.article ?? fm.articles),
+          campaignDates: list(fm.campaign_date ?? fm.campaign_dates),
+        },
+      ]
     })
   }
 
@@ -238,7 +256,10 @@ export const ImageMetadataCarousel: QuartzTransformerPlugin = () => {
           const transform = (parent: any) => {
             if (!Array.isArray(parent?.children)) return
             parent.children = parent.children.map((node: any) => {
-              if (node?.type !== "code" || String(node.lang ?? "").toLowerCase() !== "image-carousel") {
+              if (
+                node?.type !== "code" ||
+                String(node.lang ?? "").toLowerCase() !== "image-carousel"
+              ) {
                 transform(node)
                 return node
               }
@@ -248,37 +269,64 @@ export const ImageMetadataCarousel: QuartzTransformerPlugin = () => {
                 query = YAML.parse(String(node.value ?? "")) ?? {}
                 if (!validImageTagQuery(query)) throw new Error("Invalid tag query")
               } catch {
-                return { type: "html", value: '<p class="isr-metadata-carousel-empty">Invalid image-carousel query.</p>' }
+                return {
+                  type: "html",
+                  value: '<p class="isr-metadata-carousel-empty">Invalid image-carousel query.</p>',
+                }
               }
 
-              const found = uniqueImageAssets(records.filter((record) =>
-                matches(record.playerCharacters, query.player_character ?? query.player_characters ?? query.character ?? query.characters) &&
-                matches(record.npcs, query.npc ?? query.npcs) &&
-                matches(record.subjects, query.subject ?? query.subjects) &&
-                matches(record.campaigns, query.campaign ?? query.campaigns) &&
-                matches(record.groups, query.group ?? query.groups) &&
-                matches(record.locations, query.location ?? query.locations) &&
-                matches(record.events, query.event ?? query.events) &&
-                matchesImageTags(record.tags, query.tag ?? query.tags, query.match) &&
-                matches(record.sessions, query.session ?? query.sessions) &&
-                matches(record.articles, query.article ?? query.articles) &&
-                matchesDate(record.campaignDates, query.campaign_date ?? query.campaign_dates)
-              ), (asset) => path.resolve(vaultRoot, asset))
+              const found = uniqueImageAssets(
+                records.filter(
+                  (record) =>
+                    matches(
+                      record.playerCharacters,
+                      query.player_character ??
+                        query.player_characters ??
+                        query.character ??
+                        query.characters,
+                    ) &&
+                    matches(record.npcs, query.npc ?? query.npcs) &&
+                    matches(record.subjects, query.subject ?? query.subjects) &&
+                    matches(record.campaigns, query.campaign ?? query.campaigns) &&
+                    matches(record.groups, query.group ?? query.groups) &&
+                    matches(record.locations, query.location ?? query.locations) &&
+                    matches(record.events, query.event ?? query.events) &&
+                    matchesImageTags(record.tags, query.tag ?? query.tags, query.match) &&
+                    matches(record.sessions, query.session ?? query.sessions) &&
+                    matches(record.articles, query.article ?? query.articles) &&
+                    matchesDate(record.campaignDates, query.campaign_date ?? query.campaign_dates),
+                ),
+                (asset) => path.resolve(vaultRoot, asset),
+              )
 
               if (found.length === 0) {
-                return { type: "html", value: '<p class="isr-metadata-carousel-empty">No matching images are currently catalogued.</p>' }
+                return {
+                  type: "html",
+                  value:
+                    '<p class="isr-metadata-carousel-empty">No matching images are currently catalogued.</p>',
+                }
               }
 
-              const slides = found.map((record, index) => {
-                const absoluteAsset = path.resolve(vaultRoot, record.asset)
-                if ((!absoluteAsset.startsWith(vaultRoot + path.sep) && absoluteAsset !== vaultRoot) || !IMAGE_EXTENSIONS.has(path.extname(absoluteAsset).toLowerCase())) return ""
-                const src = encodeRelativeUrl(path.relative(sourceDirectory, absoluteAsset))
-                const caption = record.caption || record.title
-                return `<figure class="isr-gallery-slide"><img src="${src}" alt="${escapeHtml(record.alt ?? caption)}" loading="${index === 0 ? "eager" : "lazy"}" decoding="async"><figcaption>${escapeHtml(caption)}</figcaption></figure>`
-              }).filter(Boolean).join("\n")
+              const slides = found
+                .map((record, index) => {
+                  const absoluteAsset = path.resolve(vaultRoot, record.asset)
+                  if (
+                    (!absoluteAsset.startsWith(vaultRoot + path.sep) &&
+                      absoluteAsset !== vaultRoot) ||
+                    !IMAGE_EXTENSIONS.has(path.extname(absoluteAsset).toLowerCase())
+                  )
+                    return ""
+                  const src = encodeRelativeUrl(path.relative(sourceDirectory, absoluteAsset))
+                  const caption = record.caption || record.title
+                  return `<figure class="isr-gallery-slide"><img src="${src}" alt="${escapeHtml(record.alt ?? caption)}" loading="${index === 0 ? "eager" : "lazy"}" decoding="async"><figcaption>${escapeHtml(caption)}</figcaption></figure>`
+                })
+                .filter(Boolean)
+                .join("\n")
 
               const rawInterval = Number(query.interval ?? 10)
-              const interval = Number.isFinite(rawInterval) ? Math.min(120, Math.max(0, rawInterval)) : 10
+              const interval = Number.isFinite(rawInterval)
+                ? Math.min(120, Math.max(0, rawInterval))
+                : 10
               return {
                 type: "html",
                 value: `<div class="isr-metadata-carousel" data-isr-metadata-carousel data-interval="${interval}"><div class="isr-gallery-track" role="group" aria-roledescription="carousel" aria-label="Image carousel">${slides}</div></div>`,
