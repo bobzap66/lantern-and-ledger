@@ -40,6 +40,13 @@ const GOLARION_MONTHS = [
   "kuthona",
 ]
 
+const BUREAU_ADVERTISEMENT_LOCATION_ALIASES: Record<string, string[]> = {
+  absalom: ["Otari"],
+  "absalom bureau": ["Otari"],
+  thumpington: ["Thumping Waters"],
+  "thumpington bureau": ["Thumping Waters"],
+}
+
 const catalogCache = new Map<string, AdvertisementRecord[]>()
 
 function list(value: unknown): string[] {
@@ -237,14 +244,9 @@ export function pageAdvertisementLocations(frontmatter: Record<string, unknown>,
     ...list(frontmatter.advertisement_locations),
   ]
 
-  if (
-    bureauLocations.some((bureau) => {
-      const name = semanticName(bureau)
-      return name === "absalom" || name === "absalom bureau"
-    })
-  ) {
-    values.push("Otari")
-  }
+  bureauLocations.forEach((bureau) => {
+    values.push(...(BUREAU_ADVERTISEMENT_LOCATION_ALIASES[semanticName(bureau)] ?? []))
+  })
 
   const campaign = semanticName(String(frontmatter.campaign ?? ""))
   if (values.length === 0) {
