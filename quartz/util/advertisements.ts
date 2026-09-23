@@ -227,14 +227,25 @@ export function selectAdvertisement(
 }
 
 export function pageAdvertisementLocations(frontmatter: Record<string, unknown>, slug = "") {
+  const bureauLocations = list(frontmatter.bureau)
   const values = [
     ...list(frontmatter.location),
     ...list(frontmatter.locations),
     ...list(frontmatter.dateline),
-    ...list(frontmatter.bureau),
+    ...bureauLocations,
     ...list(frontmatter.publication_location),
     ...list(frontmatter.advertisement_locations),
   ]
+
+  if (
+    bureauLocations.some((bureau) => {
+      const name = semanticName(bureau)
+      return name === "absalom" || name === "absalom bureau"
+    })
+  ) {
+    values.push("Otari")
+  }
+
   const campaign = semanticName(String(frontmatter.campaign ?? ""))
   if (values.length === 0) {
     if (campaign === "kingmaker") values.push("Thumpington")
