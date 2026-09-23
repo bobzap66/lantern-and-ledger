@@ -155,6 +155,11 @@ export function stableHash(value: string) {
   return hash >>> 0
 }
 
+export function stableBucket(value: string, bucketCount: number) {
+  if (!Number.isInteger(bucketCount) || bucketCount <= 0) return 0
+  return Math.floor((stableHash(value) / 0x100000000) * bucketCount)
+}
+
 function locationMatches(advertisement: AdvertisementRecord, pageLocations: string[]) {
   if (advertisement.locations.length === 0) return true
   const wanted = new Set(pageLocations.map(semanticName).filter(Boolean))
@@ -165,20 +170,14 @@ function locationMatches(advertisement: AdvertisementRecord, pageLocations: stri
 export function eligibleAdvertisements(
   records: AdvertisementRecord[],
   pageDate: string,
-  pageLocations: string[],
+  _pageLocations: string[] = [],
 ) {
   const date = parseGolarionDate(pageDate)
   if (date == null) return []
 
   return records.filter((advertisement) => {
     const publication = parseGolarionDate(advertisement.publicationDate)
-    if (
-      publication == null ||
-      date < publication ||
-      !locationMatches(advertisement, pageLocations)
-    ) {
-      return false
-    }
+    if (publication == null || date < publication) return false
     if (!advertisement.limitedRun) return true
 
     const start = parseGolarionDate(advertisement.runStartDate)
@@ -210,14 +209,21 @@ export function selectAdvertisement(
   const ordinary = eligible.filter((advertisement) => !advertisement.limitedRun)
   let pool = eligible
   if (limited.length > 0 && ordinary.length > 0) {
-    pool = stableHash(`${selection.seed}|limited-run-bucket`) % 4 < 3 ? limited : ordinary
+    pool = stableBucket(`${selection.seed}|limited-run-bucket`, 4) < 3 ? limited : ordinary
   } else if (limited.length > 0) {
     pool = limited
   } else if (ordinary.length > 0) {
     pool = ordinary
   }
 
-  return pool[stableHash(`${selection.seed}|advertisement`) % pool.length]
+  const local = pool.filter((advertisement) =>
+    locationMatches(advertisement, selection.pageLocations),
+  )
+  if (local.length > 0 && local.length < pool.length) {
+    pool = stableBucket(`${selection.seed}|location-bucket`, 2) === 0 ? local : pool
+  }
+
+  return pool[stableBucket(`${selection.seed}|advertisement`, pool.length)]
 }
 
 export function pageAdvertisementLocations(frontmatter: Record<string, unknown>, slug = "") {
@@ -230,7 +236,11 @@ export function pageAdvertisementLocations(frontmatter: Record<string, unknown>,
     ...list(frontmatter.advertisement_locations),
   ]
   const campaign = semanticName(String(frontmatter.campaign ?? ""))
-  if (values.length === 0 && campaign === "kingmaker") values.push("Thumpington")
+  if (values.length === 0) {
+    if (campaign === "kingmaker") values.push("Thumpington")
+    if (campaign === "claws of the tyrant") values.push("Vellumis")
+    if (campaign === "season of ghosts") values.push("Absalom")
+  }
   const type = semanticName(String(frontmatter.type ?? ""))
   if (
     ["location", "landmark", "settlement", "building", "business"].includes(type) ||

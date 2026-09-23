@@ -10,13 +10,8 @@ import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } fro
 
 function hasExistingAdvertisement(node: Node): boolean {
   const candidate = node as Node & {
-    type?: string
-    value?: string
     properties?: Record<string, unknown>
     children?: Node[]
-  }
-  if (candidate.type === "text" && /\bpaid advertisement\b/i.test(candidate.value ?? "")) {
-    return true
   }
   if (
     candidate.properties?.["data-advertisement"] != null ||
