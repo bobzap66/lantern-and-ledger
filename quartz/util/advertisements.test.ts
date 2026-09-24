@@ -144,7 +144,7 @@ test("honors an eligible pinned advertisement", () => {
 
 test("uses datelines, bureaus, and campaign location suggestions", () => {
   assert.deepEqual(pageAdvertisementLocations({ dateline: "Vellumis" }), ["Vellumis"])
-  assert.deepEqual(pageAdvertisementLocations({ bureau: "Absalom" }), ["Absalom"])
+  assert.deepEqual(pageAdvertisementLocations({ bureau: "Absalom" }), ["Absalom", "Otari"])
   assert.deepEqual(pageAdvertisementLocations({ campaign: "[[Campaigns/Kingmaker|Kingmaker]]" }), [
     "Thumpington",
   ])
