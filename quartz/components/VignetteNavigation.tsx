@@ -54,9 +54,7 @@ function explicitSeries(
       .map((title) =>
         allFiles.find((file) => file.slug && normalizedTitle(file.frontmatter?.title) === title),
       )
-      .filter(
-        (file): file is QuartzComponentProps["allFiles"][number] => Boolean(file?.slug),
-      )
+      .filter((file): file is QuartzComponentProps["allFiles"][number] => Boolean(file?.slug))
 
     return { archive, siblings }
   }
@@ -97,12 +95,10 @@ export default (() => {
     if (!fileData.slug) return null
 
     const configuredSeries = explicitSeries(fileData, allFiles)
-    const standardVignette = isVignettePage(
-      fileData as QuartzComponentProps["allFiles"][number],
-    )
+    const standardVignette = isVignettePage(fileData as QuartzComponentProps["allFiles"][number])
     if (!configuredSeries && !standardVignette) return null
 
-    const fm = fileData.frontmatter ?? {}
+    const fm = (fileData.frontmatter ?? {}) as Record<string, unknown>
     const group = vignetteDirectory(fileData.slug)
 
     const siblings = configuredSeries
@@ -148,9 +144,7 @@ export default (() => {
         .at(-1)
         ?.trim() || "Character"
     const archiveTitle = String(archive?.frontmatter?.title ?? `${characterName} Vignettes`)
-    const archiveLabel = String(
-      archive?.frontmatter?.series_navigation_label ?? "Vignette Archive",
-    )
+    const archiveLabel = String(archive?.frontmatter?.series_navigation_label ?? "Vignette Archive")
 
     const item = (file: (typeof siblings)[number] | undefined, direction: "previous" | "next") => {
       if (!file?.slug)
@@ -163,7 +157,7 @@ export default (() => {
       const date = String(
         file.frontmatter?.date ?? file.frontmatter?.campaign_date_name ?? "",
       ).trim()
-      const href = resolveRelative(fileData.slug!, simplifySlug(file.slug) as FullSlug)
+      const href = resolveRelative(fileData.slug!, simplifySlug(file.slug) as unknown as FullSlug)
       return (
         <a href={href} class={`vignette-nav-item vignette-nav-${direction} internal`}>
           <span class="vignette-nav-label">
@@ -185,7 +179,7 @@ export default (() => {
           {item(previous, "previous")}
           {archiveSlug ? (
             <a
-              href={resolveRelative(fileData.slug, archiveSlug as FullSlug)}
+              href={resolveRelative(fileData.slug, archiveSlug as unknown as FullSlug)}
               class="vignette-nav-back internal"
             >
               <span class="vignette-nav-label">{archiveLabel}</span>

@@ -72,7 +72,18 @@ export function pageResources(
   })
 
   const contentIndexPath = joinSegments(baseDir, "static/contentIndex.json")
-  const contentIndexScript = `const fetchData = fetch("${contentIndexPath}").then(data => data.json())`
+  const contentIndexScript = `const fetchData = (() => {
+  let request
+  const load = () => request ??= fetch("${contentIndexPath}").then((response) => {
+    if (!response.ok) throw new Error("Content index request failed: " + response.status)
+    return response.json()
+  })
+  return {
+    then: (onFulfilled, onRejected) => load().then(onFulfilled, onRejected),
+    catch: (onRejected) => load().catch(onRejected),
+    finally: (onFinally) => load().finally(onFinally),
+  }
+})()`
 
   const resources: StaticResources = {
     css: [
@@ -351,7 +362,9 @@ export function renderPage(
     <html lang={lang} dir={direction}>
       <Head {...componentData} />
       <body data-slug={slug} data-basepath={basePath}>
-        {canonicalRootScript && <script dangerouslySetInnerHTML={{ __html: canonicalRootScript }} />}
+        {canonicalRootScript && (
+          <script dangerouslySetInnerHTML={{ __html: canonicalRootScript }} />
+        )}
         {frame.css && <style dangerouslySetInnerHTML={{ __html: frame.css }} />}
         <div id="quartz-root" class="page" data-frame={frame.name}>
           <Body {...componentData}>

@@ -169,7 +169,7 @@ function displayDate(value: unknown) {
 }
 
 function descriptionFor(file: ArchiveFile) {
-  const fm = file.frontmatter ?? {}
+  const fm = (file.frontmatter ?? {}) as Record<string, unknown>
   return (
     text(fm.card_description) ||
     text(fm.description) ||
@@ -180,11 +180,17 @@ function descriptionFor(file: ArchiveFile) {
 }
 
 function titleFor(file: ArchiveFile) {
-  return text(file.frontmatter?.title) || canonicalSlug(file.slug).split("/").at(-1) || "Archive entry"
+  return (
+    text(file.frontmatter?.title) || canonicalSlug(file.slug).split("/").at(-1) || "Archive entry"
+  )
 }
 
 export default (() => {
-  const ChapterLanding: QuartzComponent = ({ fileData, allFiles, displayClass }: QuartzComponentProps) => {
+  const ChapterLanding: QuartzComponent = ({
+    fileData,
+    allFiles,
+    displayClass,
+  }: QuartzComponentProps) => {
     const fm = (fileData.frontmatter ?? {}) as Record<string, unknown>
     if (normalized(fm.type) !== "series chapter" || !fileData.slug) return null
 
@@ -194,9 +200,14 @@ export default (() => {
     const entries = chapterEntries(fileData, allFiles)
     const chapters = chapterPages(root, allFiles)
     const currentSlug = canonicalSlug(fileData.slug)
-    const chapterIndex = chapters.findIndex((file) => file.slug && canonicalSlug(file.slug) === currentSlug)
+    const chapterIndex = chapters.findIndex(
+      (file) => file.slug && canonicalSlug(file.slug) === currentSlug,
+    )
     const previous = chapterIndex > 0 ? chapters[chapterIndex - 1] : undefined
-    const next = chapterIndex >= 0 && chapterIndex < chapters.length - 1 ? chapters[chapterIndex + 1] : undefined
+    const next =
+      chapterIndex >= 0 && chapterIndex < chapters.length - 1
+        ? chapters[chapterIndex + 1]
+        : undefined
     const first = entries[0]
     const latest = entries.at(-1)
     const entryLabel = text(fm.entry_label) || "Entry"
@@ -226,7 +237,10 @@ export default (() => {
     }
 
     return (
-      <section class={`chapter-landing-index ${displayClass ?? ""}`.trim()} aria-label="Chapter entries">
+      <section
+        class={`chapter-landing-index ${displayClass ?? ""}`.trim()}
+        aria-label="Chapter entries"
+      >
         {entries.length > 0 ? (
           <>
             <div class="chapter-reading-actions">
@@ -246,7 +260,11 @@ export default (() => {
                     href={hrefTo(latest)}
                     title={titleFor(latest)}
                     eyebrow={status === "current" ? "Latest in chapter" : "End of chapter"}
-                    cta={status === "current" ? `Read latest ${entryLabel.toLowerCase()}` : `Read final ${entryLabel.toLowerCase()}`}
+                    cta={
+                      status === "current"
+                        ? `Read latest ${entryLabel.toLowerCase()}`
+                        : `Read final ${entryLabel.toLowerCase()}`
+                    }
                     className="chapter-reading-card"
                   />
                 )}
@@ -255,14 +273,22 @@ export default (() => {
 
             <div class="chapter-entry-index__header">
               <h2>{text(fm.entries_heading) || "Entries"}</h2>
-              <p>{entries.length} {entries.length === 1 ? entryLabel.toLowerCase() : `${entryLabel.toLowerCase()}s`} in this chapter</p>
+              <p>
+                {entries.length}{" "}
+                {entries.length === 1 ? entryLabel.toLowerCase() : `${entryLabel.toLowerCase()}s`}{" "}
+                in this chapter
+              </p>
             </div>
             <div class="chapter-entry-grid">{entries.map(cardFor)}</div>
           </>
         ) : (
           <div class="chapter-entry-index__empty">
             <h2>{text(fm.entries_heading) || "Entries"}</h2>
-            <p>{status === "upcoming" ? "This chapter has not yet begun." : "No entries have been filed for this chapter yet."}</p>
+            <p>
+              {status === "upcoming"
+                ? "This chapter has not yet begun."
+                : "No entries have been filed for this chapter yet."}
+            </p>
           </div>
         )}
 
@@ -273,19 +299,31 @@ export default (() => {
                 <span class="chapter-navigation__label">← Previous chapter</span>
                 <span class="chapter-navigation__title">{titleFor(previous)}</span>
               </a>
-            ) : <span class="chapter-navigation__item is-empty" aria-hidden="true" />}
+            ) : (
+              <span class="chapter-navigation__item is-empty" aria-hidden="true" />
+            )}
 
-            <a href={resolveRelative(fileData.slug, root as FullSlug)} class="chapter-navigation__item chapter-navigation__archive internal">
+            <a
+              href={resolveRelative(fileData.slug, root as FullSlug)}
+              class="chapter-navigation__item chapter-navigation__archive internal"
+            >
               <span class="chapter-navigation__label">Full archive</span>
-              <span class="chapter-navigation__title">{text(fm.archive_label) || "All chapters"}</span>
+              <span class="chapter-navigation__title">
+                {text(fm.archive_label) || "All chapters"}
+              </span>
             </a>
 
             {next?.slug ? (
-              <a href={hrefTo(next)} class="chapter-navigation__item chapter-navigation__next internal">
+              <a
+                href={hrefTo(next)}
+                class="chapter-navigation__item chapter-navigation__next internal"
+              >
                 <span class="chapter-navigation__label">Next chapter →</span>
                 <span class="chapter-navigation__title">{titleFor(next)}</span>
               </a>
-            ) : <span class="chapter-navigation__item is-empty" aria-hidden="true" />}
+            ) : (
+              <span class="chapter-navigation__item is-empty" aria-hidden="true" />
+            )}
           </div>
         </nav>
       </section>

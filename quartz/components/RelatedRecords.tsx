@@ -30,7 +30,9 @@ function campaignRoot(slug: string | undefined) {
 }
 
 function titleFor(file: RecordFile) {
-  return text(file.frontmatter?.title) || simplifySlug(file.slug!).split("/").at(-1) || "Archive record"
+  return (
+    text(file.frontmatter?.title) || simplifySlug(file.slug!).split("/").at(-1) || "Archive record"
+  )
 }
 
 function wikilinkParts(value: string) {
@@ -100,7 +102,11 @@ function preferSameCampaign(files: RecordFile[], currentSlug: string) {
   return files.find((file) => campaignRoot(file.slug) === root) ?? files[0]
 }
 
-function findRecord(value: string, fileData: QuartzComponentProps["fileData"], allFiles: RecordFile[]) {
+function findRecord(
+  value: string,
+  fileData: QuartzComponentProps["fileData"],
+  allFiles: RecordFile[],
+) {
   if (!fileData.slug) return undefined
   const { target, label } = wikilinkParts(value)
   const current = simplifySlug(fileData.slug)
@@ -145,7 +151,7 @@ function recordKind(file: RecordFile) {
 }
 
 function recordDescription(file: RecordFile, kind: string) {
-  const fm = file.frontmatter ?? {}
+  const fm = (file.frontmatter ?? {}) as Record<string, unknown>
   const descriptionFields = [
     fm.card_description,
     fm.description,
@@ -159,7 +165,8 @@ function recordDescription(file: RecordFile, kind: string) {
   }
 
   const role = text(fm.role)
-  if (role && !["player-character", "non-player-character"].includes(role.toLowerCase())) return role
+  if (role && !["player-character", "non-player-character"].includes(role.toLowerCase()))
+    return role
 
   const fallbacks: Record<string, string> = {
     Campaign: "Open the campaign archive.",
@@ -192,7 +199,11 @@ function parseCuratedSpec(value: unknown): RelatedRecordSpec | undefined {
     target,
     title: text(record.title) || undefined,
     eyebrow:
-      text(record.eyebrow) || text(record.kind) || text(record.record_type) || text(record.type) || undefined,
+      text(record.eyebrow) ||
+      text(record.kind) ||
+      text(record.record_type) ||
+      text(record.type) ||
+      undefined,
     description: text(record.description) || undefined,
     meta: text(record.meta) || undefined,
     cta: text(record.cta) || undefined,
@@ -257,7 +268,9 @@ function automaticSpecs(
 
   // Only keep targets that resolve. This also prevents an inferred relationship from
   // occupying a slot when older campaign metadata points at a record that no longer exists.
-  return specs.filter((spec) => findRecord(spec.target, fileData, allFiles)).slice(0, MAX_RELATED_RECORDS)
+  return specs
+    .filter((spec) => findRecord(spec.target, fileData, allFiles))
+    .slice(0, MAX_RELATED_RECORDS)
 }
 
 export default (() => {
@@ -284,7 +297,7 @@ export default (() => {
 
         const kind = recordKind(file)
         return {
-          href: resolveRelative(fileData.slug!, targetSlug as FullSlug),
+          href: resolveRelative(fileData.slug!, targetSlug as unknown as FullSlug),
           title: spec.title || titleFor(file),
           eyebrow: spec.eyebrow || kind,
           description: spec.description || recordDescription(file, kind),

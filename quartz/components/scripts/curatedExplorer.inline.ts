@@ -1,6 +1,6 @@
 // @ts-nocheck - browser-side Quartz component script
 
-const explorerOrder = {
+const explorerOrder: Record<string, string[]> = {
   "": [
     "campaigns",
     "the-lantern-and-ledger",
@@ -12,12 +12,7 @@ const explorerOrder = {
     "rules",
     "external-references",
   ],
-  campaigns: [
-    "kingmaker",
-    "claws-of-the-tyrant",
-    "season-of-ghosts",
-    "abomination-vaults",
-  ],
+  campaigns: ["kingmaker", "claws-of-the-tyrant", "season-of-ghosts", "abomination-vaults"],
   "the-lantern-and-ledger": ["the-lantern-and-ledger-history", "staff"],
   "campaigns/kingmaker": [
     "kingmaker-the-story-so-far",
@@ -64,11 +59,7 @@ const explorerOrder = {
     "vignettes",
     "campaign-history",
   ],
-  "campaigns/kingmaker/thumping-waters": [
-    "ruling-council",
-    "government-documents",
-    "settlements",
-  ],
+  "campaigns/kingmaker/thumping-waters": ["ruling-council", "government-documents", "settlements"],
   "campaigns/kingmaker/thumping-waters/settlements": [
     "thumpington",
     "olegton",
@@ -148,8 +139,7 @@ const explorerItemLabel = (item) => {
   return String(folderTitle?.textContent ?? fileLink?.textContent ?? "").trim()
 }
 
-const explorerItemIsFolder = (item) =>
-  Boolean(item.querySelector(":scope > .folder-container"))
+const explorerItemIsFolder = (item) => Boolean(item.querySelector(":scope > .folder-container"))
 
 const curateExplorerList = (list) => {
   const parentPath = parentPathForList(list)

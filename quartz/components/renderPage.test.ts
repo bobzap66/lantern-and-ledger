@@ -315,6 +315,14 @@ describe("pageResources", () => {
       inlineJs.script.includes("/quartz/static/contentIndex.json"),
       `expected contentIndex fetch to include /quartz/ prefix, got: ${inlineJs.script}`,
     )
+    assert.ok(
+      inlineJs.script.includes("const load = () => request ??= fetch("),
+      "expected the content index request to be deferred until a consumer awaits it",
+    )
+    assert.ok(
+      !inlineJs.script.includes('const fetchData = fetch("'),
+      "content index should not be fetched eagerly during page initialization",
+    )
 
     const withoutPrefix = pageResources("." as FullSlug, emptyResources)
     const inlineJsServe = withoutPrefix.js.find((j) => j.contentType === "inline" && "script" in j)
