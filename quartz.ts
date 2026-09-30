@@ -9,6 +9,7 @@ import { FolderGallery } from "./quartz/plugins/transformers/folderGallery"
 import { ImageMetadataGallery } from "./quartz/plugins/transformers/imageMetadataGallery"
 import { ImageMetadataCarousel } from "./quartz/plugins/transformers/imageMetadataCarousel"
 import { VignetteIndexes } from "./quartz/plugins/transformers/vignetteIndexes"
+import { ImageAltText } from "./quartz/plugins/transformers/imageAltText"
 import CharacterVignettes from "./quartz/components/CharacterVignettes"
 import ChapterLanding from "./quartz/components/ChapterLanding"
 import HomepageEditorialCards from "./quartz/components/HomepageEditorialCards"
@@ -71,6 +72,7 @@ config.configuration.ignorePatterns.push(
 config.plugins.transformers.push(FolderGallery())
 config.plugins.transformers.push(ImageMetadataGallery())
 config.plugins.transformers.push(ImageMetadataCarousel())
+config.plugins.transformers.push(ImageAltText())
 config.plugins.transformers.push(CharacterCards())
 config.plugins.transformers.push(NpcCards())
 config.plugins.transformers.push(CharacterCardLinks())

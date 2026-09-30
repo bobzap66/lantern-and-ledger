@@ -114,9 +114,25 @@ function canonicalImageSrc(file, originalSrc) {
 
   const sluggedAssetPath = String(slugifyFilePath(relativeAssetPath)).replace(/^\/+/, "")
   const candidate = `${baseRoot}/${sluggedAssetPath}`.replace(/\/{2,}/g, "/")
-  if (!outputPaths.has(candidate)) return originalSrc
+  if (outputPaths.has(candidate)) return `${candidate}${target.search}${target.hash}`
 
-  return `${candidate}${target.search}${target.hash}`
+  // Older notes sometimes contain a relative path with too few `../` segments.
+  // Once resolved from a deeply nested article, that produces paths such as
+  // `campaigns/assets/images/...`. Assets are emitted from the vault-root
+  // `assets/images` directory, so recover that canonical suffix when present.
+  const assetMarker = "assets/images/"
+  const markerIndex = relativeAssetPath.toLowerCase().indexOf(assetMarker)
+  if (markerIndex < 0) return originalSrc
+
+  const rootAssetPath = relativeAssetPath.slice(markerIndex)
+  const rootCandidate =
+    `${baseRoot}/${String(slugifyFilePath(rootAssetPath)).replace(/^\/+/, "")}`.replace(
+      /\/{2,}/g,
+      "/",
+    )
+  if (!outputPaths.has(rootCandidate)) return originalSrc
+
+  return `${rootCandidate}${target.search}${target.hash}`
 }
 
 let filesChanged = 0
