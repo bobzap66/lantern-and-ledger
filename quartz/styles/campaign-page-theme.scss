@@ -976,3 +976,48 @@
   background-position: left center;
   background-repeat: no-repeat;
 }
+
+/* Curtain Call — reusable "From the Opera" score block.
+   Author with an Obsidian callout: > [!opera] From the Opera */
+#quartz-body.campaign--curtain-call article .callout[data-callout="opera"] {
+  --color: #b88a42;
+  --border: color-mix(in srgb, var(--campaign-page-accent) 45%, var(--isr-rule) 55%);
+  --bg: color-mix(in srgb, var(--light) 94%, var(--campaign-page-accent) 6%);
+  position: relative;
+  overflow: hidden;
+  border-left: 4px solid var(--campaign-page-accent);
+  box-shadow: 0 8px 22px color-mix(in srgb, var(--campaign-page-shadow) 88%, transparent);
+}
+
+#quartz-body.campaign--curtain-call article .callout[data-callout="opera"] > .callout-title {
+  padding-bottom: 0.65rem;
+  font-size: 0.92rem;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+#quartz-body.campaign--curtain-call article .callout[data-callout="opera"] .callout-content h3 {
+  margin-top: 0.15rem;
+  margin-bottom: 0.2rem;
+  padding-left: 0;
+  color: var(--campaign-page-accent);
+  font-size: clamp(1.35rem, 3vw, 1.8rem);
+  font-style: italic;
+}
+
+#quartz-body.campaign--curtain-call article .callout[data-callout="opera"] .callout-content h3::before {
+  display: none;
+}
+
+#quartz-body.campaign--curtain-call article .callout[data-callout="opera"] audio {
+  display: block;
+  width: 100%;
+  margin: 0.85rem 0 1rem;
+}
+
+#quartz-body.campaign--curtain-call article .callout[data-callout="opera"] .opera-meta {
+  margin: 0.15rem 0 0.65rem;
+  color: var(--darkgray);
+  font-size: 0.88rem;
+  font-style: italic;
+}

@@ -2,10 +2,14 @@ import { promises as fs } from "node:fs"
 import path from "node:path"
 
 const outputRoot = path.resolve(process.argv[2] ?? "public")
-const imageBase = (process.env.PUBLIC_IMAGE_BASE_URL ?? "").replace(/\/$/, "")
+const assetBase = (
+  process.env.PUBLIC_ASSET_BASE_URL ??
+  process.env.PUBLIC_IMAGE_BASE_URL ??
+  ""
+).replace(/\/$/, "")
 
-if (!imageBase) {
-  throw new Error("PUBLIC_IMAGE_BASE_URL is required")
+if (!assetBase) {
+  throw new Error("PUBLIC_ASSET_BASE_URL is required")
 }
 
 const textExtensions = new Set([
@@ -28,13 +32,13 @@ async function walk(dir) {
 function rewriteAssetUrls(source) {
   let count = 0
   const updated = source.replace(
-    /(?:(?:https?:)?\/\/[^"'()\s]+)?(?:\/lantern-and-ledger)?(?:\.{1,2}\/|\/)*assets\/images\/[^"'()\s<>]+/g,
+    /(?:(?:https?:)?\/\/[^"'()\s]+)?(?:\/lantern-and-ledger)?(?:\.{1,2}\/|\/)*assets\/(?:images|audio)\/[^"'()\s<>]+/g,
     (match) => {
-      const marker = "assets/images/"
+      const marker = "assets/"
       const index = match.indexOf(marker)
       if (index < 0) return match
       count += 1
-      return `${imageBase}/${match.slice(index)}`
+      return `${assetBase}/${match.slice(index)}`
     },
   )
   return { updated, count }
@@ -51,12 +55,16 @@ for (const file of await walk(outputRoot)) {
   }
 }
 
-const localImages = path.join(outputRoot, "assets", "images")
-await fs.rm(localImages, { recursive: true, force: true })
+const removedLocalAssetDirectories = []
+for (const assetType of ["images", "audio"]) {
+  const localDirectory = path.join(outputRoot, "assets", assetType)
+  await fs.rm(localDirectory, { recursive: true, force: true })
+  removedLocalAssetDirectories.push(`public/assets/${assetType}`)
+}
 
 console.log(JSON.stringify({
-  imageBase,
+  assetBase,
   rewrittenFiles,
   rewrittenReferences,
-  removedLocalImageDirectory: "public/assets/images",
+  removedLocalAssetDirectories,
 }, null, 2))
