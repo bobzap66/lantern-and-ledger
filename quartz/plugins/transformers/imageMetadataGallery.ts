@@ -28,6 +28,7 @@ type ImageRecord = {
   groups: string[]
   locations: string[]
   events: string[]
+  easterEggs: string[]
   tags: string[]
   sessions: string[]
   articles: string[]
@@ -116,6 +117,7 @@ export const ImageMetadataGallery: QuartzTransformerPlugin = () => {
         groups: list(fm.group ?? fm.groups),
         locations: list(fm.location ?? fm.locations),
         events: list(fm.event ?? fm.events),
+        easterEggs: list(fm.easter_egg ?? fm.easter_eggs),
         tags: [...list(fm.tag), ...list(fm.tags)],
         sessions: list(fm.session ?? fm.sessions),
         articles: list(fm.article ?? fm.articles),
@@ -158,6 +160,7 @@ export const ImageMetadataGallery: QuartzTransformerPlugin = () => {
               matches(record.groups, query.group ?? query.groups) &&
               matches(record.locations, query.location ?? query.locations) &&
               matches(record.events, query.event ?? query.events) &&
+              matches(record.easterEggs, query.easter_egg ?? query.easter_eggs) &&
               matchesImageTags(record.tags, query.tag ?? query.tags, query.match) &&
               matches(record.sessions, query.session ?? query.sessions) &&
               matches(record.articles, query.article ?? query.articles) &&
