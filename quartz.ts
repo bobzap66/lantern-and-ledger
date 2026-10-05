@@ -22,6 +22,7 @@ import ArchiveReadingActions from "./quartz/components/ArchiveReadingActions"
 import ResponsiveCompatibility from "./quartz/components/ResponsiveCompatibility"
 import SessionNavigation from "./quartz/components/SessionNavigation"
 import VignetteNavigation from "./quartz/components/VignetteNavigation"
+import FacetedSearch from "./quartz/components/FacetedSearch"
 import { componentRegistry } from "./quartz/components/registry"
 
 const characterVignettes = CharacterVignettes()
@@ -35,8 +36,10 @@ const sessionArchiveActions = ArchiveReadingActions()
 const responsiveCompatibility = ResponsiveCompatibility()
 const sessionNavigation = SessionNavigation()
 const vignetteNavigation = VignetteNavigation()
+const facetedSearch = FacetedSearch()
 const localLayout = {
   beforeBody: [
+    facetedSearch,
     responsiveCompatibility,
     legacySeriesNavCleanup,
     homepageEditorialCards,
@@ -59,6 +62,7 @@ componentRegistry.register("related-records", relatedRecords, "local")
 componentRegistry.register("session-archive-actions", sessionArchiveActions, "local")
 componentRegistry.register("session-navigation", sessionNavigation, "local")
 componentRegistry.register("vignette-navigation", vignetteNavigation, "local")
+componentRegistry.register("faceted-search", facetedSearch, "local")
 
 const config = await loadQuartzConfig(undefined, localLayout)
 config.configuration.ignorePatterns.push(
