@@ -105,8 +105,11 @@ Header.css = `${CampaignSpoilerGate.css ?? ""}
 }
 
 .lantern-ledger-masthead img {
+  width: auto;
+  max-width: 100%;
   height: auto;
   max-height: 13rem;
+  margin-inline: auto;
   object-fit: contain;
   border: 1px solid var(--isr-rule);
   border-radius: 0.22rem;
@@ -162,6 +165,7 @@ Header.css = `${CampaignSpoilerGate.css ?? ""}
 
   .lantern-ledger-masthead img {
     width: clamp(6rem, 28vw, 7.5rem);
+    max-width: none;
     max-height: none;
     margin-inline: auto;
     border: 0;
