@@ -403,7 +403,7 @@ for (const file of await walk(CONTENT_ROOT)) {
   }
 
   if (rel.toLowerCase() === "index.md") continue
-  if (fm.draft === true || fm.publish === false || NON_RECENT_TYPES.has(noteType)) continue
+  if (fm.draft === true || fm.publish === false || fm.unlisted === true || NON_RECENT_TYPES.has(noteType)) continue
 
   const history = gitHistory(rel)
   if (history.length === 0) continue
