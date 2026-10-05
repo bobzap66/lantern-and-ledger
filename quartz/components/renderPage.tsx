@@ -358,6 +358,7 @@ export function renderPage(
     slug === "index" && basePath
       ? `if (location.pathname === ${JSON.stringify(basePath)}) { location.replace(${JSON.stringify(`${basePath}/`)} + location.search + location.hash) }`
       : undefined
+  const frameCss = Array.isArray(frame.css) ? frame.css.join("\n") : frame.css
   const doc = (
     <html lang={lang} dir={direction}>
       <Head {...componentData} />
@@ -365,7 +366,7 @@ export function renderPage(
         {canonicalRootScript && (
           <script dangerouslySetInnerHTML={{ __html: canonicalRootScript }} />
         )}
-        {frame.css && <style dangerouslySetInnerHTML={{ __html: frame.css }} />}
+        {frameCss && <style dangerouslySetInnerHTML={{ __html: frameCss }} />}
         <div id="quartz-root" class="page" data-frame={frame.name}>
           <Body {...componentData}>
             {[
