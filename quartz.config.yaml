@@ -278,9 +278,6 @@ plugins:
     options:
       includeAll: false
       includedProperties:
-        - description
-        - tags
-        - aliases
         - session records
       excludedProperties: []
       hidePropertiesView: false

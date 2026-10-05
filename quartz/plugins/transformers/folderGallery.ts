@@ -1,6 +1,7 @@
 import fs from "node:fs"
 import path from "node:path"
 import { QuartzTransformerPlugin } from "../types"
+import { imageDimensionAttributes } from "./imageAltText"
 
 const IMAGE_EXTENSIONS = new Set([".avif", ".gif", ".jpeg", ".jpg", ".png", ".webp"])
 
@@ -257,12 +258,16 @@ export const FolderGallery: QuartzTransformerPlugin = () => ({
                 }
               }
 
-              const isNoteRelative = requestedPath.startsWith("./") || requestedPath.startsWith("../")
+              const isNoteRelative =
+                requestedPath.startsWith("./") || requestedPath.startsWith("../")
               const galleryDirectory = isNoteRelative
                 ? path.resolve(sourceDirectory, requestedPath)
                 : path.resolve(vaultRoot, requestedPath.replace(/^[/\\]+/, ""))
 
-              if (!galleryDirectory.startsWith(vaultRoot + path.sep) && galleryDirectory !== vaultRoot) {
+              if (
+                !galleryDirectory.startsWith(vaultRoot + path.sep) &&
+                galleryDirectory !== vaultRoot
+              ) {
                 return {
                   type: "html",
                   value: `<p class="isr-gallery-error">Gallery folder is outside the vault: ${escapeHtml(requestedPath)}</p>`,
@@ -273,7 +278,11 @@ export const FolderGallery: QuartzTransformerPlugin = () => ({
               try {
                 filenames = fs
                   .readdirSync(galleryDirectory, { withFileTypes: true })
-                  .filter((entry) => entry.isFile() && IMAGE_EXTENSIONS.has(path.extname(entry.name).toLowerCase()))
+                  .filter(
+                    (entry) =>
+                      entry.isFile() &&
+                      IMAGE_EXTENSIONS.has(path.extname(entry.name).toLowerCase()),
+                  )
                   .map((entry) => entry.name)
                   .sort(naturalSort)
               } catch {
@@ -300,7 +309,7 @@ export const FolderGallery: QuartzTransformerPlugin = () => ({
 
                   return [
                     '<figure class="isr-gallery-slide">',
-                    `  <img src="${src}" alt="${label}" title="${label}" loading="${loading}" decoding="async">`,
+                    `  <img src="${src}" alt="${label}" title="${label}"${imageDimensionAttributes(absoluteImagePath)} loading="${loading}" decoding="async">`,
                     `  <figcaption>${label}</figcaption>`,
                     "</figure>",
                   ].join("\n")

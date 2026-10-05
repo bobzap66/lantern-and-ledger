@@ -10,6 +10,7 @@ import { ImageMetadataGallery } from "./quartz/plugins/transformers/imageMetadat
 import { ImageMetadataCarousel } from "./quartz/plugins/transformers/imageMetadataCarousel"
 import { VignetteIndexes } from "./quartz/plugins/transformers/vignetteIndexes"
 import { ImageAltText } from "./quartz/plugins/transformers/imageAltText"
+import { EditorialSemantics } from "./quartz/plugins/transformers/editorialSemantics"
 import CharacterVignettes from "./quartz/components/CharacterVignettes"
 import ChapterLanding from "./quartz/components/ChapterLanding"
 import HomepageEditorialCards from "./quartz/components/HomepageEditorialCards"
@@ -73,6 +74,7 @@ config.plugins.transformers.push(FolderGallery())
 config.plugins.transformers.push(ImageMetadataGallery())
 config.plugins.transformers.push(ImageMetadataCarousel())
 config.plugins.transformers.push(ImageAltText())
+config.plugins.transformers.push(EditorialSemantics())
 config.plugins.transformers.push(CharacterCards())
 config.plugins.transformers.push(NpcCards())
 config.plugins.transformers.push(CharacterCardLinks())

@@ -3,6 +3,7 @@ import path from "node:path"
 import YAML from "yaml"
 import { QuartzTransformerPlugin } from "../types"
 import { simplifySlug, slugifyFilePath } from "../../util/path"
+import { imageDimensionAttributes } from "./imageAltText"
 
 const AUTHOR_CSS = `
 .isr-author-card {
@@ -235,16 +236,18 @@ function escapeHtml(value: unknown) {
 }
 
 function encodeRelativeUrl(value: string) {
-  return value.replaceAll("\\", "/").split("/").map((segment) =>
-    segment === "." || segment === ".." ? segment : encodeURIComponent(segment)
-  ).join("/")
+  return value
+    .replaceAll("\\", "/")
+    .split("/")
+    .map((segment) => (segment === "." || segment === ".." ? segment : encodeURIComponent(segment)))
+    .join("/")
 }
 
 function readFrontmatter(filePath: string): Record<string, any> {
   try {
     const source = fs.readFileSync(filePath, "utf8")
     const match = source.match(/^---\s*\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/)
-    return match ? YAML.parse(match[1]) ?? {} : {}
+    return match ? (YAML.parse(match[1]) ?? {}) : {}
   } catch {
     return {}
   }
@@ -265,7 +268,9 @@ function markdownFiles(directory: string): string[] {
 }
 
 function authorKey(value: unknown) {
-  return String(value ?? "").trim().toLowerCase()
+  return String(value ?? "")
+    .trim()
+    .toLowerCase()
 }
 
 function contributorNames(value: unknown): string[] {
@@ -275,7 +280,12 @@ function contributorNames(value: unknown): string[] {
 }
 
 function initials(value: string) {
-  return value.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]?.toUpperCase() ?? "").join("")
+  return value
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase() ?? "")
+    .join("")
 }
 
 function publicationRank(value: unknown) {
@@ -356,151 +366,178 @@ export const ArticleAuthorCards: QuartzTransformerPlugin = () => {
     }
 
     for (const list of articlesByAuthor.values()) {
-      list.sort((a, b) => publicationRank(publicationDate(b.frontmatter)) - publicationRank(publicationDate(a.frontmatter))
-        || String(a.frontmatter?.title ?? "").localeCompare(String(b.frontmatter?.title ?? "")))
+      list.sort(
+        (a, b) =>
+          publicationRank(publicationDate(b.frontmatter)) -
+            publicationRank(publicationDate(a.frontmatter)) ||
+          String(a.frontmatter?.title ?? "").localeCompare(String(b.frontmatter?.title ?? "")),
+      )
     }
 
     for (const list of contributionsByAuthor.values()) {
-      list.sort((a, b) => publicationRank(publicationDate(b.frontmatter)) - publicationRank(publicationDate(a.frontmatter))
-        || String(a.frontmatter?.title ?? "").localeCompare(String(b.frontmatter?.title ?? "")))
+      list.sort(
+        (a, b) =>
+          publicationRank(publicationDate(b.frontmatter)) -
+            publicationRank(publicationDate(a.frontmatter)) ||
+          String(a.frontmatter?.title ?? "").localeCompare(String(b.frontmatter?.title ?? "")),
+      )
     }
   }
 
   return {
     name: "ArticleAuthorCards",
     markdownPlugins(ctx) {
-      return [() => (tree: any, file: any) => {
-        const sourcePath = file.path || file.data?.filePath
-        if (!sourcePath || !Array.isArray(tree?.children)) return
+      return [
+        () => (tree: any, file: any) => {
+          const sourcePath = file.path || file.data?.filePath
+          if (!sourcePath || !Array.isArray(tree?.children)) return
 
-        const vaultRoot = path.resolve(ctx.argv.directory)
-        ensureIndex(vaultRoot)
+          const vaultRoot = path.resolve(ctx.argv.directory)
+          ensureIndex(vaultRoot)
 
-        const absoluteSource = path.resolve(sourcePath)
-        const relativeSource = path.relative(vaultRoot, absoluteSource).replaceAll("\\", "/")
-        const sourceFm = readFrontmatter(absoluteSource)
+          const absoluteSource = path.resolve(sourcePath)
+          const relativeSource = path.relative(vaultRoot, absoluteSource).replaceAll("\\", "/")
+          const sourceFm = readFrontmatter(absoluteSource)
 
-        if (sourceFm?.type === "author") {
-          const key = authorKey(sourceFm?.title ?? path.basename(relativeSource, ".md"))
-          const articles = articlesByAuthor.get(key) ?? []
-          const contributions = contributionsByAuthor.get(key) ?? []
-          if (articles.length === 0 && contributions.length === 0) return
+          if (sourceFm?.type === "author") {
+            const key = authorKey(sourceFm?.title ?? path.basename(relativeSource, ".md"))
+            const articles = articlesByAuthor.get(key) ?? []
+            const contributions = contributionsByAuthor.get(key) ?? []
+            if (articles.length === 0 && contributions.length === 0) return
 
-          const name = String(sourceFm?.title ?? path.basename(relativeSource, ".md"))
-          const sections: string[] = []
+            const name = String(sourceFm?.title ?? path.basename(relativeSource, ".md"))
+            const sections: string[] = []
 
-          if (articles.length > 0) {
-            const items = articles.map((article) => {
-              const title = String(article.frontmatter?.title ?? path.basename(article.relativePath, ".md"))
-              const date = String(publicationDate(article.frontmatter) ?? "").trim()
-              const href = relativeSlugHref(relativeSource, article.slug)
-              return `<li><a href="${escapeHtml(href)}">${escapeHtml(title)}</a>${date ? ` <span class="isr-author-article-date">— ${escapeHtml(date)}</span>` : ""}</li>`
-            }).join("\n")
-            sections.push([
-              '<section class="isr-author-articles">',
-              `<h2>Articles by ${escapeHtml(name)}</h2>`,
-              `<ul>\n${items}\n</ul>`,
-              "</section>",
-            ].join("\n"))
+            if (articles.length > 0) {
+              const items = articles
+                .map((article) => {
+                  const title = String(
+                    article.frontmatter?.title ?? path.basename(article.relativePath, ".md"),
+                  )
+                  const date = String(publicationDate(article.frontmatter) ?? "").trim()
+                  const href = relativeSlugHref(relativeSource, article.slug)
+                  return `<li><a href="${escapeHtml(href)}">${escapeHtml(title)}</a>${date ? ` <span class="isr-author-article-date">— ${escapeHtml(date)}</span>` : ""}</li>`
+                })
+                .join("\n")
+              sections.push(
+                [
+                  '<section class="isr-author-articles">',
+                  `<h2>Articles by ${escapeHtml(name)}</h2>`,
+                  `<ul>\n${items}\n</ul>`,
+                  "</section>",
+                ].join("\n"),
+              )
+            }
+
+            if (contributions.length > 0) {
+              const items = contributions
+                .map((note) => {
+                  const title = String(
+                    note.frontmatter?.title ?? path.basename(note.relativePath, ".md"),
+                  )
+                  const date = String(publicationDate(note.frontmatter) ?? "").trim()
+                  const href = relativeSlugHref(relativeSource, note.slug)
+                  return `<li><a href="${escapeHtml(href)}">${escapeHtml(title)}</a>${date ? ` <span class="isr-author-article-date">— ${escapeHtml(date)}</span>` : ""}</li>`
+                })
+                .join("\n")
+              sections.push(
+                [
+                  '<section class="isr-author-contributions">',
+                  `<h2>Contributions by ${escapeHtml(name)}</h2>`,
+                  `<ul>\n${items}\n</ul>`,
+                  "</section>",
+                ].join("\n"),
+              )
+            }
+
+            const breaks = tree.children
+              .map((node: any, index: number) => (node?.type === "thematicBreak" ? index : -1))
+              .filter((index: number) => index >= 0)
+            const insertAt = breaks.length > 0 ? breaks[breaks.length - 1] : tree.children.length
+            tree.children.splice(insertAt, 0, { type: "html", value: sections.join("\n") })
+            return
           }
 
-          if (contributions.length > 0) {
-            const items = contributions.map((note) => {
-              const title = String(note.frontmatter?.title ?? path.basename(note.relativePath, ".md"))
-              const date = String(publicationDate(note.frontmatter) ?? "").trim()
-              const href = relativeSlugHref(relativeSource, note.slug)
-              return `<li><a href="${escapeHtml(href)}">${escapeHtml(title)}</a>${date ? ` <span class="isr-author-article-date">— ${escapeHtml(date)}</span>` : ""}</li>`
-            }).join("\n")
-            sections.push([
-              '<section class="isr-author-contributions">',
-              `<h2>Contributions by ${escapeHtml(name)}</h2>`,
-              `<ul>\n${items}\n</ul>`,
-              "</section>",
-            ].join("\n"))
+          let authorCard = ""
+          if (sourceFm?.type === "article") {
+            const key = authorKey(sourceFm?.author)
+            const author = authors.get(key)
+            if (author) {
+              const fm = author.frontmatter
+              const name = String(fm.title ?? path.basename(author.relativePath, ".md"))
+              const role = typeof fm.role === "string" ? fm.role : ""
+              const shortBio = typeof fm.short_bio === "string" ? fm.short_bio : ""
+              const portrait = typeof fm.portrait === "string" ? fm.portrait : ""
+              const count = articlesByAuthor.get(key)?.length ?? 0
+              const authorHref = relativeSlugHref(relativeSource, author.slug)
+              const sourceDirectory = path.dirname(absoluteSource)
+              const imageHtml = portrait
+                ? `<img class="isr-author-card-portrait" src="${encodeRelativeUrl(path.relative(sourceDirectory, path.resolve(vaultRoot, portrait)))}" alt="Portrait of ${escapeHtml(name)}"${imageDimensionAttributes(path.resolve(vaultRoot, portrait))} loading="lazy" decoding="async">`
+                : `<div class="isr-author-card-initials" aria-hidden="true">${escapeHtml(initials(name))}</div>`
+
+              authorCard = [
+                '<aside class="isr-author-card" aria-label="About the author">',
+                imageHtml,
+                '<div class="isr-author-card-copy">',
+                '<p class="isr-author-card-eyebrow">About the author</p>',
+                `<p class="isr-author-card-name">${escapeHtml(name)}</p>`,
+                role ? `<p class="isr-author-card-role">${escapeHtml(role)}</p>` : "",
+                shortBio ? `<p class="isr-author-card-bio">${escapeHtml(shortBio)}</p>` : "",
+                '<div class="isr-author-card-footer">',
+                `<a class="isr-author-card-link" href="${escapeHtml(authorHref)}">About ${escapeHtml(name)} →</a>`,
+                `<span class="isr-author-card-count">${count} article${count === 1 ? "" : "s"} in the archive</span>`,
+                "</div>",
+                "</div>",
+                "</aside>",
+              ].join("\n")
+            }
           }
 
-          const breaks = tree.children
-            .map((node: any, index: number) => node?.type === "thematicBreak" ? index : -1)
-            .filter((index: number) => index >= 0)
-          const insertAt = breaks.length > 0 ? breaks[breaks.length - 1] : tree.children.length
-          tree.children.splice(insertAt, 0, { type: "html", value: sections.join("\n") })
-          return
-        }
+          const contributorCards = contributorNames(sourceFm?.contributors)
+            .map((contributor) => {
+              const contributorNote = authors.get(authorKey(contributor))
+              if (!contributorNote) return ""
+              const fm = contributorNote.frontmatter
+              const name = String(fm.title ?? contributor)
+              const role = typeof fm.role === "string" ? fm.role : ""
+              const portrait = typeof fm.portrait === "string" ? fm.portrait : ""
+              const href = relativeSlugHref(relativeSource, contributorNote.slug)
+              const sourceDirectory = path.dirname(absoluteSource)
+              const imageHtml = portrait
+                ? `<img class="isr-contributor-portrait" src="${encodeRelativeUrl(path.relative(sourceDirectory, path.resolve(vaultRoot, portrait)))}" alt="Portrait of ${escapeHtml(name)}"${imageDimensionAttributes(path.resolve(vaultRoot, portrait))} loading="lazy" decoding="async">`
+                : `<span class="isr-contributor-initials" aria-hidden="true">${escapeHtml(initials(name))}</span>`
+              return [
+                `<a class="isr-contributor" href="${escapeHtml(href)}">`,
+                imageHtml,
+                '<span class="isr-contributor-copy">',
+                `<span class="isr-contributor-name">${escapeHtml(name)}</span>`,
+                role ? `<span class="isr-contributor-role">${escapeHtml(role)}</span>` : "",
+                "</span>",
+                "</a>",
+              ].join("\n")
+            })
+            .filter(Boolean)
 
-        let authorCard = ""
-        if (sourceFm?.type === "article") {
-          const key = authorKey(sourceFm?.author)
-          const author = authors.get(key)
-          if (author) {
-            const fm = author.frontmatter
-            const name = String(fm.title ?? path.basename(author.relativePath, ".md"))
-            const role = typeof fm.role === "string" ? fm.role : ""
-            const shortBio = typeof fm.short_bio === "string" ? fm.short_bio : ""
-            const portrait = typeof fm.portrait === "string" ? fm.portrait : ""
-            const count = articlesByAuthor.get(key)?.length ?? 0
-            const authorHref = relativeSlugHref(relativeSource, author.slug)
-            const sourceDirectory = path.dirname(absoluteSource)
-            const imageHtml = portrait
-              ? `<img class="isr-author-card-portrait" src="${encodeRelativeUrl(path.relative(sourceDirectory, path.resolve(vaultRoot, portrait)))}" alt="Portrait of ${escapeHtml(name)}">`
-              : `<div class="isr-author-card-initials" aria-hidden="true">${escapeHtml(initials(name))}</div>`
+          const contributorStrip =
+            contributorCards.length > 0
+              ? [
+                  '<aside class="isr-contributors" aria-label="Contributors">',
+                  '<p class="isr-contributors-label">Contributors</p>',
+                  `<div class="isr-contributors-list">\n${contributorCards.join("\n")}\n</div>`,
+                  "</aside>",
+                ].join("\n")
+              : ""
 
-            authorCard = [
-              '<aside class="isr-author-card" aria-label="About the author">',
-              imageHtml,
-              '<div class="isr-author-card-copy">',
-              '<p class="isr-author-card-eyebrow">About the author</p>',
-              `<p class="isr-author-card-name">${escapeHtml(name)}</p>`,
-              role ? `<p class="isr-author-card-role">${escapeHtml(role)}</p>` : "",
-              shortBio ? `<p class="isr-author-card-bio">${escapeHtml(shortBio)}</p>` : "",
-              '<div class="isr-author-card-footer">',
-              `<a class="isr-author-card-link" href="${escapeHtml(authorHref)}">About ${escapeHtml(name)} →</a>`,
-              `<span class="isr-author-card-count">${count} article${count === 1 ? "" : "s"} in the archive</span>`,
-              "</div>",
-              "</div>",
-              "</aside>",
-            ].join("\n")
-          }
-        }
+          if (!authorCard && !contributorStrip) return
 
-        const contributorCards = contributorNames(sourceFm?.contributors).map((contributor) => {
-          const contributorNote = authors.get(authorKey(contributor))
-          if (!contributorNote) return ""
-          const fm = contributorNote.frontmatter
-          const name = String(fm.title ?? contributor)
-          const role = typeof fm.role === "string" ? fm.role : ""
-          const portrait = typeof fm.portrait === "string" ? fm.portrait : ""
-          const href = relativeSlugHref(relativeSource, contributorNote.slug)
-          const sourceDirectory = path.dirname(absoluteSource)
-          const imageHtml = portrait
-            ? `<img class="isr-contributor-portrait" src="${encodeRelativeUrl(path.relative(sourceDirectory, path.resolve(vaultRoot, portrait)))}" alt="Portrait of ${escapeHtml(name)}">`
-            : `<span class="isr-contributor-initials" aria-hidden="true">${escapeHtml(initials(name))}</span>`
-          return [
-            `<a class="isr-contributor" href="${escapeHtml(href)}">`,
-            imageHtml,
-            '<span class="isr-contributor-copy">',
-            `<span class="isr-contributor-name">${escapeHtml(name)}</span>`,
-            role ? `<span class="isr-contributor-role">${escapeHtml(role)}</span>` : "",
-            "</span>",
-            "</a>",
-          ].join("\n")
-        }).filter(Boolean)
-
-        const contributorStrip = contributorCards.length > 0
-          ? [
-              '<aside class="isr-contributors" aria-label="Contributors">',
-              '<p class="isr-contributors-label">Contributors</p>',
-              `<div class="isr-contributors-list">\n${contributorCards.join("\n")}\n</div>`,
-              "</aside>",
-            ].join("\n")
-          : ""
-
-        if (!authorCard && !contributorStrip) return
-
-        const firstBreak = tree.children.findIndex((node: any) => node?.type === "thematicBreak")
-        const insertAt = firstBreak >= 0 ? firstBreak + 1 : 0
-        const blocks = [authorCard, contributorStrip].filter(Boolean).map((value) => ({ type: "html", value }))
-        tree.children.splice(insertAt, 0, ...blocks)
-      }]
+          const firstBreak = tree.children.findIndex((node: any) => node?.type === "thematicBreak")
+          const insertAt = firstBreak >= 0 ? firstBreak + 1 : 0
+          const blocks = [authorCard, contributorStrip]
+            .filter(Boolean)
+            .map((value) => ({ type: "html", value }))
+          tree.children.splice(insertAt, 0, ...blocks)
+        },
+      ]
     },
     externalResources() {
       return { css: [{ content: AUTHOR_CSS, inline: true }] }

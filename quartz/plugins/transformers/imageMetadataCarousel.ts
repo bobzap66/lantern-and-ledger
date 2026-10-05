@@ -3,6 +3,7 @@ import path from "node:path"
 import YAML from "yaml"
 import { matchesImageTags, uniqueImageAssets, validImageTagQuery } from "../../util/imageTags"
 import { QuartzTransformerPlugin } from "../types"
+import { imageDimensionAttributes } from "./imageAltText"
 
 const IMAGE_EXTENSIONS = new Set([".avif", ".gif", ".jpeg", ".jpg", ".png", ".webp"])
 
@@ -321,7 +322,7 @@ export const ImageMetadataCarousel: QuartzTransformerPlugin = () => {
                     return ""
                   const src = encodeRelativeUrl(path.relative(sourceDirectory, absoluteAsset))
                   const caption = record.caption || record.title
-                  return `<figure class="isr-gallery-slide"><img src="${src}" alt="${escapeHtml(record.alt ?? caption)}" loading="${index === 0 ? "eager" : "lazy"}" decoding="async"><figcaption>${escapeHtml(caption)}</figcaption></figure>`
+                  return `<figure class="isr-gallery-slide"><img src="${src}" alt="${escapeHtml(record.alt ?? caption)}"${imageDimensionAttributes(absoluteAsset)} loading="${index === 0 ? "eager" : "lazy"}" decoding="async"><figcaption>${escapeHtml(caption)}</figcaption></figure>`
                 })
                 .filter(Boolean)
                 .join("\n")

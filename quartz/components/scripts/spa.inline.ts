@@ -296,13 +296,19 @@ function formatSessionRecordProperties() {
   const rows = document.querySelectorAll<HTMLElement>(".note-properties-row")
 
   for (const row of rows) {
-    const key = row.querySelector(".note-properties-key")?.textContent?.trim().toLowerCase()
+    const keyElement = row.querySelector<HTMLElement>(".note-properties-key")
+    const key = keyElement?.textContent?.trim().toLowerCase()
     if (key !== "session records") continue
 
     const list = row.querySelector<HTMLElement>(".note-properties-list")
     if (!list) continue
 
     const records = list.querySelectorAll<HTMLElement>(":scope > .note-properties-text")
+    row.closest<HTMLElement>(".note-properties")?.classList.add("isr-archive-source")
+    row.classList.add("isr-archive-source-row")
+    if (keyElement)
+      keyElement.textContent = records.length === 1 ? "Source recording" : "Source recordings"
+
     if (records.length < 2) continue
 
     list.style.display = "flex"

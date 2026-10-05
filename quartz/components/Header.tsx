@@ -32,6 +32,9 @@ const Header: QuartzComponent = (props: QuartzComponentProps) => {
             <img
               src={mastheadPath}
               alt="The Lantern and Ledger — Light for the Present. Record for the Future."
+              width={2048}
+              height={768}
+              decoding="async"
             />
           </picture>
         </a>
@@ -152,14 +155,20 @@ Header.css = `${CampaignSpoilerGate.css ?? ""}
     margin-bottom: 1.1rem;
   }
 
+  .lantern-ledger-masthead picture {
+    display: grid;
+    place-items: center;
+  }
+
   .lantern-ledger-masthead img {
-    width: min(100%, 22rem);
-    max-height: 8rem;
+    width: clamp(6rem, 28vw, 7.5rem);
+    max-height: none;
     margin-inline: auto;
     border: 0;
     background: transparent;
     box-shadow: none;
     object-fit: contain;
+    aspect-ratio: 1;
   }
 
   .lantern-ledger-archive-rule {

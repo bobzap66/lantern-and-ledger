@@ -4,7 +4,6 @@
 @use "./campaign-page-theme.scss";
 @use "./home.scss";
 
-
 /* Inner Sea Region — restrained fantasy gazetteer theme */
 
 :root {
@@ -219,7 +218,9 @@ article h2#session-gallery + p > img {
   margin: 0;
   border-radius: 0.28rem;
   object-fit: cover;
-  transition: transform 160ms ease, box-shadow 160ms ease;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease;
 }
 
 article h2#session-gallery + p > img:hover {
@@ -277,7 +278,10 @@ article tr:nth-child(even) {
 .readermode {
   border: 1px solid transparent;
   border-radius: 0.35rem;
-  transition: background 150ms ease, border-color 150ms ease, transform 150ms ease;
+  transition:
+    background 150ms ease,
+    border-color 150ms ease,
+    transform 150ms ease;
 }
 
 .search-button:hover,
@@ -331,6 +335,42 @@ footer {
 
 footer a {
   color: var(--secondary);
+}
+
+/* Present source recordings as provenance, not as raw Obsidian properties. */
+.note-properties.isr-archive-source {
+  margin: 0.65rem 0 1rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.note-properties.isr-archive-source .note-properties-header {
+  display: none;
+}
+
+.note-properties.isr-archive-source .isr-archive-source-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.65rem;
+  padding: 0;
+  border: 0;
+}
+
+.note-properties.isr-archive-source .note-properties-key {
+  color: var(--gray);
+  font-family: var(--bodyFont);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.note-properties.isr-archive-source .note-properties-value {
+  min-width: 0;
+  font-size: 0.86rem;
 }
 
 @media (max-width: 800px) {
@@ -640,7 +680,9 @@ html.isr-lightbox-open body {
   border-radius: 999px;
   background: rgba(20, 18, 15, 0.72);
   color: #fff;
-  font: 400 1.8rem/1 system-ui, sans-serif;
+  font:
+    400 1.8rem/1 system-ui,
+    sans-serif;
   cursor: pointer;
 }
 

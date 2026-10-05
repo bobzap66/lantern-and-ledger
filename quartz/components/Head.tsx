@@ -32,9 +32,78 @@ export default (() => {
       fileData.slug === "404" || fileData.slug === "index"
         ? url.toString()
         : joinSegments(url.toString(), fileData.slug!)
-
     const usesCustomOgImage = ctx.cfg.plugins.emitters.some((e) => e.name === "CustomOgImages")
     const ogImageDefaultPath = `https://${cfg.baseUrl}/static/og-image.png`
+
+    const normalizedType = String(fileData.frontmatter?.type ?? "")
+      .toLowerCase()
+      .replace(/[_-]+/g, " ")
+      .trim()
+    const articleTypes = new Set([
+      "article",
+      "chronicle",
+      "newspaper",
+      "oral history",
+      "report",
+      "session",
+      "session note",
+      "vignette",
+    ])
+    const isArticle = articleTypes.has(normalizedType)
+    const dates = fileData.dates as
+      { created?: Date; modified?: Date; published?: Date } | undefined
+    const schemaGraph: Record<string, unknown>[] = []
+
+    if (fileData.slug === "index") {
+      schemaGraph.push({
+        "@type": "WebSite",
+        "@id": `${socialUrl}#website`,
+        name: cfg.pageTitle,
+        url: socialUrl,
+        description,
+      })
+    } else if (fileData.slug !== "404") {
+      const segments = String(fileData.slug ?? "")
+        .split("/")
+        .filter(Boolean)
+      schemaGraph.push({
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: url.toString() },
+          ...segments.map((segment, index) => ({
+            "@type": "ListItem",
+            position: index + 2,
+            name:
+              index === segments.length - 1
+                ? String(fileData.frontmatter?.title ?? segment)
+                : segment.replace(/-/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase()),
+            item: joinSegments(url.toString(), segments.slice(0, index + 1).join("/")),
+          })),
+        ],
+      })
+    }
+
+    if (isArticle) {
+      schemaGraph.push({
+        "@type": "Article",
+        "@id": `${socialUrl}#article`,
+        headline: String(fileData.frontmatter?.title ?? title),
+        description,
+        url: socialUrl,
+        mainEntityOfPage: socialUrl,
+        image: ogImageDefaultPath,
+        datePublished: (dates?.published ?? dates?.created)?.toISOString(),
+        dateModified: dates?.modified?.toISOString(),
+        publisher: { "@type": "Organization", name: cfg.pageTitle, url: url.toString() },
+      })
+    }
+
+    const structuredData = schemaGraph.length
+      ? JSON.stringify({ "@context": "https://schema.org", "@graph": schemaGraph }).replace(
+          /</g,
+          "\\u003c",
+        )
+      : undefined
 
     const coreStylesheet = css[0]?.content
     const coreScript = js.find(
@@ -64,7 +133,7 @@ export default (() => {
 
         <meta name="og:site_name" content={cfg.pageTitle}></meta>
         <meta property="og:title" content={title} />
-        <meta property="og:type" content="website" />
+        <meta property="og:type" content={isArticle ? "article" : "website"} />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
@@ -95,6 +164,9 @@ export default (() => {
         <link rel="icon" href={iconPath} />
         <meta name="description" content={description} />
         <meta name="generator" content="Quartz" />
+        {structuredData && (
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: structuredData }} />
+        )}
 
         {/* INNER SEA REGION IMAGE LIGHTBOX */}
         <script

@@ -3,6 +3,7 @@ import "./generate-campaign-timelines.mjs"
 import { promises as fs } from "node:fs"
 import path from "node:path"
 import { execFileSync } from "node:child_process"
+import { isVisibleInRecents } from "./recents-visibility.mjs"
 
 const CONTENT_ROOT = path.resolve(process.argv[2] ?? "content")
 const INDEX_FILE = path.join(CONTENT_ROOT, "index.md")
@@ -15,7 +16,8 @@ const CAMPAIGN_START = "<!-- CAMPAIGN_RECENTS_START -->"
 const CAMPAIGN_END = "<!-- CAMPAIGN_RECENTS_END -->"
 
 const IGNORED_DIRS = new Set([".git", ".obsidian", "private", "templates", "image metadata"])
-const MAINTENANCE_COMMIT = /(autolink|wikilink|link conversion|resolver|homepage navigation|one-shot|migration|maintenance|script|quartz|workflow)/i
+const MAINTENANCE_COMMIT =
+  /(autolink|wikilink|link conversion|resolver|homepage navigation|one-shot|migration|maintenance|script|quartz|workflow)/i
 const HIDDEN_RECENT_PATHS = ["campaigns/abomination vaults/reconstruction/"]
 const NON_RECENT_TYPES = new Set(["index", "series-chapter"])
 const HOME_EDITORIAL_FOLDERS = new Set([
@@ -83,19 +85,21 @@ function parseFrontmatter(text) {
 
 function gitHistory(rel) {
   try {
-    const output = execFileSync(
-      "git",
-      ["log", "--follow", "--format=%aI%x09%s", "--", rel],
-      { cwd: CONTENT_ROOT, encoding: "utf8" },
-    ).trim()
+    const output = execFileSync("git", ["log", "--follow", "--format=%aI%x09%s", "--", rel], {
+      cwd: CONTENT_ROOT,
+      encoding: "utf8",
+    }).trim()
     if (!output) return []
-    return output.split(/\r?\n/).map((line) => {
-      const tab = line.indexOf("\t")
-      return {
-        date: new Date(tab >= 0 ? line.slice(0, tab) : line),
-        message: tab >= 0 ? line.slice(tab + 1) : "",
-      }
-    }).filter((entry) => !Number.isNaN(entry.date.valueOf()))
+    return output
+      .split(/\r?\n/)
+      .map((line) => {
+        const tab = line.indexOf("\t")
+        return {
+          date: new Date(tab >= 0 ? line.slice(0, tab) : line),
+          message: tab >= 0 ? line.slice(tab + 1) : "",
+        }
+      })
+      .filter((entry) => !Number.isNaN(entry.date.valueOf()))
   } catch {
     return []
   }
@@ -151,7 +155,11 @@ function truncateDescription(value, limit = 220) {
   if (description.length <= limit) return description
 
   const candidate = description.slice(0, limit + 1)
-  const sentenceEnds = [candidate.lastIndexOf(". "), candidate.lastIndexOf("! "), candidate.lastIndexOf("? ")]
+  const sentenceEnds = [
+    candidate.lastIndexOf(". "),
+    candidate.lastIndexOf("! "),
+    candidate.lastIndexOf("? "),
+  ]
   const sentenceEnd = Math.max(...sentenceEnds)
   if (sentenceEnd >= 100) return candidate.slice(0, sentenceEnd + 1).trim()
 
@@ -181,7 +189,8 @@ function descriptionFromBody(text) {
 
     const description = truncateDescription(raw)
     if (description.length < 80) continue
-    if (/^(?:by|recorded and arranged by|testimony of|the lantern and ledger)\b/i.test(description)) continue
+    if (/^(?:by|recorded and arranged by|testimony of|the lantern and ledger)\b/i.test(description))
+      continue
     if (/^(?:published|updated|session|campaign)\s*:/i.test(description)) continue
 
     return description
@@ -205,7 +214,9 @@ function recentTypeLabel(note) {
   if (segments.includes("vignettes")) return "Vignette"
   if (segments.includes("campaign history")) return "Campaign History"
 
-  const type = String(note.type ?? "").trim().toLowerCase()
+  const type = String(note.type ?? "")
+    .trim()
+    .toLowerCase()
   if (!type) return ""
   if (RECENT_TYPE_LABELS.has(type)) return RECENT_TYPE_LABELS.get(type)
 
@@ -218,7 +229,12 @@ function recentTypeLabel(note) {
 
 function homeTypeLabel(note) {
   if (note.sessionNumber) return `Session ${note.sessionNumber}`
-  if (String(note.format ?? "").trim().toLowerCase() === "oral-history") return "Oral History"
+  if (
+    String(note.format ?? "")
+      .trim()
+      .toLowerCase() === "oral-history"
+  )
+    return "Oral History"
   return recentTypeLabel(note)
 }
 
@@ -281,7 +297,9 @@ function renderHomeSection({ id, title, intro, items, dateField, dateLabel, base
         '<span class="editorial-card__copy">',
         eyebrow ? `<span class="editorial-card__eyebrow">${escapeHtml(eyebrow)}</span>` : "",
         `<span class="editorial-card__title">${escapeHtml(item.title)}</span>`,
-        item.description ? `<span class="editorial-card__description">${escapeHtml(item.description)}</span>` : "",
+        item.description
+          ? `<span class="editorial-card__description">${escapeHtml(item.description)}</span>`
+          : "",
         '<span class="editorial-card__footer">',
         `<time class="editorial-card__meta" datetime="${escapeHtml(date.toISOString())}">${escapeHtml(dateLabel)} ${escapeHtml(formatDate(date))}</time>`,
         '<span class="editorial-card__cta">Read <span aria-hidden="true">→</span></span>',
@@ -395,15 +413,26 @@ for (const file of await walk(CONTENT_ROOT)) {
 
   const text = await fs.readFile(file, "utf8")
   const fm = parseFrontmatter(text)
-  const noteType = String(fm.type ?? "").trim().toLowerCase()
+  const noteType = String(fm.type ?? "")
+    .trim()
+    .toLowerCase()
 
   if (noteType === "campaign") {
     const match = /^Campaigns\/([^/]+)\/[^/]+\.md$/i.exec(rel)
-    if (match) campaigns.push({ file, rel, dir: path.posix.dirname(rel), title: String(fm.title || match[1]) })
+    if (match)
+      campaigns.push({
+        file,
+        rel,
+        dir: path.posix.dirname(rel),
+        title: String(fm.title || match[1]),
+      })
   }
 
   if (rel.toLowerCase() === "index.md") continue
-  if (fm.draft === true || fm.publish === false || fm.unlisted === true || NON_RECENT_TYPES.has(noteType)) continue
+  // `unlisted` pages are intentionally reachable only by direct link (for
+  // example, the Lantern King easter egg). Never surface them through an
+  // automatically generated discovery list.
+  if (!isVisibleInRecents(fm, NON_RECENT_TYPES)) continue
 
   const history = gitHistory(rel)
   if (history.length === 0) continue
@@ -438,8 +467,14 @@ await injectBlock(
 )
 
 console.log("Homepage recents generated")
-console.log("Brand New:", homeRecents.brandNew.map((note) => `${note.campaign}: ${note.title}`).join(", "))
-console.log("Recently Updated:", homeRecents.recentlyUpdated.map((note) => `${note.campaign}: ${note.title}`).join(", "))
+console.log(
+  "Brand New:",
+  homeRecents.brandNew.map((note) => `${note.campaign}: ${note.title}`).join(", "),
+)
+console.log(
+  "Recently Updated:",
+  homeRecents.recentlyUpdated.map((note) => `${note.campaign}: ${note.title}`).join(", "),
+)
 
 for (const campaign of campaigns) {
   const prefix = `${campaign.dir}/`

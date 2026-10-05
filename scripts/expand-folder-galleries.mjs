@@ -4,6 +4,45 @@ import path from "node:path"
 const CONTENT_ROOT = path.resolve("content")
 const IMAGE_EXTENSIONS = new Set([".avif", ".gif", ".jpeg", ".jpg", ".png", ".webp"])
 
+function imageDimensionAttributes(filePath) {
+  try {
+    const buffer = fs.readFileSync(filePath).subarray(0, 256 * 1024)
+    let width
+    let height
+
+    if (buffer.length >= 24 && buffer.subarray(1, 4).toString("ascii") === "PNG") {
+      width = buffer.readUInt32BE(16)
+      height = buffer.readUInt32BE(20)
+    } else if (buffer.length >= 10 && buffer.subarray(0, 3).toString("ascii") === "GIF") {
+      width = buffer.readUInt16LE(6)
+      height = buffer.readUInt16LE(8)
+    } else if (
+      buffer.length >= 30 &&
+      buffer.subarray(0, 4).toString("ascii") === "RIFF" &&
+      buffer.subarray(8, 12).toString("ascii") === "WEBP"
+    ) {
+      const chunk = buffer.subarray(12, 16).toString("ascii")
+      if (chunk === "VP8X") {
+        width = 1 + buffer[24] + (buffer[25] << 8) + (buffer[26] << 16)
+        height = 1 + buffer[27] + (buffer[28] << 8) + (buffer[29] << 16)
+      } else if (chunk === "VP8L" && buffer[20] === 0x2f) {
+        width = 1 + buffer[21] + ((buffer[22] & 0x3f) << 8)
+        height = 1 + ((buffer[22] & 0xc0) >> 6) + (buffer[23] << 2) + ((buffer[24] & 0x0f) << 10)
+      } else if (
+        chunk === "VP8 " &&
+        buffer.subarray(23, 26).equals(Buffer.from([0x9d, 0x01, 0x2a]))
+      ) {
+        width = buffer.readUInt16LE(26) & 0x3fff
+        height = buffer.readUInt16LE(28) & 0x3fff
+      }
+    }
+
+    return width && height ? ` width="${width}" height="${height}"` : ""
+  } catch {
+    return ""
+  }
+}
+
 function walk(dir) {
   const results = []
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -41,16 +80,19 @@ function insideContent(candidate) {
 function resolveRequestedFolder(notePath, requestedPath) {
   const noteDir = path.dirname(notePath)
   const cleaned = requestedPath.trim().replace(/^['"]|['"]$/g, "")
-  const absolute = cleaned.startsWith("./") || cleaned.startsWith("../")
-    ? path.resolve(noteDir, cleaned)
-    : path.resolve(CONTENT_ROOT, cleaned.replace(/^[/\\]+/, ""))
+  const absolute =
+    cleaned.startsWith("./") || cleaned.startsWith("../")
+      ? path.resolve(noteDir, cleaned)
+      : path.resolve(CONTENT_ROOT, cleaned.replace(/^[/\\]+/, ""))
   return insideContent(absolute) ? absolute : null
 }
 
 function resolveLegacyFolder(notePath, markdownImageUrl) {
   const noteDir = path.dirname(notePath)
   let decoded = markdownImageUrl.trim()
-  try { decoded = decodeURIComponent(decoded) } catch {}
+  try {
+    decoded = decodeURIComponent(decoded)
+  } catch {}
   decoded = decoded.split("#")[0].split("?")[0]
   const absoluteImage = path.resolve(noteDir, decoded)
   const folder = path.dirname(absoluteImage)
@@ -69,8 +111,11 @@ function galleryHasImages(galleryDir) {
 function galleryHtml(notePath, galleryDir, sourceLabel) {
   let filenames
   try {
-    filenames = fs.readdirSync(galleryDir, { withFileTypes: true })
-      .filter((entry) => entry.isFile() && IMAGE_EXTENSIONS.has(path.extname(entry.name).toLowerCase()))
+    filenames = fs
+      .readdirSync(galleryDir, { withFileTypes: true })
+      .filter(
+        (entry) => entry.isFile() && IMAGE_EXTENSIONS.has(path.extname(entry.name).toLowerCase()),
+      )
       .map((entry) => entry.name)
       .sort(naturalSort)
   } catch {
@@ -82,31 +127,41 @@ function galleryHtml(notePath, galleryDir, sourceLabel) {
   }
 
   const noteDir = path.dirname(notePath)
-  const slides = filenames.map((filename, index) => {
-    const imagePath = path.join(galleryDir, filename)
-    const src = encodeRelativeUrl(path.relative(noteDir, imagePath))
-    const label = escapeHtml(filename)
-    return [
-      `<figure data-isr-slide${index === 0 ? "" : " hidden"} style="margin:0;text-align:center;">`,
-      `  <img src="${src}" alt="${label}" title="${label}" loading="${index === 0 ? "eager" : "lazy"}" decoding="async" style="display:block;width:100%;height:clamp(18rem,58vw,42rem);object-fit:contain;margin:0 auto;">`,
-      `  <figcaption style="margin-top:.55rem;color:var(--darkgray);font-size:.9rem;line-height:1.35;overflow-wrap:anywhere;">${label}</figcaption>`,
-      `</figure>`,
-    ].join("\n")
-  }).join("\n")
+  const slides = filenames
+    .map((filename, index) => {
+      const imagePath = path.join(galleryDir, filename)
+      const src = encodeRelativeUrl(path.relative(noteDir, imagePath))
+      const label = escapeHtml(filename)
+      return [
+        `<figure data-isr-slide${index === 0 ? "" : " hidden"} style="margin:0;text-align:center;">`,
+        `  <img src="${src}" alt="${label}" title="${label}"${imageDimensionAttributes(imagePath)} loading="${index === 0 ? "eager" : "lazy"}" decoding="async" style="display:block;width:100%;height:clamp(18rem,58vw,42rem);object-fit:contain;margin:0 auto;">`,
+        `  <figcaption style="margin-top:.55rem;color:var(--darkgray);font-size:.9rem;line-height:1.35;overflow-wrap:anywhere;">${label}</figcaption>`,
+        `</figure>`,
+      ].join("\n")
+    })
+    .join("\n")
 
-  const prev = "const g=this.closest('[data-isr-folder-gallery]'),s=[...g.querySelectorAll('[data-isr-slide]')];let i=(Number(g.dataset.index)-1+s.length)%s.length;g.dataset.index=i;s.forEach((x,n)=>x.hidden=n!==i);g.querySelector('[data-isr-status]').textContent=(i+1)+' / '+s.length;"
-  const next = "const g=this.closest('[data-isr-folder-gallery]'),s=[...g.querySelectorAll('[data-isr-slide]')];let i=(Number(g.dataset.index)+1)%s.length;g.dataset.index=i;s.forEach((x,n)=>x.hidden=n!==i);g.querySelector('[data-isr-status]').textContent=(i+1)+' / '+s.length;"
+  const prev =
+    "const g=this.closest('[data-isr-folder-gallery]'),s=[...g.querySelectorAll('[data-isr-slide]')];let i=(Number(g.dataset.index)-1+s.length)%s.length;g.dataset.index=i;s.forEach((x,n)=>x.hidden=n!==i);g.querySelector('[data-isr-status]').textContent=(i+1)+' / '+s.length;"
+  const next =
+    "const g=this.closest('[data-isr-folder-gallery]'),s=[...g.querySelectorAll('[data-isr-slide]')];let i=(Number(g.dataset.index)+1)%s.length;g.dataset.index=i;s.forEach((x,n)=>x.hidden=n!==i);g.querySelector('[data-isr-status]').textContent=(i+1)+' / '+s.length;"
 
   return [
     `<div class="isr-folder-gallery" data-isr-folder-gallery data-index="0" data-gallery-folder="${escapeHtml(sourceLabel)}" style="position:relative;margin:1.25rem 0 2.5rem;padding:.8rem 3.25rem 2.2rem;border:1px solid var(--isr-rule);border-radius:.45rem;background:color-mix(in srgb,var(--light) 82%,var(--lightgray) 18%);">`,
     `  <div class="isr-folder-gallery-track">`,
     slides,
     `  </div>`,
-    filenames.length > 1 ? `  <button type="button" aria-label="Previous image" onclick="${escapeHtml(prev)}" style="position:absolute;left:.45rem;top:50%;transform:translateY(-50%);z-index:2;width:2.4rem;height:2.4rem;border:1px solid var(--isr-rule);border-radius:999px;background:var(--light);color:var(--dark);font-size:1.8rem;line-height:1;cursor:pointer;">‹</button>` : "",
-    filenames.length > 1 ? `  <button type="button" aria-label="Next image" onclick="${escapeHtml(next)}" style="position:absolute;right:.45rem;top:50%;transform:translateY(-50%);z-index:2;width:2.4rem;height:2.4rem;border:1px solid var(--isr-rule);border-radius:999px;background:var(--light);color:var(--dark);font-size:1.8rem;line-height:1;cursor:pointer;">›</button>` : "",
+    filenames.length > 1
+      ? `  <button type="button" aria-label="Previous image" onclick="${escapeHtml(prev)}" style="position:absolute;left:.45rem;top:50%;transform:translateY(-50%);z-index:2;width:2.4rem;height:2.4rem;border:1px solid var(--isr-rule);border-radius:999px;background:var(--light);color:var(--dark);font-size:1.8rem;line-height:1;cursor:pointer;">‹</button>`
+      : "",
+    filenames.length > 1
+      ? `  <button type="button" aria-label="Next image" onclick="${escapeHtml(next)}" style="position:absolute;right:.45rem;top:50%;transform:translateY(-50%);z-index:2;width:2.4rem;height:2.4rem;border:1px solid var(--isr-rule);border-radius:999px;background:var(--light);color:var(--dark);font-size:1.8rem;line-height:1;cursor:pointer;">›</button>`
+      : "",
     `  <div data-isr-status aria-live="polite" style="position:absolute;right:.9rem;bottom:.45rem;color:var(--gray);font-size:.82rem;">1 / ${filenames.length}</div>`,
     `</div>`,
-  ].filter(Boolean).join("\n")
+  ]
+    .filter(Boolean)
+    .join("\n")
 }
 
 function removeEmptyOptionalSessionGalleries(notePath, source) {

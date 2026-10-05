@@ -1,6 +1,19 @@
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 
-const SMALL_WORDS = new Set(["a", "an", "and", "as", "at", "for", "in", "of", "on", "or", "the", "to"])
+const SMALL_WORDS = new Set([
+  "a",
+  "an",
+  "and",
+  "as",
+  "at",
+  "for",
+  "in",
+  "of",
+  "on",
+  "or",
+  "the",
+  "to",
+])
 
 export function campaignFromSlug(slug: string | undefined) {
   if (!slug) return null
@@ -54,13 +67,15 @@ export const CampaignSpoilerGate: QuartzComponent = ({ fileData }: QuartzCompone
     >
       <div class="campaign-spoiler-gate-card">
         <p class="campaign-spoiler-eyebrow">Campaign Spoiler Warning</p>
-        <h1 id="campaign-spoiler-title">Warning: Spoilers for {campaign.name}</h1>
+        <h2 id="campaign-spoiler-title">Warning: Spoilers for {campaign.name}</h2>
         <p>
-          This section contains spoilers for the {campaign.name} campaign. Continue only if you
-          are a player in this campaign and want access to its archive.
+          This section contains spoilers for the {campaign.name} campaign. Continue only if you are
+          a player in this campaign and want access to its archive.
         </p>
         <div class="campaign-spoiler-actions">
-          <button type="button" data-spoiler-action="back">Go Back</button>
+          <button type="button" data-spoiler-action="back">
+            Go Back
+          </button>
           <button class="is-primary" type="button" data-spoiler-action="opt-in">
             Player in the {campaign.name} Campaign
           </button>
@@ -115,7 +130,7 @@ html.campaign-spoiler-locked {
   text-transform: uppercase;
 }
 
-.campaign-spoiler-gate-card h1 {
+.campaign-spoiler-gate-card h2 {
   margin: 0 0 1rem;
   font-size: clamp(1.55rem, 5vw, 2.45rem);
 }

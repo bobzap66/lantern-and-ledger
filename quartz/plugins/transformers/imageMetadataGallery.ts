@@ -3,6 +3,7 @@ import path from "node:path"
 import YAML from "yaml"
 import { matchesImageTags, uniqueImageAssets, validImageTagQuery } from "../../util/imageTags"
 import { QuartzTransformerPlugin } from "../types"
+import { imageDimensionAttributes } from "./imageAltText"
 
 const IMAGE_EXTENSIONS = new Set([".avif", ".gif", ".jpeg", ".jpg", ".png", ".webp"])
 
@@ -36,14 +37,22 @@ type ImageRecord = {
 }
 
 function escapeHtml(value: unknown) {
-  return String(value ?? "").replaceAll("&", "&amp;").replaceAll('"', "&quot;").replaceAll("<", "&lt;").replaceAll(">", "&gt;")
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
 }
 
 function encodeRelativeUrl(value: string) {
-  return value.replaceAll("\\", "/").split("/").map((segment) => {
-    if (segment === "." || segment === "..") return segment
-    return encodeURIComponent(segment).replaceAll("%2C", ",")
-  }).join("/")
+  return value
+    .replaceAll("\\", "/")
+    .split("/")
+    .map((segment) => {
+      if (segment === "." || segment === "..") return segment
+      return encodeURIComponent(segment).replaceAll("%2C", ",")
+    })
+    .join("/")
 }
 
 function readFrontmatter(filePath: string): Record<string, any> {
@@ -51,7 +60,9 @@ function readFrontmatter(filePath: string): Record<string, any> {
     const source = fs.readFileSync(filePath, "utf8")
     const match = source.match(/^---\s*\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/)
     return match ? (YAML.parse(match[1]) ?? {}) : {}
-  } catch { return {} }
+  } catch {
+    return {}
+  }
 }
 
 function walkMarkdownFiles(directory: string): string[] {
@@ -90,7 +101,9 @@ function matches(recordValues: string[], wanted?: unknown) {
 function matchesDate(values: string[], wanted?: unknown) {
   if (wanted == null || wanted === "") return true
   const available = values.map(String)
-  return list(wanted).some((target) => available.some((value) => value === target || value.startsWith(target + "-")))
+  return list(wanted).some((target) =>
+    available.some((value) => value === target || value.startsWith(target + "-")),
+  )
 }
 
 export const ImageMetadataGallery: QuartzTransformerPlugin = () => {
@@ -104,85 +117,125 @@ export const ImageMetadataGallery: QuartzTransformerPlugin = () => {
     records = walkMarkdownFiles(metadataRoot).flatMap((filePath) => {
       const fm = readFrontmatter(filePath)
       if (fm.type !== "image" || typeof fm.asset !== "string") return []
-      return [{
-        filePath,
-        asset: fm.asset.replaceAll("\\", "/").replace(/^\/+/, ""),
-        title: String(fm.title ?? path.basename(fm.asset, path.extname(fm.asset))),
-        caption: typeof fm.caption === "string" ? fm.caption : undefined,
-        alt: typeof fm.alt === "string" && fm.alt.trim() ? fm.alt : undefined,
-        playerCharacters: list(fm.player_character ?? fm.player_characters ?? fm.character ?? fm.characters),
-        npcs: list(fm.npc ?? fm.npcs),
-        subjects: list(fm.subject ?? fm.subjects),
-        campaigns: list(fm.campaign ?? fm.campaigns),
-        groups: list(fm.group ?? fm.groups),
-        locations: list(fm.location ?? fm.locations),
-        events: list(fm.event ?? fm.events),
-        easterEggs: list(fm.easter_egg ?? fm.easter_eggs),
-        tags: [...list(fm.tag), ...list(fm.tags)],
-        sessions: list(fm.session ?? fm.sessions),
-        articles: list(fm.article ?? fm.articles),
-        campaignDates: list(fm.campaign_date ?? fm.campaign_dates),
-      }]
+      return [
+        {
+          filePath,
+          asset: fm.asset.replaceAll("\\", "/").replace(/^\/+/, ""),
+          title: String(fm.title ?? path.basename(fm.asset, path.extname(fm.asset))),
+          caption: typeof fm.caption === "string" ? fm.caption : undefined,
+          alt: typeof fm.alt === "string" && fm.alt.trim() ? fm.alt : undefined,
+          playerCharacters: list(
+            fm.player_character ?? fm.player_characters ?? fm.character ?? fm.characters,
+          ),
+          npcs: list(fm.npc ?? fm.npcs),
+          subjects: list(fm.subject ?? fm.subjects),
+          campaigns: list(fm.campaign ?? fm.campaigns),
+          groups: list(fm.group ?? fm.groups),
+          locations: list(fm.location ?? fm.locations),
+          events: list(fm.event ?? fm.events),
+          easterEggs: list(fm.easter_egg ?? fm.easter_eggs),
+          tags: [...list(fm.tag), ...list(fm.tags)],
+          sessions: list(fm.session ?? fm.sessions),
+          articles: list(fm.article ?? fm.articles),
+          campaignDates: list(fm.campaign_date ?? fm.campaign_dates),
+        },
+      ]
     })
   }
 
   return {
     name: "ImageMetadataGallery",
     markdownPlugins(ctx) {
-      return [() => (tree: any, file: any) => {
-        const sourcePath = file.path || file.data?.filePath
-        if (!sourcePath) return
-        const vaultRoot = path.resolve(ctx.argv.directory)
-        ensureIndex(vaultRoot)
-        const sourceDirectory = path.dirname(path.resolve(sourcePath))
+      return [
+        () => (tree: any, file: any) => {
+          const sourcePath = file.path || file.data?.filePath
+          if (!sourcePath) return
+          const vaultRoot = path.resolve(ctx.argv.directory)
+          ensureIndex(vaultRoot)
+          const sourceDirectory = path.dirname(path.resolve(sourcePath))
 
-        const transform = (parent: any) => {
-          if (!Array.isArray(parent?.children)) return
-          parent.children = parent.children.map((node: any) => {
-            if (node?.type !== "code" || String(node.lang ?? "").toLowerCase() !== "image-gallery") {
-              transform(node)
-              return node
-            }
+          const transform = (parent: any) => {
+            if (!Array.isArray(parent?.children)) return
+            parent.children = parent.children.map((node: any) => {
+              if (
+                node?.type !== "code" ||
+                String(node.lang ?? "").toLowerCase() !== "image-gallery"
+              ) {
+                transform(node)
+                return node
+              }
 
-            let query: Record<string, any> = {}
-            try {
-              query = YAML.parse(String(node.value ?? "")) ?? {}
-              if (!validImageTagQuery(query)) throw new Error("Invalid tag query")
-            } catch {
-              return { type: "html", value: '<p class="isr-metadata-gallery-empty">Invalid image-gallery query.</p>' }
-            }
+              let query: Record<string, any> = {}
+              try {
+                query = YAML.parse(String(node.value ?? "")) ?? {}
+                if (!validImageTagQuery(query)) throw new Error("Invalid tag query")
+              } catch {
+                return {
+                  type: "html",
+                  value: '<p class="isr-metadata-gallery-empty">Invalid image-gallery query.</p>',
+                }
+              }
 
-            const found = uniqueImageAssets(records.filter((record) =>
-              matches(record.playerCharacters, query.player_character ?? query.player_characters ?? query.character ?? query.characters) &&
-              matches(record.npcs, query.npc ?? query.npcs) &&
-              matches(record.subjects, query.subject ?? query.subjects) &&
-              matches(record.campaigns, query.campaign ?? query.campaigns) &&
-              matches(record.groups, query.group ?? query.groups) &&
-              matches(record.locations, query.location ?? query.locations) &&
-              matches(record.events, query.event ?? query.events) &&
-              matches(record.easterEggs, query.easter_egg ?? query.easter_eggs) &&
-              matchesImageTags(record.tags, query.tag ?? query.tags, query.match) &&
-              matches(record.sessions, query.session ?? query.sessions) &&
-              matches(record.articles, query.article ?? query.articles) &&
-              matchesDate(record.campaignDates, query.campaign_date ?? query.campaign_dates)
-            ), (asset) => path.resolve(vaultRoot, asset))
+              const found = uniqueImageAssets(
+                records.filter(
+                  (record) =>
+                    matches(
+                      record.playerCharacters,
+                      query.player_character ??
+                        query.player_characters ??
+                        query.character ??
+                        query.characters,
+                    ) &&
+                    matches(record.npcs, query.npc ?? query.npcs) &&
+                    matches(record.subjects, query.subject ?? query.subjects) &&
+                    matches(record.campaigns, query.campaign ?? query.campaigns) &&
+                    matches(record.groups, query.group ?? query.groups) &&
+                    matches(record.locations, query.location ?? query.locations) &&
+                    matches(record.events, query.event ?? query.events) &&
+                    matches(record.easterEggs, query.easter_egg ?? query.easter_eggs) &&
+                    matchesImageTags(record.tags, query.tag ?? query.tags, query.match) &&
+                    matches(record.sessions, query.session ?? query.sessions) &&
+                    matches(record.articles, query.article ?? query.articles) &&
+                    matchesDate(record.campaignDates, query.campaign_date ?? query.campaign_dates),
+                ),
+                (asset) => path.resolve(vaultRoot, asset),
+              )
 
-            if (found.length === 0) return { type: "html", value: '<p class="isr-metadata-gallery-empty">No matching images are currently catalogued.</p>' }
+              if (found.length === 0)
+                return {
+                  type: "html",
+                  value:
+                    '<p class="isr-metadata-gallery-empty">No matching images are currently catalogued.</p>',
+                }
 
-            const figures = found.map((record) => {
-              const absoluteAsset = path.resolve(vaultRoot, record.asset)
-              if ((!absoluteAsset.startsWith(vaultRoot + path.sep) && absoluteAsset !== vaultRoot) || !IMAGE_EXTENSIONS.has(path.extname(absoluteAsset).toLowerCase())) return ""
-              const src = encodeRelativeUrl(path.relative(sourceDirectory, absoluteAsset))
-              const caption = record.caption || record.title
-              return `<figure><img src="${src}" alt="${escapeHtml(record.alt ?? caption)}" loading="lazy" decoding="async"><figcaption>${escapeHtml(caption)}</figcaption></figure>`
-            }).filter(Boolean).join("\n")
+              const figures = found
+                .map((record) => {
+                  const absoluteAsset = path.resolve(vaultRoot, record.asset)
+                  if (
+                    (!absoluteAsset.startsWith(vaultRoot + path.sep) &&
+                      absoluteAsset !== vaultRoot) ||
+                    !IMAGE_EXTENSIONS.has(path.extname(absoluteAsset).toLowerCase())
+                  )
+                    return ""
+                  const src = encodeRelativeUrl(path.relative(sourceDirectory, absoluteAsset))
+                  const caption = record.caption || record.title
+                  return `<figure><img src="${src}" alt="${escapeHtml(record.alt ?? caption)}"${imageDimensionAttributes(absoluteAsset)} loading="lazy" decoding="async"><figcaption>${escapeHtml(caption)}</figcaption></figure>`
+                })
+                .filter(Boolean)
+                .join("\n")
 
-            return { type: "html", value: `<section class="isr-metadata-gallery" aria-label="Image gallery"><div class="isr-metadata-gallery-grid">${figures}</div></section>` }
-          })
-        }
-        transform(tree)
-      }]
+              return {
+                type: "html",
+                value: `<section class="isr-metadata-gallery" aria-label="Image gallery"><div class="isr-metadata-gallery-grid">${figures}</div></section>`,
+              }
+            })
+          }
+          transform(tree)
+        },
+      ]
     },
-    externalResources() { return { css: [{ content: CSS, inline: true }] } },
+    externalResources() {
+      return { css: [{ content: CSS, inline: true }] }
+    },
   }
 }

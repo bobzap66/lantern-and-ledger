@@ -1,4 +1,5 @@
 import { Node } from "hast"
+import path from "node:path"
 import {
   pageAdvertisementLocations,
   readAdvertisementCatalog,
@@ -6,6 +7,7 @@ import {
   semanticName,
 } from "../util/advertisements"
 import { FilePath, FullSlug, resolveRelative, simplifySlug, slugifyFilePath } from "../util/path"
+import { readImageDimensions } from "../plugins/transformers/imageAltText"
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 
 function hasExistingAdvertisement(node: Node): boolean {
@@ -64,6 +66,9 @@ export default (() => {
     if (!advertisement) return null
 
     const imageSrc = resolveRelative(fileData.slug, advertisement.asset as FullSlug)
+    const imageDimensions = readImageDimensions(
+      path.resolve(ctx.argv.directory, advertisement.asset),
+    )
     const advertiserTarget = wikilinkTarget(advertisement.advertiserRecord)
     const advertiserHref = advertiserTarget
       ? resolveRelative(
@@ -85,6 +90,8 @@ export default (() => {
             <img
               src={imageSrc}
               alt={advertisement.caption ?? `${advertisement.headline} advertisement`}
+              width={imageDimensions?.width}
+              height={imageDimensions?.height}
               loading="lazy"
               decoding="async"
             />
