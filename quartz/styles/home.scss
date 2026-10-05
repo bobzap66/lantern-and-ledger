@@ -1,6 +1,11 @@
 @use "./campaign.scss";
 @use "./campaign-directory.scss";
 
+/* Preserve intrinsic aspect ratios when responsive sizing constrains images. */
+img {
+  height: auto;
+}
+
 /* The archive entrance uses the same Markdown in Obsidian and on the site. */
 body[data-slug="index"] {
   .lantern-ledger-site-header {
