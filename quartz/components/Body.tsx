@@ -55,6 +55,7 @@ function campaignLabel(
     "abomination-vaults-curtains-call": "ABOMINATION VAULTS",
     "season-of-ghosts": "SEASON OF GHOSTS",
     "claws-of-the-tyrant": "CLAWS OF THE TYRANT",
+    "curtain-call": "CURTAIN CALL",
   }
 
   const key = campaignKeyFromSlug(slug)

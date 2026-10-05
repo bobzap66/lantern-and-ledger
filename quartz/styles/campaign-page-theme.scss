@@ -33,6 +33,12 @@
   --campaign-page-shadow: rgba(64, 42, 44, 0.1);
 }
 
+#quartz-body.campaign--curtain-call {
+  --campaign-page-accent: #7a2438;
+  --campaign-page-secondary: #b88a42;
+  --campaign-page-shadow: rgba(73, 31, 43, 0.11);
+}
+
 /* Page title: same editorial hierarchy, campaign-colored rule. */
 #quartz-body[class*="campaign--"] .article-title::after {
   background: linear-gradient(90deg, var(--campaign-page-accent), transparent);
@@ -553,6 +559,92 @@
   background: url("/lantern-and-ledger/ornaments/claws-of-the-tyrant-major-divider.webp") center / contain no-repeat;
 }
 
+/* Curtain Call — Kintargo theatrical ornamentation.
+   Opera mask and Gauntlight emblem for section identity, theatrical stage art
+   for minor headings and major dividers, and a burgundy-and-gold 8:1 rule. */
+#quartz-body.campaign--curtain-call article:not(:has(.callout[data-callout^="timeline-"])) h2 {
+  position: relative;
+  padding-left: clamp(3.1rem, 8vw, 4.25rem);
+}
+
+#quartz-body.campaign--curtain-call article:not(:has(.callout[data-callout^="timeline-"])) h2::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: -0.12em;
+  width: clamp(2.45rem, 7vw, 3.25rem);
+  height: 1.45em;
+  background: url("/lantern-and-ledger/ornaments/curtain-call-h2-emblem.webp") center / contain no-repeat;
+}
+
+#quartz-body.campaign--curtain-call article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
+  width: clamp(15rem, 55vw, 25rem);
+  height: clamp(1.25rem, 3.2vw, 1.7rem);
+  margin-top: -0.28rem;
+  background: url("/lantern-and-ledger/ornaments/curtain-call-h2-underline.webp") left center / contain no-repeat;
+}
+
+#quartz-body.campaign--curtain-call article h3 {
+  position: relative;
+  padding-left: 3rem;
+}
+
+#quartz-body.campaign--curtain-call article h3::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.04em;
+  width: 2.5rem;
+  height: 1.25em;
+  margin: 0;
+  background: url("/lantern-and-ledger/ornaments/curtain-call-h2-ornament.webp") center / contain no-repeat;
+  opacity: 0.86;
+}
+
+#quartz-body.campaign--curtain-call article .callout:not([data-callout^="timeline-"]) {
+  position: relative;
+  border-right-color: color-mix(in srgb, var(--campaign-page-accent) 24%, var(--isr-rule) 76%);
+}
+
+#quartz-body.campaign--curtain-call article .callout:not([data-callout^="timeline-"])::after {
+  content: "";
+  position: absolute;
+  top: 0.55rem;
+  right: 0.65rem;
+  width: 1.35rem;
+  height: 1.35rem;
+  background: url("/lantern-and-ledger/ornaments/curtain-call-h2-emblem.webp") center / contain no-repeat;
+  opacity: 0.2;
+  pointer-events: none;
+}
+
+#quartz-body.campaign--curtain-call article .isr-character-card,
+#quartz-body.campaign--curtain-call article .isr-npc-card,
+#quartz-body.campaign--curtain-call article .editorial-card {
+  position: relative;
+  overflow: hidden;
+}
+
+#quartz-body.campaign--curtain-call article .isr-character-card::after,
+#quartz-body.campaign--curtain-call article .isr-npc-card::after,
+#quartz-body.campaign--curtain-call article .editorial-card::after {
+  content: "";
+  position: absolute;
+  right: 0.45rem;
+  bottom: 0.4rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  background: url("/lantern-and-ledger/ornaments/curtain-call-h2-emblem.webp") center / contain no-repeat;
+  opacity: 0.14;
+  pointer-events: none;
+}
+
+#quartz-body.campaign--curtain-call article hr {
+  position: relative;
+  overflow: visible;
+  background: url("/lantern-and-ledger/ornaments/curtain-call-major-divider.webp") center / contain no-repeat;
+}
+
 /* Shared mobile ornament scale.
    Generated campaign artwork needs more visual weight than the original icon-sized treatment. */
 @media (max-width: 520px) {
@@ -630,7 +722,8 @@
 #quartz-body.campaign--kingmaker article hr,
 #quartz-body.campaign--abomination-vaults article hr,
 #quartz-body.campaign--season-of-ghosts article hr,
-#quartz-body.campaign--claws-of-the-tyrant article hr {
+#quartz-body.campaign--claws-of-the-tyrant article hr,
+#quartz-body.campaign--curtain-call article hr {
   min-height: clamp(7rem, 15vw, 9.5rem);
 }
 
@@ -649,7 +742,8 @@
 #quartz-body.campaign--kingmaker article:not(:has(.callout[data-callout^="timeline-"])) h2::after,
 #quartz-body.campaign--abomination-vaults article:not(:has(.callout[data-callout^="timeline-"])) h2::after,
 #quartz-body.campaign--season-of-ghosts article:not(:has(.callout[data-callout^="timeline-"])) h2::after,
-#quartz-body.campaign--claws-of-the-tyrant article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
+#quartz-body.campaign--claws-of-the-tyrant article:not(:has(.callout[data-callout^="timeline-"])) h2::after,
+#quartz-body.campaign--curtain-call article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
   width: 100%;
   max-width: none;
   height: clamp(2.15rem, 4.2vw, 3rem);
@@ -661,14 +755,16 @@
 #quartz-body.campaign--kingmaker article h3,
 #quartz-body.campaign--abomination-vaults article h3,
 #quartz-body.campaign--season-of-ghosts article h3,
-#quartz-body.campaign--claws-of-the-tyrant article h3 {
+#quartz-body.campaign--claws-of-the-tyrant article h3,
+#quartz-body.campaign--curtain-call article h3 {
   padding-left: 3.7rem;
 }
 
 #quartz-body.campaign--kingmaker article h3::before,
 #quartz-body.campaign--abomination-vaults article h3::before,
 #quartz-body.campaign--season-of-ghosts article h3::before,
-#quartz-body.campaign--claws-of-the-tyrant article h3::before {
+#quartz-body.campaign--claws-of-the-tyrant article h3::before,
+#quartz-body.campaign--curtain-call article h3::before {
   width: 3.15rem;
   height: 1.55em;
   top: -0.1em;
@@ -736,7 +832,8 @@
 #quartz-body.campaign--kingmaker,
 #quartz-body.campaign--abomination-vaults,
 #quartz-body.campaign--season-of-ghosts,
-#quartz-body.campaign--claws-of-the-tyrant {
+#quartz-body.campaign--claws-of-the-tyrant,
+#quartz-body.campaign--curtain-call {
   --campaign-h2-emblem-size: clamp(3rem, 6vw, 3.8rem);
   --campaign-h3-ornament-width: clamp(3.4rem, 7vw, 4.5rem);
 }
@@ -744,14 +841,16 @@
 #quartz-body.campaign--kingmaker article:not(:has(.callout[data-callout^="timeline-"])) h2,
 #quartz-body.campaign--abomination-vaults article:not(:has(.callout[data-callout^="timeline-"])) h2,
 #quartz-body.campaign--season-of-ghosts article:not(:has(.callout[data-callout^="timeline-"])) h2,
-#quartz-body.campaign--claws-of-the-tyrant article:not(:has(.callout[data-callout^="timeline-"])) h2 {
+#quartz-body.campaign--claws-of-the-tyrant article:not(:has(.callout[data-callout^="timeline-"])) h2,
+#quartz-body.campaign--curtain-call article:not(:has(.callout[data-callout^="timeline-"])) h2 {
   padding-left: calc(var(--campaign-h2-emblem-size) + 0.7rem);
 }
 
 #quartz-body.campaign--kingmaker article:not(:has(.callout[data-callout^="timeline-"])) h2::before,
 #quartz-body.campaign--abomination-vaults article:not(:has(.callout[data-callout^="timeline-"])) h2::before,
 #quartz-body.campaign--season-of-ghosts article:not(:has(.callout[data-callout^="timeline-"])) h2::before,
-#quartz-body.campaign--claws-of-the-tyrant article:not(:has(.callout[data-callout^="timeline-"])) h2::before {
+#quartz-body.campaign--claws-of-the-tyrant article:not(:has(.callout[data-callout^="timeline-"])) h2::before,
+#quartz-body.campaign--curtain-call article:not(:has(.callout[data-callout^="timeline-"])) h2::before {
   top: 50%;
   width: var(--campaign-h2-emblem-size);
   height: var(--campaign-h2-emblem-size);
@@ -763,7 +862,8 @@
 #quartz-body.campaign--kingmaker article:not(:has(.callout[data-callout^="timeline-"])) h2::after,
 #quartz-body.campaign--abomination-vaults article:not(:has(.callout[data-callout^="timeline-"])) h2::after,
 #quartz-body.campaign--season-of-ghosts article:not(:has(.callout[data-callout^="timeline-"])) h2::after,
-#quartz-body.campaign--claws-of-the-tyrant article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
+#quartz-body.campaign--claws-of-the-tyrant article:not(:has(.callout[data-callout^="timeline-"])) h2::after,
+#quartz-body.campaign--curtain-call article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
   width: 100%;
   height: clamp(1.7rem, 3.8vw, 2.6rem);
   margin-top: -0.18rem;
@@ -775,14 +875,16 @@
 #quartz-body.campaign--kingmaker article h3,
 #quartz-body.campaign--abomination-vaults article h3,
 #quartz-body.campaign--season-of-ghosts article h3,
-#quartz-body.campaign--claws-of-the-tyrant article h3 {
+#quartz-body.campaign--claws-of-the-tyrant article h3,
+#quartz-body.campaign--curtain-call article h3 {
   padding-left: calc(var(--campaign-h3-ornament-width) + 0.55rem);
 }
 
 #quartz-body.campaign--kingmaker article h3::before,
 #quartz-body.campaign--abomination-vaults article h3::before,
 #quartz-body.campaign--season-of-ghosts article h3::before,
-#quartz-body.campaign--claws-of-the-tyrant article h3::before {
+#quartz-body.campaign--claws-of-the-tyrant article h3::before,
+#quartz-body.campaign--curtain-call article h3::before {
   top: 50%;
   width: var(--campaign-h3-ornament-width);
   height: calc(var(--campaign-h3-ornament-width) / 2);
@@ -795,7 +897,8 @@
 #quartz-body.campaign--kingmaker article hr,
 #quartz-body.campaign--abomination-vaults article hr,
 #quartz-body.campaign--season-of-ghosts article hr,
-#quartz-body.campaign--claws-of-the-tyrant article hr {
+#quartz-body.campaign--claws-of-the-tyrant article hr,
+#quartz-body.campaign--curtain-call article hr {
   width: min(100%, 52rem);
   height: auto;
   min-height: 0;
@@ -810,7 +913,8 @@
   #quartz-body.campaign--kingmaker,
   #quartz-body.campaign--abomination-vaults,
   #quartz-body.campaign--season-of-ghosts,
-#quartz-body.campaign--claws-of-the-tyrant {
+#quartz-body.campaign--claws-of-the-tyrant,
+#quartz-body.campaign--curtain-call {
     --campaign-h2-emblem-size: 3.35rem;
     --campaign-h3-ornament-width: 3.7rem;
   }
@@ -818,7 +922,8 @@
   #quartz-body.campaign--kingmaker article:not(:has(.callout[data-callout^="timeline-"])) h2::after,
   #quartz-body.campaign--abomination-vaults article:not(:has(.callout[data-callout^="timeline-"])) h2::after,
   #quartz-body.campaign--season-of-ghosts article:not(:has(.callout[data-callout^="timeline-"])) h2::after,
-#quartz-body.campaign--claws-of-the-tyrant article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
+#quartz-body.campaign--claws-of-the-tyrant article:not(:has(.callout[data-callout^="timeline-"])) h2::after,
+#quartz-body.campaign--curtain-call article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
     width: 100%;
     height: 2rem;
     margin-top: -0.08rem;
@@ -828,7 +933,8 @@
   #quartz-body.campaign--kingmaker article hr,
   #quartz-body.campaign--abomination-vaults article hr,
   #quartz-body.campaign--season-of-ghosts article hr,
-#quartz-body.campaign--claws-of-the-tyrant article hr {
+#quartz-body.campaign--claws-of-the-tyrant article hr,
+#quartz-body.campaign--curtain-call article hr {
     width: 100%;
     height: auto;
     min-height: 0;
@@ -860,7 +966,8 @@
 #quartz-body.campaign--kingmaker article:not(:has(.callout[data-callout^="timeline-"])) h2::after,
 #quartz-body.campaign--abomination-vaults article:not(:has(.callout[data-callout^="timeline-"])) h2::after,
 #quartz-body.campaign--season-of-ghosts article:not(:has(.callout[data-callout^="timeline-"])) h2::after,
-#quartz-body.campaign--claws-of-the-tyrant article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
+#quartz-body.campaign--claws-of-the-tyrant article:not(:has(.callout[data-callout^="timeline-"])) h2::after,
+#quartz-body.campaign--curtain-call article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
   width: 100%;
   max-width: none;
   aspect-ratio: 8 / 1;
@@ -868,4 +975,49 @@
   background-size: 100% 100%;
   background-position: left center;
   background-repeat: no-repeat;
+}
+
+/* Curtain Call — reusable "From the Opera" score block.
+   Author with an Obsidian callout: > [!opera] From the Opera */
+#quartz-body.campaign--curtain-call article .callout[data-callout="opera"] {
+  --color: #b88a42;
+  --border: color-mix(in srgb, var(--campaign-page-accent) 45%, var(--isr-rule) 55%);
+  --bg: color-mix(in srgb, var(--light) 94%, var(--campaign-page-accent) 6%);
+  position: relative;
+  overflow: hidden;
+  border-left: 4px solid var(--campaign-page-accent);
+  box-shadow: 0 8px 22px color-mix(in srgb, var(--campaign-page-shadow) 88%, transparent);
+}
+
+#quartz-body.campaign--curtain-call article .callout[data-callout="opera"] > .callout-title {
+  padding-bottom: 0.65rem;
+  font-size: 0.92rem;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+#quartz-body.campaign--curtain-call article .callout[data-callout="opera"] .callout-content h3 {
+  margin-top: 0.15rem;
+  margin-bottom: 0.2rem;
+  padding-left: 0;
+  color: var(--campaign-page-accent);
+  font-size: clamp(1.35rem, 3vw, 1.8rem);
+  font-style: italic;
+}
+
+#quartz-body.campaign--curtain-call article .callout[data-callout="opera"] .callout-content h3::before {
+  display: none;
+}
+
+#quartz-body.campaign--curtain-call article .callout[data-callout="opera"] audio {
+  display: block;
+  width: 100%;
+  margin: 0.85rem 0 1rem;
+}
+
+#quartz-body.campaign--curtain-call article .callout[data-callout="opera"] .opera-meta {
+  margin: 0.15rem 0 0.65rem;
+  color: var(--darkgray);
+  font-size: 0.88rem;
+  font-style: italic;
 }

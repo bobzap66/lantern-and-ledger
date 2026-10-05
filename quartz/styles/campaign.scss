@@ -123,6 +123,10 @@
   --campaign-accent: #c7655f;
 }
 
+.campaign-hero--curtain-call {
+  --campaign-accent: #c79a4a;
+}
+
 /* Claws of the Tyrant: restrained Lastwall heraldry.
    The split shield is intentionally abstract rather than a literal faction badge. */
 .center:has(.campaign-hero--claws-of-the-tyrant) .campaign-editorial-note::before,
@@ -223,6 +227,12 @@
 .center:has(.campaign-hero--claws-of-the-tyrant) .campaign-editorial-note,
 .center:has(.campaign-hero--claws-of-the-tyrant) .campaign-archive-grid {
   --campaign-nav-accent: #a94b46;
+}
+
+.center:has(.campaign-hero--curtain-call) .campaign-primary-nav,
+.center:has(.campaign-hero--curtain-call) .campaign-editorial-note,
+.center:has(.campaign-hero--curtain-call) .campaign-archive-grid {
+  --campaign-nav-accent: #7a2438;
 }
 
 article .campaign-primary-nav__item {

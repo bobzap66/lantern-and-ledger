@@ -51,6 +51,7 @@ await collectOutput(outputRoot)
 const routes = new Set(htmlFiles.map(routeFor).map((route) => route.replace(/\/$/, "") || "/"))
 const brokenByTarget = new Map()
 const brokenImagesByTarget = new Map()
+const brokenMediaByTarget = new Map()
 const escapedByTarget = new Map()
 const nonCanonicalByHref = new Map()
 const selfRedirects = []
@@ -101,6 +102,17 @@ for (const file of htmlFiles) {
     if (!brokenImagesByTarget.has(target)) brokenImagesByTarget.set(target, new Set())
     brokenImagesByTarget.get(target).add(sourceRoute)
   }
+
+  for (const match of html.matchAll(/<(?:audio|video|source)\b[^>]*\bsrc=(?:"([^"]*)"|'([^']*)')[^>]*>/gi)) {
+    const src = match[1] ?? match[2]
+    const inspected = inspectHref(src, sourceRoute)
+    if (!inspected) continue
+
+    const target = inspected.target
+    if (inspected.kind === "internal" && outputPaths.has(target)) continue
+    if (!brokenMediaByTarget.has(target)) brokenMediaByTarget.set(target, new Set())
+    brokenMediaByTarget.get(target).add(sourceRoute)
+  }
 }
 
 const broken = [...brokenByTarget]
@@ -108,6 +120,10 @@ const broken = [...brokenByTarget]
   .sort((a, b) => a.target.localeCompare(b.target))
 
 const brokenImages = [...brokenImagesByTarget]
+  .map(([target, sources]) => ({ target, sources: [...sources].slice(0, 5) }))
+  .sort((a, b) => a.target.localeCompare(b.target))
+
+const brokenMedia = [...brokenMediaByTarget]
   .map(([target, sources]) => ({ target, sources: [...sources].slice(0, 5) }))
   .sort((a, b) => a.target.localeCompare(b.target))
 
@@ -129,12 +145,14 @@ console.log(
       pages: htmlFiles.length,
       brokenCount: broken.length,
       brokenImageCount: brokenImages.length,
+      brokenMediaCount: brokenMedia.length,
       brokenArticleImageCount: brokenArticleImages.length,
       escapedBaseCount: escapedBase.length,
       nonCanonicalCount: nonCanonical.length,
       selfRedirectCount: selfRedirects.length,
       broken,
       brokenImages,
+      brokenMedia,
       brokenArticleImages,
       escapedBase,
       nonCanonical,
@@ -145,6 +163,6 @@ console.log(
   ),
 )
 
-if (broken.length || brokenArticleImages.length || escapedBase.length || nonCanonical.length || selfRedirects.length) {
+if (broken.length || brokenArticleImages.length || brokenMedia.length || escapedBase.length || nonCanonical.length || selfRedirects.length) {
   process.exitCode = 1
 }
