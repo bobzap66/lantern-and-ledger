@@ -1,5 +1,6 @@
 import { JSX } from "preact"
 import { QuartzComponent, QuartzComponentProps } from "../types"
+import { StringResource } from "../../util/resources"
 
 /**
  * Props passed to a PageFrame's render function.
@@ -38,6 +39,6 @@ export interface PageFrame {
   name: string
   /** Render the inner page structure. Returns a JSX tree to be placed inside Body > #quartz-body. */
   render: (props: PageFrameProps) => JSX.Element
-  /** Optional CSS string to include when this frame is active */
-  css?: string
+  /** Optional CSS resource(s) to include when this frame is active */
+  css?: StringResource
 }
