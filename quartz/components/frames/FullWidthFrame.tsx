@@ -13,6 +13,7 @@ const Header = HeaderConstructor()
  */
 export const FullWidthFrame: PageFrame = {
   name: "full-width",
+  css: Header.css,
   render({
     componentData,
     header,

@@ -28,7 +28,7 @@ const Header: QuartzComponent = (props: QuartzComponentProps) => {
       <header class="lantern-ledger-site-header">
         <a class="lantern-ledger-masthead" href={homePath} aria-label="Campaign site home">
           <picture>
-            <source media="(max-width: 800px)" srcSet={compactPath} />
+            <source media="(max-width: 800px)" srcSet={compactPath} width={1254} height={1254} />
             <img
               src={mastheadPath}
               alt="The Lantern and Ledger — Light for the Present. Record for the Future."
@@ -105,9 +105,12 @@ Header.css = `${CampaignSpoilerGate.css ?? ""}
 }
 
 .lantern-ledger-masthead img {
+  width: min(100%, 24rem);
   height: auto;
-  max-height: 13rem;
+  max-height: none;
+  margin-inline: auto;
   object-fit: contain;
+  aspect-ratio: 8 / 3;
   border: 1px solid var(--isr-rule);
   border-radius: 0.22rem;
   background: var(--light);

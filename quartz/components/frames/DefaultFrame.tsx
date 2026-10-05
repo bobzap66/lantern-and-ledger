@@ -11,6 +11,7 @@ const Header = HeaderConstructor()
  */
 export const DefaultFrame: PageFrame = {
   name: "default",
+  css: Header.css,
   render({
     componentData,
     header,
