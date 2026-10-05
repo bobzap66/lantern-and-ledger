@@ -7,6 +7,14 @@ body[data-slug="index"] {
     margin-bottom: 1.75rem;
   }
 
+  .lantern-ledger-masthead img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 12rem;
+    object-fit: contain;
+  }
+
   .lantern-ledger-archive-rule {
     margin-top: 0.7rem;
     text-align: center;
@@ -159,6 +167,9 @@ body[data-slug="index"] {
     }
     .page-title::after {
       display: none;
+    }
+    .lantern-ledger-masthead img {
+      max-height: 7rem;
     }
     .page > #quartz-body .page-header {
       margin-top: 1.25rem;
