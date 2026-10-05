@@ -57,6 +57,15 @@ function resolveLegacyFolder(notePath, markdownImageUrl) {
   return insideContent(folder) ? folder : null
 }
 
+function galleryHasImages(galleryDir) {
+  try {
+    return fs.readdirSync(galleryDir, { withFileTypes: true })
+      .some((entry) => entry.isFile() && IMAGE_EXTENSIONS.has(path.extname(entry.name).toLowerCase()))
+  } catch {
+    return false
+  }
+}
+
 function galleryHtml(notePath, galleryDir, sourceLabel) {
   let filenames
   try {
@@ -100,6 +109,20 @@ function galleryHtml(notePath, galleryDir, sourceLabel) {
   ].filter(Boolean).join("\n")
 }
 
+function removeEmptyOptionalSessionGalleries(notePath, source) {
+  const pattern = /(^|\n)## Table Shots\s*\n+```gallery[^\n]*\n([^\n]+)\n```\s*(?=\n|$)/gi
+  return source.replace(pattern, (match, prefix, requestedPath) => {
+    const normalized = requestedPath.trim().replaceAll("\\", "/")
+    const isStandardSessionGallery = /^assets\/images\/screenshots\/Session [^/]+\/Session Gallery\/?$/i.test(normalized)
+    if (!isStandardSessionGallery) return match
+
+    const galleryDir = resolveRequestedFolder(notePath, requestedPath)
+    if (galleryDir && galleryHasImages(galleryDir)) return match
+
+    return prefix || ""
+  })
+}
+
 function expandDirectiveGalleries(notePath, source) {
   return source.replace(/```gallery[^\n]*\n([^\n]+)\n```/gi, (_match, requestedPath) => {
     const galleryDir = resolveRequestedFolder(notePath, requestedPath)
@@ -123,7 +146,8 @@ function expandLegacySessionGallery(notePath, source) {
 let changed = 0
 for (const notePath of walk(CONTENT_ROOT)) {
   const original = fs.readFileSync(notePath, "utf8")
-  let updated = expandDirectiveGalleries(notePath, original)
+  let updated = removeEmptyOptionalSessionGalleries(notePath, original)
+  updated = expandDirectiveGalleries(notePath, updated)
   updated = expandLegacySessionGallery(notePath, updated)
   if (updated !== original) {
     fs.writeFileSync(notePath, updated)
