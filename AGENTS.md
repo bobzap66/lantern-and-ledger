@@ -6,6 +6,25 @@ This repository is the Quartz v5 application and publishing pipeline for **Lante
 
 Keep changes narrow, preserve existing behavior outside the requested scope, and verify the result before declaring a task complete. Prefer fixing the root cause over adding workarounds.
 
+## Local repository locations
+
+The user's working copies of the two related repositories live as sibling folders under the Dropbox Obsidian directory:
+
+```text
+Dropbox/Obsidian/lantern-and-ledger
+Dropbox/Obsidian/Inner_Sea_Region_Obsidian_Prototype
+```
+
+Treat these as paths relative to the user's Dropbox root rather than assuming a particular operating-system home-directory prefix.
+
+When working locally from this repository, the canonical vault is normally available at:
+
+```text
+../Inner_Sea_Region_Obsidian_Prototype
+```
+
+Prefer that sibling checkout when a task requires editing canonical campaign/editorial content. A `content/` directory inside this repository is a build checkout/worktree of the vault and must not be mistaken for the canonical local authoring copy.
+
 ## Repository boundaries
 
 This repository owns the site implementation, including:
