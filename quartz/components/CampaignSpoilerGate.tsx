@@ -35,7 +35,8 @@ export function campaignFromSlug(slug: string | undefined) {
     !normalizedKey ||
     normalizedKey === "campaigns" ||
     normalizedKey === "archived" ||
-    normalizedKey === "index"
+    normalizedKey === "index" ||
+    normalizedKey === "archive"
   ) {
     return null
   }

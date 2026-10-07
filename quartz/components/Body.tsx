@@ -8,7 +8,7 @@ function campaignKeyFromSlug(slug: string | undefined) {
   if (!directMatch) return null
 
   const first = directMatch[1]?.toLowerCase()
-  if (!first || first === "index") return null
+  if (!first || first === "index" || first === "archive") return null
 
   if (first === "archived") {
     const archivedKey = /^campaigns\/archived\/([^/]+)(?:\/|$)/i.exec(slug)?.[1]?.toLowerCase()
