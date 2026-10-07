@@ -73,6 +73,7 @@ config.configuration.ignorePatterns.push(
   "tmp",
   "assets/**/*.md",
   "Unused Images Report.md",
+  "Campaigns/The Fall of Plaguestone/Reconstruction/**",
 )
 config.plugins.transformers.push(FolderGallery())
 config.plugins.transformers.push(ImageMetadataGallery())
