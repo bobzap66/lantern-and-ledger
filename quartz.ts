@@ -11,6 +11,7 @@ import { ImageMetadataCarousel } from "./quartz/plugins/transformers/imageMetada
 import { VignetteIndexes } from "./quartz/plugins/transformers/vignetteIndexes"
 import { ImageAltText } from "./quartz/plugins/transformers/imageAltText"
 import { EditorialSemantics } from "./quartz/plugins/transformers/editorialSemantics"
+import { PublishPlaguestoneArchive } from "./quartz/plugins/transformers/publishPlaguestoneArchive"
 import CharacterVignettes from "./quartz/components/CharacterVignettes"
 import ChapterLanding from "./quartz/components/ChapterLanding"
 import HomepageEditorialCards from "./quartz/components/HomepageEditorialCards"
@@ -75,6 +76,7 @@ config.configuration.ignorePatterns.push(
   "Unused Images Report.md",
   "Campaigns/The Fall of Plaguestone/Reconstruction/**",
 )
+config.plugins.transformers.push(PublishPlaguestoneArchive())
 config.plugins.transformers.push(FolderGallery())
 config.plugins.transformers.push(ImageMetadataGallery())
 config.plugins.transformers.push(ImageMetadataCarousel())
