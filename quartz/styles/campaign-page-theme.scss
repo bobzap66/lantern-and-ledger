@@ -1021,3 +1021,119 @@
   font-size: 0.88rem;
   font-style: italic;
 }
+
+/* The Fall of Plaguestone — Poisoned Harvest.
+   Rural wheat and weathered wood give way to thorn and viridian corruption. */
+#quartz-body.campaign--the-fall-of-plaguestone {
+  --campaign-page-accent: #355e45;
+  --campaign-page-secondary: #744936;
+  --campaign-page-shadow: rgba(53, 71, 49, 0.1);
+  --campaign-h2-emblem-size: clamp(3rem, 6vw, 3.8rem);
+  --campaign-h3-ornament-width: clamp(3.4rem, 7vw, 4.5rem);
+}
+
+.campaign-hero--the-fall-of-plaguestone {
+  --campaign-accent: #a8b95a;
+}
+
+.campaign-hero--the-fall-of-plaguestone .campaign-hero__image {
+  object-position: center;
+}
+
+.center:has(.campaign-hero--the-fall-of-plaguestone) .campaign-primary-nav,
+.center:has(.campaign-hero--the-fall-of-plaguestone) .campaign-editorial-note,
+.center:has(.campaign-hero--the-fall-of-plaguestone) .campaign-archive-grid {
+  --campaign-nav-accent: #355e45;
+}
+
+#quartz-body.campaign--the-fall-of-plaguestone article:not(:has(.callout[data-callout^="timeline-"])) h2 {
+  position: relative;
+  padding-left: calc(var(--campaign-h2-emblem-size) + 0.7rem);
+}
+
+#quartz-body.campaign--the-fall-of-plaguestone article:not(:has(.callout[data-callout^="timeline-"])) h2::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: var(--campaign-h2-emblem-size);
+  height: var(--campaign-h2-emblem-size);
+  transform: translateY(-58%);
+  background: url("/lantern-and-ledger/ornaments/the-fall-of-plaguestone-h2-emblem.webp") center / contain no-repeat;
+}
+
+#quartz-body.campaign--the-fall-of-plaguestone article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
+  width: 100%;
+  max-width: none;
+  aspect-ratio: 8 / 1;
+  height: auto;
+  margin-top: -0.18rem;
+  background: url("/lantern-and-ledger/ornaments/the-fall-of-plaguestone-underline.webp") left center / 100% 100% no-repeat;
+}
+
+#quartz-body.campaign--the-fall-of-plaguestone article h3 {
+  position: relative;
+  padding-left: calc(var(--campaign-h3-ornament-width) + 0.55rem);
+}
+
+#quartz-body.campaign--the-fall-of-plaguestone article h3::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: var(--campaign-h3-ornament-width);
+  height: calc(var(--campaign-h3-ornament-width) / 2);
+  transform: translateY(-50%);
+  background: url("/lantern-and-ledger/ornaments/the-fall-of-plaguestone-ornament.webp") center / contain no-repeat;
+  opacity: 0.88;
+}
+
+#quartz-body.campaign--the-fall-of-plaguestone article hr {
+  width: min(100%, 52rem);
+  height: auto;
+  min-height: 0;
+  aspect-ratio: 4 / 1;
+  margin-block: clamp(2.6rem, 6vw, 4rem);
+  background: url("/lantern-and-ledger/ornaments/the-fall-of-plaguestone-major-divider.webp") center / contain no-repeat;
+}
+
+#quartz-body.campaign--the-fall-of-plaguestone article hr::after {
+  content: none;
+}
+
+#quartz-body.campaign--the-fall-of-plaguestone article .callout:not([data-callout^="timeline-"]) {
+  position: relative;
+  border-right-color: color-mix(in srgb, var(--campaign-page-accent) 22%, var(--isr-rule) 78%);
+}
+
+#quartz-body.campaign--the-fall-of-plaguestone article .callout:not([data-callout^="timeline-"])::after {
+  content: "";
+  position: absolute;
+  top: 0.55rem;
+  right: 0.65rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  background: url("/lantern-and-ledger/ornaments/the-fall-of-plaguestone-h2-emblem.webp") center / contain no-repeat;
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+@media (max-width: 520px) {
+  #quartz-body.campaign--the-fall-of-plaguestone {
+    --campaign-h2-emblem-size: 3.35rem;
+    --campaign-h3-ornament-width: 3.7rem;
+  }
+
+  #quartz-body.campaign--the-fall-of-plaguestone article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
+    width: 100%;
+    margin-top: -0.08rem;
+  }
+
+  #quartz-body.campaign--the-fall-of-plaguestone article hr {
+    width: 100%;
+  }
+
+  #quartz-body.campaign--the-fall-of-plaguestone article .callout:not([data-callout^="timeline-"])::after {
+    display: none;
+  }
+}
