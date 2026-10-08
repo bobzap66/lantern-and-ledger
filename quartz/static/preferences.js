@@ -1,10 +1,14 @@
 ;(() => {
   const SPOILER_PREFIX = "isr-campaign-spoilers:"
   const CAMPAIGNS = [
-    ["kingmaker", "Kingmaker"],
     ["claws-of-the-tyrant", "Claws of the Tyrant"],
-    ["season-of-ghosts", "Season of Ghosts"],
+    ["crown-of-the-kobold-king", "Crown of the Kobold King"],
     ["abomination-vaults", "Abomination Vaults"],
+    ["curtain-call", "Curtain Call"],
+    ["kingmaker", "Kingmaker"],
+    ["rise-of-the-runelords", "Rise of the Runelords"],
+    ["season-of-ghosts", "Season of Ghosts"],
+    ["the-fall-of-plaguestone", "The Fall of Plaguestone"],
   ]
 
   const setTheme = (theme) => {
