@@ -7,6 +7,7 @@ prof
 tsconfig.tsbuildinfo
 .obsidian
 .quartz-cache
+.tmp-runelords-after-commit-build/
 private/
 .replit
 replit.nix
