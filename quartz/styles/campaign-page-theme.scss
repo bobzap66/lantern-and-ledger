@@ -1280,7 +1280,7 @@
   width: var(--campaign-h2-emblem-size);
   height: var(--campaign-h2-emblem-size);
   transform: translateY(-56%);
-  background: url("/lantern-and-ledger/ornaments/rise-of-the-runelords-emblem.png") center / contain no-repeat;
+  background: url("/lantern-and-ledger/ornaments/rise-of-the-runelords-emblem.webp") center / contain no-repeat;
 }
 
 #quartz-body.campaign--rise-of-the-runelords article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
@@ -1289,7 +1289,7 @@
   aspect-ratio: 8 / 1;
   height: auto;
   margin-top: -0.15rem;
-  background: url("/lantern-and-ledger/ornaments/rise-of-the-runelords-underline.png") left center / 100% 100% no-repeat;
+  background: url("/lantern-and-ledger/ornaments/rise-of-the-runelords-underline.webp") left center / 100% 100% no-repeat;
 }
 
 #quartz-body.campaign--rise-of-the-runelords article h3 {
@@ -1305,7 +1305,7 @@
   width: var(--campaign-h3-ornament-width);
   height: calc(var(--campaign-h3-ornament-width) / 2);
   transform: translateY(-50%);
-  background: url("/lantern-and-ledger/ornaments/rise-of-the-runelords-ornament.png") center / contain no-repeat;
+  background: url("/lantern-and-ledger/ornaments/rise-of-the-runelords-ornament.webp") center / contain no-repeat;
   opacity: 0.88;
 }
 
@@ -1315,7 +1315,7 @@
   min-height: 0;
   aspect-ratio: 4 / 1;
   margin-block: clamp(2.6rem, 6vw, 4rem);
-  background: url("/lantern-and-ledger/ornaments/rise-of-the-runelords-major-divider.png") center / contain no-repeat;
+  background: url("/lantern-and-ledger/ornaments/rise-of-the-runelords-major-divider.webp") center / contain no-repeat;
 }
 
 #quartz-body.campaign--rise-of-the-runelords article hr::after { content: none; }
@@ -1332,7 +1332,7 @@
   right: 0.65rem;
   width: 1.25rem;
   height: 1.25rem;
-  background: url("/lantern-and-ledger/ornaments/rise-of-the-runelords-emblem.png") center / contain no-repeat;
+  background: url("/lantern-and-ledger/ornaments/rise-of-the-runelords-emblem.webp") center / contain no-repeat;
   opacity: 0.15;
   pointer-events: none;
 }
