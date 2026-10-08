@@ -9,33 +9,123 @@
   --campaign-page-shadow: rgba(67, 49, 27, 0.07);
 }
 
+/* Six semantic colors per campaign; keep campaign identity palettes comparable. */
 #quartz-body.campaign--kingmaker {
-  --campaign-page-accent: #b98532;
-  --campaign-page-secondary: #557449;
+  --campaign-color-primary: #b98532;
+  --campaign-color-secondary: #557449;
+  --campaign-color-ink: #26302a;
+  --campaign-color-paper: #e8dfc8;
+  --campaign-color-material: #7a5634;
+  --campaign-color-highlight: #d8b65d;
+  --campaign-page-accent: var(--campaign-color-primary);
+  --campaign-page-secondary: var(--campaign-color-secondary);
+}
+
+#quartz-body.campaign--abomination-vaults {
+  --campaign-color-primary: #4e9b86;
+  --campaign-color-secondary: #527985;
+  --campaign-color-ink: #203237;
+  --campaign-color-paper: #dbe7e2;
+  --campaign-color-material: #7a664f;
+  --campaign-color-highlight: #9dcfc1;
+  --campaign-page-accent: var(--campaign-color-primary);
+  --campaign-page-secondary: var(--campaign-color-secondary);
+}
+
+#quartz-body.campaign--season-of-ghosts {
+  --campaign-color-primary: #c68b2c;
+  --campaign-color-secondary: #a76043;
+  --campaign-color-ink: #302c29;
+  --campaign-color-paper: #e9dcc5;
+  --campaign-color-material: #697650;
+  --campaign-color-highlight: #dfaa55;
+  --campaign-page-accent: var(--campaign-color-primary);
+  --campaign-page-secondary: var(--campaign-color-secondary);
+}
+
+#quartz-body.campaign--claws-of-the-tyrant {
+  --campaign-color-primary: #a94b46;
+  --campaign-color-secondary: #6d656a;
+  --campaign-color-ink: #2d292c;
+  --campaign-color-paper: #e2d9d4;
+  --campaign-color-material: #705944;
+  --campaign-color-highlight: #c7655f;
+  --campaign-page-accent: var(--campaign-color-primary);
+  --campaign-page-secondary: var(--campaign-color-secondary);
+}
+
+#quartz-body.campaign--curtain-call {
+  --campaign-color-primary: #7a2438;
+  --campaign-color-secondary: #b88a42;
+  --campaign-color-ink: #2b1f29;
+  --campaign-color-paper: #f0e4d5;
+  --campaign-color-material: #704147;
+  --campaign-color-highlight: #d3ae66;
+  --campaign-page-accent: var(--campaign-color-primary);
+  --campaign-page-secondary: var(--campaign-color-secondary);
+}
+
+#quartz-body.campaign--the-fall-of-plaguestone {
+  --campaign-color-primary: #355e45;
+  --campaign-color-secondary: #744936;
+  --campaign-color-ink: #242723;
+  --campaign-color-paper: #e8ddc3;
+  --campaign-color-material: #c5a66a;
+  --campaign-color-highlight: #a8b95a;
+  --campaign-page-accent: var(--campaign-color-primary);
+  --campaign-page-secondary: var(--campaign-color-secondary);
+}
+
+#quartz-body.campaign--crown-of-the-kobold-king {
+  --campaign-color-primary: #94602b;
+  --campaign-color-secondary: #405344;
+  --campaign-color-ink: #292a27;
+  --campaign-color-paper: #e0d2b3;
+  --campaign-color-material: #765136;
+  --campaign-color-highlight: #b77b36;
+  --campaign-page-accent: var(--campaign-color-primary);
+  --campaign-page-secondary: var(--campaign-color-secondary);
+}
+
+#quartz-body.campaign--rise-of-the-runelords {
+  --campaign-color-primary: #8d2c32;
+  --campaign-color-secondary: #53616a;
+  --campaign-color-ink: #202832;
+  --campaign-color-paper: #e4d5b5;
+  --campaign-color-material: #aa7848;
+  --campaign-color-highlight: #d9bd83;
+  --campaign-page-accent: var(--campaign-color-primary);
+  --campaign-page-secondary: var(--campaign-color-secondary);
+}
+
+#quartz-body.campaign--rusthenge {
+  --campaign-color-primary: #9a4f34;
+  --campaign-color-secondary: #477477;
+  --campaign-color-ink: #273538;
+  --campaign-color-paper: #e3d8bf;
+  --campaign-color-material: #aa7045;
+  --campaign-color-highlight: #b9d0c6;
+  --campaign-page-accent: var(--campaign-color-primary);
+  --campaign-page-secondary: var(--campaign-color-secondary);
+}
+
+#quartz-body.campaign--kingmaker {
   --campaign-page-shadow: rgba(93, 67, 31, 0.09);
 }
 
 #quartz-body.campaign--abomination-vaults {
-  --campaign-page-accent: #4e9b86;
-  --campaign-page-secondary: #527985;
   --campaign-page-shadow: rgba(35, 70, 75, 0.09);
 }
 
 #quartz-body.campaign--season-of-ghosts {
-  --campaign-page-accent: #c68b2c;
-  --campaign-page-secondary: #a76043;
   --campaign-page-shadow: rgba(92, 57, 31, 0.08);
 }
 
 #quartz-body.campaign--claws-of-the-tyrant {
-  --campaign-page-accent: #a94b46;
-  --campaign-page-secondary: #6d656a;
   --campaign-page-shadow: rgba(64, 42, 44, 0.1);
 }
 
 #quartz-body.campaign--curtain-call {
-  --campaign-page-accent: #7a2438;
-  --campaign-page-secondary: #b88a42;
   --campaign-page-shadow: rgba(73, 31, 43, 0.11);
 }
 
@@ -1346,6 +1436,137 @@
   #quartz-body.campaign--rise-of-the-runelords article hr { width: 100%; }
 
   #quartz-body.campaign--rise-of-the-runelords article .callout:not([data-callout^="timeline-"])::after {
+    display: none;
+  }
+}
+
+/* Rusthenge — seven uneven rusted spires above a weathered coastal island. */
+#quartz-body.campaign--rusthenge {
+  --campaign-page-shadow: rgba(39, 53, 56, 0.12);
+  --campaign-h2-emblem-size: clamp(3rem, 6vw, 3.8rem);
+  --campaign-h3-ornament-width: clamp(3.4rem, 7vw, 4.5rem);
+  --campaign-emblem: url("/lantern-and-ledger/ornaments/rusthenge-h2-emblem.webp");
+}
+
+.campaign-hero--rusthenge { --campaign-accent: #9a4f34; }
+
+.center:has(.campaign-hero--rusthenge) .campaign-primary-nav,
+.center:has(.campaign-hero--rusthenge) .campaign-editorial-note,
+.center:has(.campaign-hero--rusthenge) .campaign-archive-grid {
+  --campaign-nav-accent: #477477;
+}
+
+#quartz-body.campaign--rusthenge article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
+  width: 100%;
+  max-width: none;
+  aspect-ratio: 8 / 1;
+  height: auto;
+  margin-top: -0.18rem;
+  background: url("/lantern-and-ledger/ornaments/rusthenge-h2-underline-8x1.webp") left center / 100% 100% no-repeat;
+}
+
+#quartz-body.campaign--rusthenge article h3 {
+  position: relative;
+  padding-left: calc(var(--campaign-h3-ornament-width) + 0.55rem);
+}
+
+#quartz-body.campaign--rusthenge article h3::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: var(--campaign-h3-ornament-width);
+  height: calc(var(--campaign-h3-ornament-width) / 2);
+  transform: translateY(-50%);
+  background: url("/lantern-and-ledger/ornaments/rusthenge-h2-ornament.webp") center / contain no-repeat;
+  opacity: 0.88;
+}
+
+#quartz-body.campaign--rusthenge article hr {
+  width: min(100%, 52rem);
+  height: auto;
+  min-height: 0;
+  aspect-ratio: 4 / 1;
+  margin-block: clamp(2.6rem, 6vw, 4rem);
+  background: url("/lantern-and-ledger/ornaments/rusthenge-major-divider.webp") center / contain no-repeat;
+}
+
+#quartz-body.campaign--rusthenge article hr::after { content: none; }
+
+@media (max-width: 520px) {
+  #quartz-body.campaign--rusthenge {
+    --campaign-h2-emblem-size: 3.35rem;
+    --campaign-h3-ornament-width: 3.7rem;
+  }
+
+  #quartz-body.campaign--rusthenge article hr { width: 100%; }
+
+}
+
+/* Shared ornament roles: 1:1 callout watermark, 8:1 H2 rule, 2:1 H3 marker,
+   and 4:1 major divider. Keep the emblem off H2s so each title has one ornament. */
+#quartz-body.campaign--kingmaker {
+  --campaign-emblem: url("/lantern-and-ledger/ornaments/kingmaker-h2-emblem.webp");
+}
+
+#quartz-body.campaign--abomination-vaults {
+  --campaign-emblem: url("/lantern-and-ledger/ornaments/abomination-vaults-h2-emblem.webp");
+}
+
+#quartz-body.campaign--season-of-ghosts {
+  --campaign-emblem: url("/lantern-and-ledger/ornaments/season-of-ghosts-h2-emblem.webp");
+}
+
+#quartz-body.campaign--claws-of-the-tyrant {
+  --campaign-emblem: url("/lantern-and-ledger/ornaments/claws-of-the-tyrant-h2-emblem.webp");
+}
+
+#quartz-body.campaign--curtain-call {
+  --campaign-emblem: url("/lantern-and-ledger/ornaments/curtain-call-h2-emblem.webp");
+}
+
+#quartz-body.campaign--the-fall-of-plaguestone {
+  --campaign-emblem: url("/lantern-and-ledger/ornaments/the-fall-of-plaguestone-h2-emblem.webp");
+}
+
+#quartz-body.campaign--crown-of-the-kobold-king {
+  --campaign-emblem: url("/lantern-and-ledger/ornaments/crown-of-the-kobold-king-h2-emblem.webp");
+}
+
+#quartz-body.campaign--rise-of-the-runelords {
+  --campaign-emblem: url("/lantern-and-ledger/ornaments/rise-of-the-runelords-emblem.webp");
+}
+
+#quartz-body.campaign--rusthenge {
+  --campaign-emblem: url("/lantern-and-ledger/ornaments/rusthenge-h2-emblem.webp");
+}
+
+#quartz-body[class*="campaign--"] article:not(:has(.callout[data-callout^="timeline-"])) h2 {
+  padding-left: 0;
+}
+
+#quartz-body[class*="campaign--"] article:not(:has(.callout[data-callout^="timeline-"])) h2::before {
+  content: none;
+}
+
+#quartz-body[class*="campaign--"] article .callout:not([data-callout^="timeline-"]) {
+  position: relative;
+}
+
+#quartz-body[class*="campaign--"] article .callout:not([data-callout^="timeline-"])::after {
+  content: "";
+  position: absolute;
+  top: 0.55rem;
+  right: 0.65rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  background: var(--campaign-emblem) center / contain no-repeat;
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+@media (max-width: 520px) {
+  #quartz-body[class*="campaign--"] article .callout:not([data-callout^="timeline-"])::after {
     display: none;
   }
 }
