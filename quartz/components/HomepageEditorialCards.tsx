@@ -48,6 +48,10 @@ body[data-slug="index"] article a.home-editorial-card.editorial-card.internal {
   background: color-mix(in srgb, var(--light) 94%, var(--editorial-card-accent) 6%);
 }
 
+body[data-slug="index"] article a.home-editorial-card[hidden] {
+  display: none !important;
+}
+
 body[data-slug="index"] article a.home-editorial-card.editorial-card.internal:hover {
   background: color-mix(in srgb, var(--light) 91%, var(--editorial-card-accent) 9%);
 }

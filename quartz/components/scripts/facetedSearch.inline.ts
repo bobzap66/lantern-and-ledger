@@ -193,7 +193,7 @@ const setupFacetedSearch = async () => {
         normalizedSlug: facetNormalize(slug.replaceAll("-", " ").replaceAll("/", " ")),
         normalizedTags: facetNormalize((details?.tags || []).join(" ")),
       }))
-      .filter((entry) => facetCampaignIsUnlocked(entry.campaign))
+      .filter((entry) => entry.slug !== "index" && facetCampaignIsUnlocked(entry.campaign))
   }
   loadEntries(index)
 

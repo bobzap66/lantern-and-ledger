@@ -291,9 +291,12 @@ function renderHomeSection({ id, title, intro, items, dateField, dateLabel, base
       const eyebrow = [item.campaign, typeLabel].filter(Boolean).join(" · ")
       const campaignModifier = campaignClass(item.campaign)
       const modifierClass = campaignModifier ? ` home-editorial-card--${campaignModifier}` : ""
+      const campaignGate = campaignModifier
+        ? ` data-campaign-key="${escapeHtml(campaignModifier)}" hidden`
+        : ""
 
       lines.push(
-        `<a class="editorial-card home-editorial-card${modifierClass} internal" href="${escapeHtml(href)}">`,
+        `<a class="editorial-card home-editorial-card${modifierClass} internal"${campaignGate} href="${escapeHtml(href)}">`,
         '<span class="editorial-card__copy">',
         eyebrow ? `<span class="editorial-card__eyebrow">${escapeHtml(eyebrow)}</span>` : "",
         `<span class="editorial-card__title">${escapeHtml(item.title)}</span>`,

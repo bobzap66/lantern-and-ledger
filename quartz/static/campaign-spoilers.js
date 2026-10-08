@@ -103,6 +103,10 @@
     const gate = document.querySelector(".campaign-spoiler-gate[data-campaign-key]")
     const reset = document.querySelector(".campaign-spoiler-reset[data-campaign-key]")
 
+    document.querySelectorAll(".home-editorial-card[data-campaign-key]").forEach((card) => {
+      card.hidden = !isEnabled(card.dataset.campaignKey)
+    })
+
     if (!gate) {
       body?.classList.remove("campaign-spoiler-pending")
       document.documentElement.classList.remove("campaign-spoiler-locked")
@@ -209,6 +213,7 @@
     applyGateState()
     normalizeInternalLinks()
   })
+  document.addEventListener("isr:campaign-spoilers-changed", applyGateState)
 
   if (document.readyState === "loading") {
     document.addEventListener(
