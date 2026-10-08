@@ -1248,3 +1248,104 @@
     display: none;
   }
 }
+
+
+/* Rise of the Runelords — seven-pointed sihedron and Varisian field-journal tones. */
+#quartz-body.campaign--rise-of-the-runelords {
+  --campaign-page-accent: #8d2c32;
+  --campaign-page-secondary: #53616a;
+  --campaign-page-shadow: rgba(44, 33, 32, 0.1);
+  --campaign-h2-emblem-size: clamp(3.1rem, 6vw, 3.8rem);
+  --campaign-h3-ornament-width: clamp(3.3rem, 7vw, 4.2rem);
+}
+
+.campaign-hero--rise-of-the-runelords { --campaign-accent: #8d2c32; }
+
+.center:has(.campaign-hero--rise-of-the-runelords) .campaign-primary-nav,
+.center:has(.campaign-hero--rise-of-the-runelords) .campaign-editorial-note,
+.center:has(.campaign-hero--rise-of-the-runelords) .campaign-archive-grid {
+  --campaign-nav-accent: #53616a;
+}
+
+#quartz-body.campaign--rise-of-the-runelords article:not(:has(.callout[data-callout^="timeline-"])) h2 {
+  position: relative;
+  padding-left: calc(var(--campaign-h2-emblem-size) + 0.7rem);
+}
+
+#quartz-body.campaign--rise-of-the-runelords article:not(:has(.callout[data-callout^="timeline-"])) h2::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: var(--campaign-h2-emblem-size);
+  height: var(--campaign-h2-emblem-size);
+  transform: translateY(-56%);
+  background: url("/lantern-and-ledger/ornaments/rise-of-the-runelords-emblem.png") center / contain no-repeat;
+}
+
+#quartz-body.campaign--rise-of-the-runelords article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
+  width: 100%;
+  max-width: none;
+  aspect-ratio: 8 / 1;
+  height: auto;
+  margin-top: -0.15rem;
+  background: url("/lantern-and-ledger/ornaments/rise-of-the-runelords-underline.png") left center / 100% 100% no-repeat;
+}
+
+#quartz-body.campaign--rise-of-the-runelords article h3 {
+  position: relative;
+  padding-left: calc(var(--campaign-h3-ornament-width) + 0.55rem);
+}
+
+#quartz-body.campaign--rise-of-the-runelords article h3::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: var(--campaign-h3-ornament-width);
+  height: calc(var(--campaign-h3-ornament-width) / 2);
+  transform: translateY(-50%);
+  background: url("/lantern-and-ledger/ornaments/rise-of-the-runelords-ornament.png") center / contain no-repeat;
+  opacity: 0.88;
+}
+
+#quartz-body.campaign--rise-of-the-runelords article hr {
+  width: min(100%, 52rem);
+  height: auto;
+  min-height: 0;
+  aspect-ratio: 4 / 1;
+  margin-block: clamp(2.6rem, 6vw, 4rem);
+  background: url("/lantern-and-ledger/ornaments/rise-of-the-runelords-major-divider.png") center / contain no-repeat;
+}
+
+#quartz-body.campaign--rise-of-the-runelords article hr::after { content: none; }
+
+#quartz-body.campaign--rise-of-the-runelords article .callout:not([data-callout^="timeline-"]) {
+  position: relative;
+  border-right-color: color-mix(in srgb, var(--campaign-page-accent) 22%, var(--isr-rule) 78%);
+}
+
+#quartz-body.campaign--rise-of-the-runelords article .callout:not([data-callout^="timeline-"])::after {
+  content: "";
+  position: absolute;
+  top: 0.55rem;
+  right: 0.65rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  background: url("/lantern-and-ledger/ornaments/rise-of-the-runelords-emblem.png") center / contain no-repeat;
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+@media (max-width: 520px) {
+  #quartz-body.campaign--rise-of-the-runelords {
+    --campaign-h2-emblem-size: 3.35rem;
+    --campaign-h3-ornament-width: 3.7rem;
+  }
+
+  #quartz-body.campaign--rise-of-the-runelords article hr { width: 100%; }
+
+  #quartz-body.campaign--rise-of-the-runelords article .callout:not([data-callout^="timeline-"])::after {
+    display: none;
+  }
+}

@@ -57,6 +57,7 @@ function campaignLabel(
     "claws-of-the-tyrant": "CLAWS OF THE TYRANT",
     "curtain-call": "CURTAIN CALL",
     "the-fall-of-plaguestone": "THE FALL OF PLAGUESTONE",
+    "rise-of-the-runelords": "RISE OF THE RUNELORDS",
   }
 
   const key = campaignKeyFromSlug(slug)

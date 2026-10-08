@@ -17,6 +17,7 @@ campaign--kingmaker
 campaign--abomination-vaults
 campaign--season-of-ghosts
 campaign--claws-of-the-tyrant
+campaign--rise-of-the-runelords
 ```
 
 Shared page styling lives in:
