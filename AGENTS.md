@@ -115,6 +115,8 @@ For changes that affect rendering, transformers, generated content, routing, lin
 npx quartz build
 ```
 
+When the user indicates that more related changes are queued, defer the full Quartz build and production deployment until the batch is ready. Review each incremental change locally, then run one integrated build and deploy after the user signals the batch is complete.
+
 For deployment, link, asset, or generation work, inspect `.github/workflows/deploy.yml` and run the relevant project scripts from that workflow. The production pipeline performs additional normalization, generation, link checking, media externalization, and artifact-size validation beyond the basic Quartz build.
 
 If the vault checkout or another required external dependency is unavailable, say exactly which verification step could not be run instead of substituting a weaker check and calling the task complete.

@@ -307,6 +307,18 @@ The generated region in `Calendar.md` is bounded by:
 
 Every campaign in this index must provide `status` and `directory_summary` metadata. Run the generator against the vault checkout before building Quartz so edits to campaign metadata are reflected in the published Calendar page.
 
+## Campaign directory and archive
+
+Generator:
+
+```text
+scripts/generate-campaign-directory.mjs
+```
+
+The campaign directory (`Campaigns/index.md`) and completed-campaign archive (`Campaigns/Archive.md`) are generated from public campaign roots. The generator includes records with `type: campaign` unless they have `draft: true` or `publish: false`, groups them by `status` (`active`, `upcoming`, or `archived`), and sorts each group by campaign start year from newest to oldest. Archived campaign roots therefore appear in both pages automatically when their status is set to `archived` and their campaign record is published.
+
+Directory cards use each root's `title`, `directory_eyebrow`, `directory_summary`, `directory_image`, and optional `directory_accent` metadata. Each generated block is bounded by markers in its source page. The production workflow runs this generator after it checks out the vault and before Quartz builds; do not manually add campaign cards inside generated blocks.
+
 ## Campaign timelines
 
 Generator:

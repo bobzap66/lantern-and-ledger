@@ -74,6 +74,9 @@ jobs:
       - name: Generate calendar campaign index
         run: node scripts/generate-calendar-campaign-index.mjs content
 
+      - name: Generate campaign directory and archive
+        run: node scripts/generate-campaign-directory.mjs content
+
       - name: Build Quartz
         run: npx quartz build
 
