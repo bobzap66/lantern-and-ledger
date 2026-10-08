@@ -153,9 +153,26 @@ function wikilinkTarget(value: unknown) {
   return (match ? match[1] : value).replaceAll("\\", "/").replace(/\.md$/i, "")
 }
 
-function characterKey(value: unknown) {
-  const target = wikilinkTarget(value).trim()
-  return target ? target.split("/").pop()?.toLowerCase() ?? "" : ""
+function characterKey(
+  value: unknown,
+  sourcePath: string,
+  characterTitlesByPath: Map<string, string>,
+) {
+  const target = wikilinkTarget(value).trim().replaceAll("\\", "/").replace(/^\/+/, "")
+  if (!target) return ""
+
+  const rootRelative = /^(Campaigns|Atlas|Bestiary|Rules|World)\//i.test(target)
+  const resolved = rootRelative
+    ? target
+    : path.posix.join(path.posix.dirname(sourcePath.replaceAll("\\", "/")), target)
+  const normalized = path.posix
+    .normalize(resolved)
+    .replace(/^(\.\/)+/, "")
+    .replace(/\.md$/i, "")
+    .replace(/\/index$/i, "")
+    .toLowerCase()
+
+  return characterTitlesByPath.get(normalized) ?? path.posix.basename(target).toLowerCase()
 }
 
 export const CharacterCards: QuartzTransformerPlugin = () => {
@@ -176,9 +193,21 @@ export const CharacterCards: QuartzTransformerPlugin = () => {
       }
     })
     characters = all.filter((note) => note.frontmatter?.role === "player-character")
+    const characterTitlesByPath = new Map(
+      characters.map((note) => [
+        note.relativePath.replaceAll("\\", "/").replace(/\.md$/i, "").toLowerCase(),
+        String(
+          note.frontmatter?.title ?? path.basename(note.relativePath, ".md"),
+        ).trim().toLowerCase(),
+      ]),
+    )
     vignetteCounts = new Map()
     for (const note of all.filter((note) => note.frontmatter?.type === "vignette")) {
-      const key = characterKey(note.frontmatter?.character)
+      const key = characterKey(
+        note.frontmatter?.character,
+        note.relativePath,
+        characterTitlesByPath,
+      )
       if (key) vignetteCounts.set(key, (vignetteCounts.get(key) ?? 0) + 1)
     }
   }

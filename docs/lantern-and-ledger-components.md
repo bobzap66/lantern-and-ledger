@@ -84,7 +84,7 @@ portrait_alt: Portrait description for screen readers
 
 When `portrait_alt` is omitted, cards use `Portrait of <character name>`. Use it to describe placeholder or nonliteral imagery accurately.
 
-Cards automatically display the number of matching character vignettes when the vignette metadata can be associated with the character.
+Cards automatically display the number of matching character vignettes. The transformer resolves each vignette's `character` link to the canonical character note and uses that note's title, so a short link alias does not split the count from the character card.
 
 Card appearance inherits the current campaign theme. On narrow phone layouts the shared CSS changes the presentation to a more compact horizontal portrait-and-text treatment.
 
