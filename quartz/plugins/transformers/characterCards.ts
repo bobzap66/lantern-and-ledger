@@ -220,6 +220,7 @@ export const CharacterCards: QuartzTransformerPlugin = () => {
               const fm = character.frontmatter
               const title = fm.title ?? path.basename(character.relativePath, ".md")
               const portrait = typeof fm.portrait === "string" ? fm.portrait : undefined
+              const portraitAlt = typeof fm.portrait_alt === "string" ? fm.portrait_alt : `Portrait of ${title}`
               const subtitle = typeof fm.card_subtitle === "string" ? fm.card_subtitle : ""
               const status = typeof fm.status === "string" ? fm.status : ""
               const count = vignetteCounts.get(String(title).trim().toLowerCase()) ?? 0
@@ -230,7 +231,7 @@ export const CharacterCards: QuartzTransformerPlugin = () => {
                 ? `./${escapeHtml(slugText.split("/").pop() ?? slugText)}`
                 : `./${escapeHtml(encodeRelativeUrl(nestedPath))}`
               const image = portrait
-                ? `<img class="isr-character-card-image" src="${encodeRelativeUrl(path.relative(sourceDirectory, path.resolve(vaultRoot, portrait)))}" alt="Portrait of ${escapeHtml(title)}">`
+                ? `<img class="isr-character-card-image" src="${encodeRelativeUrl(path.relative(sourceDirectory, path.resolve(vaultRoot, portrait)))}" alt="${escapeHtml(portraitAlt)}">`
                 : ""
               return [
                 '<article class="isr-character-card">',

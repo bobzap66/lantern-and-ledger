@@ -80,6 +80,7 @@ function card(campaign, timeline) {
       : metadata.status === "active"
         ? "Current campaign date"
         : ""
+  const startYear = Number(metadata.campaign_start_year)
   const target = timeline ?? relativeDir
   const href = `./${encodedPath(target.replace(/\.md$/i, ""))}`
   const linkLabel = timeline ? `View ${name} timeline` : `Browse ${name}`
@@ -87,6 +88,9 @@ function card(campaign, timeline) {
   return [
     "  <section class=\"campaign-archive-group\">",
     `    <h3>${escapeHtml(name)}</h3>`,
+    ...(Number.isInteger(startYear) && startYear > 0
+      ? [`    <p><strong>Campaign began · ${startYear} AR</strong></p>`]
+      : []),
     ...(date && dateLabel
       ? [`    <p><strong>${dateLabel} · ${escapeHtml(date)}</strong></p>`]
       : []),
@@ -126,9 +130,11 @@ async function main() {
   if (campaigns.length === 0) throw new Error(`No ${CALENDAR_NAME} campaign indexes found`)
 
   campaigns.sort((a, b) => {
-    const sortDifference = Number(a.metadata.directory_sort ?? Number.MAX_SAFE_INTEGER) -
-      Number(b.metadata.directory_sort ?? Number.MAX_SAFE_INTEGER)
-    return sortDifference || a.name.localeCompare(b.name)
+    const aYear = Number(a.metadata.campaign_start_year)
+    const bYear = Number(b.metadata.campaign_start_year)
+    const aStart = Number.isInteger(aYear) && aYear > 0 ? aYear : Number.MIN_SAFE_INTEGER
+    const bStart = Number.isInteger(bYear) && bYear > 0 ? bYear : Number.MIN_SAFE_INTEGER
+    return bStart - aStart || a.name.localeCompare(b.name)
   })
 
   const statusGroups = [

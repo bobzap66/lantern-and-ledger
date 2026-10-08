@@ -79,7 +79,10 @@ portrait: assets/images/...
 card_order: 6
 card_group: willowshore-company
 card_subtitle: Human Wizard
+portrait_alt: Portrait description for screen readers
 ```
+
+When `portrait_alt` is omitted, cards use `Portrait of <character name>`. Use it to describe placeholder or nonliteral imagery accurately.
 
 Cards automatically display the number of matching character vignettes when the vignette metadata can be associated with the character.
 
@@ -293,7 +296,7 @@ Generator:
 scripts/generate-calendar-campaign-index.mjs
 ```
 
-The Calendar page's campaign chronologies are generated from each campaign root's `index.md` metadata. The generator includes campaign roots with `type: campaign` and `calendar: "Calendar of Golarion"`, groups them by `status`, sorts them by `directory_sort`, and uses `directory_summary` for the description. It reads `current_date` for active campaigns and `current_date` or `campaign_date_end` for archived campaigns. It links to the campaign's `type: timeline` note when one exists and otherwise links to the campaign root.
+The Calendar page's campaign chronologies are generated from each campaign root's `index.md` metadata. The generator includes campaign roots with `type: campaign` and `calendar: "Calendar of Golarion"`, groups them by `status`, sorts each group by `campaign_start_year` from newest to oldest (alphabetically for ties), and uses `directory_summary` for the description. It displays the starting year when known and reads `current_date` for active campaigns or `current_date`/`campaign_date_end` for archived campaigns. It links to the campaign's `type: timeline` note when one exists and otherwise links to the campaign root.
 
 The generated region in `Calendar.md` is bounded by:
 
