@@ -1503,8 +1503,8 @@
 
 }
 
-/* Shared ornament roles: 1:1 callout watermark, 8:1 H2 rule, 2:1 H3 marker,
-   and 4:1 major divider. Keep the emblem off H2s so each title has one ornament. */
+/* Shared ornament roles: 1:1 opening-paragraph marker, 8:1 H2 rule,
+   2:1 H3 marker, and 4:1 major divider. */
 #quartz-body.campaign--kingmaker {
   --campaign-emblem: url("/lantern-and-ledger/ornaments/kingmaker-h2-emblem.webp");
 }
@@ -1549,24 +1549,26 @@
   content: none;
 }
 
-#quartz-body[class*="campaign--"] article .callout:not([data-callout^="timeline-"]) {
-  position: relative;
-}
-
-#quartz-body[class*="campaign--"] article .callout:not([data-callout^="timeline-"])::after {
+#quartz-body[class*="campaign--"] article h2 + p::before {
   content: "";
-  position: absolute;
-  top: 0.55rem;
-  right: 0.65rem;
-  width: 1.25rem;
-  height: 1.25rem;
+  display: block;
+  float: left;
+  width: clamp(2.8rem, 5vw, 3.4rem);
+  height: clamp(2.8rem, 5vw, 3.4rem);
+  margin: 0.1em 0.65rem 0.2rem 0;
   background: var(--campaign-emblem) center / contain no-repeat;
-  opacity: 0.15;
+  opacity: 0.88;
   pointer-events: none;
 }
 
+#quartz-body[class*="campaign--"] article .callout:not([data-callout^="timeline-"])::after {
+  content: none;
+}
+
 @media (max-width: 520px) {
-  #quartz-body[class*="campaign--"] article .callout:not([data-callout^="timeline-"])::after {
-    display: none;
+  #quartz-body[class*="campaign--"] article h2 + p::before {
+    width: 2.35rem;
+    height: 2.35rem;
+    margin-right: 0.5rem;
   }
 }
