@@ -3,6 +3,26 @@ import { normalizeRelativeURLs } from "../../util/path"
 import { fetchCanonical } from "./util"
 
 const p = new DOMParser()
+
+function campaignSpoilersAreLocked(pathname: string): boolean {
+  const basePath = document.body?.dataset.basepath?.replace(/\/$/, "") ?? ""
+  const path = pathname.startsWith(basePath) ? pathname.slice(basePath.length) : pathname
+  const match = /^\/?campaigns\/([^/]+)(?:\/|$)/i.exec(path)
+  if (!match) return false
+
+  const first = match[1].toLowerCase()
+  const campaign =
+    first === "archived"
+      ? /^\/?campaigns\/archived\/([^/]+)(?:\/|$)/i.exec(path)?.[1]?.toLowerCase()
+      : first
+  if (!campaign || ["index", "archive", "campaigns"].includes(campaign)) return false
+
+  try {
+    return localStorage.getItem(`isr-campaign-spoilers:${campaign}`) !== "true"
+  } catch {
+    return true
+  }
+}
 let activeAnchor: HTMLAnchorElement | null = null
 
 async function mouseEnterHandler(
@@ -43,6 +63,7 @@ async function mouseEnterHandler(
   }
 
   const targetUrl = new URL(link.href)
+  if (campaignSpoilersAreLocked(targetUrl.pathname)) return
   const hash = decodeURIComponent(targetUrl.hash)
   targetUrl.hash = ""
   targetUrl.search = ""

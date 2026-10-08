@@ -32,8 +32,21 @@ const facetNormalize = (value) =>
 
 const facetCampaign = (slug) => {
   const match = /^campaigns\/([^/]+)(?:\/|$)/i.exec(slug)
-  const key = match?.[1]?.toLowerCase()
+  const first = match?.[1]?.toLowerCase()
+  const key =
+    first === "archived"
+      ? /^campaigns\/archived\/([^/]+)(?:\/|$)/i.exec(slug)?.[1]?.toLowerCase()
+      : first
   return key && key !== "index" ? key : "general"
+}
+
+const facetCampaignIsUnlocked = (campaign) => {
+  if (campaign === "general") return true
+  try {
+    return localStorage.getItem(`isr-campaign-spoilers:${campaign}`) === "true"
+  } catch {
+    return false
+  }
 }
 
 const facetType = (slug) => {
@@ -168,17 +181,19 @@ const setupFacetedSearch = async () => {
 
   let entries = []
   const loadEntries = (source) => {
-    entries = Object.entries(source ?? {}).map(([slug, details]) => ({
-      slug,
-      title: facetDecode(details?.title || slug.split("/").at(-1) || slug),
-      content: details?.content || "",
-      tags: Array.isArray(details?.tags) ? details.tags : [],
-      campaign: facetCampaign(slug),
-      type: facetType(slug),
-      normalizedTitle: facetNormalize(details?.title),
-      normalizedSlug: facetNormalize(slug.replaceAll("-", " ").replaceAll("/", " ")),
-      normalizedTags: facetNormalize((details?.tags || []).join(" ")),
-    }))
+    entries = Object.entries(source ?? {})
+      .map(([slug, details]) => ({
+        slug,
+        title: facetDecode(details?.title || slug.split("/").at(-1) || slug),
+        content: details?.content || "",
+        tags: Array.isArray(details?.tags) ? details.tags : [],
+        campaign: facetCampaign(slug),
+        type: facetType(slug),
+        normalizedTitle: facetNormalize(details?.title),
+        normalizedSlug: facetNormalize(slug.replaceAll("-", " ").replaceAll("/", " ")),
+        normalizedTags: facetNormalize((details?.tags || []).join(" ")),
+      }))
+      .filter((entry) => facetCampaignIsUnlocked(entry.campaign))
   }
   loadEntries(index)
 
@@ -383,12 +398,19 @@ const setupFacetedSearch = async () => {
   results.addEventListener("click", onResultClick)
   document.addEventListener("keydown", onDocumentKeydown)
   document.addEventListener("content-index-updated", onIndexUpdated)
+  const onSpoilerAccessChanged = () => {
+    loadEntries(index)
+    populateFilters()
+    render()
+  }
+  document.addEventListener("isr:campaign-spoilers-changed", onSpoilerAccessChanged)
   render()
 
   window.__lanternFacetedSearchCleanup = () => {
     window.clearTimeout(searchTimer)
     document.removeEventListener("keydown", onDocumentKeydown)
     document.removeEventListener("content-index-updated", onIndexUpdated)
+    document.removeEventListener("isr:campaign-spoilers-changed", onSpoilerAccessChanged)
     document.body.classList.remove("faceted-search-open")
   }
 }
