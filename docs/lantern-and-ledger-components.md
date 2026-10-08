@@ -284,6 +284,25 @@ interval: 10
 
 `interval` is the automatic advance interval in seconds. `0` disables automatic advancement. Values are clamped between 0 and 120 seconds. Automatic motion pauses for reduced-motion users, while hovered, while keyboard focus is inside the carousel, when the carousel is offscreen, and when the browser tab is hidden.
 
+## Calendar campaign index
+
+Generator:
+
+```text
+scripts/generate-calendar-campaign-index.mjs
+```
+
+The Calendar page's campaign chronologies are generated from each campaign root's `index.md` metadata. The generator includes campaign roots with `type: campaign` and `calendar: "Calendar of Golarion"`, groups them by `status`, sorts them by `directory_sort`, and uses `directory_summary` for the description. It reads `current_date` for active campaigns and `current_date` or `campaign_date_end` for archived campaigns. It links to the campaign's `type: timeline` note when one exists and otherwise links to the campaign root.
+
+The generated region in `Calendar.md` is bounded by:
+
+```html
+<!-- CALENDAR_CAMPAIGN_INDEX_START -->
+<!-- CALENDAR_CAMPAIGN_INDEX_END -->
+```
+
+Every campaign in this index must provide `status` and `directory_summary` metadata. Run the generator against the vault checkout before building Quartz so edits to campaign metadata are reflected in the published Calendar page.
+
 ## Campaign timelines
 
 Generator:

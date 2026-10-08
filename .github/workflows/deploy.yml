@@ -71,6 +71,9 @@ jobs:
       - name: Generate homepage recent notes
         run: node scripts/generate-homepage-recents.mjs
 
+      - name: Generate calendar campaign index
+        run: node scripts/generate-calendar-campaign-index.mjs content
+
       - name: Build Quartz
         run: npx quartz build
 
