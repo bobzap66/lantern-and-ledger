@@ -1668,30 +1668,23 @@
   content: none;
 }
 
-/* Hell's Rebels — cobalt Kintargo, silver raven filigree, and restrained ember marks. */
-#quartz-body.campaign--hell-s-rebels article:not(:has(.callout[data-callout^="timeline-"])) h2 {
-  position: relative;
-  padding-left: calc(var(--campaign-h2-emblem-size) + 0.7rem);
+/* Hell's Rebels callout emblem. Heading and divider ornaments use the shared rules below. */
+#quartz-body.campaign--hell-s-rebels article .callout:not([data-callout^="timeline-"])::after {
+  content: "";
+  background: url("/lantern-and-ledger/ornaments/hells-rebels-h2-emblem.webp") center / contain no-repeat;
+  opacity: 0.14;
 }
 
-#quartz-body.campaign--hell-s-rebels article:not(:has(.callout[data-callout^="timeline-"])) h2::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 50%;
-  width: var(--campaign-h2-emblem-size);
-  height: var(--campaign-h2-emblem-size);
-  transform: translateY(-56%);
-  background: url("/lantern-and-ledger/ornaments/hells-rebels-h2-emblem.webp") center / contain no-repeat;
+/* The shared heading rules keep the square emblem off H2s; only the divider artwork is campaign-specific. */
+#quartz-body.campaign--hell-s-rebels article:not(:has(.callout[data-callout^="timeline-"])) h2 {
+  border-bottom: 0;
 }
 
 #quartz-body.campaign--hell-s-rebels article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
   width: 100%;
-  max-width: none;
-  aspect-ratio: 8 / 1;
-  height: auto;
+  height: clamp(1.7rem, 3.8vw, 2.6rem);
   margin-top: -0.18rem;
-  background: url("/lantern-and-ledger/ornaments/hells-rebels-h2-underline-8x1.webp") left center / 100% 100% no-repeat;
+  background: url("/lantern-and-ledger/ornaments/hells-rebels-h2-underline-8x1.webp") left center / contain no-repeat;
 }
 
 #quartz-body.campaign--hell-s-rebels article h3 {
@@ -1722,15 +1715,8 @@
 
 #quartz-body.campaign--hell-s-rebels article hr::after { content: none; }
 
-#quartz-body.campaign--hell-s-rebels article .callout:not([data-callout^="timeline-"])::after {
-  content: "";
-  background: url("/lantern-and-ledger/ornaments/hells-rebels-h2-emblem.webp") center / contain no-repeat;
-  opacity: 0.14;
-}
-
 @media (max-width: 520px) {
   #quartz-body.campaign--hell-s-rebels {
-    --campaign-h2-emblem-size: 3.35rem;
     --campaign-h3-ornament-width: 3.7rem;
   }
 
