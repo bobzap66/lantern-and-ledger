@@ -28,9 +28,9 @@ These correspond to following parts of the page:
 
 | Layout                          | Preview                             |
 | ------------------------------- | ----------------------------------- |
-| Desktop (width > 1200px)        | ![[quartz-layout-desktop.png\|800]] |
-| Tablet (800px < width < 1200px) | ![[quartz-layout-tablet.png\|800]]  |
-| Mobile (width < 800px)          | ![[quartz-layout-mobile.png\|800]]  |
+| Desktop (width > 1200px)        | ![[quartz-layout-desktop.webp\|800]] |
+| Tablet (800px < width < 1200px) | ![[quartz-layout-tablet.webp\|800]]  |
+| Mobile (width < 800px)          | ![[quartz-layout-mobile.webp\|800]]  |
 
 > [!note]
 > There are two additional layout fields that are _not_ shown in the above diagram.

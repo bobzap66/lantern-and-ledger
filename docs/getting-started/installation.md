@@ -110,11 +110,11 @@ To publish your site, you'll need your own GitHub repository. This section is fo
 
 Create a new repository on [GitHub.com](https://github.com/new). Do **not** initialize it with a README, license, or `.gitignore` — Quartz already includes these files, and duplicating them will cause merge conflicts on your first push.
 
-![[github-init-repo-options.png]]
+![[github-init-repo-options.webp]]
 
 Copy the repository URL from the Quick Setup page:
 
-![[github-quick-setup.png]]
+![[github-quick-setup.webp]]
 
 ### Connect Your Local Clone
 

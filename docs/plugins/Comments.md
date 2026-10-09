@@ -3,7 +3,7 @@ title: Comments
 description: Comment system integration (Giscus, Utterances, etc.).
 tags:
   - plugin/component
-image: "[[giscus-results.png]]"
+image: "[[giscus-results.webp]]"
 repository: "[quartz-community/comments](https://github.com/quartz-community/comments)"
 enabled: false
 required: false

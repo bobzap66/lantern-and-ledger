@@ -25,7 +25,7 @@ export default (() => {
     const url = new URL(`https://${cfg.baseUrl ?? "example.com"}`)
     const path = url.pathname as FullSlug
     const baseDir = fileData.slug === "404" ? path : pathToRoot(fileData.slug!)
-    const iconPath = joinSegments(baseDir, "static/icon.png")
+    const iconPath = joinSegments(baseDir, "static/icon.webp")
 
     // Url of current page
     const socialUrl =
@@ -33,7 +33,7 @@ export default (() => {
         ? url.toString()
         : joinSegments(url.toString(), fileData.slug!)
     const usesCustomOgImage = ctx.cfg.plugins.emitters.some((e) => e.name === "CustomOgImages")
-    const ogImageDefaultPath = `https://${cfg.baseUrl}/static/og-image.png`
+    const ogImageDefaultPath = `https://${cfg.baseUrl}/static/og-image.webp`
 
     const normalizedType = String(fileData.frontmatter?.type ?? "")
       .toLowerCase()
@@ -161,7 +161,7 @@ export default (() => {
           </>
         )}
 
-        <link rel="icon" href={iconPath} />
+        <link rel="icon" type="image/webp" href={iconPath} />
         <meta name="description" content={description} />
         <meta name="generator" content="Quartz" />
         {structuredData && (

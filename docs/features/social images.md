@@ -12,7 +12,7 @@ After enabling the [[CustomOgImages]] emitter plugin, the social media link prev
 
 | Light                               | Dark                               |
 | ----------------------------------- | ---------------------------------- |
-| ![[social-image-preview-light.png]] | ![[social-image-preview-dark.png]] |
+| ![[social-image-preview-light.webp]] | ![[social-image-preview-dark.webp]] |
 
 ## Configuration
 
