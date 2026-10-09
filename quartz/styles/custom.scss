@@ -121,6 +121,17 @@ article {
   line-height: 1.75;
 }
 
+/* Give the Malevolence feature the full reading width on compact layouts. */
+@media (max-width: 1199px) {
+  body[data-slug="campaigns/malevolence/campaign-history/the-house-at-crooked-cove"]
+    .page > #quartz-body .center > article {
+    box-sizing: border-box;
+    width: calc(100vw - 2.5rem);
+    max-width: none;
+    margin-inline: 0;
+  }
+}
+
 article h1,
 article h2,
 article h3,
