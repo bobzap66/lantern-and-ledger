@@ -124,6 +124,26 @@
   --campaign-list-marker: url("/lantern-and-ledger/ornaments/malevolence-h2-emblem.webp");
 }
 
+#quartz-body.campaign--hell-s-rebels {
+  --campaign-color-primary: #286b92;
+  --campaign-color-secondary: #758795;
+  --campaign-color-ink: #222b34;
+  --campaign-color-paper: #e6e0d2;
+  --campaign-color-material: #776757;
+  --campaign-color-highlight: #be674d;
+  --campaign-page-accent: var(--campaign-color-primary);
+  --campaign-page-secondary: var(--campaign-color-secondary);
+  --campaign-page-shadow: rgba(31, 50, 66, 0.1);
+  --campaign-h2-emblem-size: clamp(3rem, 6vw, 3.8rem);
+  --campaign-h3-ornament-width: clamp(3.4rem, 7vw, 4.5rem);
+  --campaign-list-marker: url("/lantern-and-ledger/ornaments/hells-rebels-h2-emblem.webp");
+}
+
+[saved-theme="dark"] #quartz-body.campaign--hell-s-rebels {
+  --campaign-page-accent: #79aecd;
+  --campaign-page-secondary: #a8b8c4;
+}
+
 .campaign-hero--malevolence { --campaign-accent: #65536f; }
 
 .center:has(.campaign-hero--malevolence) .campaign-primary-nav,
@@ -1646,4 +1666,73 @@
 
 #quartz-body[class*="campaign--"] article .callout:not([data-callout^="timeline-"])::after {
   content: none;
+}
+
+/* Hell's Rebels — cobalt Kintargo, silver raven filigree, and restrained ember marks. */
+#quartz-body.campaign--hell-s-rebels article:not(:has(.callout[data-callout^="timeline-"])) h2 {
+  position: relative;
+  padding-left: calc(var(--campaign-h2-emblem-size) + 0.7rem);
+}
+
+#quartz-body.campaign--hell-s-rebels article:not(:has(.callout[data-callout^="timeline-"])) h2::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: var(--campaign-h2-emblem-size);
+  height: var(--campaign-h2-emblem-size);
+  transform: translateY(-56%);
+  background: url("/lantern-and-ledger/ornaments/hells-rebels-h2-emblem.webp") center / contain no-repeat;
+}
+
+#quartz-body.campaign--hell-s-rebels article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
+  width: 100%;
+  max-width: none;
+  aspect-ratio: 8 / 1;
+  height: auto;
+  margin-top: -0.18rem;
+  background: url("/lantern-and-ledger/ornaments/hells-rebels-h2-underline-8x1.webp") left center / 100% 100% no-repeat;
+}
+
+#quartz-body.campaign--hell-s-rebels article h3 {
+  position: relative;
+  padding-left: calc(var(--campaign-h3-ornament-width) + 0.55rem);
+}
+
+#quartz-body.campaign--hell-s-rebels article h3::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: var(--campaign-h3-ornament-width);
+  height: calc(var(--campaign-h3-ornament-width) / 2);
+  transform: translateY(-50%);
+  background: url("/lantern-and-ledger/ornaments/hells-rebels-h3-ornament.webp") center / contain no-repeat;
+  opacity: 0.88;
+}
+
+#quartz-body.campaign--hell-s-rebels article hr {
+  width: min(100%, 52rem);
+  height: auto;
+  min-height: 0;
+  aspect-ratio: 4 / 1;
+  margin-block: clamp(2.6rem, 6vw, 4rem);
+  background: url("/lantern-and-ledger/ornaments/hells-rebels-major-divider.webp") center / contain no-repeat;
+}
+
+#quartz-body.campaign--hell-s-rebels article hr::after { content: none; }
+
+#quartz-body.campaign--hell-s-rebels article .callout:not([data-callout^="timeline-"])::after {
+  content: "";
+  background: url("/lantern-and-ledger/ornaments/hells-rebels-h2-emblem.webp") center / contain no-repeat;
+  opacity: 0.14;
+}
+
+@media (max-width: 520px) {
+  #quartz-body.campaign--hell-s-rebels {
+    --campaign-h2-emblem-size: 3.35rem;
+    --campaign-h3-ornament-width: 3.7rem;
+  }
+
+  #quartz-body.campaign--hell-s-rebels article hr { width: 100%; }
 }

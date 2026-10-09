@@ -18,6 +18,7 @@ campaign--abomination-vaults
 campaign--season-of-ghosts
 campaign--claws-of-the-tyrant
 campaign--rise-of-the-runelords
+campaign--hell-s-rebels
 ```
 
 Shared page styling lives in:
@@ -31,6 +32,8 @@ Shared timeline styling lives in:
 ```text
 quartz/styles/campaign-timeline.scss
 ```
+
+Campaign ornaments are transparent WebP files in `quartz/static/ornaments/`. The Hell's Rebels palette and four ornament roles are defined for `campaign--hell-s-rebels`: the square emblem marks H2 headings, list items, and subtle callout watermarks; the 2:1 ornament marks H3 headings; the 4:1 divider replaces ordinary horizontal rules; and the 8:1 rule decorates H2 headings. The image assets use the `hells-rebels-` prefix.
 
 The campaign class controls theme variables rather than creating separate copies of components. Ordinary campaign pages inherit campaign-specific accents for article-title rules, section rules, H3 headings, drop caps, links, blockquotes, tables, profile callouts, session galleries, character cards, and NPC cards. Timeline components use the same campaign identity but retain their own stronger component styling.
 
