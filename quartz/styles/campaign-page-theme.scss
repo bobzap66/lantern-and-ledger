@@ -109,6 +109,28 @@
   --campaign-page-secondary: var(--campaign-color-secondary);
 }
 
+#quartz-body.campaign--malevolence {
+  --campaign-color-primary: #65536f;
+  --campaign-color-secondary: #526a70;
+  --campaign-color-ink: #28262a;
+  --campaign-color-paper: #e4ded1;
+  --campaign-color-material: #756452;
+  --campaign-color-highlight: #b7a3c1;
+  --campaign-page-accent: var(--campaign-color-primary);
+  --campaign-page-secondary: var(--campaign-color-secondary);
+  --campaign-page-shadow: rgba(54, 42, 62, 0.1);
+  --campaign-h2-emblem-size: clamp(3.1rem, 6vw, 3.8rem);
+  --campaign-h3-ornament-width: clamp(3.3rem, 7vw, 4.2rem);
+  --campaign-list-marker: url("/lantern-and-ledger/ornaments/malevolence-h2-emblem.webp");
+}
+
+.campaign-hero--malevolence { --campaign-accent: #65536f; }
+
+.center:has(.campaign-hero--malevolence) .campaign-primary-nav,
+.center:has(.campaign-hero--malevolence) .campaign-secondary-nav {
+  --campaign-nav-accent: #526a70;
+}
+
 #quartz-body.campaign--kingmaker {
   --campaign-page-shadow: rgba(93, 67, 31, 0.09);
 }
@@ -1493,6 +1515,43 @@
 
 #quartz-body.campaign--rusthenge article hr::after { content: none; }
 
+#quartz-body.campaign--malevolence article:not(:has(.callout[data-callout^="timeline-"])) h2::after {
+  width: 100%;
+  max-width: none;
+  aspect-ratio: 8 / 1;
+  height: auto;
+  margin-top: -0.18rem;
+  background: url("/lantern-and-ledger/ornaments/malevolence-h2-underline-8x1.webp") left center / 100% 100% no-repeat;
+}
+
+#quartz-body.campaign--malevolence article h3 {
+  position: relative;
+  padding-left: calc(var(--campaign-h3-ornament-width) + 0.55rem);
+}
+
+#quartz-body.campaign--malevolence article h3::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: var(--campaign-h3-ornament-width);
+  height: calc(var(--campaign-h3-ornament-width) / 2);
+  transform: translateY(-50%);
+  background: url("/lantern-and-ledger/ornaments/malevolence-h3-ornament.webp") center / contain no-repeat;
+  opacity: 0.88;
+}
+
+#quartz-body.campaign--malevolence article hr {
+  width: min(100%, 52rem);
+  height: auto;
+  min-height: 0;
+  aspect-ratio: 4 / 1;
+  margin-block: clamp(2.6rem, 6vw, 4rem);
+  background: url("/lantern-and-ledger/ornaments/malevolence-major-divider.webp") center / contain no-repeat;
+}
+
+#quartz-body.campaign--malevolence article hr::after { content: none; }
+
 @media (max-width: 520px) {
   #quartz-body.campaign--rusthenge {
     --campaign-h2-emblem-size: 3.35rem;
@@ -1500,6 +1559,13 @@
   }
 
   #quartz-body.campaign--rusthenge article hr { width: 100%; }
+
+  #quartz-body.campaign--malevolence {
+    --campaign-h2-emblem-size: 3.35rem;
+    --campaign-h3-ornament-width: 3.7rem;
+  }
+
+  #quartz-body.campaign--malevolence article hr { width: 100%; }
 
 }
 
@@ -1539,6 +1605,10 @@
 
 #quartz-body.campaign--rusthenge {
   --campaign-list-marker: url("/lantern-and-ledger/ornaments/rusthenge-h2-emblem.webp");
+}
+
+#quartz-body.campaign--malevolence {
+  --campaign-list-marker: url("/lantern-and-ledger/ornaments/malevolence-h2-emblem.webp");
 }
 
 #quartz-body[class*="campaign--"] article:not(:has(.callout[data-callout^="timeline-"])) h2 {
