@@ -317,7 +317,7 @@ scripts/generate-campaign-directory.mjs
 
 The campaign directory (`Campaigns/index.md`) and completed-campaign archive (`Campaigns/Archive.md`) are generated from public campaign roots. The generator includes records with `type: campaign` unless they have `draft: true` or `publish: false`, groups them by `status` (`active`, `upcoming`, or `archived`), and sorts each group by campaign start year from newest to oldest. Archived campaign roots therefore appear in both pages automatically when their status is set to `archived` and their campaign record is published.
 
-Directory cards use each root's `title`, `directory_eyebrow`, `directory_summary`, `directory_image`, and optional `directory_accent` metadata. Each generated block is bounded by markers in its source page. The production workflow runs this generator after it checks out the vault and before Quartz builds; do not manually add campaign cards inside generated blocks.
+Directory cards use each root's `title`, `directory_eyebrow`, `directory_summary`, `directory_image`, and optional `directory_accent` metadata. Every card shows a status label (`Active`, `Upcoming`, or `Archived`); the eyebrow contains only the setting/location and known in-world year or year span. Each generated block is bounded by markers in its source page. The production workflow runs this generator after it checks out the vault and before Quartz builds; do not manually add campaign cards inside generated blocks.
 
 ## Campaign timelines
 

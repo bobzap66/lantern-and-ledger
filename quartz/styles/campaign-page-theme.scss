@@ -916,7 +916,7 @@
 }
 /* Standardized campaign ornament geometry — 2026-09.
    Kingmaker, Abomination Vaults, and Season of Ghosts now use source assets
-   built specifically for the four shared roles: 1:1 H2 emblem, 8:1 H2 rule,
+   built specifically for the four shared roles: 1:1 list marker, 8:1 H2 rule,
    2:1 H3 ornament, and 4:1 major divider. Keep them proportional; do not
    stretch them to compensate for source geometry. */
 #quartz-body.campaign--kingmaker,
@@ -1445,7 +1445,7 @@
   --campaign-page-shadow: rgba(39, 53, 56, 0.12);
   --campaign-h2-emblem-size: clamp(3rem, 6vw, 3.8rem);
   --campaign-h3-ornament-width: clamp(3.4rem, 7vw, 4.5rem);
-  --campaign-emblem: url("/lantern-and-ledger/ornaments/rusthenge-h2-emblem.webp");
+  --campaign-list-marker: url("/lantern-and-ledger/ornaments/rusthenge-h2-emblem.webp");
 }
 
 .campaign-hero--rusthenge { --campaign-accent: #9a4f34; }
@@ -1503,42 +1503,42 @@
 
 }
 
-/* Shared ornament roles: 1:1 opening-paragraph marker, 8:1 H2 rule,
+/* Shared ornament roles: 1:1 list marker, 8:1 H2 rule,
    2:1 H3 marker, and 4:1 major divider. */
 #quartz-body.campaign--kingmaker {
-  --campaign-emblem: url("/lantern-and-ledger/ornaments/kingmaker-h2-emblem.webp");
+  --campaign-list-marker: url("/lantern-and-ledger/ornaments/kingmaker-h2-emblem.webp");
 }
 
 #quartz-body.campaign--abomination-vaults {
-  --campaign-emblem: url("/lantern-and-ledger/ornaments/abomination-vaults-h2-emblem.webp");
+  --campaign-list-marker: url("/lantern-and-ledger/ornaments/abomination-vaults-h2-emblem.webp");
 }
 
 #quartz-body.campaign--season-of-ghosts {
-  --campaign-emblem: url("/lantern-and-ledger/ornaments/season-of-ghosts-h2-emblem.webp");
+  --campaign-list-marker: url("/lantern-and-ledger/ornaments/season-of-ghosts-h2-emblem.webp");
 }
 
 #quartz-body.campaign--claws-of-the-tyrant {
-  --campaign-emblem: url("/lantern-and-ledger/ornaments/claws-of-the-tyrant-h2-emblem.webp");
+  --campaign-list-marker: url("/lantern-and-ledger/ornaments/claws-of-the-tyrant-h2-emblem.webp");
 }
 
 #quartz-body.campaign--curtain-call {
-  --campaign-emblem: url("/lantern-and-ledger/ornaments/curtain-call-h2-emblem.webp");
+  --campaign-list-marker: url("/lantern-and-ledger/ornaments/curtain-call-h2-emblem.webp");
 }
 
 #quartz-body.campaign--the-fall-of-plaguestone {
-  --campaign-emblem: url("/lantern-and-ledger/ornaments/the-fall-of-plaguestone-h2-emblem.webp");
+  --campaign-list-marker: url("/lantern-and-ledger/ornaments/the-fall-of-plaguestone-h2-emblem.webp");
 }
 
 #quartz-body.campaign--crown-of-the-kobold-king {
-  --campaign-emblem: url("/lantern-and-ledger/ornaments/crown-of-the-kobold-king-h2-emblem.webp");
+  --campaign-list-marker: url("/lantern-and-ledger/ornaments/crown-of-the-kobold-king-h2-emblem.webp");
 }
 
 #quartz-body.campaign--rise-of-the-runelords {
-  --campaign-emblem: url("/lantern-and-ledger/ornaments/rise-of-the-runelords-emblem.webp");
+  --campaign-list-marker: url("/lantern-and-ledger/ornaments/rise-of-the-runelords-emblem.webp");
 }
 
 #quartz-body.campaign--rusthenge {
-  --campaign-emblem: url("/lantern-and-ledger/ornaments/rusthenge-h2-emblem.webp");
+  --campaign-list-marker: url("/lantern-and-ledger/ornaments/rusthenge-h2-emblem.webp");
 }
 
 #quartz-body[class*="campaign--"] article:not(:has(.callout[data-callout^="timeline-"])) h2 {
@@ -1549,26 +1549,31 @@
   content: none;
 }
 
-#quartz-body[class*="campaign--"] article h2 + p::before {
+#quartz-body[class*="campaign--"] article ul > li:not(:has(> input[type="checkbox"])) {
+  position: relative;
+  list-style: none;
+}
+
+#quartz-body[class*="campaign--"] article ul > li:not(:has(> input[type="checkbox"]))::before {
   content: "";
-  display: block;
-  float: left;
-  width: clamp(2.8rem, 5vw, 3.4rem);
-  height: clamp(2.8rem, 5vw, 3.4rem);
-  margin: 0.1em 0.65rem 0.2rem 0;
-  background: var(--campaign-emblem) center / contain no-repeat;
-  opacity: 0.88;
+  position: absolute;
+  top: 0.28em;
+  left: -1.35em;
+  width: 0.9em;
+  height: 0.9em;
+  background: var(--campaign-list-marker) center / contain no-repeat;
   pointer-events: none;
+}
+
+/* Keep 1:1 campaign emblems reserved for list bullets. */
+#quartz-body[class*="campaign--"] article:not(:has(.callout[data-callout^="timeline-"])) h2 {
+  padding-left: 0;
+}
+
+#quartz-body[class*="campaign--"] article:not(:has(.callout[data-callout^="timeline-"])) h2::before {
+  content: none;
 }
 
 #quartz-body[class*="campaign--"] article .callout:not([data-callout^="timeline-"])::after {
   content: none;
-}
-
-@media (max-width: 520px) {
-  #quartz-body[class*="campaign--"] article h2 + p::before {
-    width: 2.35rem;
-    height: 2.35rem;
-    margin-right: 0.5rem;
-  }
 }

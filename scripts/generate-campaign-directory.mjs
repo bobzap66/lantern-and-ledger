@@ -12,7 +12,7 @@ const ARCHIVE_START = "<!-- CAMPAIGN_ARCHIVE_GENERATED_START -->"
 const ARCHIVE_END = "<!-- CAMPAIGN_ARCHIVE_GENERATED_END -->"
 const STATUS_GROUPS = [
   { status: "active", title: "Active Campaigns" },
-  { status: "upcoming", title: "Coming Soon" },
+  { status: "upcoming", title: "Upcoming Campaigns" },
   { status: "archived", title: "Archived Campaigns" },
 ]
 
@@ -64,14 +64,8 @@ function card(campaign, { archived = false, titleLevel = 3 } = {}) {
   const imageMarkup = image
     ? `\n<img class="campaign-directory__image" src="../${escapeHtml(image)}" alt="">`
     : ""
-  const status = archived
-    ? "Archived"
-    : metadata.status === "upcoming"
-      ? "Coming Soon"
-      : ""
-  const statusMarkup = status
-    ? `\n<div class="campaign-directory__status">${status}</div>`
-    : ""
+  const status = archived ? "Archived" : metadata.status === "upcoming" ? "Upcoming" : "Active"
+  const statusMarkup = `\n<div class="campaign-directory__status">${status}</div>`
 
   return [
     `<div class="${classes.join(" ")}"${accent}>`,
