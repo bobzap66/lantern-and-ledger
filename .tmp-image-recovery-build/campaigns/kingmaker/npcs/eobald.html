@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr"><head><title>Eobald | Inner Sea Region Archives</title><meta charset="utf-8"/><link rel="preload" href="../../../index-2cd46e27.css" as="style"/><link rel="preload" href="../../../prescript-2bfc6315.js" as="script"/><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com"/><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre Baskerville:wght@400;700&amp;family=Source Serif 4:ital,wght@0,400;0,600;1,400;1,600&amp;family=IBM Plex Mono:wght@400;600&amp;display=swap"/><link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin="anonymous"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta name="og:site_name" content="The Lantern and Ledger"/><meta property="og:title" content="Eobald | Inner Sea Region Archives"/><meta property="og:type" content="website"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="Eobald | Inner Sea Region Archives"/><meta name="twitter:description" content="Eobald Compiled by the College of Letters and Public Record, Free University of Thumping Waters, with archival assistance from the Ministry of Communication and interviews with Eobald and Linzi He had lost his spellbook and very nearly his life, yet before we reached home he was already discussing r..."/><meta property="og:description" content="Eobald Compiled by the College of Letters and Public Record, Free University of Thumping Waters, with archival assistance from the Ministry of Communication and interviews with Eobald and Linzi He had lost his spellbook and very nearly his life, yet before we reached home he was already discussing r..."/><meta property="og:image:alt" content="Eobald Compiled by the College of Letters and Public Record, Free University of Thumping Waters, with archival assistance from the Ministry of Communication and interviews with Eobald and Linzi He had lost his spellbook and very nearly his life, yet before we reached home he was already discussing r..."/><link rel="canonical" href="https://bobzap66.github.io/lantern-and-ledger/campaigns/kingmaker/npcs/eobald"/><meta property="twitter:domain" content="bobzap66.github.io/lantern-and-ledger"/><meta property="og:url" content="https://bobzap66.github.io/lantern-and-ledger/campaigns/kingmaker/npcs/eobald"/><meta property="twitter:url" content="https://bobzap66.github.io/lantern-and-ledger/campaigns/kingmaker/npcs/eobald"/><link rel="icon" type="image/webp" href="../../../static/icon.webp"/><meta name="description" content="Eobald Compiled by the College of Letters and Public Record, Free University of Thumping Waters, with archival assistance from the Ministry of Communication and interviews with Eobald and Linzi He had lost his spellbook and very nearly his life, yet before we reached home he was already discussing r..."/><meta name="generator" content="Quartz"/><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://bobzap66.github.io/lantern-and-ledger"},{"@type":"ListItem","position":2,"name":"Campaigns","item":"https://bobzap66.github.io/lantern-and-ledger/campaigns"},{"@type":"ListItem","position":3,"name":"Kingmaker","item":"https://bobzap66.github.io/lantern-and-ledger/campaigns/kingmaker"},{"@type":"ListItem","position":4,"name":"Npcs","item":"https://bobzap66.github.io/lantern-and-ledger/campaigns/kingmaker/npcs"},{"@type":"ListItem","position":5,"name":"Eobald","item":"https://bobzap66.github.io/lantern-and-ledger/campaigns/kingmaker/npcs/eobald"}]}]}</script><script>
+(() => {
+  const IMAGE_SELECTOR = [
+    ".center article img",
+    ".right.sidebar .world-anvil-side-content img",
+    ".right.sidebar .callout[data-callout='side'] img",
+  ].join(",")
+
+  const ensureLightbox = () => {
+    let overlay = document.getElementById("isr-image-lightbox")
+    if (overlay) return overlay
+
+    overlay = document.createElement("div")
+    overlay.id = "isr-image-lightbox"
+    overlay.setAttribute("aria-hidden", "true")
+    overlay.innerHTML = [
+      '<button class="isr-lightbox-close" type="button" aria-label="Close image">×</button>',
+      '<div class="isr-lightbox-stage">',
+      '  <img class="isr-lightbox-image" alt="">',
+      '  <div class="isr-lightbox-caption"></div>',
+      '</div>',
+    ].join("")
+
+    document.body.appendChild(overlay)
+
+    const close = () => {
+      overlay.classList.remove("is-open", "is-natural-size")
+      overlay.setAttribute("aria-hidden", "true")
+      document.documentElement.classList.remove("isr-lightbox-open")
+
+      const img = overlay.querySelector(".isr-lightbox-image")
+      if (img) img.removeAttribute("src")
+    }
+
+    overlay.querySelector(".isr-lightbox-close")?.addEventListener("click", close)
+
+    overlay.addEventListener("click", (event) => {
+      if (event.target === overlay || event.target?.classList?.contains("isr-lightbox-stage")) {
+        close()
+      }
+    })
+
+    overlay.querySelector(".isr-lightbox-image")?.addEventListener("click", (event) => {
+      event.stopPropagation()
+      overlay.classList.toggle("is-natural-size")
+    })
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && overlay.classList.contains("is-open")) {
+        close()
+      }
+    })
+
+    return overlay
+  }
+
+  const openImage = (source) => {
+    const overlay = ensureLightbox()
+    const target = overlay.querySelector(".isr-lightbox-image")
+    const caption = overlay.querySelector(".isr-lightbox-caption")
+    if (!target) return
+
+    target.src = source.currentSrc || source.src
+    target.alt = source.alt || ""
+
+    const captionText = source.alt?.trim() || source.title?.trim() || ""
+    if (caption) {
+      caption.textContent = captionText
+      caption.hidden = captionText.length === 0
+    }
+
+    overlay.classList.remove("is-natural-size")
+    overlay.classList.add("is-open")
+    overlay.setAttribute("aria-hidden", "false")
+    document.documentElement.classList.add("isr-lightbox-open")
+  }
+
+  const wireImages = () => {
+    ensureLightbox()
+
+    document.querySelectorAll(IMAGE_SELECTOR).forEach((img) => {
+      if (img.dataset.isrLightbox === "1") return
+      if (img.closest("[data-no-lightbox], .no-lightbox")) return
+
+      img.dataset.isrLightbox = "1"
+      img.classList.add("isr-zoomable-image")
+      img.setAttribute("tabindex", "0")
+      img.setAttribute("role", "button")
+
+      const open = (event) => {
+        event.preventDefault()
+        event.stopPropagation()
+        openImage(img)
+      }
+
+      img.addEventListener("click", open)
+      img.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          open(event)
+        }
+      })
+    })
+  }
+
+  document.addEventListener("nav", wireImages)
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", wireImages, { once: true })
+  } else {
+    wireImages()
+  }
+})()
+</script><script>
+(() => {
+  const GALLERY_SELECTOR = [
+    "article h2#session-gallery + p",
+    "article h3#session-gallery + p",
+    "article h2#gallery + p",
+    "article h3#gallery + p",
+  ].join(",")
+
+  const wireGalleries = () => {
+    document.querySelectorAll(GALLERY_SELECTOR).forEach((track) => {
+      if (track.dataset.isrCarousel === "1") return
+
+      const images = Array.from(track.children).filter((node) => node.tagName === "IMG")
+      if (images.length < 2) return
+
+      track.dataset.isrCarousel = "1"
+      track.classList.add("isr-gallery-track")
+      track.setAttribute("tabindex", "0")
+      track.setAttribute("role", "group")
+      track.setAttribute("aria-roledescription", "carousel")
+      track.setAttribute("aria-label", "Image gallery")
+
+      images.forEach((img, index) => {
+        img.classList.add("isr-gallery-slide")
+        img.setAttribute("loading", index === 0 ? "eager" : "lazy")
+        img.setAttribute("decoding", "async")
+      })
+
+      const shell = document.createElement("div")
+      shell.className = "isr-gallery-shell"
+      track.parentNode.insertBefore(shell, track)
+      shell.appendChild(track)
+
+      const previous = document.createElement("button")
+      previous.type = "button"
+      previous.className = "isr-gallery-button isr-gallery-previous"
+      previous.setAttribute("aria-label", "Previous image")
+      previous.textContent = "‹"
+
+      const next = document.createElement("button")
+      next.type = "button"
+      next.className = "isr-gallery-button isr-gallery-next"
+      next.setAttribute("aria-label", "Next image")
+      next.textContent = "›"
+
+      const status = document.createElement("div")
+      status.className = "isr-gallery-status"
+      status.setAttribute("aria-live", "polite")
+
+      shell.append(previous, next, status)
+
+      let current = 0
+      let scrollTimer
+
+      const updateControls = () => {
+        previous.disabled = current <= 0
+        next.disabled = current >= images.length - 1
+        status.textContent = (current + 1) + " / " + images.length
+      }
+
+      const goTo = (index) => {
+        current = Math.max(0, Math.min(images.length - 1, index))
+        images[current].scrollIntoView({
+          behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+          block: "nearest",
+          inline: "start",
+        })
+        updateControls()
+      }
+
+      previous.addEventListener("click", () => goTo(current - 1))
+      next.addEventListener("click", () => goTo(current + 1))
+
+      track.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowLeft") {
+          event.preventDefault()
+          goTo(current - 1)
+        } else if (event.key === "ArrowRight") {
+          event.preventDefault()
+          goTo(current + 1)
+        } else if (event.key === "Home") {
+          event.preventDefault()
+          goTo(0)
+        } else if (event.key === "End") {
+          event.preventDefault()
+          goTo(images.length - 1)
+        }
+      })
+
+      track.addEventListener("scroll", () => {
+        window.clearTimeout(scrollTimer)
+        scrollTimer = window.setTimeout(() => {
+          const trackRect = track.getBoundingClientRect()
+          let nearest = 0
+          let nearestDistance = Infinity
+
+          images.forEach((img, index) => {
+            const distance = Math.abs(img.getBoundingClientRect().left - trackRect.left)
+            if (distance < nearestDistance) {
+              nearestDistance = distance
+              nearest = index
+            }
+          })
+
+          if (nearest !== current) {
+            current = nearest
+            updateControls()
+          }
+        }, 80)
+      }, { passive: true })
+
+      updateControls()
+    })
+  }
+
+  document.addEventListener("nav", wireGalleries)
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", wireGalleries, { once: true })
+  } else {
+    wireGalleries()
+  }
+})()
+</script><script>
+(() => {
+  const moveWorldAnvilSideContent = () => {
+    const rightSidebar = document.querySelector(".right.sidebar")
+    if (!rightSidebar) return
+
+    const currentPath = window.location.pathname
+    const existingSideBlocks = Array.from(
+      rightSidebar.querySelectorAll(":scope > .world-anvil-side-content"),
+    )
+    const sideBlocks = Array.from(
+      document.querySelectorAll(".center article .callout[data-callout='side']"),
+    )
+
+    // This initializer can run more than once for the same Quartz page. After the
+    // first run, the source blocks have already been moved out of the article, so
+    // do not delete them on a repeated initialization of the same route.
+    if (sideBlocks.length === 0) {
+      if (rightSidebar.dataset.isrSidePath === currentPath) return
+
+      existingSideBlocks.forEach((node) => node.remove())
+      rightSidebar.dataset.isrSidePath = currentPath
+      return
+    }
+
+    existingSideBlocks.forEach((node) => node.remove())
+
+    const sidebarHeadingIds = new Set()
+
+    sideBlocks.forEach((block) => {
+      block.querySelectorAll("h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]").forEach((heading) => {
+        sidebarHeadingIds.add(heading.id)
+      })
+
+      block.classList.add("world-anvil-side-content")
+      rightSidebar.appendChild(block)
+    })
+
+    rightSidebar.dataset.isrSidePath = currentPath
+
+    if (sidebarHeadingIds.size > 0) {
+      document.querySelectorAll(".toc a[href^='#']").forEach((link) => {
+        const id = decodeURIComponent(link.getAttribute("href").slice(1))
+        if (sidebarHeadingIds.has(id)) {
+          const item = link.closest("li")
+          if (item) item.remove()
+          else link.remove()
+        }
+      })
+    }
+  }
+
+  document.addEventListener("nav", moveWorldAnvilSideContent)
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", moveWorldAnvilSideContent, { once: true })
+  } else {
+    moveWorldAnvilSideContent()
+  }
+})()
+</script><link href="../../../index-2cd46e27.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-735924e0.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-589c1cea.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-bbc3f7c0.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-2911f5d1.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-9d82c5c1.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-84453030.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-ddd117e7.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-a78ee588.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-e4f7c07d.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-0d375ccf.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-e427079e.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-e02e28c3.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-ad1979ca.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-3b8818e7.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-932b2bbc.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-53b25b2b.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-c93c6a44.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-8a06014f.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-77d6a441.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-6ee21cee.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-1ea6ad18.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-788c9ca3.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-642859cd.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-8828e486.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-4abc06bd.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-274a3dfe.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-94cb6c84.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-58d5ff56.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-7262b5a7.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../static/resource-style-a5c806d2.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../static/resource-style-6bd36952.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../static/resource-style-b77a7d35.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../static/resource-style-f30e4416.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../static/resource-style-58790c8a.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../static/resource-style-5ff5e346.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../static/resource-style-5c0d193a.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../static/resource-style-8a30a1b4.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../static/resource-style-d9c3ce3d.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../static/resource-style-da9eebd8.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../static/resource-style-97deedac.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../static/resource-style-e9452787.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../static/resource-style-1c442cdd.css" rel="stylesheet" type="text/css" data-persist="true"/><style>
+article .isr-gallery-shell {
+  position: relative;
+  margin: 1.25rem 0 2.5rem;
+  padding: 0.8rem;
+  border: 1px solid var(--isr-rule);
+  border-radius: 0.45rem;
+  background: color-mix(in srgb, var(--light) 82%, var(--lightgray) 18%);
+  box-shadow: inset 0 0 0 3px color-mix(in srgb, var(--light) 75%, transparent);
+}
+
+article .isr-gallery-shell > .isr-gallery-track {
+  display: flex;
+  grid-template-columns: none;
+  gap: 0;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+  background: transparent;
+  border: 0;
+  border-radius: 0.3rem;
+  box-shadow: none;
+}
+
+article .isr-gallery-track::-webkit-scrollbar {
+  display: none;
+}
+
+article .isr-gallery-track > img.isr-gallery-slide {
+  flex: 0 0 100%;
+  width: 100%;
+  min-width: 100%;
+  height: clamp(18rem, 58vw, 42rem);
+  margin: 0;
+  object-fit: contain;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  background: color-mix(in srgb, var(--light) 88%, black 12%);
+  border-radius: 0.28rem;
+  transform: none;
+}
+
+article .isr-gallery-track > img.isr-gallery-slide:hover {
+  transform: none;
+}
+
+article .isr-gallery-button {
+  position: absolute;
+  top: 50%;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--light) 55%, var(--dark) 45%);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--light) 82%, transparent);
+  color: var(--dark);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+  font: 400 2rem/1 system-ui, sans-serif;
+  cursor: pointer;
+  transform: translateY(-50%);
+  backdrop-filter: blur(4px);
+}
+
+article .isr-gallery-previous {
+  left: 1.25rem;
+}
+
+article .isr-gallery-next {
+  right: 1.25rem;
+}
+
+article .isr-gallery-button:hover:not(:disabled),
+article .isr-gallery-button:focus-visible {
+  background: var(--light);
+  border-color: var(--tertiary);
+  outline: none;
+}
+
+article .isr-gallery-button:disabled {
+  opacity: 0.28;
+  cursor: default;
+}
+
+article .isr-gallery-status {
+  position: absolute;
+  right: 1.25rem;
+  bottom: 1.2rem;
+  z-index: 3;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(20, 18, 15, 0.72);
+  color: #fff;
+  font-family: var(--bodyFont);
+  font-size: 0.78rem;
+  line-height: 1.4;
+  pointer-events: none;
+}
+
+article .isr-gallery-track:focus-visible {
+  outline: 2px solid var(--tertiary);
+  outline-offset: 3px;
+}
+
+@media (max-width: 800px) {
+  article .isr-gallery-shell {
+    padding: 0.55rem;
+  }
+
+  article .isr-gallery-track > img.isr-gallery-slide {
+    height: clamp(16rem, 72vw, 32rem);
+  }
+
+  article .isr-gallery-button {
+    width: 2.35rem;
+    height: 2.35rem;
+    font-size: 1.65rem;
+  }
+
+  article .isr-gallery-previous {
+    left: 0.85rem;
+  }
+
+  article .isr-gallery-next {
+    right: 0.85rem;
+  }
+
+  article .isr-gallery-status {
+    right: 0.85rem;
+    bottom: 0.85rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  article .isr-gallery-shell > .isr-gallery-track {
+    scroll-behavior: auto;
+  }
+}
+</style><script src="../../../prescript-2bfc6315.js" type="application/javascript" data-persist="true"></script><script type="application/javascript" data-persist="true">const fetchData = (() => {
+  let request
+  const load = () => request ??= fetch("../../../static/contentIndex.json").then((response) => {
+    if (!response.ok) throw new Error("Content index request failed: " + response.status)
+    return response.json()
+  })
+  return {
+    then: (onFulfilled, onRejected) => load().then(onFulfilled, onRejected),
+    catch: (onRejected) => load().catch(onRejected),
+    finally: (onFinally) => load().finally(onFinally),
+  }
+})()</script><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=%5C%22Libre%20Baskerville%5C%22%2C%20Georgia%2C%20serif%3Awght%40400%3B700&amp;family=%5C%22Source%20Serif%204%5C%22%2C%20Georgia%2C%20serif%3Aital%2Cwght%400%2C400%3B0%2C600%3B1%2C400%3B1%2C600&amp;family=%5C%22IBM%20Plex%20Mono%5C%22%2C%20monospace%3Awght%40400%3B600&amp;display=swap"/><meta property="og:image" content="https://bobzap66.github.io/lantern-and-ledger/static/assets/images/university-of-thumping-waters-header.webp"/><meta property="og:image:url" content="https://bobzap66.github.io/lantern-and-ledger/static/assets/images/university-of-thumping-waters-header.webp"/><meta name="twitter:image" content="https://bobzap66.github.io/lantern-and-ledger/static/assets/images/university-of-thumping-waters-header.webp"/><meta property="og:image:type" content="image/webp"/></head><body data-slug="campaigns/kingmaker/npcs/eobald" data-basepath="/lantern-and-ledger"><style>
+html.campaign-spoiler-locked {
+  overflow: hidden;
+}
+
+.campaign-spoiler-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  padding: 1.5rem;
+  background: var(--light);
+  color: var(--dark);
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.campaign-spoiler-gate[hidden] {
+  display: none !important;
+}
+
+.campaign-spoiler-gate-card {
+  width: min(100%, 42rem);
+  box-sizing: border-box;
+  padding: clamp(1.5rem, 5vw, 3rem);
+  border: 1px solid var(--tertiary);
+  border-radius: 0.35rem;
+  background: var(--light);
+  color: var(--dark);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.22);
+  text-align: center;
+}
+
+.campaign-spoiler-eyebrow {
+  margin: 0 0 0.65rem;
+  color: var(--tertiary);
+  font-family: var(--bodyFont);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.campaign-spoiler-gate-card h2 {
+  margin: 0 0 1rem;
+  font-size: clamp(1.55rem, 5vw, 2.45rem);
+}
+
+.campaign-spoiler-gate-card p:not(.campaign-spoiler-eyebrow) {
+  max-width: 34rem;
+  margin: 0 auto;
+  line-height: 1.65;
+}
+
+.campaign-spoiler-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1.6rem;
+}
+
+.campaign-spoiler-actions button,
+.campaign-spoiler-reset {
+  appearance: none;
+  border: 1px solid var(--gray);
+  border-radius: 0.25rem;
+  padding: 0.72rem 1rem;
+  background: var(--lightgray);
+  color: var(--dark);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.campaign-spoiler-actions button.is-primary {
+  border-color: var(--tertiary);
+  background: var(--tertiary);
+  color: var(--light);
+}
+
+.campaign-spoiler-actions button:hover,
+.campaign-spoiler-actions button:focus-visible,
+.campaign-spoiler-reset:hover,
+.campaign-spoiler-reset:focus-visible {
+  filter: brightness(0.96);
+  outline: 2px solid var(--secondary);
+  outline-offset: 2px;
+}
+
+.campaign-spoiler-reset {
+  display: block;
+  width: fit-content;
+  margin: 0.8rem 0 0 auto;
+  padding: 0.5rem 0.75rem;
+  border-color: var(--campaign-page-accent, var(--tertiary));
+  background: color-mix(
+    in srgb,
+    var(--campaign-page-accent, var(--tertiary)) 82%,
+    var(--dark) 18%
+  );
+  color: #fff8e8;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--campaign-page-accent, var(--tertiary)) 24%, transparent);
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+.campaign-spoiler-reset[hidden] {
+  display: none !important;
+}
+
+@media (max-width: 600px) {
+  .campaign-spoiler-actions {
+    flex-direction: column;
+  }
+
+  .campaign-spoiler-actions button {
+    width: 100%;
+  }
+}
+
+#quartz-body.campaign-spoiler-pending > :not(.campaign-spoiler-gate) {
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+#quartz-body.campaign-spoiler-pending > .campaign-spoiler-gate {
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+:root {
+  --isr-gold: #c58b2b !important;
+  --isr-gold-soft: rgba(197, 139, 43, 0.14) !important;
+  --isr-navy: #405c68 !important;
+  --isr-burgundy: #685238 !important;
+  --isr-paper: #eee1c3 !important;
+  --isr-ink: #17140f !important;
+  --isr-rule: rgba(104, 82, 56, 0.28) !important;
+  --isr-shadow: 0 12px 32px rgba(72, 52, 28, 0.09) !important;
+}
+
+[saved-theme="dark"] {
+  --isr-gold: #d6a64c !important;
+  --isr-gold-soft: rgba(214, 166, 76, 0.14) !important;
+  --isr-navy: #89a4ae !important;
+  --isr-burgundy: #b9a27d !important;
+  --isr-paper: #1b1915 !important;
+  --isr-ink: #eee1c3 !important;
+  --isr-rule: rgba(238, 225, 195, 0.2) !important;
+  --isr-shadow: 0 12px 32px rgba(0, 0, 0, 0.24) !important;
+}
+
+/* The old shared cover is superseded by the Lantern and Ledger masthead. */
+.global-page-cover {
+  display: none !important;
+}
+
+.lantern-ledger-site-header {
+  display: block;
+  width: 100%;
+  margin: 0 0 1.6rem;
+}
+
+.lantern-ledger-masthead {
+  display: block;
+  width: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+
+.lantern-ledger-masthead picture,
+.lantern-ledger-masthead img {
+  display: block;
+  width: 100%;
+}
+
+.lantern-ledger-masthead img {
+  width: min(100%, 24rem);
+  height: auto;
+  max-height: none;
+  margin-inline: auto;
+  object-fit: contain;
+  aspect-ratio: 8 / 3;
+  border: 1px solid var(--isr-rule);
+  border-radius: 0.22rem;
+  background: var(--light);
+  box-shadow: 0 8px 24px rgba(54, 40, 24, 0.1);
+}
+
+.lantern-ledger-archive-rule {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin: 0.7rem 0 0;
+  color: var(--darkgray);
+  font-family: var(--bodyFont);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.lantern-ledger-archive-rule::before,
+.lantern-ledger-archive-rule::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--isr-rule);
+}
+
+.lantern-ledger-header-children {
+  margin-top: 1rem;
+}
+
+/* Retire the old Gazetteer label wherever the page-title component appears. */
+.page-title::after {
+  content: "THE LANTERN AND LEDGER · ARCHIVES" !important;
+  color: var(--tertiary) !important;
+  font-family: var(--bodyFont) !important;
+  font-size: 0.62rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.18em !important;
+}
+
+@media (max-width: 800px) {
+  .lantern-ledger-site-header {
+    margin-bottom: 1.1rem;
+  }
+
+  .lantern-ledger-masthead picture {
+    display: grid;
+    place-items: center;
+  }
+
+  .lantern-ledger-masthead img {
+    width: clamp(6rem, 28vw, 7.5rem);
+    max-height: none;
+    margin-inline: auto;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    object-fit: contain;
+    aspect-ratio: 1;
+  }
+
+  .lantern-ledger-archive-rule {
+    margin-top: 0.55rem;
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+  }
+}
+
+@media (max-width: 430px) {
+  .lantern-ledger-archive-rule {
+    gap: 0.45rem;
+    font-size: 0.55rem;
+    letter-spacing: 0.08em;
+  }
+}
+</style><div id="quartz-root" class="page" data-frame="default"><div id="quartz-body" class="campaign--kingmaker campaign-spoiler-pending"><div class="campaign-spoiler-gate" data-campaign-key="kingmaker" data-campaign-name="Kingmaker" role="dialog" aria-modal="true" aria-labelledby="campaign-spoiler-title"><div class="campaign-spoiler-gate-card"><p class="campaign-spoiler-eyebrow">Campaign Spoiler Warning</p><h2 id="campaign-spoiler-title">Warning: Spoilers for Kingmaker</h2><p>This section contains spoilers for the Kingmaker campaign. Continue only if you are a player in this campaign and want access to its archive.</p><div class="campaign-spoiler-actions"><button type="button" data-spoiler-action="back">Go Back</button><button class="is-primary" type="button" data-spoiler-action="opt-in">Player in the Kingmaker Campaign</button></div></div></div><div class="left sidebar"><h2 class="page-title"><a href="../../..">The Lantern and Ledger</a></h2><div class="mobile-only"><div class="spacer"></div></div><div class="flex-component" style="flex-direction: row; flex-wrap: nowrap; gap: 0.5rem;"><div style="flex-grow: 1; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><div class="search"><button class="search-button" aria-label="Search" aria-expanded="false"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.9 19.7"><title>Search</title><g class="search-path" fill="none"><path stroke-linecap="square" d="M18.5 18.3l-5.4-5.4"></path><circle cx="8" cy="8" r="7"></circle></g></svg><p>Search</p></button><div class="search-container"><div class="search-space"><input autocomplete="off" class="search-bar" name="search" type="text" aria-label="Search for something..." placeholder="Search for something..."/><div class="search-layout" data-preview="true" data-field-priority="[&quot;title&quot;,&quot;content&quot;,&quot;tags&quot;]"></div></div></div></div></div><div style="flex-grow: 0; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><button class="darkmode" aria-label="Dark mode"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="dayIcon" x="0px" y="0px" viewBox="0 0 35 35" style="enable-background:new 0 0 35 35" xml:space="preserve" aria-label="Dark mode"><title>Dark mode</title><path d="M6,17.5C6,16.672,5.328,16,4.5,16h-3C0.672,16,0,16.672,0,17.5    S0.672,19,1.5,19h3C5.328,19,6,18.328,6,17.5z M7.5,26c-0.414,0-0.789,0.168-1.061,0.439l-2,2C4.168,28.711,4,29.086,4,29.5    C4,30.328,4.671,31,5.5,31c0.414,0,0.789-0.168,1.06-0.44l2-2C8.832,28.289,9,27.914,9,27.5C9,26.672,8.329,26,7.5,26z M17.5,6    C18.329,6,19,5.328,19,4.5v-3C19,0.672,18.329,0,17.5,0S16,0.672,16,1.5v3C16,5.328,16.671,6,17.5,6z M27.5,9    c0.414,0,0.789-0.168,1.06-0.439l2-2C30.832,6.289,31,5.914,31,5.5C31,4.672,30.329,4,29.5,4c-0.414,0-0.789,0.168-1.061,0.44    l-2,2C26.168,6.711,26,7.086,26,7.5C26,8.328,26.671,9,27.5,9z M6.439,8.561C6.711,8.832,7.086,9,7.5,9C8.328,9,9,8.328,9,7.5    c0-0.414-0.168-0.789-0.439-1.061l-2-2C6.289,4.168,5.914,4,5.5,4C4.672,4,4,4.672,4,5.5c0,0.414,0.168,0.789,0.439,1.06    L6.439,8.561z M33.5,16h-3c-0.828,0-1.5,0.672-1.5,1.5s0.672,1.5,1.5,1.5h3c0.828,0,1.5-0.672,1.5-1.5S34.328,16,33.5,16z     M28.561,26.439C28.289,26.168,27.914,26,27.5,26c-0.828,0-1.5,0.672-1.5,1.5c0,0.414,0.168,0.789,0.439,1.06l2,2    C28.711,30.832,29.086,31,29.5,31c0.828,0,1.5-0.672,1.5-1.5c0-0.414-0.168-0.789-0.439-1.061L28.561,26.439z M17.5,29    c-0.829,0-1.5,0.672-1.5,1.5v3c0,0.828,0.671,1.5,1.5,1.5s1.5-0.672,1.5-1.5v-3C19,29.672,18.329,29,17.5,29z M17.5,7    C11.71,7,7,11.71,7,17.5S11.71,28,17.5,28S28,23.29,28,17.5S23.29,7,17.5,7z M17.5,25c-4.136,0-7.5-3.364-7.5-7.5    c0-4.136,3.364-7.5,7.5-7.5c4.136,0,7.5,3.364,7.5,7.5C25,21.636,21.636,25,17.5,25z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="nightIcon" x="0px" y="0px" viewBox="0 0 100 100" style="enable-background:new 0 0 100 100" xml:space="preserve" aria-label="Light mode"><title>Light mode</title><path d="M96.76,66.458c-0.853-0.852-2.15-1.064-3.23-0.534c-6.063,2.991-12.858,4.571-19.655,4.571  C62.022,70.495,50.88,65.88,42.5,57.5C29.043,44.043,25.658,23.536,34.076,6.47c0.532-1.08,0.318-2.379-0.534-3.23  c-0.851-0.852-2.15-1.064-3.23-0.534c-4.918,2.427-9.375,5.619-13.246,9.491c-9.447,9.447-14.65,22.008-14.65,35.369  c0,13.36,5.203,25.921,14.65,35.368s22.008,14.65,35.368,14.65c13.361,0,25.921-5.203,35.369-14.65  c3.872-3.871,7.064-8.328,9.491-13.246C97.826,68.608,97.611,67.309,96.76,66.458z"></path></svg></button></div><div style="flex-grow: 0; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><button class="readermode" aria-label="Reader mode"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="readerIcon" fill="currentColor" stroke="currentColor" stroke-width="0.2" stroke-linecap="round" stroke-linejoin="round" width="64px" height="64px" viewBox="0 0 24 24" aria-label="Reader mode"><title>Reader mode</title><g transform="translate(-1.8, -1.8) scale(1.15, 1.2)"><path d="M8.9891247,2.5 C10.1384702,2.5 11.2209868,2.96705384 12.0049645,3.76669482 C12.7883914,2.96705384 13.8709081,2.5 15.0202536,2.5 L18.7549359,2.5 C19.1691495,2.5 19.5049359,2.83578644 19.5049359,3.25 L19.5046891,4.004 L21.2546891,4.00457396 C21.6343849,4.00457396 21.9481801,4.28672784 21.9978425,4.6528034 L22.0046891,4.75457396 L22.0046891,20.25 C22.0046891,20.6296958 21.7225353,20.943491 21.3564597,20.9931534 L21.2546891,21 L2.75468914,21 C2.37499337,21 2.06119817,20.7178461 2.01153575,20.3517706 L2.00468914,20.25 L2.00468914,4.75457396 C2.00468914,4.37487819 2.28684302,4.061083 2.65291858,4.01142057 L2.75468914,4.00457396 L4.50368914,4.004 L4.50444233,3.25 C4.50444233,2.87030423 4.78659621,2.55650904 5.15267177,2.50684662 L5.25444233,2.5 L8.9891247,2.5 Z M4.50368914,5.504 L3.50468914,5.504 L3.50468914,19.5 L10.9478955,19.4998273 C10.4513189,18.9207296 9.73864328,18.5588115 8.96709342,18.5065584 L8.77307039,18.5 L5.25444233,18.5 C4.87474657,18.5 4.56095137,18.2178461 4.51128895,17.8517706 L4.50444233,17.75 L4.50368914,5.504 Z M19.5049359,17.75 C19.5049359,18.1642136 19.1691495,18.5 18.7549359,18.5 L15.2363079,18.5 C14.3910149,18.5 13.5994408,18.8724714 13.0614828,19.4998273 L20.5046891,19.5 L20.5046891,5.504 L19.5046891,5.504 L19.5049359,17.75 Z M18.0059359,3.999 L15.0202536,4 L14.8259077,4.00692283 C13.9889509,4.06666544 13.2254227,4.50975805 12.7549359,5.212 L12.7549359,17.777 L12.7782651,17.7601316 C13.4923805,17.2719483 14.3447024,17 15.2363079,17 L18.0059359,16.999 L18.0056891,4.798 L18.0033792,4.75457396 L18.0056891,4.71 L18.0059359,3.999 Z M8.9891247,4 L6.00368914,3.999 L6.00599909,4.75457396 L6.00599909,4.75457396 L6.00368914,4.783 L6.00368914,16.999 L8.77307039,17 C9.57551536,17 10.3461406,17.2202781 11.0128313,17.6202194 L11.2536891,17.776 L11.2536891,5.211 C10.8200889,4.56369974 10.1361548,4.13636104 9.37521067,4.02745763 L9.18347055,4.00692283 L8.9891247,4 Z"></path></g></svg></button></div></div><div class="explorer nav-files-container" data-behavior="link" data-collapsed="collapsed" data-savestate="true" data-data-fns="{&quot;order&quot;:[&quot;filter&quot;,&quot;map&quot;,&quot;sort&quot;],&quot;sortFn&quot;:&quot;(a2, b2) => {\n    if (!a2.isFolder &amp;&amp; !b2.isFolder || a2.isFolder &amp;&amp; b2.isFolder) {\n      return (a2.displayName || \&quot;\&quot;).localeCompare(b2.displayName || \&quot;\&quot;, void 0, {\n        numeric: true,\n        sensitivity: \&quot;base\&quot;\n      });\n    }\n    if (!a2.isFolder &amp;&amp; b2.isFolder) {\n      return 1;\n    }\n    return -1;\n  }&quot;,&quot;filterFn&quot;:&quot;(node) => node.slugSegment !== \&quot;tags\&quot;&quot;,&quot;mapFn&quot;:&quot;(node) => {\n    return node;\n  }&quot;}"><button type="button" class="explorer-toggle mobile-explorer hide-until-loaded" data-mobile="true" aria-controls="explorer-621" aria-label="Explorer"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-menu"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button><button type="button" class="title-button explorer-toggle desktop-explorer" data-mobile="false" aria-expanded="true"><h2>Explorer</h2><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="5 8 14 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fold"><polyline points="6 9 12 15 18 9"></polyline></svg></button><div id="explorer-621" class="explorer-content" aria-expanded="false" role="group"><ul class="explorer-ul overflow" id="list-0"><li class="overflow-end"></li></ul></div><template id="template-file"><li><a href="#" class="nav-file-title tree-item-self"></a></li></template><template id="template-folder"><li><div class="folder-container nav-folder-title tree-item-self"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="5 8 14 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="folder-icon nav-folder-collapse-indicator collapse-icon"><polyline points="6 9 12 15 18 9"></polyline></svg><div><button class="folder-button"><span class="folder-title"></span></button></div></div><div class="folder-outer"><ul class="content tree-item-children"></ul></div></li></template></div></div><div class="center"><div class="page-header"><link rel="stylesheet" href="/lantern-and-ledger/static/preferences.css"/><script src="/lantern-and-ledger/static/campaign-spoilers.js"></script><script src="/lantern-and-ledger/static/preferences.js"></script><script src="/lantern-and-ledger/static/golarion-page-loader.js"></script><header class="lantern-ledger-site-header"><a class="lantern-ledger-masthead" href="/lantern-and-ledger/" aria-label="Campaign site home"><picture><source media="(max-width: 800px)" srcset="/lantern-and-ledger/assets/images/lantern-and-ledger-branding/lantern-and-ledger-compact.webp" width="1254" height="1254"/><img src="/lantern-and-ledger/assets/images/lantern-and-ledger-branding/wide_vintage_newspaper_masthead_style_illustration.webp" alt="The Lantern and Ledger — Light for the Present. Record for the Future." width="2048" height="768" decoding="async"/></picture></a><div class="lantern-ledger-archive-rule" aria-hidden="true"><span>THE LANTERN AND LEDGER · ARCHIVES</span></div></header><div class="popover-hint"><nav class="breadcrumb-container" aria-label="breadcrumbs"><div class="breadcrumb-element"><a href="../../../">Home</a><p> ❯ </p></div><div class="breadcrumb-element"><a href="../../../campaigns/">Campaigns</a><p> ❯ </p></div><div class="breadcrumb-element"><a href="../../../campaigns/kingmaker/">Kingmaker</a><p> ❯ </p></div><div class="breadcrumb-element"><a href="../../../campaigns/kingmaker/npcs/">NPCs</a><p> ❯ </p></div><div class="breadcrumb-element"><a href>Eobald</a></div></nav><h1 class="article-title">Eobald</h1><p show-comma="true" class="content-meta"><time datetime="2026-09-18T21:04:28.000Z">Sep 18, 2026</time><span>12 min read</span></p><template class="faceted-search-template"><div class="faceted-search"><button class="faceted-search__trigger" type="button" aria-haspopup="dialog" aria-expanded="false"><svg aria-hidden="true" viewBox="0 0 20 20"><circle cx="8.25" cy="8.25" r="5.75" fill="none"></circle><path d="m12.5 12.5 5 5"></path></svg><span>Search archive</span><kbd>Ctrl K</kbd></button><div class="faceted-search__overlay" hidden><section class="faceted-search__dialog" role="dialog" aria-modal="true" aria-labelledby="faceted-search-title"><header class="faceted-search__header"><div><p class="faceted-search__eyebrow">Lantern &amp; Ledger Archive</p><h2 id="faceted-search-title">Search the records</h2></div><button class="faceted-search__close" type="button" aria-label="Close search">×</button></header><label class="faceted-search__query-label"><span class="visually-hidden">Search terms</span><svg aria-hidden="true" viewBox="0 0 20 20"><circle cx="8.25" cy="8.25" r="5.75" fill="none"></circle><path d="m12.5 12.5 5 5"></path></svg><input class="faceted-search__query" type="search" autocomplete="off" placeholder="Search people, places, sessions, and stories…"/></label><div class="faceted-search__filters" aria-label="Search filters"><label><span>Campaign</span><select class="faceted-search__campaign"><option value>All campaigns</option></select></label><label><span>Record type</span><select class="faceted-search__type"><option value>All record types</option></select></label><button class="faceted-search__clear" type="button">Clear</button></div><div class="faceted-search__status" aria-live="polite">Loading the archive…</div><div class="faceted-search__results" role="listbox" aria-label="Search results"></div></section></div></div></template><span class="reading-progress-anchor" aria-hidden="true"></span></div></div><article class="popover-hint"><div class="markdown-preview-view markdown-rendered"><h1 id="eobald">Eobald<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#eobald" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h1>
+<p><img src="../../../assets/images/eobald-portrait.webp" alt decoding="async" loading="eager" width="1122" height="1402"/></p>
+<p><em>Compiled by the College of Letters and Public Record, <a href="../thumping-waters/settlements/thumpington/free-university-of-thumping-waters" class="internal internal-link alias" data-slug="campaigns/kingmaker/thumping-waters/settlements/thumpington/free-university-of-thumping-waters">Free University of Thumping Waters</a>, with archival assistance from the <a href="../thumping-waters/ruling-council/ministry-of-communication" class="internal internal-link alias" data-slug="campaigns/kingmaker/thumping-waters/ruling-council/ministry-of-communication">Ministry of Communication</a> and interviews with Eobald and <a href="./linzi" class="internal internal-link alias" data-slug="campaigns/kingmaker/npcs/linzi">Linzi</a></em></p>
+<blockquote>
+<p>He had lost his spellbook and very nearly his life, yet before we reached home he was already discussing replacement type, corrected tolerances, and all the errors he expected to find in my designs. I have never been so relieved to be criticized by a teacher.</p>
+<p>— Linzi</p>
+</blockquote>
+<p>Eobald is a human wizard, educator, performer, and printing expert originally from <a href="../thumping-waters/settlements/pitax" class="internal internal-link alias" data-slug="campaigns/kingmaker/thumping-waters/settlements/pitax">Pitax</a>. Once one of Linzi’s teachers, he escaped King Castruccio Irovetti’s increasingly restrictive city as part of the same secret caravan carrying the final components for <a href="../thumping-waters/settlements/thumpington" class="internal internal-link alias" data-slug="campaigns/kingmaker/thumping-waters/settlements/thumpington">Thumpington</a>’s printing press. The journey nearly ended with his murder by the Jaggedbriar Coven. Instead, Eobald was rescued by the Tubthumpers and helped establish the machinery that would later print the <em>Lantern and Ledger</em>.</p>
+<p>In the years since, Eobald has worked as a theatrical director, adviser on Pitaxian affairs, teacher of rhetoric and performance, and founding lecturer at the Free University of Thumping Waters. His career joins several institutions that appear separate until someone must explain an idea to the public: the classroom, the stage, the archive, and the press.</p>
+<h3 id="at-a-glance">At a Glance<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#at-a-glance" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>Ancestry:</strong> Human</p>
+<p><strong>Homeland:</strong> Pitax</p>
+<p><strong>Current Residence:</strong> Thumpington</p>
+<p><strong>Profession:</strong> Wizard, educator, theatrical director, and printing expert</p>
+<p><strong>University Appointment:</strong> Founding Lecturer in Rhetoric, Performance, and Printing</p>
+<p><strong>College:</strong> College of Letters and Public Record</p>
+<p><strong>Known Associate:</strong> Linzi, former student and Minister of Communication</p>
+<p><strong>Notable Possession:</strong> A brass wand shaped like a writing quill</p>
+<h3 id="appearance">Appearance<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#appearance" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>Eobald is a well-dressed man with warm brown skin, dark hair, a close beard, and the animated expression of a lecturer who has just reached the important part of an explanation. In Pitax and during formal appearances, he favors rich red, blue, and gold garments whose theatrical cut reflects the city’s artistic culture without requiring an actual stage.</p>
+<p>He is often depicted carrying several books at once, with scroll cases, writing tools, and small magical instruments secured about his person. His most recognizable implement is a brass wand shaped like a writing quill. Eobald used the wand to create illusory objects during lectures, allowing students to examine magical diagrams, machines, historical scenes, and other examples that would be difficult or expensive to place physically inside a classroom.</p>
+<p>The wand was recovered after the attack upon his caravan. Linzi recognized it immediately among treasure taken by the ogres who served the Jaggedbriar Coven.</p>
+<h3 id="teacher-of-pitax">Teacher of Pitax<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#teacher-of-pitax" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>Before coming to <a href="../thumping-waters" class="internal internal-link alias" data-slug="campaigns/kingmaker/thumping-waters">Thumping Waters</a>, Eobald taught in Pitax. His instruction combined formal scholarship with performance, illusion, practical demonstration, and a storyteller’s understanding of attention. He possessed broad learning in arcane and occult matters, the natural world, history, society, and craft. He was equally comfortable explaining a magical principle, constructing an illustrative illusion, evaluating a machine, or showing a student why a technically correct speech had nevertheless lost its audience.</p>
+<p>Among his students was Linzi, who remembered him not merely as an entertaining instructor but as a teacher capable of turning communication into a craft. Her later work as chronicler, minister, editor, and public speaker carries his influence, particularly her conviction that knowledge has little civic value if it cannot be made understandable to the people expected to use it.</p>
+<p>Eobald’s lectures frequently relied upon magic. He could create illusory objects and disguises, reshape the appearance of terrain, conceal himself, send messages through dreams, preserve writing upon secret pages, and employ minor magical servants for ordinary work. This did not make his teaching effortless. Students report that he regarded magic as a means of illustration rather than a substitute for preparation.</p>
+<h3 id="leaving-pitax">Leaving Pitax<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#leaving-pitax" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>Under King Irovetti, Pitax’s artistic and educational institutions existed beneath increasing political pressure. Patronage rewarded praise, public culture served royal vanity, and talented people learned that disagreement was safest when hidden inside a performance.</p>
+<p>By the time Linzi began seeking the machinery and expertise required for a national printing press, she had heard that Eobald wanted to leave Pitax. She contacted him privately and hired him to accompany the press shipment. The caravan was routed through Pitax so he could be smuggled out with the final components.</p>
+<p>Eobald communicated with Linzi through <em>dream message</em> spells while the caravan combined river ferries and overland roads on its journey toward Thumpington. The messages allowed him to report progress without relying upon correspondence likely to attract attention. They stopped after the caravan entered the <a href="../../../external-references/locations/inner-sea-region/river-kingdoms/stolen-lands/greenbelt/narlmarches" class="internal internal-link alias" data-slug="external-references/locations/inner-sea-region/river-kingdoms/stolen-lands/greenbelt/narlmarches">Narlmarches</a>.</p>
+<p>At the time, Linzi had not told the rulers of Thumping Waters that she had diverted national funds to purchase the press. Eobald therefore became both the expert upon whom her plan depended and a missing person she could not ask the government to find without revealing what she had done.</p>
+<h3 id="the-jaggedbriar-captivity">The Jaggedbriar Captivity<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#the-jaggedbriar-captivity" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>Ogres serving the Jaggedbriar Coven ambushed the caravan in the Narlmarches. They killed its guards, smashed a wagon, carried away the press components, and delivered Eobald to the hags’ enclave. He survived the initial attack badly injured.</p>
+<p>The coven imprisoned him inside a cage formed from long iron fingernails and bound his hands behind him with cords of woven hair. Lurkers in light guarded him within an ancient dwarven chamber, keeping him alive while preventing him from resting or escaping. The hags intended to sacrifice him during a ritual meant to summon an Abyssal servant of Mestama.</p>
+<p>Eobald’s spellbook was destroyed during his captivity. Without it, with most of his prepared magic already spent and his body weakened nearly to death, he had little hope of overcoming the cage and its supernatural guards. He nevertheless identified the prison as hag magic and gathered what information he could from the conversations of his captors.</p>
+<p>Linzi confessed the missing funds after the Treasury discovered the discrepancy. The Tubthumpers followed the caravan’s route, found the ambush site, tracked the ogres, and entered the Jaggedbriar Enclave. They defeated the lurkers in light and freed Eobald. He warned them about the coven below and the ritual for which he had apparently been preserved.</p>
+<p>Eobald did not volunteer to descend with them. He had one remaining hit point, no spellbook, few prepared spells, and recent practical evidence concerning the consequences of confronting three hags unprepared. His desire to return to civilization has occasionally been described as cowardice by people who learned the story from a tavern. The university regards this interpretation as unsupported by both the medical record and common sense.</p>
+<p>The Tubthumpers destroyed the Jaggedbriar Coven and recovered the press components from the unfinished ritual chamber. The machinery required cleaning and repair but remained intact.</p>
+<h3 id="the-thumpington-press">The Thumpington Press<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#the-thumpington-press" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>Rescue did not produce a functioning printing press immediately. The components had crossed much of Avistan, survived a violent ambush, been handled by ogres, stored by hags, and arranged upon a worktable whose previous use did not involve publishing.</p>
+<p>Eobald helped clean, repair, assemble, align, and test the machinery. Replacement parts had to be manufactured locally. Paper and ink required dependable supply. Printers had to be trained in machinery few citizens of the young Republic had ever seen. The work took nearly a year before the press could operate reliably.</p>
+<p>Its first products were not newspapers. The <a href="../thumping-waters/settlements/thumpington/government-printing-office" class="internal internal-link alias" data-slug="campaigns/kingmaker/thumping-waters/settlements/thumpington/government-printing-office">Government Printing Office</a> produced laws, proclamations, public notices, tax instructions, forms, construction orders, and standardized records. These materials gave the Republic a consistent administrative language and gave the printers the experience required to produce larger editions.</p>
+<p>The <em>Lantern and Ledger</em> published its first issue on 1 Sarenith, 4714 AR. Eobald was not its editor, but his instruction and technical work made the paper possible. The distinction matters to him. He helped build the instrument; Linzi and the newspaper staff decided what to do with it.</p>
+<h3 id="return-to-the-stage">Return to the Stage<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#return-to-the-stage" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>Eobald continued his work in performance after settling in Thumping Waters. By the closing years of Irovetti’s reign, he was directing theater and drawing upon his knowledge of Pitax to create productions whose comedy carried political memory.</p>
+<p>When the Tubthumpers prepared to enter Pitax during the War of the River Kings, they found Eobald rehearsing a drama based upon the Rushlight Tournament, complete with Pitaxian villains. His advice was more restrained than the production. He urged them to identify the institutions that still possessed public trust, avoid mistaking royal patronage for genuine loyalty, and remain unnoticed until they were ready to act.</p>
+<p>Eobald recommended the Red Crescent Theatre and Annamede Belavara as valuable contacts. He explained the importance of Pitax’s theaters, temples, trade houses, and artistic community and helped the Tubthumpers understand that resistance to Irovetti already existed. Their task was not to invent it, but to recognize it and earn its confidence.</p>
+<p>That counsel influenced the campaign that politically isolated Irovetti before the assault upon the House of a Hundred Doors. Eobald did not return as a conqueror. He helped the people who had once smuggled him out decide how to approach the people who remained.</p>
+<h3 id="the-free-university">The Free University<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#the-free-university" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>Eobald helped establish the College of Letters and Public Record when the Free University of Thumping Waters was chartered in 4716 AR. He serves as a founding lecturer in rhetoric, performance, and printing.</p>
+<p>The college’s principal building was named Eobald Hall in recognition of his work as a teacher and of his role in establishing the Republic’s first working press. Eobald has publicly described the honor as excessive and privately submitted several pages of corrections to the dedicatory plaque. The hall contains lecture rooms suited to performance and illusion as well as printing rooms where students can carry a text from its first draft to its finished copies.</p>
+<p>His courses treat public communication as a system rather than a talent possessed by naturally persuasive people. Students study how information is composed, illustrated, copied, performed, transmitted, altered, financed, restricted, and remembered. A proclamation, stage play, lecture, newspaper article, and historical monograph may use different forms, but each asks an audience to trust both a message and the institution carrying it.</p>
+<p>Eobald also teaches the physical practice of printing. Students learn type, layout, correction, press operation, paper, ink, maintenance, and the economics of producing enough copies to matter. He is particularly skeptical of proposals that begin with the phrase <em>the press will pay for itself</em> and do not include arithmetic.</p>
+<p>His use of illusion remains part of his teaching. The brass-quill wand allows diagrams to move, mechanisms to separate into visible components, and scenes to be reconstructed before a class. The university requires students to label illustrative reconstructions clearly, a rule adopted after several first-year students cited one of Eobald’s demonstrations as eyewitness evidence.</p>
+<h3 id="scholarship-and-magical-practice">Scholarship and Magical Practice<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#scholarship-and-magical-practice" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>Eobald is a trained wizard with particular strength in illusion, communication, and the manipulation of written knowledge. His surviving record identifies fluency in Common, Dwarven, Halfling, Hallit, and Sylvan. His scholarship spans arcana, occultism, nature, society, craft, performance, and academic history.</p>
+<p>His magical repertoire has included dream communication, invisibility, illusory disguises and objects, mirrored images, magical servants, concealed pages, warped terrain, and the ordinary cantrips useful to a working lecturer. He is capable of offensive magic but is not principally known as a battle wizard.</p>
+<p>The destruction of his spellbook at Jaggedbriar forced him to rebuild a personal collection accumulated through years of teaching. Eobald seldom discusses the financial and intellectual cost separately. A spellbook is simultaneously a magical instrument, professional archive, working notebook, and record of the scholar who assembled it.</p>
+<p>His experience contributed to the university’s policy of maintaining secure copies of essential research rather than allowing a discipline to depend upon one person’s vulnerable collection. He supports access to knowledge while remaining attentive to dangerous material, privacy, and the ease with which a copied error can become more authoritative merely by becoming common.</p>
+<h3 id="personality-and-teaching">Personality and Teaching<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#personality-and-teaching" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>Eobald is animated, sociable, intellectually broad, and comfortable before an audience. His theatrical instincts make his lectures memorable, but his work with machinery has given him little patience for inspiration that refuses measurement. He appreciates wit, demonstration, and dramatic timing; he also expects corrected proofs, maintained equipment, and sources that survive inspection after the applause ends.</p>
+<p>He is capable of caution without timidity. His escape from Pitax required secrecy. His rescue from Jaggedbriar required other people to take risks he could not take himself. His later advice concerning the liberation of Pitax emphasized patience, trusted institutions, and careful preparation rather than a theatrical entrance.</p>
+<p>Students sometimes arrive expecting Linzi’s former teacher to resemble Linzi. They discover two people with a shared belief in stories and sharply different relationships with revision deadlines. Their disagreements are affectionate, technically detailed, and frequently continued in writing after everyone else has left the room.</p>
+<h3 id="legacy-in-thumping-waters">Legacy in Thumping Waters<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#legacy-in-thumping-waters" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>Eobald’s most visible legacy is the existence of print as an ordinary part of Republican life. Laws can be distributed consistently. Citizens can read national news. Scholars can publish research in multiple copies. Settlements can receive the same instructional material without waiting for a scribe to reproduce it by hand.</p>
+<p>Linzi conceived the press, obtained its components, and accepted responsibility for the unlawful means by which she funded it. The Tubthumpers rescued the caravan’s surviving expert and recovered the machinery. Craftspeople repaired and reproduced its parts. Printers learned to operate it. Eobald’s place in that history is neither sole inventor nor incidental assistant. He was the specialist who turned a collection of damaged components into a working institution and taught others enough that the institution no longer depended upon him.</p>
+<p>His work at the Free University extends the same principle. A teacher succeeds not when students remain dependent upon his explanations, but when they can preserve, question, reproduce, and improve what he taught them.</p>
+<blockquote>
+<p>A machine that only one person can operate is not an institution. It is a hostage.</p>
+<p>— Eobald, lecture to the College of Letters and Public Record</p>
+</blockquote>
+
+<p><span data-calendar="Calendar of Golarion" data-date="4714-Sarenith-1" data-name="Eobald" data-category="Life Events"></span></p>
+</div></article><hr/><div class="page-footer"></div></div><div class="right sidebar"><div class="toc"><button type="button" class="toc-header" aria-controls="toc-159" aria-expanded="true"><h3>Table of Contents</h3><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fold"><polyline points="6 9 12 15 18 9"></polyline></svg></button><ul id="list-0" class="toc-content overflow"><li class="depth-0"><a href="#eobald" data-for="eobald">Eobald</a></li><li class="depth-2"><a href="#at-a-glance" data-for="at-a-glance">At a Glance</a></li><li class="depth-2"><a href="#appearance" data-for="appearance">Appearance</a></li><li class="depth-2"><a href="#teacher-of-pitax" data-for="teacher-of-pitax">Teacher of Pitax</a></li><li class="depth-2"><a href="#leaving-pitax" data-for="leaving-pitax">Leaving Pitax</a></li><li class="depth-2"><a href="#the-jaggedbriar-captivity" data-for="the-jaggedbriar-captivity">The Jaggedbriar Captivity</a></li><li class="depth-2"><a href="#the-thumpington-press" data-for="the-thumpington-press">The Thumpington Press</a></li><li class="depth-2"><a href="#return-to-the-stage" data-for="return-to-the-stage">Return to the Stage</a></li><li class="depth-2"><a href="#the-free-university" data-for="the-free-university">The Free University</a></li><li class="depth-2"><a href="#scholarship-and-magical-practice" data-for="scholarship-and-magical-practice">Scholarship and Magical Practice</a></li><li class="depth-2"><a href="#personality-and-teaching" data-for="personality-and-teaching">Personality and Teaching</a></li><li class="depth-2"><a href="#legacy-in-thumping-waters" data-for="legacy-in-thumping-waters">Legacy in Thumping Waters</a></li><li class="overflow-end"></li></ul></div><div class="backlinks"><h3>Backlinks</h3><ul id="list-0" class="overflow"><li><a href="../../../campaigns/kingmaker/npcs/linzi" class="internal">Linzi</a></li><li><a href="../../../campaigns/kingmaker/npcs/" class="internal">NPCs</a></li><li><a href="../../../campaigns/kingmaker/session-notes/session-notes-21-40/session-22--the-mystery-of-the-missing-money" class="internal">Session 22: The Mystery of the Missing Money</a></li><li><a href="../../../campaigns/kingmaker/session-notes/session-notes-41-60/session-56--pitax-awakens" class="internal">Session 56: Pitax Awakens</a></li><li><a href="../../../campaigns/kingmaker/thumping-waters/ruling-council/ministry-of-communication" class="internal">Ministry of Communication</a></li><li><a href="../../../campaigns/kingmaker/thumping-waters/settlements/thumpington/free-university-of-thumping-waters" class="internal">Free University of Thumping Waters</a></li><li><a href="../../../campaigns/kingmaker/thumping-waters/settlements/thumpington/government-printing-office" class="internal">Government Printing Office</a></li><li><a href="../../../campaigns/kingmaker/thumping-waters/settlements/thumpington/" class="internal">Thumpington</a></li><li><a href="../../../the-lantern-and-ledger/the-lantern-and-ledger-history" class="internal">The Lantern and Ledger History</a></li><li class="overflow-end"></li></ul></div></div><footer class><p>Created with <a href="https://quartz.jzhao.xyz/">Quartz v5.0.0</a> © 2026</p><ul><li><a href="https://bobzap66.github.io/lantern-and-ledger/">Home</a></li><li><a href="https://bobzap66.github.io/lantern-and-ledger/preferences">Preferences</a></li><li><a href="https://github.com/bobzap66/lantern-and-ledger">Source</a></li></ul></footer></div></div></body><script src="../../../static/resource-after-e13fffa1.js" type="application/javascript" data-persist="true"></script><script src="../../../static/resource-after-8b336f9a.js" type="application/javascript" data-persist="true"></script><script src="../../../static/resource-after-baba652b.js" type="application/javascript" data-persist="true"></script><script src="../../../static/resource-after-5eb75950.js" type="module" data-persist="true"></script><script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/copy-tex.min.js" type="application/javascript" data-persist="true"></script><script src="../../../static/resource-after-4ee31800.js" type="application/javascript" data-persist="true"></script><script src="../../../static/resource-after-a68033a6.js" type="application/javascript" data-persist="true"></script><script src="../../../postscript-a6852928.js" type="module" data-persist="true"></script></html>

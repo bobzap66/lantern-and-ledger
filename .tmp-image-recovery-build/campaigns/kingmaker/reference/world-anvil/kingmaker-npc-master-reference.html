@@ -1,0 +1,2334 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr"><head><title>Kingmaker NPC Master Reference | Inner Sea Region Archives</title><meta charset="utf-8"/><link rel="preload" href="../../../../index-2cd46e27.css" as="style"/><link rel="preload" href="../../../../prescript-2bfc6315.js" as="script"/><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com"/><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre Baskerville:wght@400;700&amp;family=Source Serif 4:ital,wght@0,400;0,600;1,400;1,600&amp;family=IBM Plex Mono:wght@400;600&amp;display=swap"/><link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin="anonymous"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta name="og:site_name" content="The Lantern and Ledger"/><meta property="og:title" content="Kingmaker NPC Master Reference | Inner Sea Region Archives"/><meta property="og:type" content="website"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="Kingmaker NPC Master Reference | Inner Sea Region Archives"/><meta name="twitter:description" content="Kingmaker NPC Master Reference Campaign reference This searchable index was generated from the campaign maintenance workbook."/><meta property="og:description" content="Kingmaker NPC Master Reference Campaign reference This searchable index was generated from the campaign maintenance workbook."/><meta property="og:image:alt" content="Kingmaker NPC Master Reference Campaign reference This searchable index was generated from the campaign maintenance workbook."/><link rel="canonical" href="https://bobzap66.github.io/lantern-and-ledger/campaigns/kingmaker/reference/world-anvil/kingmaker-npc-master-reference"/><meta property="twitter:domain" content="bobzap66.github.io/lantern-and-ledger"/><meta property="og:url" content="https://bobzap66.github.io/lantern-and-ledger/campaigns/kingmaker/reference/world-anvil/kingmaker-npc-master-reference"/><meta property="twitter:url" content="https://bobzap66.github.io/lantern-and-ledger/campaigns/kingmaker/reference/world-anvil/kingmaker-npc-master-reference"/><link rel="icon" type="image/webp" href="../../../../static/icon.webp"/><meta name="description" content="Kingmaker NPC Master Reference Campaign reference This searchable index was generated from the campaign maintenance workbook."/><meta name="generator" content="Quartz"/><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://bobzap66.github.io/lantern-and-ledger"},{"@type":"ListItem","position":2,"name":"Campaigns","item":"https://bobzap66.github.io/lantern-and-ledger/campaigns"},{"@type":"ListItem","position":3,"name":"Kingmaker","item":"https://bobzap66.github.io/lantern-and-ledger/campaigns/kingmaker"},{"@type":"ListItem","position":4,"name":"Reference","item":"https://bobzap66.github.io/lantern-and-ledger/campaigns/kingmaker/reference"},{"@type":"ListItem","position":5,"name":"World Anvil","item":"https://bobzap66.github.io/lantern-and-ledger/campaigns/kingmaker/reference/world-anvil"},{"@type":"ListItem","position":6,"name":"Kingmaker NPC Master Reference","item":"https://bobzap66.github.io/lantern-and-ledger/campaigns/kingmaker/reference/world-anvil/kingmaker-npc-master-reference"}]}]}</script><script>
+(() => {
+  const IMAGE_SELECTOR = [
+    ".center article img",
+    ".right.sidebar .world-anvil-side-content img",
+    ".right.sidebar .callout[data-callout='side'] img",
+  ].join(",")
+
+  const ensureLightbox = () => {
+    let overlay = document.getElementById("isr-image-lightbox")
+    if (overlay) return overlay
+
+    overlay = document.createElement("div")
+    overlay.id = "isr-image-lightbox"
+    overlay.setAttribute("aria-hidden", "true")
+    overlay.innerHTML = [
+      '<button class="isr-lightbox-close" type="button" aria-label="Close image">×</button>',
+      '<div class="isr-lightbox-stage">',
+      '  <img class="isr-lightbox-image" alt="">',
+      '  <div class="isr-lightbox-caption"></div>',
+      '</div>',
+    ].join("")
+
+    document.body.appendChild(overlay)
+
+    const close = () => {
+      overlay.classList.remove("is-open", "is-natural-size")
+      overlay.setAttribute("aria-hidden", "true")
+      document.documentElement.classList.remove("isr-lightbox-open")
+
+      const img = overlay.querySelector(".isr-lightbox-image")
+      if (img) img.removeAttribute("src")
+    }
+
+    overlay.querySelector(".isr-lightbox-close")?.addEventListener("click", close)
+
+    overlay.addEventListener("click", (event) => {
+      if (event.target === overlay || event.target?.classList?.contains("isr-lightbox-stage")) {
+        close()
+      }
+    })
+
+    overlay.querySelector(".isr-lightbox-image")?.addEventListener("click", (event) => {
+      event.stopPropagation()
+      overlay.classList.toggle("is-natural-size")
+    })
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && overlay.classList.contains("is-open")) {
+        close()
+      }
+    })
+
+    return overlay
+  }
+
+  const openImage = (source) => {
+    const overlay = ensureLightbox()
+    const target = overlay.querySelector(".isr-lightbox-image")
+    const caption = overlay.querySelector(".isr-lightbox-caption")
+    if (!target) return
+
+    target.src = source.currentSrc || source.src
+    target.alt = source.alt || ""
+
+    const captionText = source.alt?.trim() || source.title?.trim() || ""
+    if (caption) {
+      caption.textContent = captionText
+      caption.hidden = captionText.length === 0
+    }
+
+    overlay.classList.remove("is-natural-size")
+    overlay.classList.add("is-open")
+    overlay.setAttribute("aria-hidden", "false")
+    document.documentElement.classList.add("isr-lightbox-open")
+  }
+
+  const wireImages = () => {
+    ensureLightbox()
+
+    document.querySelectorAll(IMAGE_SELECTOR).forEach((img) => {
+      if (img.dataset.isrLightbox === "1") return
+      if (img.closest("[data-no-lightbox], .no-lightbox")) return
+
+      img.dataset.isrLightbox = "1"
+      img.classList.add("isr-zoomable-image")
+      img.setAttribute("tabindex", "0")
+      img.setAttribute("role", "button")
+
+      const open = (event) => {
+        event.preventDefault()
+        event.stopPropagation()
+        openImage(img)
+      }
+
+      img.addEventListener("click", open)
+      img.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          open(event)
+        }
+      })
+    })
+  }
+
+  document.addEventListener("nav", wireImages)
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", wireImages, { once: true })
+  } else {
+    wireImages()
+  }
+})()
+</script><script>
+(() => {
+  const GALLERY_SELECTOR = [
+    "article h2#session-gallery + p",
+    "article h3#session-gallery + p",
+    "article h2#gallery + p",
+    "article h3#gallery + p",
+  ].join(",")
+
+  const wireGalleries = () => {
+    document.querySelectorAll(GALLERY_SELECTOR).forEach((track) => {
+      if (track.dataset.isrCarousel === "1") return
+
+      const images = Array.from(track.children).filter((node) => node.tagName === "IMG")
+      if (images.length < 2) return
+
+      track.dataset.isrCarousel = "1"
+      track.classList.add("isr-gallery-track")
+      track.setAttribute("tabindex", "0")
+      track.setAttribute("role", "group")
+      track.setAttribute("aria-roledescription", "carousel")
+      track.setAttribute("aria-label", "Image gallery")
+
+      images.forEach((img, index) => {
+        img.classList.add("isr-gallery-slide")
+        img.setAttribute("loading", index === 0 ? "eager" : "lazy")
+        img.setAttribute("decoding", "async")
+      })
+
+      const shell = document.createElement("div")
+      shell.className = "isr-gallery-shell"
+      track.parentNode.insertBefore(shell, track)
+      shell.appendChild(track)
+
+      const previous = document.createElement("button")
+      previous.type = "button"
+      previous.className = "isr-gallery-button isr-gallery-previous"
+      previous.setAttribute("aria-label", "Previous image")
+      previous.textContent = "‹"
+
+      const next = document.createElement("button")
+      next.type = "button"
+      next.className = "isr-gallery-button isr-gallery-next"
+      next.setAttribute("aria-label", "Next image")
+      next.textContent = "›"
+
+      const status = document.createElement("div")
+      status.className = "isr-gallery-status"
+      status.setAttribute("aria-live", "polite")
+
+      shell.append(previous, next, status)
+
+      let current = 0
+      let scrollTimer
+
+      const updateControls = () => {
+        previous.disabled = current <= 0
+        next.disabled = current >= images.length - 1
+        status.textContent = (current + 1) + " / " + images.length
+      }
+
+      const goTo = (index) => {
+        current = Math.max(0, Math.min(images.length - 1, index))
+        images[current].scrollIntoView({
+          behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+          block: "nearest",
+          inline: "start",
+        })
+        updateControls()
+      }
+
+      previous.addEventListener("click", () => goTo(current - 1))
+      next.addEventListener("click", () => goTo(current + 1))
+
+      track.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowLeft") {
+          event.preventDefault()
+          goTo(current - 1)
+        } else if (event.key === "ArrowRight") {
+          event.preventDefault()
+          goTo(current + 1)
+        } else if (event.key === "Home") {
+          event.preventDefault()
+          goTo(0)
+        } else if (event.key === "End") {
+          event.preventDefault()
+          goTo(images.length - 1)
+        }
+      })
+
+      track.addEventListener("scroll", () => {
+        window.clearTimeout(scrollTimer)
+        scrollTimer = window.setTimeout(() => {
+          const trackRect = track.getBoundingClientRect()
+          let nearest = 0
+          let nearestDistance = Infinity
+
+          images.forEach((img, index) => {
+            const distance = Math.abs(img.getBoundingClientRect().left - trackRect.left)
+            if (distance < nearestDistance) {
+              nearestDistance = distance
+              nearest = index
+            }
+          })
+
+          if (nearest !== current) {
+            current = nearest
+            updateControls()
+          }
+        }, 80)
+      }, { passive: true })
+
+      updateControls()
+    })
+  }
+
+  document.addEventListener("nav", wireGalleries)
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", wireGalleries, { once: true })
+  } else {
+    wireGalleries()
+  }
+})()
+</script><script>
+(() => {
+  const moveWorldAnvilSideContent = () => {
+    const rightSidebar = document.querySelector(".right.sidebar")
+    if (!rightSidebar) return
+
+    const currentPath = window.location.pathname
+    const existingSideBlocks = Array.from(
+      rightSidebar.querySelectorAll(":scope > .world-anvil-side-content"),
+    )
+    const sideBlocks = Array.from(
+      document.querySelectorAll(".center article .callout[data-callout='side']"),
+    )
+
+    // This initializer can run more than once for the same Quartz page. After the
+    // first run, the source blocks have already been moved out of the article, so
+    // do not delete them on a repeated initialization of the same route.
+    if (sideBlocks.length === 0) {
+      if (rightSidebar.dataset.isrSidePath === currentPath) return
+
+      existingSideBlocks.forEach((node) => node.remove())
+      rightSidebar.dataset.isrSidePath = currentPath
+      return
+    }
+
+    existingSideBlocks.forEach((node) => node.remove())
+
+    const sidebarHeadingIds = new Set()
+
+    sideBlocks.forEach((block) => {
+      block.querySelectorAll("h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]").forEach((heading) => {
+        sidebarHeadingIds.add(heading.id)
+      })
+
+      block.classList.add("world-anvil-side-content")
+      rightSidebar.appendChild(block)
+    })
+
+    rightSidebar.dataset.isrSidePath = currentPath
+
+    if (sidebarHeadingIds.size > 0) {
+      document.querySelectorAll(".toc a[href^='#']").forEach((link) => {
+        const id = decodeURIComponent(link.getAttribute("href").slice(1))
+        if (sidebarHeadingIds.has(id)) {
+          const item = link.closest("li")
+          if (item) item.remove()
+          else link.remove()
+        }
+      })
+    }
+  }
+
+  document.addEventListener("nav", moveWorldAnvilSideContent)
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", moveWorldAnvilSideContent, { once: true })
+  } else {
+    moveWorldAnvilSideContent()
+  }
+})()
+</script><link href="../../../../index-2cd46e27.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../component-735924e0.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../component-589c1cea.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../component-bbc3f7c0.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../component-2911f5d1.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../component-9d82c5c1.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../component-84453030.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../component-ddd117e7.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../component-a78ee588.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../component-e4f7c07d.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../component-0d375ccf.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../component-e427079e.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../component-e02e28c3.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../component-ad1979ca.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../component-3b8818e7.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../component-932b2bbc.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../component-53b25b2b.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../component-c93c6a44.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../component-8a06014f.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../component-77d6a441.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../component-6ee21cee.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../component-1ea6ad18.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../component-788c9ca3.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../component-642859cd.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../component-8828e486.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../component-4abc06bd.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../component-274a3dfe.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../component-94cb6c84.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../component-58d5ff56.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../component-7262b5a7.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../static/resource-style-a5c806d2.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../static/resource-style-6bd36952.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../static/resource-style-b77a7d35.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../static/resource-style-f30e4416.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../static/resource-style-58790c8a.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../static/resource-style-5ff5e346.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../static/resource-style-5c0d193a.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../static/resource-style-8a30a1b4.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../static/resource-style-d9c3ce3d.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../static/resource-style-da9eebd8.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../static/resource-style-97deedac.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../static/resource-style-e9452787.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../static/resource-style-1c442cdd.css" rel="stylesheet" type="text/css" data-persist="true"/><style>
+article .isr-gallery-shell {
+  position: relative;
+  margin: 1.25rem 0 2.5rem;
+  padding: 0.8rem;
+  border: 1px solid var(--isr-rule);
+  border-radius: 0.45rem;
+  background: color-mix(in srgb, var(--light) 82%, var(--lightgray) 18%);
+  box-shadow: inset 0 0 0 3px color-mix(in srgb, var(--light) 75%, transparent);
+}
+
+article .isr-gallery-shell > .isr-gallery-track {
+  display: flex;
+  grid-template-columns: none;
+  gap: 0;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+  background: transparent;
+  border: 0;
+  border-radius: 0.3rem;
+  box-shadow: none;
+}
+
+article .isr-gallery-track::-webkit-scrollbar {
+  display: none;
+}
+
+article .isr-gallery-track > img.isr-gallery-slide {
+  flex: 0 0 100%;
+  width: 100%;
+  min-width: 100%;
+  height: clamp(18rem, 58vw, 42rem);
+  margin: 0;
+  object-fit: contain;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  background: color-mix(in srgb, var(--light) 88%, black 12%);
+  border-radius: 0.28rem;
+  transform: none;
+}
+
+article .isr-gallery-track > img.isr-gallery-slide:hover {
+  transform: none;
+}
+
+article .isr-gallery-button {
+  position: absolute;
+  top: 50%;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--light) 55%, var(--dark) 45%);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--light) 82%, transparent);
+  color: var(--dark);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+  font: 400 2rem/1 system-ui, sans-serif;
+  cursor: pointer;
+  transform: translateY(-50%);
+  backdrop-filter: blur(4px);
+}
+
+article .isr-gallery-previous {
+  left: 1.25rem;
+}
+
+article .isr-gallery-next {
+  right: 1.25rem;
+}
+
+article .isr-gallery-button:hover:not(:disabled),
+article .isr-gallery-button:focus-visible {
+  background: var(--light);
+  border-color: var(--tertiary);
+  outline: none;
+}
+
+article .isr-gallery-button:disabled {
+  opacity: 0.28;
+  cursor: default;
+}
+
+article .isr-gallery-status {
+  position: absolute;
+  right: 1.25rem;
+  bottom: 1.2rem;
+  z-index: 3;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(20, 18, 15, 0.72);
+  color: #fff;
+  font-family: var(--bodyFont);
+  font-size: 0.78rem;
+  line-height: 1.4;
+  pointer-events: none;
+}
+
+article .isr-gallery-track:focus-visible {
+  outline: 2px solid var(--tertiary);
+  outline-offset: 3px;
+}
+
+@media (max-width: 800px) {
+  article .isr-gallery-shell {
+    padding: 0.55rem;
+  }
+
+  article .isr-gallery-track > img.isr-gallery-slide {
+    height: clamp(16rem, 72vw, 32rem);
+  }
+
+  article .isr-gallery-button {
+    width: 2.35rem;
+    height: 2.35rem;
+    font-size: 1.65rem;
+  }
+
+  article .isr-gallery-previous {
+    left: 0.85rem;
+  }
+
+  article .isr-gallery-next {
+    right: 0.85rem;
+  }
+
+  article .isr-gallery-status {
+    right: 0.85rem;
+    bottom: 0.85rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  article .isr-gallery-shell > .isr-gallery-track {
+    scroll-behavior: auto;
+  }
+}
+</style><script src="../../../../prescript-2bfc6315.js" type="application/javascript" data-persist="true"></script><script type="application/javascript" data-persist="true">const fetchData = (() => {
+  let request
+  const load = () => request ??= fetch("../../../../static/contentIndex.json").then((response) => {
+    if (!response.ok) throw new Error("Content index request failed: " + response.status)
+    return response.json()
+  })
+  return {
+    then: (onFulfilled, onRejected) => load().then(onFulfilled, onRejected),
+    catch: (onRejected) => load().catch(onRejected),
+    finally: (onFinally) => load().finally(onFinally),
+  }
+})()</script><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=%5C%22Libre%20Baskerville%5C%22%2C%20Georgia%2C%20serif%3Awght%40400%3B700&amp;family=%5C%22Source%20Serif%204%5C%22%2C%20Georgia%2C%20serif%3Aital%2Cwght%400%2C400%3B0%2C600%3B1%2C400%3B1%2C600&amp;family=%5C%22IBM%20Plex%20Mono%5C%22%2C%20monospace%3Awght%40400%3B600&amp;display=swap"/><meta property="og:image:width" content="1200"/><meta property="og:image:height" content="630"/><meta property="og:image" content="https://bobzap66.github.io/lantern-and-ledger/campaigns/kingmaker/reference/world-anvil/kingmaker-npc-master-reference-og-image.webp"/><meta property="og:image:url" content="https://bobzap66.github.io/lantern-and-ledger/campaigns/kingmaker/reference/world-anvil/kingmaker-npc-master-reference-og-image.webp"/><meta name="twitter:image" content="https://bobzap66.github.io/lantern-and-ledger/campaigns/kingmaker/reference/world-anvil/kingmaker-npc-master-reference-og-image.webp"/><meta property="og:image:type" content="image/webp"/></head><body data-slug="campaigns/kingmaker/reference/world-anvil/kingmaker-npc-master-reference" data-basepath="/lantern-and-ledger"><style>
+html.campaign-spoiler-locked {
+  overflow: hidden;
+}
+
+.campaign-spoiler-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  padding: 1.5rem;
+  background: var(--light);
+  color: var(--dark);
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.campaign-spoiler-gate[hidden] {
+  display: none !important;
+}
+
+.campaign-spoiler-gate-card {
+  width: min(100%, 42rem);
+  box-sizing: border-box;
+  padding: clamp(1.5rem, 5vw, 3rem);
+  border: 1px solid var(--tertiary);
+  border-radius: 0.35rem;
+  background: var(--light);
+  color: var(--dark);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.22);
+  text-align: center;
+}
+
+.campaign-spoiler-eyebrow {
+  margin: 0 0 0.65rem;
+  color: var(--tertiary);
+  font-family: var(--bodyFont);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.campaign-spoiler-gate-card h2 {
+  margin: 0 0 1rem;
+  font-size: clamp(1.55rem, 5vw, 2.45rem);
+}
+
+.campaign-spoiler-gate-card p:not(.campaign-spoiler-eyebrow) {
+  max-width: 34rem;
+  margin: 0 auto;
+  line-height: 1.65;
+}
+
+.campaign-spoiler-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1.6rem;
+}
+
+.campaign-spoiler-actions button,
+.campaign-spoiler-reset {
+  appearance: none;
+  border: 1px solid var(--gray);
+  border-radius: 0.25rem;
+  padding: 0.72rem 1rem;
+  background: var(--lightgray);
+  color: var(--dark);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.campaign-spoiler-actions button.is-primary {
+  border-color: var(--tertiary);
+  background: var(--tertiary);
+  color: var(--light);
+}
+
+.campaign-spoiler-actions button:hover,
+.campaign-spoiler-actions button:focus-visible,
+.campaign-spoiler-reset:hover,
+.campaign-spoiler-reset:focus-visible {
+  filter: brightness(0.96);
+  outline: 2px solid var(--secondary);
+  outline-offset: 2px;
+}
+
+.campaign-spoiler-reset {
+  display: block;
+  width: fit-content;
+  margin: 0.8rem 0 0 auto;
+  padding: 0.5rem 0.75rem;
+  border-color: var(--campaign-page-accent, var(--tertiary));
+  background: color-mix(
+    in srgb,
+    var(--campaign-page-accent, var(--tertiary)) 82%,
+    var(--dark) 18%
+  );
+  color: #fff8e8;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--campaign-page-accent, var(--tertiary)) 24%, transparent);
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+.campaign-spoiler-reset[hidden] {
+  display: none !important;
+}
+
+@media (max-width: 600px) {
+  .campaign-spoiler-actions {
+    flex-direction: column;
+  }
+
+  .campaign-spoiler-actions button {
+    width: 100%;
+  }
+}
+
+#quartz-body.campaign-spoiler-pending > :not(.campaign-spoiler-gate) {
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+#quartz-body.campaign-spoiler-pending > .campaign-spoiler-gate {
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+:root {
+  --isr-gold: #c58b2b !important;
+  --isr-gold-soft: rgba(197, 139, 43, 0.14) !important;
+  --isr-navy: #405c68 !important;
+  --isr-burgundy: #685238 !important;
+  --isr-paper: #eee1c3 !important;
+  --isr-ink: #17140f !important;
+  --isr-rule: rgba(104, 82, 56, 0.28) !important;
+  --isr-shadow: 0 12px 32px rgba(72, 52, 28, 0.09) !important;
+}
+
+[saved-theme="dark"] {
+  --isr-gold: #d6a64c !important;
+  --isr-gold-soft: rgba(214, 166, 76, 0.14) !important;
+  --isr-navy: #89a4ae !important;
+  --isr-burgundy: #b9a27d !important;
+  --isr-paper: #1b1915 !important;
+  --isr-ink: #eee1c3 !important;
+  --isr-rule: rgba(238, 225, 195, 0.2) !important;
+  --isr-shadow: 0 12px 32px rgba(0, 0, 0, 0.24) !important;
+}
+
+/* The old shared cover is superseded by the Lantern and Ledger masthead. */
+.global-page-cover {
+  display: none !important;
+}
+
+.lantern-ledger-site-header {
+  display: block;
+  width: 100%;
+  margin: 0 0 1.6rem;
+}
+
+.lantern-ledger-masthead {
+  display: block;
+  width: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+
+.lantern-ledger-masthead picture,
+.lantern-ledger-masthead img {
+  display: block;
+  width: 100%;
+}
+
+.lantern-ledger-masthead img {
+  width: min(100%, 24rem);
+  height: auto;
+  max-height: none;
+  margin-inline: auto;
+  object-fit: contain;
+  aspect-ratio: 8 / 3;
+  border: 1px solid var(--isr-rule);
+  border-radius: 0.22rem;
+  background: var(--light);
+  box-shadow: 0 8px 24px rgba(54, 40, 24, 0.1);
+}
+
+.lantern-ledger-archive-rule {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin: 0.7rem 0 0;
+  color: var(--darkgray);
+  font-family: var(--bodyFont);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.lantern-ledger-archive-rule::before,
+.lantern-ledger-archive-rule::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--isr-rule);
+}
+
+.lantern-ledger-header-children {
+  margin-top: 1rem;
+}
+
+/* Retire the old Gazetteer label wherever the page-title component appears. */
+.page-title::after {
+  content: "THE LANTERN AND LEDGER · ARCHIVES" !important;
+  color: var(--tertiary) !important;
+  font-family: var(--bodyFont) !important;
+  font-size: 0.62rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.18em !important;
+}
+
+@media (max-width: 800px) {
+  .lantern-ledger-site-header {
+    margin-bottom: 1.1rem;
+  }
+
+  .lantern-ledger-masthead picture {
+    display: grid;
+    place-items: center;
+  }
+
+  .lantern-ledger-masthead img {
+    width: clamp(6rem, 28vw, 7.5rem);
+    max-height: none;
+    margin-inline: auto;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    object-fit: contain;
+    aspect-ratio: 1;
+  }
+
+  .lantern-ledger-archive-rule {
+    margin-top: 0.55rem;
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+  }
+}
+
+@media (max-width: 430px) {
+  .lantern-ledger-archive-rule {
+    gap: 0.45rem;
+    font-size: 0.55rem;
+    letter-spacing: 0.08em;
+  }
+}
+</style><div id="quartz-root" class="page" data-frame="default"><div id="quartz-body" class="campaign--kingmaker campaign-spoiler-pending"><div class="campaign-spoiler-gate" data-campaign-key="kingmaker" data-campaign-name="Kingmaker" role="dialog" aria-modal="true" aria-labelledby="campaign-spoiler-title"><div class="campaign-spoiler-gate-card"><p class="campaign-spoiler-eyebrow">Campaign Spoiler Warning</p><h2 id="campaign-spoiler-title">Warning: Spoilers for Kingmaker</h2><p>This section contains spoilers for the Kingmaker campaign. Continue only if you are a player in this campaign and want access to its archive.</p><div class="campaign-spoiler-actions"><button type="button" data-spoiler-action="back">Go Back</button><button class="is-primary" type="button" data-spoiler-action="opt-in">Player in the Kingmaker Campaign</button></div></div></div><div class="left sidebar"><h2 class="page-title"><a href="../../../..">The Lantern and Ledger</a></h2><div class="mobile-only"><div class="spacer"></div></div><div class="flex-component" style="flex-direction: row; flex-wrap: nowrap; gap: 0.5rem;"><div style="flex-grow: 1; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><div class="search"><button class="search-button" aria-label="Search" aria-expanded="false"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.9 19.7"><title>Search</title><g class="search-path" fill="none"><path stroke-linecap="square" d="M18.5 18.3l-5.4-5.4"></path><circle cx="8" cy="8" r="7"></circle></g></svg><p>Search</p></button><div class="search-container"><div class="search-space"><input autocomplete="off" class="search-bar" name="search" type="text" aria-label="Search for something..." placeholder="Search for something..."/><div class="search-layout" data-preview="true" data-field-priority="[&quot;title&quot;,&quot;content&quot;,&quot;tags&quot;]"></div></div></div></div></div><div style="flex-grow: 0; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><button class="darkmode" aria-label="Dark mode"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="dayIcon" x="0px" y="0px" viewBox="0 0 35 35" style="enable-background:new 0 0 35 35" xml:space="preserve" aria-label="Dark mode"><title>Dark mode</title><path d="M6,17.5C6,16.672,5.328,16,4.5,16h-3C0.672,16,0,16.672,0,17.5    S0.672,19,1.5,19h3C5.328,19,6,18.328,6,17.5z M7.5,26c-0.414,0-0.789,0.168-1.061,0.439l-2,2C4.168,28.711,4,29.086,4,29.5    C4,30.328,4.671,31,5.5,31c0.414,0,0.789-0.168,1.06-0.44l2-2C8.832,28.289,9,27.914,9,27.5C9,26.672,8.329,26,7.5,26z M17.5,6    C18.329,6,19,5.328,19,4.5v-3C19,0.672,18.329,0,17.5,0S16,0.672,16,1.5v3C16,5.328,16.671,6,17.5,6z M27.5,9    c0.414,0,0.789-0.168,1.06-0.439l2-2C30.832,6.289,31,5.914,31,5.5C31,4.672,30.329,4,29.5,4c-0.414,0-0.789,0.168-1.061,0.44    l-2,2C26.168,6.711,26,7.086,26,7.5C26,8.328,26.671,9,27.5,9z M6.439,8.561C6.711,8.832,7.086,9,7.5,9C8.328,9,9,8.328,9,7.5    c0-0.414-0.168-0.789-0.439-1.061l-2-2C6.289,4.168,5.914,4,5.5,4C4.672,4,4,4.672,4,5.5c0,0.414,0.168,0.789,0.439,1.06    L6.439,8.561z M33.5,16h-3c-0.828,0-1.5,0.672-1.5,1.5s0.672,1.5,1.5,1.5h3c0.828,0,1.5-0.672,1.5-1.5S34.328,16,33.5,16z     M28.561,26.439C28.289,26.168,27.914,26,27.5,26c-0.828,0-1.5,0.672-1.5,1.5c0,0.414,0.168,0.789,0.439,1.06l2,2    C28.711,30.832,29.086,31,29.5,31c0.828,0,1.5-0.672,1.5-1.5c0-0.414-0.168-0.789-0.439-1.061L28.561,26.439z M17.5,29    c-0.829,0-1.5,0.672-1.5,1.5v3c0,0.828,0.671,1.5,1.5,1.5s1.5-0.672,1.5-1.5v-3C19,29.672,18.329,29,17.5,29z M17.5,7    C11.71,7,7,11.71,7,17.5S11.71,28,17.5,28S28,23.29,28,17.5S23.29,7,17.5,7z M17.5,25c-4.136,0-7.5-3.364-7.5-7.5    c0-4.136,3.364-7.5,7.5-7.5c4.136,0,7.5,3.364,7.5,7.5C25,21.636,21.636,25,17.5,25z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="nightIcon" x="0px" y="0px" viewBox="0 0 100 100" style="enable-background:new 0 0 100 100" xml:space="preserve" aria-label="Light mode"><title>Light mode</title><path d="M96.76,66.458c-0.853-0.852-2.15-1.064-3.23-0.534c-6.063,2.991-12.858,4.571-19.655,4.571  C62.022,70.495,50.88,65.88,42.5,57.5C29.043,44.043,25.658,23.536,34.076,6.47c0.532-1.08,0.318-2.379-0.534-3.23  c-0.851-0.852-2.15-1.064-3.23-0.534c-4.918,2.427-9.375,5.619-13.246,9.491c-9.447,9.447-14.65,22.008-14.65,35.369  c0,13.36,5.203,25.921,14.65,35.368s22.008,14.65,35.368,14.65c13.361,0,25.921-5.203,35.369-14.65  c3.872-3.871,7.064-8.328,9.491-13.246C97.826,68.608,97.611,67.309,96.76,66.458z"></path></svg></button></div><div style="flex-grow: 0; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><button class="readermode" aria-label="Reader mode"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="readerIcon" fill="currentColor" stroke="currentColor" stroke-width="0.2" stroke-linecap="round" stroke-linejoin="round" width="64px" height="64px" viewBox="0 0 24 24" aria-label="Reader mode"><title>Reader mode</title><g transform="translate(-1.8, -1.8) scale(1.15, 1.2)"><path d="M8.9891247,2.5 C10.1384702,2.5 11.2209868,2.96705384 12.0049645,3.76669482 C12.7883914,2.96705384 13.8709081,2.5 15.0202536,2.5 L18.7549359,2.5 C19.1691495,2.5 19.5049359,2.83578644 19.5049359,3.25 L19.5046891,4.004 L21.2546891,4.00457396 C21.6343849,4.00457396 21.9481801,4.28672784 21.9978425,4.6528034 L22.0046891,4.75457396 L22.0046891,20.25 C22.0046891,20.6296958 21.7225353,20.943491 21.3564597,20.9931534 L21.2546891,21 L2.75468914,21 C2.37499337,21 2.06119817,20.7178461 2.01153575,20.3517706 L2.00468914,20.25 L2.00468914,4.75457396 C2.00468914,4.37487819 2.28684302,4.061083 2.65291858,4.01142057 L2.75468914,4.00457396 L4.50368914,4.004 L4.50444233,3.25 C4.50444233,2.87030423 4.78659621,2.55650904 5.15267177,2.50684662 L5.25444233,2.5 L8.9891247,2.5 Z M4.50368914,5.504 L3.50468914,5.504 L3.50468914,19.5 L10.9478955,19.4998273 C10.4513189,18.9207296 9.73864328,18.5588115 8.96709342,18.5065584 L8.77307039,18.5 L5.25444233,18.5 C4.87474657,18.5 4.56095137,18.2178461 4.51128895,17.8517706 L4.50444233,17.75 L4.50368914,5.504 Z M19.5049359,17.75 C19.5049359,18.1642136 19.1691495,18.5 18.7549359,18.5 L15.2363079,18.5 C14.3910149,18.5 13.5994408,18.8724714 13.0614828,19.4998273 L20.5046891,19.5 L20.5046891,5.504 L19.5046891,5.504 L19.5049359,17.75 Z M18.0059359,3.999 L15.0202536,4 L14.8259077,4.00692283 C13.9889509,4.06666544 13.2254227,4.50975805 12.7549359,5.212 L12.7549359,17.777 L12.7782651,17.7601316 C13.4923805,17.2719483 14.3447024,17 15.2363079,17 L18.0059359,16.999 L18.0056891,4.798 L18.0033792,4.75457396 L18.0056891,4.71 L18.0059359,3.999 Z M8.9891247,4 L6.00368914,3.999 L6.00599909,4.75457396 L6.00599909,4.75457396 L6.00368914,4.783 L6.00368914,16.999 L8.77307039,17 C9.57551536,17 10.3461406,17.2202781 11.0128313,17.6202194 L11.2536891,17.776 L11.2536891,5.211 C10.8200889,4.56369974 10.1361548,4.13636104 9.37521067,4.02745763 L9.18347055,4.00692283 L8.9891247,4 Z"></path></g></svg></button></div></div><div class="explorer nav-files-container" data-behavior="link" data-collapsed="collapsed" data-savestate="true" data-data-fns="{&quot;order&quot;:[&quot;filter&quot;,&quot;map&quot;,&quot;sort&quot;],&quot;sortFn&quot;:&quot;(a2, b2) => {\n    if (!a2.isFolder &amp;&amp; !b2.isFolder || a2.isFolder &amp;&amp; b2.isFolder) {\n      return (a2.displayName || \&quot;\&quot;).localeCompare(b2.displayName || \&quot;\&quot;, void 0, {\n        numeric: true,\n        sensitivity: \&quot;base\&quot;\n      });\n    }\n    if (!a2.isFolder &amp;&amp; b2.isFolder) {\n      return 1;\n    }\n    return -1;\n  }&quot;,&quot;filterFn&quot;:&quot;(node) => node.slugSegment !== \&quot;tags\&quot;&quot;,&quot;mapFn&quot;:&quot;(node) => {\n    return node;\n  }&quot;}"><button type="button" class="explorer-toggle mobile-explorer hide-until-loaded" data-mobile="true" aria-controls="explorer-669" aria-label="Explorer"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-menu"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button><button type="button" class="title-button explorer-toggle desktop-explorer" data-mobile="false" aria-expanded="true"><h2>Explorer</h2><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="5 8 14 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fold"><polyline points="6 9 12 15 18 9"></polyline></svg></button><div id="explorer-669" class="explorer-content" aria-expanded="false" role="group"><ul class="explorer-ul overflow" id="list-0"><li class="overflow-end"></li></ul></div><template id="template-file"><li><a href="#" class="nav-file-title tree-item-self"></a></li></template><template id="template-folder"><li><div class="folder-container nav-folder-title tree-item-self"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="5 8 14 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="folder-icon nav-folder-collapse-indicator collapse-icon"><polyline points="6 9 12 15 18 9"></polyline></svg><div><button class="folder-button"><span class="folder-title"></span></button></div></div><div class="folder-outer"><ul class="content tree-item-children"></ul></div></li></template></div></div><div class="center"><div class="page-header"><link rel="stylesheet" href="/lantern-and-ledger/static/preferences.css"/><script src="/lantern-and-ledger/static/campaign-spoilers.js"></script><script src="/lantern-and-ledger/static/preferences.js"></script><script src="/lantern-and-ledger/static/golarion-page-loader.js"></script><header class="lantern-ledger-site-header"><a class="lantern-ledger-masthead" href="/lantern-and-ledger/" aria-label="Campaign site home"><picture><source media="(max-width: 800px)" srcset="/lantern-and-ledger/assets/images/lantern-and-ledger-branding/lantern-and-ledger-compact.webp" width="1254" height="1254"/><img src="/lantern-and-ledger/assets/images/lantern-and-ledger-branding/wide_vintage_newspaper_masthead_style_illustration.webp" alt="The Lantern and Ledger — Light for the Present. Record for the Future." width="2048" height="768" decoding="async"/></picture></a><div class="lantern-ledger-archive-rule" aria-hidden="true"><span>THE LANTERN AND LEDGER · ARCHIVES</span></div></header><div class="popover-hint"><nav class="breadcrumb-container" aria-label="breadcrumbs"><div class="breadcrumb-element"><a href="../../../../">Home</a><p> ❯ </p></div><div class="breadcrumb-element"><a href="../../../../campaigns/">Campaigns</a><p> ❯ </p></div><div class="breadcrumb-element"><a href="../../../../campaigns/kingmaker/">Kingmaker</a><p> ❯ </p></div><div class="breadcrumb-element"><a href="../../../../campaigns/kingmaker/reference/">Reference</a><p> ❯ </p></div><div class="breadcrumb-element"><a href="../../../../campaigns/kingmaker/reference/world-anvil/">World Anvil</a><p> ❯ </p></div><div class="breadcrumb-element"><a href>Kingmaker NPC Master Reference</a></div></nav><h1 class="article-title">Kingmaker NPC Master Reference</h1><p show-comma="true" class="content-meta"><time datetime="2026-09-17T17:47:38.000Z">Sep 17, 2026</time><span>28 min read</span></p><template class="faceted-search-template"><div class="faceted-search"><button class="faceted-search__trigger" type="button" aria-haspopup="dialog" aria-expanded="false"><svg aria-hidden="true" viewBox="0 0 20 20"><circle cx="8.25" cy="8.25" r="5.75" fill="none"></circle><path d="m12.5 12.5 5 5"></path></svg><span>Search archive</span><kbd>Ctrl K</kbd></button><div class="faceted-search__overlay" hidden><section class="faceted-search__dialog" role="dialog" aria-modal="true" aria-labelledby="faceted-search-title"><header class="faceted-search__header"><div><p class="faceted-search__eyebrow">Lantern &amp; Ledger Archive</p><h2 id="faceted-search-title">Search the records</h2></div><button class="faceted-search__close" type="button" aria-label="Close search">×</button></header><label class="faceted-search__query-label"><span class="visually-hidden">Search terms</span><svg aria-hidden="true" viewBox="0 0 20 20"><circle cx="8.25" cy="8.25" r="5.75" fill="none"></circle><path d="m12.5 12.5 5 5"></path></svg><input class="faceted-search__query" type="search" autocomplete="off" placeholder="Search people, places, sessions, and stories…"/></label><div class="faceted-search__filters" aria-label="Search filters"><label><span>Campaign</span><select class="faceted-search__campaign"><option value>All campaigns</option></select></label><label><span>Record type</span><select class="faceted-search__type"><option value>All record types</option></select></label><button class="faceted-search__clear" type="button">Clear</button></div><div class="faceted-search__status" aria-live="polite">Loading the archive…</div><div class="faceted-search__results" role="listbox" aria-label="Search results"></div></section></div></div></template><span class="reading-progress-anchor" aria-hidden="true"></span></div></div><article class="popover-hint"><div class="markdown-preview-view markdown-rendered"><h1 id="kingmaker-npc-master-reference">Kingmaker NPC Master Reference<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#kingmaker-npc-master-reference" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h1>
+<blockquote class="callout note" data-callout="note">
+<div class="callout-title">
+                  <div class="callout-icon"></div>
+                  <div class="callout-title-inner"><p>Campaign reference </p></div>
+                  
+                </div>
+<div class="callout-content">
+<p>This searchable index was generated from the campaign maintenance workbook. The original workbook is linked below for archival use.</p>
+</div>
+</blockquote>
+<p><a href="../../../../assets/images/reference/kingmaker-npc-master-reference.xlsx" class="internal internal-link alias" data-slug="assets/images/reference/kingmaker-npc-master-reference.xlsx">Download the original workbook</a></p>
+<h2 id="kingmaker-npc-master-reference-1">KINGMAKER NPC MASTER REFERENCE<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#kingmaker-npc-master-reference-1" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>Named NPCs introduced or developed in campaign articles. Statuses are campaign status as last confirmed; Unknown means the reviewed record did not establish a fate.</p>
+<h3 id="akiros-insmort">Akiros Insmort<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#akiros-insmort" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Greenbelt / Republic</li>
+<li><strong>Role / Affiliation:</strong> Former Stag Lord lieutenant; redeemed ally</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> dedicated NPC article; campaign notes</li>
+<li><strong>Notes:</strong> Last known alive.</li>
+<li><strong>Article Last Updated:</strong> 2025-12-15</li>
+<li><strong>Next Review Due:</strong> 2026-12-15</li>
+<li><strong>Review Status:</strong> Current</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="ameon-trask">Ameon Trask<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#ameon-trask" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Dead</li>
+<li><strong>Deceased?:</strong> Yes</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Fort Drelev</li>
+<li><strong>Role / Affiliation:</strong> Commander of Drelev’s invading army</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> Session 43 Summary; Guildhall of the Joined Hands Article</li>
+<li><strong>Notes:</strong> Killed with Hannis Drelev in the banquet hall.</li>
+<li><strong>Article Last Updated:</strong> 2026-08-12</li>
+<li><strong>Next Review Due:</strong> 2027-08-12</li>
+<li><strong>Review Status:</strong> Current</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="amiri">Amiri<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#amiri" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Tiger Lords / western marches</li>
+<li><strong>Role / Affiliation:</strong> Barbarian; leader among surviving Tiger Lords</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> dedicated NPC article; Thumping Waters Article</li>
+<li><strong>Notes:</strong> Last known alive.</li>
+<li><strong>Article Last Updated:</strong> 2025-12-10</li>
+<li><strong>Next Review Due:</strong> 2026-12-10</li>
+<li><strong>Review Status:</strong> Current</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="anika-sorn">Anika Sorn<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#anika-sorn" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Thumpington</li>
+<li><strong>Role / Affiliation:</strong> Lecturer in Forestry and Material Supply</li>
+<li><strong>Origin / Provenance:</strong> Locally created</li>
+<li><strong>Local Source(s):</strong> Free University / Lantern and Ledger articles</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="annamede-belavara">Annamede Belavara<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#annamede-belavara" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Pitax</li>
+<li><strong>Role / Affiliation:</strong> First Speaker in the postwar government</li>
+<li><strong>Origin / Provenance:</strong> Paizo Companion Guide / campaign</li>
+<li><strong>Local Source(s):</strong> Pitax Article</li>
+<li><strong>Notes:</strong> Dedicated dedicated NPC article not found in NPC category.</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="armag-the-twice-born">Armag the Twice-Born<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#armag-the-twice-born" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Dead</li>
+<li><strong>Deceased?:</strong> Yes</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Tiger Lords / Armag’s Tomb</li>
+<li><strong>Role / Affiliation:</strong> Tiger Lord warlord</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> Session 45–46 Summaries; Ovinrbaane Article</li>
+<li><strong>Notes:</strong> Killed in Armag’s Tomb.</li>
+<li><strong>Article Last Updated:</strong> 2025-12-14</li>
+<li><strong>Next Review Due:</strong> 2026-12-14</li>
+<li><strong>Review Status:</strong> Current</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="asmeranda-ilata">Asmeranda Ilata<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#asmeranda-ilata" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Pitax</li>
+<li><strong>Role / Affiliation:</strong> Figure of the Red Crescent Theatre</li>
+<li><strong>Origin / Provenance:</strong> Paizo Companion Guide / campaign</li>
+<li><strong>Local Source(s):</strong> Pitax Article; Session 56 Restricted Sidebar</li>
+<li><strong>Notes:</strong> Recovered during the liberation of Pitax.</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="atalia-gitaren">Atalia Gitaren<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#atalia-gitaren" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Pitax</li>
+<li><strong>Role / Affiliation:</strong> Headmistress, Academy of the Arts</li>
+<li><strong>Origin / Provenance:</strong> Paizo Companion Guide / campaign</li>
+<li><strong>Local Source(s):</strong> Pitax Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="atlee-quinge">Atlee Quinge<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#atlee-quinge" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Pitax</li>
+<li><strong>Role / Affiliation:</strong> Civic portfolio: Arts and Education</li>
+<li><strong>Origin / Provenance:</strong> Paizo Companion Guide / campaign</li>
+<li><strong>Local Source(s):</strong> Pitax Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="auchs">Auchs<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#auchs" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Unknown</li>
+<li><strong>Deceased?:</strong> Unknown</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Stag Lord’s Fort</li>
+<li><strong>Role / Affiliation:</strong> Stag Lord lieutenant</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> dedicated NPC article</li>
+<li><strong>Notes:</strong> Current campaign fate not confirmed in reviewed notes.</li>
+<li><strong>Article Last Updated:</strong> 2025-09-19</li>
+<li><strong>Next Review Due:</strong> 2026-09-19</li>
+<li><strong>Review Status:</strong> Review soon</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="bokken">Bokken<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#bokken" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Greenbelt</li>
+<li><strong>Role / Affiliation:</strong> Hermit and alchemist</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> dedicated NPC article</li>
+<li><strong>Notes:</strong> Last known alive.</li>
+<li><strong>Article Last Updated:</strong> 2025-09-19</li>
+<li><strong>Next Review Due:</strong> 2026-09-19</li>
+<li><strong>Review Status:</strong> Review soon</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="brother-corren-voss">Brother Corren Voss<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#brother-corren-voss" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Thumpington</li>
+<li><strong>Role / Affiliation:</strong> Healer, Tristian’s Dawn</li>
+<li><strong>Origin / Provenance:</strong> Locally created</li>
+<li><strong>Local Source(s):</strong> Tristian’s Dawn Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="chief-sootscale">Chief Sootscale<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#chief-sootscale" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Retired (alive)</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Sootscale Valley</li>
+<li><strong>Role / Affiliation:</strong> Retired chief of the Sootscale kobolds</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> dedicated NPC article; Velka’s Riverside Shrine Article</li>
+<li><strong>Notes:</strong> Retired; succeeded by Kereek.</li>
+<li><strong>Article Last Updated:</strong> 2026-07-27</li>
+<li><strong>Next Review Due:</strong> 2027-07-27</li>
+<li><strong>Review Status:</strong> Current</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="darya-holt">Darya Holt<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#darya-holt" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Thumpington / traveling</li>
+<li><strong>Role / Affiliation:</strong> Traveling correspondent, Lantern and Ledger</li>
+<li><strong>Origin / Provenance:</strong> Locally created</li>
+<li><strong>Local Source(s):</strong> Lantern and Ledger Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="daska-broadbough">Daska Broadbough<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#daska-broadbough" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Fort Serenko</li>
+<li><strong>Role / Affiliation:</strong> River Boss, Fort Serenko Lumberworks</li>
+<li><strong>Origin / Provenance:</strong> Locally created</li>
+<li><strong>Local Source(s):</strong> Fort Serenko Lumberworks Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="dawnblade-kalessa-marr">Dawnblade Kalessa Marr<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#dawnblade-kalessa-marr" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Thumpington</li>
+<li><strong>Role / Affiliation:</strong> Temple of First Light staff</li>
+<li><strong>Origin / Provenance:</strong> Locally created</li>
+<li><strong>Local Source(s):</strong> Temple of First Light Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="dawnwarden-amaya-qadir">Dawnwarden Amaya Qadir<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#dawnwarden-amaya-qadir" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Thumpington</li>
+<li><strong>Role / Affiliation:</strong> Director, Tristian’s Dawn orphanage</li>
+<li><strong>Origin / Provenance:</strong> Locally created</li>
+<li><strong>Local Source(s):</strong> Tristian’s Dawn Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="dorrin-oakgear">Dorrin Oakgear<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#dorrin-oakgear" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Olegton</li>
+<li><strong>Role / Affiliation:</strong> Millwright, Levet’s Mill</li>
+<li><strong>Origin / Provenance:</strong> Locally created</li>
+<li><strong>Local Source(s):</strong> Levet’s Mill Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="drey-yarness">Drey Yarness<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#drey-yarness" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Pitax</li>
+<li><strong>Role / Affiliation:</strong> Civic portfolio: Law and Redress</li>
+<li><strong>Origin / Provenance:</strong> Paizo Companion Guide / campaign</li>
+<li><strong>Local Source(s):</strong> Pitax Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="durnan-stoutbeard">Durnan Stoutbeard<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#durnan-stoutbeard" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Varnhold</li>
+<li><strong>Role / Affiliation:</strong> Owner and brewmaster, Delver’s Brewery</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign-expanded</li>
+<li><strong>Local Source(s):</strong> Delver’s Brewery Article</li>
+<li><strong>Notes:</strong> Referenced in the Kingmaker sourcebook.</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="eda-wren">Eda Wren<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#eda-wren" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Tok-Nikrat</li>
+<li><strong>Role / Affiliation:</strong> Common-speaking liaison, the Whispering Step</li>
+<li><strong>Origin / Provenance:</strong> Locally created</li>
+<li><strong>Local Source(s):</strong> The Whispering Step Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="ekundayo">Ekundayo<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#ekundayo" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Republic / western marches</li>
+<li><strong>Role / Affiliation:</strong> Ranger and companion</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> dedicated NPC article</li>
+<li><strong>Notes:</strong> Last known alive.</li>
+<li><strong>Article Last Updated:</strong> 2025-09-19</li>
+<li><strong>Next Review Due:</strong> 2026-09-19</li>
+<li><strong>Review Status:</strong> Review soon</li>
+<li><strong>Artwork?:</strong> Yes</li>
+<li><strong>Artwork File:</strong> Assets\Portraits\Ruling Council\Ekundayo - Minister of Defense v2.webp</li>
+</ul>
+<h3 id="elga-verniex">Elga Verniex<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#elga-verniex" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Republic</li>
+<li><strong>Role / Affiliation:</strong> Campaign NPC</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> dedicated NPC article</li>
+<li><strong>Notes:</strong> Primary settlement should be refined when her article is next reviewed.</li>
+<li><strong>Article Last Updated:</strong> 2025-09-19</li>
+<li><strong>Next Review Due:</strong> 2026-09-19</li>
+<li><strong>Review Status:</strong> Review soon</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="eobald">Eobald<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#eobald" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Thumpington; formerly Pitax</li>
+<li><strong>Role / Affiliation:</strong> Wizard, educator, printer, and theatrical director</li>
+<li><strong>Origin / Provenance:</strong> Paizo Companion Guide / campaign-expanded</li>
+<li><strong>Local Source(s):</strong> Eobald Article; Free University Article</li>
+<li><strong>Notes:</strong> Founding intellectual influence on the university and government press.</li>
+<li><strong>Article Last Updated:</strong> 2026-09-01</li>
+<li><strong>Next Review Due:</strong> 2027-09-01</li>
+<li><strong>Review Status:</strong> Current</li>
+<li><strong>Artwork?:</strong> Yes</li>
+<li><strong>Artwork File:</strong> Assets\Portraits\Eobald - University Lecturer.png</li>
+</ul>
+<h3 id="euan-blackwood">Euan Blackwood<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#euan-blackwood" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Republic</li>
+<li><strong>Role / Affiliation:</strong> Campaign NPC</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> dedicated NPC article</li>
+<li><strong>Notes:</strong> Primary settlement should be refined when his article is next reviewed.</li>
+<li><strong>Article Last Updated:</strong> 2025-09-19</li>
+<li><strong>Next Review Due:</strong> 2026-09-19</li>
+<li><strong>Review Status:</strong> Review soon</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="fenno-pike">Fenno Pike<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#fenno-pike" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Tatzlford</li>
+<li><strong>Role / Affiliation:</strong> Leatherworker; Joined Hands guild member</li>
+<li><strong>Origin / Provenance:</strong> Locally created</li>
+<li><strong>Local Source(s):</strong> Guildhall of the Joined Hands Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="first-dawnpriest-samira-veyd">First Dawnpriest Samira Veyd<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#first-dawnpriest-samira-veyd" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Thumpington</li>
+<li><strong>Role / Affiliation:</strong> Rector, Temple of First Light</li>
+<li><strong>Origin / Provenance:</strong> Locally created</li>
+<li><strong>Local Source(s):</strong> Temple of First Light Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="garrin-whetforge">Garrin Whetforge<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#garrin-whetforge" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Tatzlford</li>
+<li><strong>Role / Affiliation:</strong> Blacksmith; Joined Hands guild member</li>
+<li><strong>Origin / Provenance:</strong> Locally created</li>
+<li><strong>Local Source(s):</strong> Guildhall of the Joined Hands Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="gasperre-liacenza">Gasperre Liacenza<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#gasperre-liacenza" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Pitax</li>
+<li><strong>Role / Affiliation:</strong> Representative of the Banded Houses</li>
+<li><strong>Origin / Provenance:</strong> Paizo Companion Guide / campaign</li>
+<li><strong>Local Source(s):</strong> Pitax Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="ghare-leotos">Ghare Leotos<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#ghare-leotos" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Pitax</li>
+<li><strong>Role / Affiliation:</strong> Civic portfolio: Relief and Faiths</li>
+<li><strong>Origin / Provenance:</strong> Paizo Companion Guide / campaign</li>
+<li><strong>Local Source(s):</strong> Pitax Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="griggit-fizzlesticks">Griggit Fizzlesticks<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#griggit-fizzlesticks" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Greengripe</li>
+<li><strong>Role / Affiliation:</strong> Proprietor and alchemist, Fizzlesticks &amp; Co.</li>
+<li><strong>Origin / Provenance:</strong> Locally created</li>
+<li><strong>Local Source(s):</strong> Fizzlesticks &amp; Co. Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="grigori">Grigori<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#grigori" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Thumpington</li>
+<li><strong>Role / Affiliation:</strong> Agitator; convicted prisoner</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> Sessions 17–18 Summaries; Ministry of Justice Article</li>
+<li><strong>Notes:</strong> Tried and convicted; no death recorded.</li>
+<li><strong>Article Last Updated:</strong> 2025-09-19</li>
+<li><strong>Next Review Due:</strong> 2026-09-19</li>
+<li><strong>Review Status:</strong> Review soon</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="hannis-drelev">Hannis Drelev<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#hannis-drelev" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Dead</li>
+<li><strong>Deceased?:</strong> Yes</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Fort Drelev</li>
+<li><strong>Role / Affiliation:</strong> Former baron of Fort Drelev</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> Session 43 Summary; Thumping Waters Article</li>
+<li><strong>Notes:</strong> Killed in his banquet hall.</li>
+<li><strong>Article Last Updated:</strong> 2025-11-20</li>
+<li><strong>Next Review Due:</strong> 2026-11-20</li>
+<li><strong>Review Status:</strong> Review soon</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="hargulka">Hargulka<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#hargulka" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Dead</li>
+<li><strong>Deceased?:</strong> Yes</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Hargulka’s stronghold</li>
+<li><strong>Role / Affiliation:</strong> Troll king</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> Session 19 Summary; Thumping Waters Article</li>
+<li><strong>Notes:</strong> Killed with Gurija in the troll stronghold.</li>
+<li><strong>Article Last Updated:</strong> 2025-09-19</li>
+<li><strong>Next Review Due:</strong> 2026-09-19</li>
+<li><strong>Review Status:</strong> Review soon</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="harl-edvane">Harl Edvane<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#harl-edvane" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Fort Serenko</li>
+<li><strong>Role / Affiliation:</strong> Master of Works, Fort Serenko Lumberworks</li>
+<li><strong>Origin / Provenance:</strong> Locally created</li>
+<li><strong>Local Source(s):</strong> Fort Serenko Lumberworks Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="harrim">Harrim<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#harrim" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Republic</li>
+<li><strong>Role / Affiliation:</strong> Priest of Groetus; companion</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> dedicated NPC article</li>
+<li><strong>Notes:</strong> Last known alive.</li>
+<li><strong>Article Last Updated:</strong> 2025-09-19</li>
+<li><strong>Next Review Due:</strong> 2026-09-19</li>
+<li><strong>Review Status:</strong> Review soon</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="hearthwarden-oren-pell">Hearthwarden Oren Pell<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#hearthwarden-oren-pell" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Thumpington</li>
+<li><strong>Role / Affiliation:</strong> Temple of First Light staff</li>
+<li><strong>Origin / Provenance:</strong> Locally created</li>
+<li><strong>Local Source(s):</strong> Temple of First Light Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="hesh-tarak">Hesh-Tarak<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#hesh-tarak" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Tok-Nikrat</li>
+<li><strong>Role / Affiliation:</strong> Cook, the Whispering Step</li>
+<li><strong>Origin / Provenance:</strong> Locally created</li>
+<li><strong>Local Source(s):</strong> The Whispering Step Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="ilyana-reeds">Ilyana Reeds<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#ilyana-reeds" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Thumpington</li>
+<li><strong>Role / Affiliation:</strong> Lecturer in Navigation and Applied Cartography</li>
+<li><strong>Origin / Provenance:</strong> Locally created</li>
+<li><strong>Local Source(s):</strong> Free University / Lantern and Ledger articles</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="imeckas-stroon">Imeckas Stroon<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#imeckas-stroon" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Fort Drelev</li>
+<li><strong>Role / Affiliation:</strong> Wizard; Pavetta Stroon-Drelev’s brother</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> Kingmaker Notes; dedicated NPC article</li>
+<li><strong>Notes:</strong> Negotiated with the party during Drelev’s fall; no death recorded.</li>
+<li><strong>Article Last Updated:</strong> 2025-11-20</li>
+<li><strong>Next Review Due:</strong> 2026-11-20</li>
+<li><strong>Review Status:</strong> Review soon</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="ingris">Ingris<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#ingris" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Pitax</li>
+<li><strong>Role / Affiliation:</strong> Representative of Markets and Households</li>
+<li><strong>Origin / Provenance:</strong> Paizo Companion Guide / campaign</li>
+<li><strong>Local Source(s):</strong> Pitax Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="jaethal">Jaethal<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#jaethal" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Republic</li>
+<li><strong>Role / Affiliation:</strong> Inquisitor of Urgathoa; companion</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> dedicated NPC article</li>
+<li><strong>Notes:</strong> Last known alive.</li>
+<li><strong>Article Last Updated:</strong> 2025-09-19</li>
+<li><strong>Next Review Due:</strong> 2026-09-19</li>
+<li><strong>Review Status:</strong> Review soon</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="jamandi-aldori">Jamandi Aldori<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#jamandi-aldori" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Restov / Brevoy</li>
+<li><strong>Role / Affiliation:</strong> Aldori swordlord and charter patron</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> dedicated NPC article</li>
+<li><strong>Notes:</strong> Last known alive.</li>
+<li><strong>Article Last Updated:</strong> 2025-09-19</li>
+<li><strong>Next Review Due:</strong> 2026-09-19</li>
+<li><strong>Review Status:</strong> Review soon</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="jamel-visser">Jamel Visser<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#jamel-visser" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Embeth Hall</li>
+<li><strong>Role / Affiliation:</strong> Governor; leader of the Embeth Travelers</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> Sessions 25–26 Summaries; White Lantern Article</li>
+<li><strong>Notes:</strong> Last known alive.</li>
+<li><strong>Article Last Updated:</strong> 2025-09-19</li>
+<li><strong>Next Review Due:</strong> 2026-09-19</li>
+<li><strong>Review Status:</strong> Review soon</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="jamery-gerbasken">Jamery Gerbasken<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#jamery-gerbasken" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Thumpington</li>
+<li><strong>Role / Affiliation:</strong> Proprietor, the Roc’s Omelette</li>
+<li><strong>Origin / Provenance:</strong> Campaign detail / locally expanded</li>
+<li><strong>Local Source(s):</strong> The Roc’s Omelette Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="jhod-kavken">Jhod Kavken<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#jhod-kavken" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Temple of the Elk / Republic</li>
+<li><strong>Role / Affiliation:</strong> Priest of Erastil</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> dedicated NPC article</li>
+<li><strong>Notes:</strong> Last known alive.</li>
+<li><strong>Article Last Updated:</strong> 2025-12-15</li>
+<li><strong>Next Review Due:</strong> 2026-12-15</li>
+<li><strong>Review Status:</strong> Current</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="jhofre-vascari">Jhofre Vascari<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#jhofre-vascari" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Pitax</li>
+<li><strong>Role / Affiliation:</strong> Civic portfolio: Trade and River Commerce</li>
+<li><strong>Origin / Provenance:</strong> Paizo Companion Guide / campaign</li>
+<li><strong>Local Source(s):</strong> Pitax Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="joravin-pyathe">Joravin Pyathe<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#joravin-pyathe" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Pitax</li>
+<li><strong>Role / Affiliation:</strong> Civic portfolio: Harbor and Public Works</li>
+<li><strong>Origin / Provenance:</strong> Paizo Companion Guide / campaign</li>
+<li><strong>Local Source(s):</strong> Pitax Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="jubilost-narthropple">Jubilost Narthropple<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#jubilost-narthropple" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Republic</li>
+<li><strong>Role / Affiliation:</strong> Explorer, author, and alchemist</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> dedicated NPC article</li>
+<li><strong>Notes:</strong> Last known alive.</li>
+<li><strong>Article Last Updated:</strong> 2025-12-15</li>
+<li><strong>Next Review Due:</strong> 2026-12-15</li>
+<li><strong>Review Status:</strong> Current</li>
+<li><strong>Artwork?:</strong> Yes</li>
+<li><strong>Artwork File:</strong> Assets\Portraits\Ruling Council\Jubilost Narthropple - Minister of the Treasury.webp</li>
+</ul>
+<h3 id="ka-kekt">Ka-Kekt<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#ka-kekt" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Tok-Nikrat</li>
+<li><strong>Role / Affiliation:</strong> Senior Runner</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> House of Measured Paths Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="keeka-bottlesnap">Keeka Bottlesnap<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#keeka-bottlesnap" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Greengripe</li>
+<li><strong>Role / Affiliation:</strong> Master Compounder, Fizzlesticks &amp; Co.</li>
+<li><strong>Origin / Provenance:</strong> Locally created</li>
+<li><strong>Local Source(s):</strong> Fizzlesticks &amp; Co. Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="kell-harth">Kell Harth<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#kell-harth" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Olegton</li>
+<li><strong>Role / Affiliation:</strong> Sail leader, Levet’s Mill</li>
+<li><strong>Origin / Provenance:</strong> Locally created</li>
+<li><strong>Local Source(s):</strong> Levet’s Mill Article</li>
+<li><strong>Notes:</strong> Mill sail crew; Olegton has no water access.</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="kereek">Kereek<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#kereek" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Sootscale Valley</li>
+<li><strong>Role / Affiliation:</strong> Chief of the Sootscale kobolds</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> Sessions 18–19 Summaries; Velka’s Riverside Shrine Article</li>
+<li><strong>Notes:</strong> Succeeded retired Chief Sootscale.</li>
+<li><strong>Article Last Updated:</strong> 2026-07-27</li>
+<li><strong>Next Review Due:</strong> 2027-07-27</li>
+<li><strong>Review Status:</strong> Current</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="kesten-garess">Kesten Garess<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#kesten-garess" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Republic</li>
+<li><strong>Role / Affiliation:</strong> Military officer and civic servant</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> dedicated NPC article</li>
+<li><strong>Notes:</strong> Last known alive.</li>
+<li><strong>Article Last Updated:</strong> 2025-12-15</li>
+<li><strong>Next Review Due:</strong> 2026-12-15</li>
+<li><strong>Review Status:</strong> Current</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="ket-kesh">Ket-Kesh<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#ket-kesh" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Tok-Nikrat</li>
+<li><strong>Role / Affiliation:</strong> Night listener, the Whispering Step</li>
+<li><strong>Origin / Provenance:</strong> Locally created</li>
+<li><strong>Local Source(s):</strong> The Whispering Step Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="kikki-the-reedwhisper">Kikki the Reedwhisper<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#kikki-the-reedwhisper" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Sootscale Valley</li>
+<li><strong>Role / Affiliation:</strong> Shrine attendant and local religious figure</li>
+<li><strong>Origin / Provenance:</strong> Locally developed</li>
+<li><strong>Local Source(s):</strong> Velka’s Riverside Shrine Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="king-castruccio-irovetti">King Castruccio Irovetti<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#king-castruccio-irovetti" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Dead</li>
+<li><strong>Deceased?:</strong> Yes</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Pitax</li>
+<li><strong>Role / Affiliation:</strong> Former king of Pitax</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> Session 58 Summary; Pitax Article</li>
+<li><strong>Notes:</strong> Killed after surrendering beneath the House of a Hundred Doors.</li>
+<li><strong>Review Status:</strong> Date missing</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="king-vesket">King Vesket<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#king-vesket" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Longtail Island</li>
+<li><strong>Role / Affiliation:</strong> Former king; current mayor</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign-expanded</li>
+<li><strong>Local Source(s):</strong> Tailforge Atelier Article; dedicated NPC article</li>
+<li><strong>Notes:</strong> Now generally styled Mayor Vesket.</li>
+<li><strong>Article Last Updated:</strong> 2025-09-19</li>
+<li><strong>Next Review Due:</strong> 2026-09-19</li>
+<li><strong>Review Status:</strong> Review soon</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="kisandra-numesti">Kisandra Numesti<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#kisandra-numesti" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Fort Drelev / Tok-Nikrat</li>
+<li><strong>Role / Affiliation:</strong> Numesti heir and messenger</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> Whispering Step Article; House of Measured Paths Article</li>
+<li><strong>Notes:</strong> Reached Tok-Nikrat with warning of the attack on Tatzlford.</li>
+<li><strong>Article Last Updated:</strong> 2025-10-31</li>
+<li><strong>Next Review Due:</strong> 2026-10-31</li>
+<li><strong>Review Status:</strong> Review soon</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="latricia-rezbin">Latricia Rezbin<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#latricia-rezbin" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Tatzlford</li>
+<li><strong>Role / Affiliation:</strong> Founder and civic leader</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> dedicated NPC article; Tatzlford references</li>
+<li><strong>Notes:</strong> Last known alive.</li>
+<li><strong>Article Last Updated:</strong> 2025-09-19</li>
+<li><strong>Next Review Due:</strong> 2026-09-19</li>
+<li><strong>Review Status:</strong> Review soon</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="leroy">Leroy<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#leroy" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Deceased</li>
+<li><strong>Deceased?:</strong> Yes — 16 Arodus 4715 AR</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Falcon’s Hollow; formerly Almas and visiting performer in Thumpington</li>
+<li><strong>Role / Affiliation:</strong> Awakened rooster; hero of the Crown of the Kobold King expedition; farmer; Andoren performer known as the King</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> dedicated NPC article; Tuesday IC archive; <em>The King Comes to Thumpington</em>; <em>The Sun Still Shines</em></li>
+<li><strong>Notes:</strong> Born 8 Abadius 4702 AR. Adventured beneath Droskar’s Crucible in 4707 AR, later acquired a farm near Falcon’s Hollow, returned to prominence late in life, and died aged thirteen years, seven months, and eight days.</li>
+<li><strong>Article Last Updated:</strong> 2026-09-03</li>
+<li><strong>Next Review Due:</strong> 2027-09-03</li>
+<li><strong>Review Status:</strong> Current</li>
+<li><strong>Artwork?:</strong> Yes</li>
+</ul>
+<h3 id="linzi">Linzi<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#linzi" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Thumpington</li>
+<li><strong>Role / Affiliation:</strong> Author, publisher, and public chronicler</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign-expanded</li>
+<li><strong>Local Source(s):</strong> Lantern and Ledger Article; Free University Article</li>
+<li><strong>Notes:</strong> Central figure in the Republic’s publishing and scholarly record.</li>
+<li><strong>Article Last Updated:</strong> 2025-09-19</li>
+<li><strong>Next Review Due:</strong> 2026-09-19</li>
+<li><strong>Review Status:</strong> Review soon</li>
+<li><strong>Artwork?:</strong> Yes</li>
+<li><strong>Artwork File:</strong> Assets\Portraits\Ruling Council\Linzi - Minister of Communication.webp</li>
+</ul>
+<h3 id="lissa-tarmel">Lissa Tarmel<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#lissa-tarmel" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Tatzlford</li>
+<li><strong>Role / Affiliation:</strong> Carpenter; Joined Hands guild member</li>
+<li><strong>Origin / Provenance:</strong> Locally created</li>
+<li><strong>Local Source(s):</strong> Guildhall of the Joined Hands Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="loy-rezbin">Loy Rezbin<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#loy-rezbin" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Tatzlford</li>
+<li><strong>Role / Affiliation:</strong> Founder and civic leader</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> dedicated NPC article; Tatzlford references</li>
+<li><strong>Notes:</strong> Last known alive.</li>
+<li><strong>Article Last Updated:</strong> 2025-09-19</li>
+<li><strong>Next Review Due:</strong> 2026-09-19</li>
+<li><strong>Review Status:</strong> Review soon</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="maegar-varn">Maegar Varn<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#maegar-varn" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Varnhold</li>
+<li><strong>Role / Affiliation:</strong> Founder and former ruler of Varnhold</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> dedicated NPC article</li>
+<li><strong>Notes:</strong> Last known alive.</li>
+<li><strong>Article Last Updated:</strong> 2025-09-19</li>
+<li><strong>Next Review Due:</strong> 2026-09-19</li>
+<li><strong>Review Status:</strong> Review soon</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="mara-olegsdottir">Mara Olegsdottir<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#mara-olegsdottir" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Willowfen</li>
+<li><strong>Role / Affiliation:</strong> Owner and provisioner, Willowfen General</li>
+<li><strong>Origin / Provenance:</strong> Locally created</li>
+<li><strong>Local Source(s):</strong> Willowfen General Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="mara-venn">Mara Venn<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#mara-venn" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Thumpington</li>
+<li><strong>Role / Affiliation:</strong> Managing Editor, Lantern and Ledger</li>
+<li><strong>Origin / Provenance:</strong> Locally created</li>
+<li><strong>Local Source(s):</strong> Lantern and Ledger Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="marek-hollowreed">Marek Hollowreed<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#marek-hollowreed" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Thumpington</li>
+<li><strong>Role / Affiliation:</strong> Apprenticeship coordinator, Tristian’s Dawn</li>
+<li><strong>Origin / Provenance:</strong> Locally created</li>
+<li><strong>Local Source(s):</strong> Tristian’s Dawn Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="marna-drell">Marna Drell<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#marna-drell" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Embeth Hall</li>
+<li><strong>Role / Affiliation:</strong> Proprietor of the White Lantern</li>
+<li><strong>Origin / Provenance:</strong> Player-source idea / locally expanded</li>
+<li><strong>Local Source(s):</strong> The White Lantern Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="marrek-holt">Marrek Holt<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#marrek-holt" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Fort Tuskwater</li>
+<li><strong>Role / Affiliation:</strong> Proprietor of the Briny Wake</li>
+<li><strong>Origin / Provenance:</strong> Player-source idea / locally expanded</li>
+<li><strong>Local Source(s):</strong> The Briny Wake Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="marris-vale">Marris Vale<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#marris-vale" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Tok-Nikrat</li>
+<li><strong>Role / Affiliation:</strong> Ledger clerk, House of Measured Paths</li>
+<li><strong>Origin / Provenance:</strong> Locally created</li>
+<li><strong>Local Source(s):</strong> House of Measured Paths Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="mek-mek-the-copperhand">Mek-Mek the Copperhand<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#mek-mek-the-copperhand" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Sootscale Valley</li>
+<li><strong>Role / Affiliation:</strong> Kobold traveler and civic figure</li>
+<li><strong>Origin / Provenance:</strong> Player-source / campaign</li>
+<li><strong>Local Source(s):</strong> Velka’s Riverside Shrine Article</li>
+<li><strong>Notes:</strong> Distinct from Mikmek.</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="melianse">Melianse<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#melianse" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Narlmarches</li>
+<li><strong>Role / Affiliation:</strong> Nereid</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> dedicated NPC article</li>
+<li><strong>Notes:</strong> Last known alive.</li>
+<li><strong>Article Last Updated:</strong> 2025-09-19</li>
+<li><strong>Next Review Due:</strong> 2026-09-19</li>
+<li><strong>Review Status:</strong> Review soon</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="mira-volen">Mira Volen<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#mira-volen" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Fort Serenko</li>
+<li><strong>Role / Affiliation:</strong> Clerk of Marks, Fort Serenko Lumberworks</li>
+<li><strong>Origin / Provenance:</strong> Locally created</li>
+<li><strong>Local Source(s):</strong> Fort Serenko Lumberworks Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="nessa-crowfield">Nessa Crowfield<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#nessa-crowfield" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Olegton</li>
+<li><strong>Role / Affiliation:</strong> Grain clerk, Levet’s Mill</li>
+<li><strong>Origin / Provenance:</strong> Locally created</li>
+<li><strong>Local Source(s):</strong> Levet’s Mill Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="nessa-vale">Nessa Vale<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#nessa-vale" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Tatzlford</li>
+<li><strong>Role / Affiliation:</strong> Clerk, Guildhall of the Joined Hands</li>
+<li><strong>Origin / Provenance:</strong> Locally created</li>
+<li><strong>Local Source(s):</strong> Guildhall of the Joined Hands Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="nik-takka">Nik-Takka<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#nik-takka" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Tok-Nikrat</li>
+<li><strong>Role / Affiliation:</strong> Keeper of Paths, House of Measured Paths</li>
+<li><strong>Origin / Provenance:</strong> Locally created</li>
+<li><strong>Local Source(s):</strong> House of Measured Paths Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="nilak">Nilak<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#nilak" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Tiger Lords / western marches</li>
+<li><strong>Role / Affiliation:</strong> Tiger Lord survivor and ally</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> dedicated NPC article</li>
+<li><strong>Notes:</strong> Last known alive.</li>
+<li><strong>Article Last Updated:</strong> 2025-10-06</li>
+<li><strong>Next Review Due:</strong> 2026-10-06</li>
+<li><strong>Review Status:</strong> Review soon</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="nok-nok">Nok-Nok<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#nok-nok" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Dead</li>
+<li><strong>Deceased?:</strong> Yes</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Greengripe</li>
+<li><strong>Role / Affiliation:</strong> Former governor; Hero of the Mite Warrens</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign-expanded</li>
+<li><strong>Local Source(s):</strong> Nok-Nok Article; Greengripe Article; Free University Article</li>
+<li><strong>Notes:</strong> Killed in action east of Fort Drelev while covering his soldiers’ escape.</li>
+<li><strong>Article Last Updated:</strong> 2026-09-02</li>
+<li><strong>Next Review Due:</strong> 2027-09-02</li>
+<li><strong>Review Status:</strong> Current</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="octavia">Octavia<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#octavia" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Republic</li>
+<li><strong>Role / Affiliation:</strong> Wizard and companion</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> dedicated NPC article</li>
+<li><strong>Notes:</strong> Last known alive.</li>
+<li><strong>Article Last Updated:</strong> 2025-09-19</li>
+<li><strong>Next Review Due:</strong> 2026-09-19</li>
+<li><strong>Review Status:</strong> Review soon</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="old-mother-thruppa">Old Mother Thruppa<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#old-mother-thruppa" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Sootscale Valley</li>
+<li><strong>Role / Affiliation:</strong> Elder and keeper of community memory</li>
+<li><strong>Origin / Provenance:</strong> Locally developed</li>
+<li><strong>Local Source(s):</strong> Velka’s Riverside Shrine Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="oleg-leveton">Oleg Leveton<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#oleg-leveton" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Olegton</li>
+<li><strong>Role / Affiliation:</strong> Founder, merchant, and civic figure</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> dedicated NPC article; Levet’s Mill Article</li>
+<li><strong>Notes:</strong> Last known alive.</li>
+<li><strong>Article Last Updated:</strong> 2026-08-07</li>
+<li><strong>Next Review Due:</strong> 2027-08-07</li>
+<li><strong>Review Status:</strong> Current</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="orrik-fume-eater">Orrik Fume-Eater<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#orrik-fume-eater" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Greengripe</li>
+<li><strong>Role / Affiliation:</strong> Keeper of Vents, Fizzlesticks &amp; Co.</li>
+<li><strong>Origin / Provenance:</strong> Locally created</li>
+<li><strong>Local Source(s):</strong> Fizzlesticks &amp; Co. Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="pavetta-stroon-drelev">Pavetta Stroon-Drelev<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#pavetta-stroon-drelev" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Exiled from Fort Drelev</li>
+<li><strong>Role / Affiliation:</strong> Former baroness</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> Session 43 Summary; dedicated NPC article</li>
+<li><strong>Notes:</strong> Driven from the country after Hannis Drelev’s fall.</li>
+<li><strong>Article Last Updated:</strong> 2025-12-15</li>
+<li><strong>Next Review Due:</strong> 2026-12-15</li>
+<li><strong>Review Status:</strong> Current</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="perren-bale">Perren Bale<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#perren-bale" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Fort Serenko</li>
+<li><strong>Role / Affiliation:</strong> Yardwright, Fort Serenko Lumberworks</li>
+<li><strong>Origin / Provenance:</strong> Locally created</li>
+<li><strong>Local Source(s):</strong> Fort Serenko Lumberworks Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="prazil">Prazil<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#prazil" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Sootscale Valley / Republic</li>
+<li><strong>Role / Affiliation:</strong> Kobold warrior; Kereek’s companion</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> Sessions 18–19 Summaries; dedicated NPC article</li>
+<li><strong>Notes:</strong> Last known alive.</li>
+<li><strong>Article Last Updated:</strong> 2025-09-19</li>
+<li><strong>Next Review Due:</strong> 2026-09-19</li>
+<li><strong>Review Status:</strong> Review soon</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="quintessa-maray">Quintessa Maray<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#quintessa-maray" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Fled Fort Drelev</li>
+<li><strong>Role / Affiliation:</strong> Former courtier and Hannis Drelev’s mistress</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> Session 43 Summary; dedicated NPC article</li>
+<li><strong>Notes:</strong> Escaped by teleportation; current location unknown.</li>
+<li><strong>Article Last Updated:</strong> 2025-11-20</li>
+<li><strong>Next Review Due:</strong> 2026-11-20</li>
+<li><strong>Review Status:</strong> Review soon</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="regongar">Regongar<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#regongar" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Republic</li>
+<li><strong>Role / Affiliation:</strong> Magus and companion</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> dedicated NPC article</li>
+<li><strong>Notes:</strong> Last known alive.</li>
+<li><strong>Article Last Updated:</strong> 2025-09-19</li>
+<li><strong>Next Review Due:</strong> 2026-09-19</li>
+<li><strong>Review Status:</strong> Review soon</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="rikka-tallowglass">Rikka Tallowglass<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#rikka-tallowglass" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Thumpington</li>
+<li><strong>Role / Affiliation:</strong> Lecturer in Civic Alchemy, Free University</li>
+<li><strong>Origin / Provenance:</strong> Locally created</li>
+<li><strong>Local Source(s):</strong> Free University / Lantern and Ledger articles</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="roald-celinnas">Roald Celinnas<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#roald-celinnas" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Pitax</li>
+<li><strong>Role / Affiliation:</strong> Advocate, reformer, and civic leader</li>
+<li><strong>Origin / Provenance:</strong> Paizo Companion Guide / campaign-expanded</li>
+<li><strong>Local Source(s):</strong> Roald Celinnas Article; Pitax Article</li>
+<li><strong>Notes:</strong> Participant in Pitax’s postwar civic life.</li>
+<li><strong>Article Last Updated:</strong> 2026-09-02</li>
+<li><strong>Next Review Due:</strong> 2027-09-02</li>
+<li><strong>Review Status:</strong> Current</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="satinder-morne">Satinder Morne<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#satinder-morne" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Fort Drelev</li>
+<li><strong>Role / Affiliation:</strong> Proprietor of the Velvet Corner; resistance contact</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> dedicated NPC article; campaign notes</li>
+<li><strong>Notes:</strong> Last known alive.</li>
+<li><strong>Article Last Updated:</strong> 2025-11-06</li>
+<li><strong>Next Review Due:</strong> 2026-11-06</li>
+<li><strong>Review Status:</strong> Review soon</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="saufie-cintost">Saufie Cintost<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#saufie-cintost" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Pitax</li>
+<li><strong>Role / Affiliation:</strong> Master of Beacons</li>
+<li><strong>Origin / Provenance:</strong> Paizo Companion Guide / campaign</li>
+<li><strong>Local Source(s):</strong> Pitax Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="sella-copperclaw">Sella Copperclaw<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#sella-copperclaw" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Thumpington</li>
+<li><strong>Role / Affiliation:</strong> Trade and Civic Affairs correspondent</li>
+<li><strong>Origin / Provenance:</strong> Locally created</li>
+<li><strong>Local Source(s):</strong> Lantern and Ledger Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="ses-tarak">Ses-Tarak<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#ses-tarak" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Tok-Nikrat</li>
+<li><strong>Role / Affiliation:</strong> Cachewright, House of Measured Paths</li>
+<li><strong>Origin / Provenance:</strong> Locally created</li>
+<li><strong>Local Source(s):</strong> House of Measured Paths Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="sister-branna-freecup">Sister Branna Freecup<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#sister-branna-freecup" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Thumpington</li>
+<li><strong>Role / Affiliation:</strong> Caydenite advocate, Tristian’s Dawn</li>
+<li><strong>Origin / Provenance:</strong> Locally created</li>
+<li><strong>Local Source(s):</strong> Tristian’s Dawn Article</li>
+<li><strong>Notes:</strong> Connects the orphanage with Cayden Cailean’s concern for orphans.</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="sorn-delvik">Sorn Delvik<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#sorn-delvik" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Willowfen</li>
+<li><strong>Role / Affiliation:</strong> Owner and innkeeper, the Silver Reed</li>
+<li><strong>Origin / Provenance:</strong> Player-source idea / locally expanded</li>
+<li><strong>Local Source(s):</strong> The Silver Reed Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="ssekesh">Ssekesh<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#ssekesh" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Longtail Island</li>
+<li><strong>Role / Affiliation:</strong> Master smith, Tailforge Atelier</li>
+<li><strong>Origin / Provenance:</strong> Player-source idea / locally expanded</li>
+<li><strong>Local Source(s):</strong> Tailforge Atelier Article</li>
+<li><strong>Notes:</strong> Iruxi.</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="stag-lord">Stag Lord<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#stag-lord" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Dead</li>
+<li><strong>Deceased?:</strong> Yes</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Fort Tuskwater</li>
+<li><strong>Role / Affiliation:</strong> Bandit lord</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> Thumping Waters Article; Briny Wake Article</li>
+<li><strong>Notes:</strong> Killed before the Republic’s founding.</li>
+<li><strong>Article Last Updated:</strong> 2025-09-19</li>
+<li><strong>Next Review Due:</strong> 2026-09-19</li>
+<li><strong>Review Status:</strong> Review soon</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="stas">Stas<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#stas" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Unknown</li>
+<li><strong>Deceased?:</strong> Unknown</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Unknown</li>
+<li><strong>Role / Affiliation:</strong> Campaign NPC</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> dedicated NPC article</li>
+<li><strong>Notes:</strong> Status and primary location require article review.</li>
+<li><strong>Article Last Updated:</strong> 2025-09-19</li>
+<li><strong>Next Review Due:</strong> 2026-09-19</li>
+<li><strong>Review Status:</strong> Review soon</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="svetlana-leveton">Svetlana Leveton<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#svetlana-leveton" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Olegton</li>
+<li><strong>Role / Affiliation:</strong> Founder, merchant, and civic figure</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> dedicated NPC article</li>
+<li><strong>Notes:</strong> Last known alive.</li>
+<li><strong>Article Last Updated:</strong> 2026-08-07</li>
+<li><strong>Next Review Due:</strong> 2027-08-07</li>
+<li><strong>Review Status:</strong> Current</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="tak-sel">Tak-Sel<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#tak-sel" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Tok-Nikrat</li>
+<li><strong>Role / Affiliation:</strong> Proprietor, the Whispering Step</li>
+<li><strong>Origin / Provenance:</strong> Locally created</li>
+<li><strong>Local Source(s):</strong> The Whispering Step Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="tamary-numesti">Tamary Numesti<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#tamary-numesti" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Fort Drelev / Tiger Lord lands</li>
+<li><strong>Role / Affiliation:</strong> Numesti family member</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> dedicated NPC article</li>
+<li><strong>Notes:</strong> Last known alive.</li>
+<li><strong>Article Last Updated:</strong> 2025-10-31</li>
+<li><strong>Next Review Due:</strong> 2026-10-31</li>
+<li><strong>Review Status:</strong> Review soon</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="tartuccio">Tartuccio<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#tartuccio" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Dead</li>
+<li><strong>Deceased?:</strong> Yes</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Sootscale Caverns</li>
+<li><strong>Role / Affiliation:</strong> Gnome sorcerer; false kobold priest Tartuk</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> Session 53 Summary; dedicated NPC article</li>
+<li><strong>Notes:</strong> Killed after Chief Sootscale shattered the idol; Tartuk’s body reverted to Tartuccio.</li>
+<li><strong>Article Last Updated:</strong> 2025-09-19</li>
+<li><strong>Next Review Due:</strong> 2026-09-19</li>
+<li><strong>Review Status:</strong> Review soon</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="tavena-levet">Tavena Levet<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#tavena-levet" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Olegton</li>
+<li><strong>Role / Affiliation:</strong> Master miller, Levet’s Mill</li>
+<li><strong>Origin / Provenance:</strong> Player-source idea / locally expanded</li>
+<li><strong>Local Source(s):</strong> Levet’s Mill Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="tella-bramble">Tella Bramble<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#tella-bramble" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Thumpington</li>
+<li><strong>Role / Affiliation:</strong> Head teacher, Tristian’s Dawn</li>
+<li><strong>Origin / Provenance:</strong> Locally created</li>
+<li><strong>Local Source(s):</strong> Tristian’s Dawn Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="terrion-numesti">Terrion Numesti<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#terrion-numesti" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Fort Drelev</li>
+<li><strong>Role / Affiliation:</strong> Numesti patriarch and former prisoner</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> Session 43 Summary; dedicated NPC article</li>
+<li><strong>Notes:</strong> Freed during the fall of Hannis Drelev.</li>
+<li><strong>Article Last Updated:</strong> 2025-11-20</li>
+<li><strong>Next Review Due:</strong> 2026-11-20</li>
+<li><strong>Review Status:</strong> Review soon</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="tiressia">Tiressia<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#tiressia" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Narlmarches</li>
+<li><strong>Role / Affiliation:</strong> Dryad</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> dedicated NPC article</li>
+<li><strong>Notes:</strong> Last known alive.</li>
+<li><strong>Article Last Updated:</strong> 2025-09-19</li>
+<li><strong>Next Review Due:</strong> 2026-09-19</li>
+<li><strong>Review Status:</strong> Review soon</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="tobin-bramblefoot">Tobin Bramblefoot<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#tobin-bramblefoot" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Thumpington</li>
+<li><strong>Role / Affiliation:</strong> Games and Society correspondent</li>
+<li><strong>Origin / Provenance:</strong> Locally created</li>
+<li><strong>Local Source(s):</strong> Lantern and Ledger Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="tok-tekt">Tok-Tekt<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#tok-tekt" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Tok-Nikrat</li>
+<li><strong>Role / Affiliation:</strong> Chieftain</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> House of Measured Paths Article</li>
+<li><strong>Notes:</strong> Dedicated dedicated NPC article not found in NPC category.</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="tomas-vey">Tomas Vey<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#tomas-vey" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Thumpington</li>
+<li><strong>Role / Affiliation:</strong> Lecturer in Agricultural Works</li>
+<li><strong>Origin / Provenance:</strong> Locally created</li>
+<li><strong>Local Source(s):</strong> Free University / Lantern and Ledger articles</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="tristian">Tristian<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#tristian" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Thumpington</li>
+<li><strong>Role / Affiliation:</strong> Priest of Sarenrae; Minister of Magic</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign-expanded</li>
+<li><strong>Local Source(s):</strong> Tristian Article; Temple of First Light Article; Tristian’s Dawn Article</li>
+<li><strong>Notes:</strong> Founder and patron of major Sarenite civic institutions.</li>
+<li><strong>Article Last Updated:</strong> 2026-09-01</li>
+<li><strong>Next Review Due:</strong> 2027-09-01</li>
+<li><strong>Review Status:</strong> Current</li>
+<li><strong>Artwork?:</strong> Yes</li>
+<li><strong>Artwork File:</strong> Assets\Portraits\Ruling Council\Tristian - Minister of Magic v2.webp</li>
+</ul>
+<h3 id="valerie">Valerie<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#valerie" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> Yes</li>
+<li><strong>Primary Location:</strong> Republic</li>
+<li><strong>Role / Affiliation:</strong> Fighter and companion</li>
+<li><strong>Origin / Provenance:</strong> Paizo / campaign</li>
+<li><strong>Local Source(s):</strong> dedicated NPC article</li>
+<li><strong>Notes:</strong> Last known alive.</li>
+<li><strong>Review Status:</strong> Date missing</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="vara-moss">Vara Moss<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#vara-moss" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Greengripe</li>
+<li><strong>Role / Affiliation:</strong> Herbal Buyer, Fizzlesticks &amp; Co.</li>
+<li><strong>Origin / Provenance:</strong> Locally created</li>
+<li><strong>Local Source(s):</strong> Fizzlesticks &amp; Co. Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h3 id="varka-stonekettle">Varka Stonekettle<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#varka-stonekettle" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Status:</strong> Alive</li>
+<li><strong>Deceased?:</strong> No</li>
+<li><strong>Dedicated Article?:</strong> No</li>
+<li><strong>Primary Location:</strong> Thumpington</li>
+<li><strong>Role / Affiliation:</strong> Steward, Tristian’s Dawn</li>
+<li><strong>Origin / Provenance:</strong> Locally created</li>
+<li><strong>Local Source(s):</strong> Tristian’s Dawn Article</li>
+<li><strong>Review Status:</strong> N/A</li>
+<li><strong>Artwork?:</strong> No</li>
+</ul>
+<h2 id="npc-reference--summary--legend">NPC REFERENCE — SUMMARY &amp; LEGEND<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#npc-reference--summary--legend" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<h3 id="total-npc-records">Total NPC records<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#total-npc-records" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Count:</strong> 114</li>
+<li><strong>Field:</strong> Status</li>
+<li><strong>Value:</strong> Alive</li>
+<li><strong>Meaning:</strong> Last known alive in campaign continuity</li>
+</ul>
+<h3 id="dedicated-npc-articles">dedicated NPC articles<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#dedicated-npc-articles" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Count:</strong> 51</li>
+<li><strong>Field:</strong> Status</li>
+<li><strong>Value:</strong> Dead</li>
+<li><strong>Meaning:</strong> Death established in campaign record</li>
+</ul>
+<h3 id="without-a-dedicated-article">Without a Dedicated Article<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#without-a-dedicated-article" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Count:</strong> 63</li>
+<li><strong>Field:</strong> Status</li>
+<li><strong>Value:</strong> Retired (alive)</li>
+<li><strong>Meaning:</strong> Alive but no longer holding the listed former office</li>
+</ul>
+<h3 id="confirmed-dead">Confirmed dead<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#confirmed-dead" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Count:</strong> 8</li>
+<li><strong>Field:</strong> Status</li>
+<li><strong>Value:</strong> Unknown</li>
+<li><strong>Meaning:</strong> Reviewed sources did not establish current fate</li>
+</ul>
+<h3 id="status-unknown">Status unknown<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#status-unknown" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Count:</strong> 3</li>
+<li><strong>Field:</strong> Deceased?</li>
+<li><strong>Value:</strong> Unknown</li>
+<li><strong>Meaning:</strong> Do not infer death from absence or Paizo default outcomes</li>
+</ul>
+<h3 id="articles-due-for-review">Articles due for review<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#articles-due-for-review" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Count:</strong> 0</li>
+</ul>
+<h3 id="articles-due-within-90-days">Articles due within 90 days<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#articles-due-within-90-days" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Count:</strong> 32</li>
+</ul>
+<h3 id="npcs-with-local-artwork">NPCs with local artwork<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#npcs-with-local-artwork" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Count:</strong> 5</li>
+</ul>
+<h3 id="scope-and-maintenance">SCOPE AND MAINTENANCE<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#scope-and-maintenance" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<h3 id="last-reviewed">Last reviewed<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#last-reviewed" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Count:</strong> 2026-09-02</li>
+</ul>
+<h3 id="campaign-archive-scope">Campaign archive scope<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#campaign-archive-scope" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Count:</strong> NPC category (51 dedicated character articles)</li>
+</ul>
+<h3 id="review-cadence">Review cadence<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#review-cadence" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Count:</strong> Annual. Review Status changes to Review soon 90 days before the due date.</li>
+</ul>
+<h3 id="artwork-scope">Artwork scope<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#artwork-scope" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Count:</strong> Artwork means a character-specific file found locally under the campaign asset library; incidental appearances in settlement scenes are not counted.</li>
+</ul>
+<h3 id="player-characters">Player characters<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#player-characters" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Count:</strong> Excluded from this NPC index. Velka and the other Tubthumpers may appear in source notes but are not indexed as NPCs.</li>
+</ul>
+<h3 id="update-practice">Update practice<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#update-practice" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Count:</strong> When an article is revised, replace its Last Updated date. The next review and status recalculate automatically.</li>
+</ul></div></article><hr/><div class="page-footer"></div></div><div class="right sidebar"><div class="toc"><button type="button" class="toc-header" aria-controls="toc-174" aria-expanded="true"><h3>Table of Contents</h3><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fold"><polyline points="6 9 12 15 18 9"></polyline></svg></button><ul id="list-0" class="toc-content overflow"><li class="depth-0"><a href="#kingmaker-npc-master-reference" data-for="kingmaker-npc-master-reference">Kingmaker NPC Master Reference</a></li><li class="depth-1"><a href="#kingmaker-npc-master-reference-1" data-for="kingmaker-npc-master-reference-1">KINGMAKER NPC MASTER REFERENCE</a></li><li class="depth-2"><a href="#akiros-insmort" data-for="akiros-insmort">Akiros Insmort</a></li><li class="depth-2"><a href="#ameon-trask" data-for="ameon-trask">Ameon Trask</a></li><li class="depth-2"><a href="#amiri" data-for="amiri">Amiri</a></li><li class="depth-2"><a href="#anika-sorn" data-for="anika-sorn">Anika Sorn</a></li><li class="depth-2"><a href="#annamede-belavara" data-for="annamede-belavara">Annamede Belavara</a></li><li class="depth-2"><a href="#armag-the-twice-born" data-for="armag-the-twice-born">Armag the Twice-Born</a></li><li class="depth-2"><a href="#asmeranda-ilata" data-for="asmeranda-ilata">Asmeranda Ilata</a></li><li class="depth-2"><a href="#atalia-gitaren" data-for="atalia-gitaren">Atalia Gitaren</a></li><li class="depth-2"><a href="#atlee-quinge" data-for="atlee-quinge">Atlee Quinge</a></li><li class="depth-2"><a href="#auchs" data-for="auchs">Auchs</a></li><li class="depth-2"><a href="#bokken" data-for="bokken">Bokken</a></li><li class="depth-2"><a href="#brother-corren-voss" data-for="brother-corren-voss">Brother Corren Voss</a></li><li class="depth-2"><a href="#chief-sootscale" data-for="chief-sootscale">Chief Sootscale</a></li><li class="depth-2"><a href="#darya-holt" data-for="darya-holt">Darya Holt</a></li><li class="depth-2"><a href="#daska-broadbough" data-for="daska-broadbough">Daska Broadbough</a></li><li class="depth-2"><a href="#dawnblade-kalessa-marr" data-for="dawnblade-kalessa-marr">Dawnblade Kalessa Marr</a></li><li class="depth-2"><a href="#dawnwarden-amaya-qadir" data-for="dawnwarden-amaya-qadir">Dawnwarden Amaya Qadir</a></li><li class="depth-2"><a href="#dorrin-oakgear" data-for="dorrin-oakgear">Dorrin Oakgear</a></li><li class="depth-2"><a href="#drey-yarness" data-for="drey-yarness">Drey Yarness</a></li><li class="depth-2"><a href="#durnan-stoutbeard" data-for="durnan-stoutbeard">Durnan Stoutbeard</a></li><li class="depth-2"><a href="#eda-wren" data-for="eda-wren">Eda Wren</a></li><li class="depth-2"><a href="#ekundayo" data-for="ekundayo">Ekundayo</a></li><li class="depth-2"><a href="#elga-verniex" data-for="elga-verniex">Elga Verniex</a></li><li class="depth-2"><a href="#eobald" data-for="eobald">Eobald</a></li><li class="depth-2"><a href="#euan-blackwood" data-for="euan-blackwood">Euan Blackwood</a></li><li class="depth-2"><a href="#fenno-pike" data-for="fenno-pike">Fenno Pike</a></li><li class="depth-2"><a href="#first-dawnpriest-samira-veyd" data-for="first-dawnpriest-samira-veyd">First Dawnpriest Samira Veyd</a></li><li class="depth-2"><a href="#garrin-whetforge" data-for="garrin-whetforge">Garrin Whetforge</a></li><li class="depth-2"><a href="#gasperre-liacenza" data-for="gasperre-liacenza">Gasperre Liacenza</a></li><li class="depth-2"><a href="#ghare-leotos" data-for="ghare-leotos">Ghare Leotos</a></li><li class="depth-2"><a href="#griggit-fizzlesticks" data-for="griggit-fizzlesticks">Griggit Fizzlesticks</a></li><li class="depth-2"><a href="#grigori" data-for="grigori">Grigori</a></li><li class="depth-2"><a href="#hannis-drelev" data-for="hannis-drelev">Hannis Drelev</a></li><li class="depth-2"><a href="#hargulka" data-for="hargulka">Hargulka</a></li><li class="depth-2"><a href="#harl-edvane" data-for="harl-edvane">Harl Edvane</a></li><li class="depth-2"><a href="#harrim" data-for="harrim">Harrim</a></li><li class="depth-2"><a href="#hearthwarden-oren-pell" data-for="hearthwarden-oren-pell">Hearthwarden Oren Pell</a></li><li class="depth-2"><a href="#hesh-tarak" data-for="hesh-tarak">Hesh-Tarak</a></li><li class="depth-2"><a href="#ilyana-reeds" data-for="ilyana-reeds">Ilyana Reeds</a></li><li class="depth-2"><a href="#imeckas-stroon" data-for="imeckas-stroon">Imeckas Stroon</a></li><li class="depth-2"><a href="#ingris" data-for="ingris">Ingris</a></li><li class="depth-2"><a href="#jaethal" data-for="jaethal">Jaethal</a></li><li class="depth-2"><a href="#jamandi-aldori" data-for="jamandi-aldori">Jamandi Aldori</a></li><li class="depth-2"><a href="#jamel-visser" data-for="jamel-visser">Jamel Visser</a></li><li class="depth-2"><a href="#jamery-gerbasken" data-for="jamery-gerbasken">Jamery Gerbasken</a></li><li class="depth-2"><a href="#jhod-kavken" data-for="jhod-kavken">Jhod Kavken</a></li><li class="depth-2"><a href="#jhofre-vascari" data-for="jhofre-vascari">Jhofre Vascari</a></li><li class="depth-2"><a href="#joravin-pyathe" data-for="joravin-pyathe">Joravin Pyathe</a></li><li class="depth-2"><a href="#jubilost-narthropple" data-for="jubilost-narthropple">Jubilost Narthropple</a></li><li class="depth-2"><a href="#ka-kekt" data-for="ka-kekt">Ka-Kekt</a></li><li class="depth-2"><a href="#keeka-bottlesnap" data-for="keeka-bottlesnap">Keeka Bottlesnap</a></li><li class="depth-2"><a href="#kell-harth" data-for="kell-harth">Kell Harth</a></li><li class="depth-2"><a href="#kereek" data-for="kereek">Kereek</a></li><li class="depth-2"><a href="#kesten-garess" data-for="kesten-garess">Kesten Garess</a></li><li class="depth-2"><a href="#ket-kesh" data-for="ket-kesh">Ket-Kesh</a></li><li class="depth-2"><a href="#kikki-the-reedwhisper" data-for="kikki-the-reedwhisper">Kikki the Reedwhisper</a></li><li class="depth-2"><a href="#king-castruccio-irovetti" data-for="king-castruccio-irovetti">King Castruccio Irovetti</a></li><li class="depth-2"><a href="#king-vesket" data-for="king-vesket">King Vesket</a></li><li class="depth-2"><a href="#kisandra-numesti" data-for="kisandra-numesti">Kisandra Numesti</a></li><li class="depth-2"><a href="#latricia-rezbin" data-for="latricia-rezbin">Latricia Rezbin</a></li><li class="depth-2"><a href="#leroy" data-for="leroy">Leroy</a></li><li class="depth-2"><a href="#linzi" data-for="linzi">Linzi</a></li><li class="depth-2"><a href="#lissa-tarmel" data-for="lissa-tarmel">Lissa Tarmel</a></li><li class="depth-2"><a href="#loy-rezbin" data-for="loy-rezbin">Loy Rezbin</a></li><li class="depth-2"><a href="#maegar-varn" data-for="maegar-varn">Maegar Varn</a></li><li class="depth-2"><a href="#mara-olegsdottir" data-for="mara-olegsdottir">Mara Olegsdottir</a></li><li class="depth-2"><a href="#mara-venn" data-for="mara-venn">Mara Venn</a></li><li class="depth-2"><a href="#marek-hollowreed" data-for="marek-hollowreed">Marek Hollowreed</a></li><li class="depth-2"><a href="#marna-drell" data-for="marna-drell">Marna Drell</a></li><li class="depth-2"><a href="#marrek-holt" data-for="marrek-holt">Marrek Holt</a></li><li class="depth-2"><a href="#marris-vale" data-for="marris-vale">Marris Vale</a></li><li class="depth-2"><a href="#mek-mek-the-copperhand" data-for="mek-mek-the-copperhand">Mek-Mek the Copperhand</a></li><li class="depth-2"><a href="#melianse" data-for="melianse">Melianse</a></li><li class="depth-2"><a href="#mira-volen" data-for="mira-volen">Mira Volen</a></li><li class="depth-2"><a href="#nessa-crowfield" data-for="nessa-crowfield">Nessa Crowfield</a></li><li class="depth-2"><a href="#nessa-vale" data-for="nessa-vale">Nessa Vale</a></li><li class="depth-2"><a href="#nik-takka" data-for="nik-takka">Nik-Takka</a></li><li class="depth-2"><a href="#nilak" data-for="nilak">Nilak</a></li><li class="depth-2"><a href="#nok-nok" data-for="nok-nok">Nok-Nok</a></li><li class="depth-2"><a href="#octavia" data-for="octavia">Octavia</a></li><li class="depth-2"><a href="#old-mother-thruppa" data-for="old-mother-thruppa">Old Mother Thruppa</a></li><li class="depth-2"><a href="#oleg-leveton" data-for="oleg-leveton">Oleg Leveton</a></li><li class="depth-2"><a href="#orrik-fume-eater" data-for="orrik-fume-eater">Orrik Fume-Eater</a></li><li class="depth-2"><a href="#pavetta-stroon-drelev" data-for="pavetta-stroon-drelev">Pavetta Stroon-Drelev</a></li><li class="depth-2"><a href="#perren-bale" data-for="perren-bale">Perren Bale</a></li><li class="depth-2"><a href="#prazil" data-for="prazil">Prazil</a></li><li class="depth-2"><a href="#quintessa-maray" data-for="quintessa-maray">Quintessa Maray</a></li><li class="depth-2"><a href="#regongar" data-for="regongar">Regongar</a></li><li class="depth-2"><a href="#rikka-tallowglass" data-for="rikka-tallowglass">Rikka Tallowglass</a></li><li class="depth-2"><a href="#roald-celinnas" data-for="roald-celinnas">Roald Celinnas</a></li><li class="depth-2"><a href="#satinder-morne" data-for="satinder-morne">Satinder Morne</a></li><li class="depth-2"><a href="#saufie-cintost" data-for="saufie-cintost">Saufie Cintost</a></li><li class="depth-2"><a href="#sella-copperclaw" data-for="sella-copperclaw">Sella Copperclaw</a></li><li class="depth-2"><a href="#ses-tarak" data-for="ses-tarak">Ses-Tarak</a></li><li class="depth-2"><a href="#sister-branna-freecup" data-for="sister-branna-freecup">Sister Branna Freecup</a></li><li class="depth-2"><a href="#sorn-delvik" data-for="sorn-delvik">Sorn Delvik</a></li><li class="depth-2"><a href="#ssekesh" data-for="ssekesh">Ssekesh</a></li><li class="depth-2"><a href="#stag-lord" data-for="stag-lord">Stag Lord</a></li><li class="depth-2"><a href="#stas" data-for="stas">Stas</a></li><li class="depth-2"><a href="#svetlana-leveton" data-for="svetlana-leveton">Svetlana Leveton</a></li><li class="depth-2"><a href="#tak-sel" data-for="tak-sel">Tak-Sel</a></li><li class="depth-2"><a href="#tamary-numesti" data-for="tamary-numesti">Tamary Numesti</a></li><li class="depth-2"><a href="#tartuccio" data-for="tartuccio">Tartuccio</a></li><li class="depth-2"><a href="#tavena-levet" data-for="tavena-levet">Tavena Levet</a></li><li class="depth-2"><a href="#tella-bramble" data-for="tella-bramble">Tella Bramble</a></li><li class="depth-2"><a href="#terrion-numesti" data-for="terrion-numesti">Terrion Numesti</a></li><li class="depth-2"><a href="#tiressia" data-for="tiressia">Tiressia</a></li><li class="depth-2"><a href="#tobin-bramblefoot" data-for="tobin-bramblefoot">Tobin Bramblefoot</a></li><li class="depth-2"><a href="#tok-tekt" data-for="tok-tekt">Tok-Tekt</a></li><li class="depth-2"><a href="#tomas-vey" data-for="tomas-vey">Tomas Vey</a></li><li class="depth-2"><a href="#tristian" data-for="tristian">Tristian</a></li><li class="depth-2"><a href="#valerie" data-for="valerie">Valerie</a></li><li class="depth-2"><a href="#vara-moss" data-for="vara-moss">Vara Moss</a></li><li class="depth-2"><a href="#varka-stonekettle" data-for="varka-stonekettle">Varka Stonekettle</a></li><li class="depth-1"><a href="#npc-reference--summary--legend" data-for="npc-reference--summary--legend">NPC REFERENCE — SUMMARY &amp; LEGEND</a></li><li class="depth-2"><a href="#total-npc-records" data-for="total-npc-records">Total NPC records</a></li><li class="depth-2"><a href="#dedicated-npc-articles" data-for="dedicated-npc-articles">dedicated NPC articles</a></li><li class="depth-2"><a href="#without-a-dedicated-article" data-for="without-a-dedicated-article">Without a Dedicated Article</a></li><li class="depth-2"><a href="#confirmed-dead" data-for="confirmed-dead">Confirmed dead</a></li><li class="depth-2"><a href="#status-unknown" data-for="status-unknown">Status unknown</a></li><li class="depth-2"><a href="#articles-due-for-review" data-for="articles-due-for-review">Articles due for review</a></li><li class="depth-2"><a href="#articles-due-within-90-days" data-for="articles-due-within-90-days">Articles due within 90 days</a></li><li class="depth-2"><a href="#npcs-with-local-artwork" data-for="npcs-with-local-artwork">NPCs with local artwork</a></li><li class="depth-2"><a href="#scope-and-maintenance" data-for="scope-and-maintenance">SCOPE AND MAINTENANCE</a></li><li class="depth-2"><a href="#last-reviewed" data-for="last-reviewed">Last reviewed</a></li><li class="depth-2"><a href="#campaign-archive-scope" data-for="campaign-archive-scope">Campaign archive scope</a></li><li class="depth-2"><a href="#review-cadence" data-for="review-cadence">Review cadence</a></li><li class="depth-2"><a href="#artwork-scope" data-for="artwork-scope">Artwork scope</a></li><li class="depth-2"><a href="#player-characters" data-for="player-characters">Player characters</a></li><li class="depth-2"><a href="#update-practice" data-for="update-practice">Update practice</a></li><li class="overflow-end"></li></ul></div></div><footer class><p>Created with <a href="https://quartz.jzhao.xyz/">Quartz v5.0.0</a> © 2026</p><ul><li><a href="https://bobzap66.github.io/lantern-and-ledger/">Home</a></li><li><a href="https://bobzap66.github.io/lantern-and-ledger/preferences">Preferences</a></li><li><a href="https://github.com/bobzap66/lantern-and-ledger">Source</a></li></ul></footer></div></div></body><script src="../../../../static/resource-after-e13fffa1.js" type="application/javascript" data-persist="true"></script><script src="../../../../static/resource-after-8b336f9a.js" type="application/javascript" data-persist="true"></script><script src="../../../../static/resource-after-baba652b.js" type="application/javascript" data-persist="true"></script><script src="../../../../static/resource-after-5eb75950.js" type="module" data-persist="true"></script><script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/copy-tex.min.js" type="application/javascript" data-persist="true"></script><script src="../../../../static/resource-after-4ee31800.js" type="application/javascript" data-persist="true"></script><script src="../../../../static/resource-after-a68033a6.js" type="application/javascript" data-persist="true"></script><script src="../../../../postscript-a6852928.js" type="module" data-persist="true"></script></html>

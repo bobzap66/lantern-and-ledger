@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr"><head><title>Theron | Inner Sea Region Archives</title><meta charset="utf-8"/><link rel="preload" href="../../../index-2cd46e27.css" as="style"/><link rel="preload" href="../../../prescript-2bfc6315.js" as="script"/><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com"/><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre Baskerville:wght@400;700&amp;family=Source Serif 4:ital,wght@0,400;0,600;1,400;1,600&amp;family=IBM Plex Mono:wght@400;600&amp;display=swap"/><link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin="anonymous"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta name="og:site_name" content="The Lantern and Ledger"/><meta property="og:title" content="Theron | Inner Sea Region Archives"/><meta property="og:type" content="website"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="Theron | Inner Sea Region Archives"/><meta name="twitter:description" content="Theron Tengu Fighter active Theron was an adventurer who joined the exploration of the Abomination Vaults beneath Gauntlight and ultimately helped bring about the destruction of both the lighthouse and its creator, Belcorra Haruvex."/><meta property="og:description" content="Theron Tengu Fighter active Theron was an adventurer who joined the exploration of the Abomination Vaults beneath Gauntlight and ultimately helped bring about the destruction of both the lighthouse and its creator, Belcorra Haruvex."/><meta property="og:image:alt" content="Theron Tengu Fighter active Theron was an adventurer who joined the exploration of the Abomination Vaults beneath Gauntlight and ultimately helped bring about the destruction of both the lighthouse and its creator, Belcorra Haruvex."/><link rel="canonical" href="https://bobzap66.github.io/lantern-and-ledger/campaigns/abomination-vaults/characters/theron"/><meta property="twitter:domain" content="bobzap66.github.io/lantern-and-ledger"/><meta property="og:url" content="https://bobzap66.github.io/lantern-and-ledger/campaigns/abomination-vaults/characters/theron"/><meta property="twitter:url" content="https://bobzap66.github.io/lantern-and-ledger/campaigns/abomination-vaults/characters/theron"/><link rel="icon" type="image/webp" href="../../../static/icon.webp"/><meta name="description" content="Theron Tengu Fighter active Theron was an adventurer who joined the exploration of the Abomination Vaults beneath Gauntlight and ultimately helped bring about the destruction of both the lighthouse and its creator, Belcorra Haruvex."/><meta name="generator" content="Quartz"/><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://bobzap66.github.io/lantern-and-ledger"},{"@type":"ListItem","position":2,"name":"Campaigns","item":"https://bobzap66.github.io/lantern-and-ledger/campaigns"},{"@type":"ListItem","position":3,"name":"Abomination Vaults","item":"https://bobzap66.github.io/lantern-and-ledger/campaigns/abomination-vaults"},{"@type":"ListItem","position":4,"name":"Characters","item":"https://bobzap66.github.io/lantern-and-ledger/campaigns/abomination-vaults/characters"},{"@type":"ListItem","position":5,"name":"Theron","item":"https://bobzap66.github.io/lantern-and-ledger/campaigns/abomination-vaults/characters/theron"}]}]}</script><script>
+(() => {
+  const IMAGE_SELECTOR = [
+    ".center article img",
+    ".right.sidebar .world-anvil-side-content img",
+    ".right.sidebar .callout[data-callout='side'] img",
+  ].join(",")
+
+  const ensureLightbox = () => {
+    let overlay = document.getElementById("isr-image-lightbox")
+    if (overlay) return overlay
+
+    overlay = document.createElement("div")
+    overlay.id = "isr-image-lightbox"
+    overlay.setAttribute("aria-hidden", "true")
+    overlay.innerHTML = [
+      '<button class="isr-lightbox-close" type="button" aria-label="Close image">×</button>',
+      '<div class="isr-lightbox-stage">',
+      '  <img class="isr-lightbox-image" alt="">',
+      '  <div class="isr-lightbox-caption"></div>',
+      '</div>',
+    ].join("")
+
+    document.body.appendChild(overlay)
+
+    const close = () => {
+      overlay.classList.remove("is-open", "is-natural-size")
+      overlay.setAttribute("aria-hidden", "true")
+      document.documentElement.classList.remove("isr-lightbox-open")
+
+      const img = overlay.querySelector(".isr-lightbox-image")
+      if (img) img.removeAttribute("src")
+    }
+
+    overlay.querySelector(".isr-lightbox-close")?.addEventListener("click", close)
+
+    overlay.addEventListener("click", (event) => {
+      if (event.target === overlay || event.target?.classList?.contains("isr-lightbox-stage")) {
+        close()
+      }
+    })
+
+    overlay.querySelector(".isr-lightbox-image")?.addEventListener("click", (event) => {
+      event.stopPropagation()
+      overlay.classList.toggle("is-natural-size")
+    })
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && overlay.classList.contains("is-open")) {
+        close()
+      }
+    })
+
+    return overlay
+  }
+
+  const openImage = (source) => {
+    const overlay = ensureLightbox()
+    const target = overlay.querySelector(".isr-lightbox-image")
+    const caption = overlay.querySelector(".isr-lightbox-caption")
+    if (!target) return
+
+    target.src = source.currentSrc || source.src
+    target.alt = source.alt || ""
+
+    const captionText = source.alt?.trim() || source.title?.trim() || ""
+    if (caption) {
+      caption.textContent = captionText
+      caption.hidden = captionText.length === 0
+    }
+
+    overlay.classList.remove("is-natural-size")
+    overlay.classList.add("is-open")
+    overlay.setAttribute("aria-hidden", "false")
+    document.documentElement.classList.add("isr-lightbox-open")
+  }
+
+  const wireImages = () => {
+    ensureLightbox()
+
+    document.querySelectorAll(IMAGE_SELECTOR).forEach((img) => {
+      if (img.dataset.isrLightbox === "1") return
+      if (img.closest("[data-no-lightbox], .no-lightbox")) return
+
+      img.dataset.isrLightbox = "1"
+      img.classList.add("isr-zoomable-image")
+      img.setAttribute("tabindex", "0")
+      img.setAttribute("role", "button")
+
+      const open = (event) => {
+        event.preventDefault()
+        event.stopPropagation()
+        openImage(img)
+      }
+
+      img.addEventListener("click", open)
+      img.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          open(event)
+        }
+      })
+    })
+  }
+
+  document.addEventListener("nav", wireImages)
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", wireImages, { once: true })
+  } else {
+    wireImages()
+  }
+})()
+</script><script>
+(() => {
+  const GALLERY_SELECTOR = [
+    "article h2#session-gallery + p",
+    "article h3#session-gallery + p",
+    "article h2#gallery + p",
+    "article h3#gallery + p",
+  ].join(",")
+
+  const wireGalleries = () => {
+    document.querySelectorAll(GALLERY_SELECTOR).forEach((track) => {
+      if (track.dataset.isrCarousel === "1") return
+
+      const images = Array.from(track.children).filter((node) => node.tagName === "IMG")
+      if (images.length < 2) return
+
+      track.dataset.isrCarousel = "1"
+      track.classList.add("isr-gallery-track")
+      track.setAttribute("tabindex", "0")
+      track.setAttribute("role", "group")
+      track.setAttribute("aria-roledescription", "carousel")
+      track.setAttribute("aria-label", "Image gallery")
+
+      images.forEach((img, index) => {
+        img.classList.add("isr-gallery-slide")
+        img.setAttribute("loading", index === 0 ? "eager" : "lazy")
+        img.setAttribute("decoding", "async")
+      })
+
+      const shell = document.createElement("div")
+      shell.className = "isr-gallery-shell"
+      track.parentNode.insertBefore(shell, track)
+      shell.appendChild(track)
+
+      const previous = document.createElement("button")
+      previous.type = "button"
+      previous.className = "isr-gallery-button isr-gallery-previous"
+      previous.setAttribute("aria-label", "Previous image")
+      previous.textContent = "‹"
+
+      const next = document.createElement("button")
+      next.type = "button"
+      next.className = "isr-gallery-button isr-gallery-next"
+      next.setAttribute("aria-label", "Next image")
+      next.textContent = "›"
+
+      const status = document.createElement("div")
+      status.className = "isr-gallery-status"
+      status.setAttribute("aria-live", "polite")
+
+      shell.append(previous, next, status)
+
+      let current = 0
+      let scrollTimer
+
+      const updateControls = () => {
+        previous.disabled = current <= 0
+        next.disabled = current >= images.length - 1
+        status.textContent = (current + 1) + " / " + images.length
+      }
+
+      const goTo = (index) => {
+        current = Math.max(0, Math.min(images.length - 1, index))
+        images[current].scrollIntoView({
+          behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+          block: "nearest",
+          inline: "start",
+        })
+        updateControls()
+      }
+
+      previous.addEventListener("click", () => goTo(current - 1))
+      next.addEventListener("click", () => goTo(current + 1))
+
+      track.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowLeft") {
+          event.preventDefault()
+          goTo(current - 1)
+        } else if (event.key === "ArrowRight") {
+          event.preventDefault()
+          goTo(current + 1)
+        } else if (event.key === "Home") {
+          event.preventDefault()
+          goTo(0)
+        } else if (event.key === "End") {
+          event.preventDefault()
+          goTo(images.length - 1)
+        }
+      })
+
+      track.addEventListener("scroll", () => {
+        window.clearTimeout(scrollTimer)
+        scrollTimer = window.setTimeout(() => {
+          const trackRect = track.getBoundingClientRect()
+          let nearest = 0
+          let nearestDistance = Infinity
+
+          images.forEach((img, index) => {
+            const distance = Math.abs(img.getBoundingClientRect().left - trackRect.left)
+            if (distance < nearestDistance) {
+              nearestDistance = distance
+              nearest = index
+            }
+          })
+
+          if (nearest !== current) {
+            current = nearest
+            updateControls()
+          }
+        }, 80)
+      }, { passive: true })
+
+      updateControls()
+    })
+  }
+
+  document.addEventListener("nav", wireGalleries)
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", wireGalleries, { once: true })
+  } else {
+    wireGalleries()
+  }
+})()
+</script><script>
+(() => {
+  const moveWorldAnvilSideContent = () => {
+    const rightSidebar = document.querySelector(".right.sidebar")
+    if (!rightSidebar) return
+
+    const currentPath = window.location.pathname
+    const existingSideBlocks = Array.from(
+      rightSidebar.querySelectorAll(":scope > .world-anvil-side-content"),
+    )
+    const sideBlocks = Array.from(
+      document.querySelectorAll(".center article .callout[data-callout='side']"),
+    )
+
+    // This initializer can run more than once for the same Quartz page. After the
+    // first run, the source blocks have already been moved out of the article, so
+    // do not delete them on a repeated initialization of the same route.
+    if (sideBlocks.length === 0) {
+      if (rightSidebar.dataset.isrSidePath === currentPath) return
+
+      existingSideBlocks.forEach((node) => node.remove())
+      rightSidebar.dataset.isrSidePath = currentPath
+      return
+    }
+
+    existingSideBlocks.forEach((node) => node.remove())
+
+    const sidebarHeadingIds = new Set()
+
+    sideBlocks.forEach((block) => {
+      block.querySelectorAll("h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]").forEach((heading) => {
+        sidebarHeadingIds.add(heading.id)
+      })
+
+      block.classList.add("world-anvil-side-content")
+      rightSidebar.appendChild(block)
+    })
+
+    rightSidebar.dataset.isrSidePath = currentPath
+
+    if (sidebarHeadingIds.size > 0) {
+      document.querySelectorAll(".toc a[href^='#']").forEach((link) => {
+        const id = decodeURIComponent(link.getAttribute("href").slice(1))
+        if (sidebarHeadingIds.has(id)) {
+          const item = link.closest("li")
+          if (item) item.remove()
+          else link.remove()
+        }
+      })
+    }
+  }
+
+  document.addEventListener("nav", moveWorldAnvilSideContent)
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", moveWorldAnvilSideContent, { once: true })
+  } else {
+    moveWorldAnvilSideContent()
+  }
+})()
+</script><link href="../../../index-2cd46e27.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-735924e0.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-589c1cea.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-bbc3f7c0.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-2911f5d1.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-9d82c5c1.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-84453030.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-ddd117e7.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-a78ee588.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-e4f7c07d.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-0d375ccf.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-e427079e.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-e02e28c3.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-ad1979ca.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-3b8818e7.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-932b2bbc.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-53b25b2b.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-c93c6a44.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-8a06014f.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-77d6a441.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-6ee21cee.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-1ea6ad18.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-788c9ca3.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-642859cd.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-8828e486.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-4abc06bd.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-274a3dfe.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-94cb6c84.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-58d5ff56.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../component-7262b5a7.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../static/resource-style-a5c806d2.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../static/resource-style-6bd36952.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../static/resource-style-b77a7d35.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../static/resource-style-f30e4416.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../static/resource-style-58790c8a.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../static/resource-style-5ff5e346.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../static/resource-style-5c0d193a.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../static/resource-style-8a30a1b4.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../static/resource-style-d9c3ce3d.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../static/resource-style-da9eebd8.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../static/resource-style-97deedac.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../static/resource-style-e9452787.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../static/resource-style-1c442cdd.css" rel="stylesheet" type="text/css" data-persist="true"/><style>
+article .isr-gallery-shell {
+  position: relative;
+  margin: 1.25rem 0 2.5rem;
+  padding: 0.8rem;
+  border: 1px solid var(--isr-rule);
+  border-radius: 0.45rem;
+  background: color-mix(in srgb, var(--light) 82%, var(--lightgray) 18%);
+  box-shadow: inset 0 0 0 3px color-mix(in srgb, var(--light) 75%, transparent);
+}
+
+article .isr-gallery-shell > .isr-gallery-track {
+  display: flex;
+  grid-template-columns: none;
+  gap: 0;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+  background: transparent;
+  border: 0;
+  border-radius: 0.3rem;
+  box-shadow: none;
+}
+
+article .isr-gallery-track::-webkit-scrollbar {
+  display: none;
+}
+
+article .isr-gallery-track > img.isr-gallery-slide {
+  flex: 0 0 100%;
+  width: 100%;
+  min-width: 100%;
+  height: clamp(18rem, 58vw, 42rem);
+  margin: 0;
+  object-fit: contain;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  background: color-mix(in srgb, var(--light) 88%, black 12%);
+  border-radius: 0.28rem;
+  transform: none;
+}
+
+article .isr-gallery-track > img.isr-gallery-slide:hover {
+  transform: none;
+}
+
+article .isr-gallery-button {
+  position: absolute;
+  top: 50%;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--light) 55%, var(--dark) 45%);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--light) 82%, transparent);
+  color: var(--dark);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+  font: 400 2rem/1 system-ui, sans-serif;
+  cursor: pointer;
+  transform: translateY(-50%);
+  backdrop-filter: blur(4px);
+}
+
+article .isr-gallery-previous {
+  left: 1.25rem;
+}
+
+article .isr-gallery-next {
+  right: 1.25rem;
+}
+
+article .isr-gallery-button:hover:not(:disabled),
+article .isr-gallery-button:focus-visible {
+  background: var(--light);
+  border-color: var(--tertiary);
+  outline: none;
+}
+
+article .isr-gallery-button:disabled {
+  opacity: 0.28;
+  cursor: default;
+}
+
+article .isr-gallery-status {
+  position: absolute;
+  right: 1.25rem;
+  bottom: 1.2rem;
+  z-index: 3;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(20, 18, 15, 0.72);
+  color: #fff;
+  font-family: var(--bodyFont);
+  font-size: 0.78rem;
+  line-height: 1.4;
+  pointer-events: none;
+}
+
+article .isr-gallery-track:focus-visible {
+  outline: 2px solid var(--tertiary);
+  outline-offset: 3px;
+}
+
+@media (max-width: 800px) {
+  article .isr-gallery-shell {
+    padding: 0.55rem;
+  }
+
+  article .isr-gallery-track > img.isr-gallery-slide {
+    height: clamp(16rem, 72vw, 32rem);
+  }
+
+  article .isr-gallery-button {
+    width: 2.35rem;
+    height: 2.35rem;
+    font-size: 1.65rem;
+  }
+
+  article .isr-gallery-previous {
+    left: 0.85rem;
+  }
+
+  article .isr-gallery-next {
+    right: 0.85rem;
+  }
+
+  article .isr-gallery-status {
+    right: 0.85rem;
+    bottom: 0.85rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  article .isr-gallery-shell > .isr-gallery-track {
+    scroll-behavior: auto;
+  }
+}
+</style><script src="../../../prescript-2bfc6315.js" type="application/javascript" data-persist="true"></script><script type="application/javascript" data-persist="true">const fetchData = (() => {
+  let request
+  const load = () => request ??= fetch("../../../static/contentIndex.json").then((response) => {
+    if (!response.ok) throw new Error("Content index request failed: " + response.status)
+    return response.json()
+  })
+  return {
+    then: (onFulfilled, onRejected) => load().then(onFulfilled, onRejected),
+    catch: (onRejected) => load().catch(onRejected),
+    finally: (onFinally) => load().finally(onFinally),
+  }
+})()</script><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=%5C%22Libre%20Baskerville%5C%22%2C%20Georgia%2C%20serif%3Awght%40400%3B700&amp;family=%5C%22Source%20Serif%204%5C%22%2C%20Georgia%2C%20serif%3Aital%2Cwght%400%2C400%3B0%2C600%3B1%2C400%3B1%2C600&amp;family=%5C%22IBM%20Plex%20Mono%5C%22%2C%20monospace%3Awght%40400%3B600&amp;display=swap"/><meta property="og:image:width" content="1200"/><meta property="og:image:height" content="630"/><meta property="og:image" content="https://bobzap66.github.io/lantern-and-ledger/campaigns/abomination-vaults/characters/theron-og-image.webp"/><meta property="og:image:url" content="https://bobzap66.github.io/lantern-and-ledger/campaigns/abomination-vaults/characters/theron-og-image.webp"/><meta name="twitter:image" content="https://bobzap66.github.io/lantern-and-ledger/campaigns/abomination-vaults/characters/theron-og-image.webp"/><meta property="og:image:type" content="image/webp"/></head><body data-slug="campaigns/abomination-vaults/characters/theron" data-basepath="/lantern-and-ledger"><style>
+html.campaign-spoiler-locked {
+  overflow: hidden;
+}
+
+.campaign-spoiler-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  padding: 1.5rem;
+  background: var(--light);
+  color: var(--dark);
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.campaign-spoiler-gate[hidden] {
+  display: none !important;
+}
+
+.campaign-spoiler-gate-card {
+  width: min(100%, 42rem);
+  box-sizing: border-box;
+  padding: clamp(1.5rem, 5vw, 3rem);
+  border: 1px solid var(--tertiary);
+  border-radius: 0.35rem;
+  background: var(--light);
+  color: var(--dark);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.22);
+  text-align: center;
+}
+
+.campaign-spoiler-eyebrow {
+  margin: 0 0 0.65rem;
+  color: var(--tertiary);
+  font-family: var(--bodyFont);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.campaign-spoiler-gate-card h2 {
+  margin: 0 0 1rem;
+  font-size: clamp(1.55rem, 5vw, 2.45rem);
+}
+
+.campaign-spoiler-gate-card p:not(.campaign-spoiler-eyebrow) {
+  max-width: 34rem;
+  margin: 0 auto;
+  line-height: 1.65;
+}
+
+.campaign-spoiler-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1.6rem;
+}
+
+.campaign-spoiler-actions button,
+.campaign-spoiler-reset {
+  appearance: none;
+  border: 1px solid var(--gray);
+  border-radius: 0.25rem;
+  padding: 0.72rem 1rem;
+  background: var(--lightgray);
+  color: var(--dark);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.campaign-spoiler-actions button.is-primary {
+  border-color: var(--tertiary);
+  background: var(--tertiary);
+  color: var(--light);
+}
+
+.campaign-spoiler-actions button:hover,
+.campaign-spoiler-actions button:focus-visible,
+.campaign-spoiler-reset:hover,
+.campaign-spoiler-reset:focus-visible {
+  filter: brightness(0.96);
+  outline: 2px solid var(--secondary);
+  outline-offset: 2px;
+}
+
+.campaign-spoiler-reset {
+  display: block;
+  width: fit-content;
+  margin: 0.8rem 0 0 auto;
+  padding: 0.5rem 0.75rem;
+  border-color: var(--campaign-page-accent, var(--tertiary));
+  background: color-mix(
+    in srgb,
+    var(--campaign-page-accent, var(--tertiary)) 82%,
+    var(--dark) 18%
+  );
+  color: #fff8e8;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--campaign-page-accent, var(--tertiary)) 24%, transparent);
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+.campaign-spoiler-reset[hidden] {
+  display: none !important;
+}
+
+@media (max-width: 600px) {
+  .campaign-spoiler-actions {
+    flex-direction: column;
+  }
+
+  .campaign-spoiler-actions button {
+    width: 100%;
+  }
+}
+
+#quartz-body.campaign-spoiler-pending > :not(.campaign-spoiler-gate) {
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+#quartz-body.campaign-spoiler-pending > .campaign-spoiler-gate {
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+:root {
+  --isr-gold: #c58b2b !important;
+  --isr-gold-soft: rgba(197, 139, 43, 0.14) !important;
+  --isr-navy: #405c68 !important;
+  --isr-burgundy: #685238 !important;
+  --isr-paper: #eee1c3 !important;
+  --isr-ink: #17140f !important;
+  --isr-rule: rgba(104, 82, 56, 0.28) !important;
+  --isr-shadow: 0 12px 32px rgba(72, 52, 28, 0.09) !important;
+}
+
+[saved-theme="dark"] {
+  --isr-gold: #d6a64c !important;
+  --isr-gold-soft: rgba(214, 166, 76, 0.14) !important;
+  --isr-navy: #89a4ae !important;
+  --isr-burgundy: #b9a27d !important;
+  --isr-paper: #1b1915 !important;
+  --isr-ink: #eee1c3 !important;
+  --isr-rule: rgba(238, 225, 195, 0.2) !important;
+  --isr-shadow: 0 12px 32px rgba(0, 0, 0, 0.24) !important;
+}
+
+/* The old shared cover is superseded by the Lantern and Ledger masthead. */
+.global-page-cover {
+  display: none !important;
+}
+
+.lantern-ledger-site-header {
+  display: block;
+  width: 100%;
+  margin: 0 0 1.6rem;
+}
+
+.lantern-ledger-masthead {
+  display: block;
+  width: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+
+.lantern-ledger-masthead picture,
+.lantern-ledger-masthead img {
+  display: block;
+  width: 100%;
+}
+
+.lantern-ledger-masthead img {
+  width: min(100%, 24rem);
+  height: auto;
+  max-height: none;
+  margin-inline: auto;
+  object-fit: contain;
+  aspect-ratio: 8 / 3;
+  border: 1px solid var(--isr-rule);
+  border-radius: 0.22rem;
+  background: var(--light);
+  box-shadow: 0 8px 24px rgba(54, 40, 24, 0.1);
+}
+
+.lantern-ledger-archive-rule {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin: 0.7rem 0 0;
+  color: var(--darkgray);
+  font-family: var(--bodyFont);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.lantern-ledger-archive-rule::before,
+.lantern-ledger-archive-rule::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--isr-rule);
+}
+
+.lantern-ledger-header-children {
+  margin-top: 1rem;
+}
+
+/* Retire the old Gazetteer label wherever the page-title component appears. */
+.page-title::after {
+  content: "THE LANTERN AND LEDGER · ARCHIVES" !important;
+  color: var(--tertiary) !important;
+  font-family: var(--bodyFont) !important;
+  font-size: 0.62rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.18em !important;
+}
+
+@media (max-width: 800px) {
+  .lantern-ledger-site-header {
+    margin-bottom: 1.1rem;
+  }
+
+  .lantern-ledger-masthead picture {
+    display: grid;
+    place-items: center;
+  }
+
+  .lantern-ledger-masthead img {
+    width: clamp(6rem, 28vw, 7.5rem);
+    max-height: none;
+    margin-inline: auto;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    object-fit: contain;
+    aspect-ratio: 1;
+  }
+
+  .lantern-ledger-archive-rule {
+    margin-top: 0.55rem;
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+  }
+}
+
+@media (max-width: 430px) {
+  .lantern-ledger-archive-rule {
+    gap: 0.45rem;
+    font-size: 0.55rem;
+    letter-spacing: 0.08em;
+  }
+}
+</style><div id="quartz-root" class="page" data-frame="default"><div id="quartz-body" class="campaign--abomination-vaults campaign-spoiler-pending"><div class="campaign-spoiler-gate" data-campaign-key="abomination-vaults" data-campaign-name="Abomination Vaults" role="dialog" aria-modal="true" aria-labelledby="campaign-spoiler-title"><div class="campaign-spoiler-gate-card"><p class="campaign-spoiler-eyebrow">Campaign Spoiler Warning</p><h2 id="campaign-spoiler-title">Warning: Spoilers for Abomination Vaults</h2><p>This section contains spoilers for the Abomination Vaults campaign. Continue only if you are a player in this campaign and want access to its archive.</p><div class="campaign-spoiler-actions"><button type="button" data-spoiler-action="back">Go Back</button><button class="is-primary" type="button" data-spoiler-action="opt-in">Player in the Abomination Vaults Campaign</button></div></div></div><div class="left sidebar"><h2 class="page-title"><a href="../../..">The Lantern and Ledger</a></h2><div class="mobile-only"><div class="spacer"></div></div><div class="flex-component" style="flex-direction: row; flex-wrap: nowrap; gap: 0.5rem;"><div style="flex-grow: 1; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><div class="search"><button class="search-button" aria-label="Search" aria-expanded="false"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.9 19.7"><title>Search</title><g class="search-path" fill="none"><path stroke-linecap="square" d="M18.5 18.3l-5.4-5.4"></path><circle cx="8" cy="8" r="7"></circle></g></svg><p>Search</p></button><div class="search-container"><div class="search-space"><input autocomplete="off" class="search-bar" name="search" type="text" aria-label="Search for something..." placeholder="Search for something..."/><div class="search-layout" data-preview="true" data-field-priority="[&quot;title&quot;,&quot;content&quot;,&quot;tags&quot;]"></div></div></div></div></div><div style="flex-grow: 0; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><button class="darkmode" aria-label="Dark mode"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="dayIcon" x="0px" y="0px" viewBox="0 0 35 35" style="enable-background:new 0 0 35 35" xml:space="preserve" aria-label="Dark mode"><title>Dark mode</title><path d="M6,17.5C6,16.672,5.328,16,4.5,16h-3C0.672,16,0,16.672,0,17.5    S0.672,19,1.5,19h3C5.328,19,6,18.328,6,17.5z M7.5,26c-0.414,0-0.789,0.168-1.061,0.439l-2,2C4.168,28.711,4,29.086,4,29.5    C4,30.328,4.671,31,5.5,31c0.414,0,0.789-0.168,1.06-0.44l2-2C8.832,28.289,9,27.914,9,27.5C9,26.672,8.329,26,7.5,26z M17.5,6    C18.329,6,19,5.328,19,4.5v-3C19,0.672,18.329,0,17.5,0S16,0.672,16,1.5v3C16,5.328,16.671,6,17.5,6z M27.5,9    c0.414,0,0.789-0.168,1.06-0.439l2-2C30.832,6.289,31,5.914,31,5.5C31,4.672,30.329,4,29.5,4c-0.414,0-0.789,0.168-1.061,0.44    l-2,2C26.168,6.711,26,7.086,26,7.5C26,8.328,26.671,9,27.5,9z M6.439,8.561C6.711,8.832,7.086,9,7.5,9C8.328,9,9,8.328,9,7.5    c0-0.414-0.168-0.789-0.439-1.061l-2-2C6.289,4.168,5.914,4,5.5,4C4.672,4,4,4.672,4,5.5c0,0.414,0.168,0.789,0.439,1.06    L6.439,8.561z M33.5,16h-3c-0.828,0-1.5,0.672-1.5,1.5s0.672,1.5,1.5,1.5h3c0.828,0,1.5-0.672,1.5-1.5S34.328,16,33.5,16z     M28.561,26.439C28.289,26.168,27.914,26,27.5,26c-0.828,0-1.5,0.672-1.5,1.5c0,0.414,0.168,0.789,0.439,1.06l2,2    C28.711,30.832,29.086,31,29.5,31c0.828,0,1.5-0.672,1.5-1.5c0-0.414-0.168-0.789-0.439-1.061L28.561,26.439z M17.5,29    c-0.829,0-1.5,0.672-1.5,1.5v3c0,0.828,0.671,1.5,1.5,1.5s1.5-0.672,1.5-1.5v-3C19,29.672,18.329,29,17.5,29z M17.5,7    C11.71,7,7,11.71,7,17.5S11.71,28,17.5,28S28,23.29,28,17.5S23.29,7,17.5,7z M17.5,25c-4.136,0-7.5-3.364-7.5-7.5    c0-4.136,3.364-7.5,7.5-7.5c4.136,0,7.5,3.364,7.5,7.5C25,21.636,21.636,25,17.5,25z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="nightIcon" x="0px" y="0px" viewBox="0 0 100 100" style="enable-background:new 0 0 100 100" xml:space="preserve" aria-label="Light mode"><title>Light mode</title><path d="M96.76,66.458c-0.853-0.852-2.15-1.064-3.23-0.534c-6.063,2.991-12.858,4.571-19.655,4.571  C62.022,70.495,50.88,65.88,42.5,57.5C29.043,44.043,25.658,23.536,34.076,6.47c0.532-1.08,0.318-2.379-0.534-3.23  c-0.851-0.852-2.15-1.064-3.23-0.534c-4.918,2.427-9.375,5.619-13.246,9.491c-9.447,9.447-14.65,22.008-14.65,35.369  c0,13.36,5.203,25.921,14.65,35.368s22.008,14.65,35.368,14.65c13.361,0,25.921-5.203,35.369-14.65  c3.872-3.871,7.064-8.328,9.491-13.246C97.826,68.608,97.611,67.309,96.76,66.458z"></path></svg></button></div><div style="flex-grow: 0; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><button class="readermode" aria-label="Reader mode"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="readerIcon" fill="currentColor" stroke="currentColor" stroke-width="0.2" stroke-linecap="round" stroke-linejoin="round" width="64px" height="64px" viewBox="0 0 24 24" aria-label="Reader mode"><title>Reader mode</title><g transform="translate(-1.8, -1.8) scale(1.15, 1.2)"><path d="M8.9891247,2.5 C10.1384702,2.5 11.2209868,2.96705384 12.0049645,3.76669482 C12.7883914,2.96705384 13.8709081,2.5 15.0202536,2.5 L18.7549359,2.5 C19.1691495,2.5 19.5049359,2.83578644 19.5049359,3.25 L19.5046891,4.004 L21.2546891,4.00457396 C21.6343849,4.00457396 21.9481801,4.28672784 21.9978425,4.6528034 L22.0046891,4.75457396 L22.0046891,20.25 C22.0046891,20.6296958 21.7225353,20.943491 21.3564597,20.9931534 L21.2546891,21 L2.75468914,21 C2.37499337,21 2.06119817,20.7178461 2.01153575,20.3517706 L2.00468914,20.25 L2.00468914,4.75457396 C2.00468914,4.37487819 2.28684302,4.061083 2.65291858,4.01142057 L2.75468914,4.00457396 L4.50368914,4.004 L4.50444233,3.25 C4.50444233,2.87030423 4.78659621,2.55650904 5.15267177,2.50684662 L5.25444233,2.5 L8.9891247,2.5 Z M4.50368914,5.504 L3.50468914,5.504 L3.50468914,19.5 L10.9478955,19.4998273 C10.4513189,18.9207296 9.73864328,18.5588115 8.96709342,18.5065584 L8.77307039,18.5 L5.25444233,18.5 C4.87474657,18.5 4.56095137,18.2178461 4.51128895,17.8517706 L4.50444233,17.75 L4.50368914,5.504 Z M19.5049359,17.75 C19.5049359,18.1642136 19.1691495,18.5 18.7549359,18.5 L15.2363079,18.5 C14.3910149,18.5 13.5994408,18.8724714 13.0614828,19.4998273 L20.5046891,19.5 L20.5046891,5.504 L19.5046891,5.504 L19.5049359,17.75 Z M18.0059359,3.999 L15.0202536,4 L14.8259077,4.00692283 C13.9889509,4.06666544 13.2254227,4.50975805 12.7549359,5.212 L12.7549359,17.777 L12.7782651,17.7601316 C13.4923805,17.2719483 14.3447024,17 15.2363079,17 L18.0059359,16.999 L18.0056891,4.798 L18.0033792,4.75457396 L18.0056891,4.71 L18.0059359,3.999 Z M8.9891247,4 L6.00368914,3.999 L6.00599909,4.75457396 L6.00599909,4.75457396 L6.00368914,4.783 L6.00368914,16.999 L8.77307039,17 C9.57551536,17 10.3461406,17.2202781 11.0128313,17.6202194 L11.2536891,17.776 L11.2536891,5.211 C10.8200889,4.56369974 10.1361548,4.13636104 9.37521067,4.02745763 L9.18347055,4.00692283 L8.9891247,4 Z"></path></g></svg></button></div></div><div class="explorer nav-files-container" data-behavior="link" data-collapsed="collapsed" data-savestate="true" data-data-fns="{&quot;order&quot;:[&quot;filter&quot;,&quot;map&quot;,&quot;sort&quot;],&quot;sortFn&quot;:&quot;(a2, b2) => {\n    if (!a2.isFolder &amp;&amp; !b2.isFolder || a2.isFolder &amp;&amp; b2.isFolder) {\n      return (a2.displayName || \&quot;\&quot;).localeCompare(b2.displayName || \&quot;\&quot;, void 0, {\n        numeric: true,\n        sensitivity: \&quot;base\&quot;\n      });\n    }\n    if (!a2.isFolder &amp;&amp; b2.isFolder) {\n      return 1;\n    }\n    return -1;\n  }&quot;,&quot;filterFn&quot;:&quot;(node) => node.slugSegment !== \&quot;tags\&quot;&quot;,&quot;mapFn&quot;:&quot;(node) => {\n    return node;\n  }&quot;}"><button type="button" class="explorer-toggle mobile-explorer hide-until-loaded" data-mobile="true" aria-controls="explorer-12" aria-label="Explorer"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-menu"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button><button type="button" class="title-button explorer-toggle desktop-explorer" data-mobile="false" aria-expanded="true"><h2>Explorer</h2><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="5 8 14 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fold"><polyline points="6 9 12 15 18 9"></polyline></svg></button><div id="explorer-12" class="explorer-content" aria-expanded="false" role="group"><ul class="explorer-ul overflow" id="list-0"><li class="overflow-end"></li></ul></div><template id="template-file"><li><a href="#" class="nav-file-title tree-item-self"></a></li></template><template id="template-folder"><li><div class="folder-container nav-folder-title tree-item-self"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="5 8 14 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="folder-icon nav-folder-collapse-indicator collapse-icon"><polyline points="6 9 12 15 18 9"></polyline></svg><div><button class="folder-button"><span class="folder-title"></span></button></div></div><div class="folder-outer"><ul class="content tree-item-children"></ul></div></li></template></div></div><div class="center"><div class="page-header"><link rel="stylesheet" href="/lantern-and-ledger/static/preferences.css"/><script src="/lantern-and-ledger/static/campaign-spoilers.js"></script><script src="/lantern-and-ledger/static/preferences.js"></script><script src="/lantern-and-ledger/static/golarion-page-loader.js"></script><header class="lantern-ledger-site-header"><a class="lantern-ledger-masthead" href="/lantern-and-ledger/" aria-label="Campaign site home"><picture><source media="(max-width: 800px)" srcset="/lantern-and-ledger/assets/images/lantern-and-ledger-branding/lantern-and-ledger-compact.webp" width="1254" height="1254"/><img src="/lantern-and-ledger/assets/images/lantern-and-ledger-branding/wide_vintage_newspaper_masthead_style_illustration.webp" alt="The Lantern and Ledger — Light for the Present. Record for the Future." width="2048" height="768" decoding="async"/></picture></a><div class="lantern-ledger-archive-rule" aria-hidden="true"><span>THE LANTERN AND LEDGER · ARCHIVES</span></div></header><div class="popover-hint"><nav class="breadcrumb-container" aria-label="breadcrumbs"><div class="breadcrumb-element"><a href="../../../">Home</a><p> ❯ </p></div><div class="breadcrumb-element"><a href="../../../campaigns/">Campaigns</a><p> ❯ </p></div><div class="breadcrumb-element"><a href="../../../campaigns/abomination-vaults/">Abomination Vaults</a><p> ❯ </p></div><div class="breadcrumb-element"><a href="../../../campaigns/abomination-vaults/characters/">Characters</a><p> ❯ </p></div><div class="breadcrumb-element"><a href>Theron</a></div></nav><h1 class="article-title">Theron</h1><p show-comma="true" class="content-meta"><time datetime="2026-09-17T17:47:38.000Z">Sep 17, 2026</time><span>14 min read</span></p><template class="faceted-search-template"><div class="faceted-search"><button class="faceted-search__trigger" type="button" aria-haspopup="dialog" aria-expanded="false"><svg aria-hidden="true" viewBox="0 0 20 20"><circle cx="8.25" cy="8.25" r="5.75" fill="none"></circle><path d="m12.5 12.5 5 5"></path></svg><span>Search archive</span><kbd>Ctrl K</kbd></button><div class="faceted-search__overlay" hidden><section class="faceted-search__dialog" role="dialog" aria-modal="true" aria-labelledby="faceted-search-title"><header class="faceted-search__header"><div><p class="faceted-search__eyebrow">Lantern &amp; Ledger Archive</p><h2 id="faceted-search-title">Search the records</h2></div><button class="faceted-search__close" type="button" aria-label="Close search">×</button></header><label class="faceted-search__query-label"><span class="visually-hidden">Search terms</span><svg aria-hidden="true" viewBox="0 0 20 20"><circle cx="8.25" cy="8.25" r="5.75" fill="none"></circle><path d="m12.5 12.5 5 5"></path></svg><input class="faceted-search__query" type="search" autocomplete="off" placeholder="Search people, places, sessions, and stories…"/></label><div class="faceted-search__filters" aria-label="Search filters"><label><span>Campaign</span><select class="faceted-search__campaign"><option value>All campaigns</option></select></label><label><span>Record type</span><select class="faceted-search__type"><option value>All record types</option></select></label><button class="faceted-search__clear" type="button">Clear</button></div><div class="faceted-search__status" aria-live="polite">Loading the archive…</div><div class="faceted-search__results" role="listbox" aria-label="Search results"></div></section></div></div></template><span class="reading-progress-anchor" aria-hidden="true"></span><div class="character-vignettes"><a href="../../../campaigns/abomination-vaults/vignettes/theron/" class="editorial-card character-vignettes__card internal"><span class="editorial-card__copy"><span class="editorial-card__eyebrow">Character archive</span><span class="editorial-card__title">Character Vignettes</span><span class="editorial-card__description">Browse this character's collected scenes, side stories, and vignettes.</span><span class="editorial-card__footer"><span class="editorial-card__meta">22 entries</span><span class="editorial-card__cta">Browse vignettes <span aria-hidden="true">→</span></span></span></span></a></div></div></div><article class="popover-hint"><div class="markdown-preview-view markdown-rendered"><h1 id="theron">Theron<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#theron" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h1>
+<aside class="isr-character-dossier" aria-label="Character dossier">
+<img src="../../../assets/images/tengu-travis.webp" alt="Portrait of Theron" decoding="async" loading="eager"/>
+<div class="isr-character-dossier-copy">
+<p class="isr-character-dossier-subtitle">Tengu Fighter</p>
+<span class="isr-character-dossier-status">active</span>
+</div>
+</aside>
+<p>Theron was an adventurer who joined the exploration of the Abomination Vaults beneath Gauntlight and ultimately helped bring about the destruction of both the lighthouse and its creator, Belcorra Haruvex. Originally a logger in Otari, Theron’s life changed irrevocably during the expedition when he was killed and later returned to life through primal reincarnation. He emerged from the ritual in the body of a tengu, beginning a second life that would prove considerably stranger than his first.</p>
+<p>Among his companions, Theron became the group’s physical anchor: the fighter who stood between danger and the people less equipped to survive it. Death made him more pragmatic rather than more cautious. He became willing to accept ugly solutions when he believed they protected the greater number of people, but that ruthlessness existed alongside a genuine attachment to Otari and a desire to see the town recover from the fear cast over it by Gauntlight.</p>
+<h2 id="death-and-reincarnation">Death and Reincarnation<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#death-and-reincarnation" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>Theron’s first life ended in the Abomination Vaults.</p>
+<p>His death left enough of an impression that, long afterward, he could still identify the place where his severed head had once screamed from a table. His companions nevertheless managed to recover him, and a primal reincarnation ritual returned Theron to life in a new body. The man who awakened was now a tengu.</p>
+<p>The transformation was more than cosmetic. Theron had to adjust to a body fundamentally different from the one in which he had been born, including wings that eventually allowed him to take to the air. What began as an alien circumstance gradually became simply part of him. In time, Theron not only mastered flight but took genuine pleasure in it.</p>
+<p>His experience also gave him an unusually practical perspective on resurrection. Having personally endured death and the psychologically complicated experience of awakening in another form, Theron understood that restoring a dead companion was not necessarily the simple reversal of a tragedy. Returning someone to life could save them while still changing them permanently.</p>
+<h2 id="changing-form">Changing Form<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#changing-form" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p><img src="../../../assets/images/theron-human.webp" alt="Theron before his reincarnation as a tengu." decoding="async" loading="lazy" width="1000" height="1000"/></p>
+<p>This earlier portrait shows Theron before his death. The tengu portrait above records the shield, armor, and flaming sword through which his companions could still recognize the fighter they had lost. The body changed; the stance did not.</p>
+<h2 id="the-partys-anchor">The Party’s Anchor<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#the-partys-anchor" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>Theron’s place in the group was straightforward: when something dangerous needed to be stopped from reaching everyone else, Theron stood in front of it.</p>
+<p>That role repeatedly put him in situations sensible people would have avoided. He plunged into an underground lake and cut open a monster that had swallowed Talia. He fought dragons in the air, battled graveknights and golems at close quarters, endured attacks intended to drain the life from him, and on more than one occasion survived wounds that left very little margin between victory and another death.</p>
+<p>Not every example was heroic. Theron’s preference for solving immediate problems through direct physical action could produce spectacular mistakes. After discovering dangerous green slime clinging to the ceiling of a cavern, he elected to fly directly at it and attack it with his sword. The slime promptly engulfed him, sent him crashing to the ground, and spread to August when the cleric attempted to help.</p>
+<p>Another expedition ended with Theron paralyzed by venom from an adamantine-toothed creature. Fully conscious but completely unable to move, he had to endure being dragged back to Otari while Talia read romance novels aloud to him.</p>
+<p>Such incidents did little to change his basic philosophy. Theron knew what he was good at, knew what his companions needed him to do, and generally regarded the danger involved as part of the job.</p>
+<h2 id="the-crimson-fulcrum-lens">The Crimson Fulcrum Lens<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#the-crimson-fulcrum-lens" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>The struggle against Belcorra eventually led the adventurers to the Fulcrum Lenses, artifacts connected to the power necessary to defeat her permanently. Theron volunteered to carry the Crimson Fulcrum Lens.</p>
+<p>The decision came with a severe cost. The artifact filled its bearer with supernatural anger, leaving Theron trapped in a state of constant irritation and seething rage. He remained capable of directing that anger toward the party’s enemies, but the emotion was not truly his, and its influence increasingly colored his already straightforward approach to problems.</p>
+<p>While carrying the lens, Theron fought some of the party’s most dangerous battles. He knocked a bog dragon from the sky, survived attacks by urdefhan assassins, and helped defeat the graveknight Caliddo alongside a massive clay golem. When Caliddo’s cursed armor threatened to regenerate its owner, Theron enthusiastically supported the party’s distinctly unconventional solution: placing the armor into a magical Bag of Weasels until the object was transformed into something considerably less dangerous.</p>
+<p>The lens remained with Theron until the final confrontation with Belcorra. When the time came to place it into the Fulcrum Lattice, he surrendered it without hesitation. The rage had been a burden he accepted because the party needed someone to carry it. Once it had served its purpose, he had no desire to keep it.</p>
+<h2 id="against-belcorra">Against Belcorra<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#against-belcorra" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>Theron proved particularly effective whenever Belcorra herself confronted the party.</p>
+<p>During one manifestation, he struck the ghost with such overwhelming force that she fled from the encounter. A later confrontation in the Darklands settlement of Yldaris was even more consequential. The party entered the battle already weakened, but Theron recovered quickly enough to place himself between Belcorra and his companions.</p>
+<p>When Belcorra attempted to unleash a devastating phantasmal calamity, Theron’s training allowed him to interrupt the spell before it could be completed. The attack prevented what the party later realized might have killed nearly everyone present.</p>
+<p>The victory nevertheless carried consequences. Their presence had exposed the people of Yldaris to Belcorra’s retaliation, and Queen Quara banished the adventurers from the settlement. Theron accepted the judgment. Whatever their intentions, innocent people had been endangered because of them.</p>
+<p>With their refuge gone and Belcorra certain to return, Theron’s response was characteristically practical. There was nowhere left to retreat. They still needed the remaining Fulcrum Lens, and the mission had not changed.</p>
+<h2 id="khurfel-and-the-last-lens">Khurfel and the Last Lens<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#khurfel-and-the-last-lens" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>The final Fulcrum Lens was held by Khurfel, an urdefhan warlord responsible for the deaths of members of Queen Quara’s family.</p>
+<p>Theron met Khurfel in one of the expedition’s most brutal battles. The warlord tore into him with sword and jaws while reinforcements and enemy healers threatened to overwhelm the party. Theron absorbed the punishment long enough for his companions to create an opening, then killed Khurfel and immediately turned his weapon on the next enemy.</p>
+<p>Among the possessions recovered afterward was Khurfel’s Roka sword, which was owed to Queen Quara in partial payment for the blood of her family. Theron took responsibility for keeping the weapon safe until it could eventually be returned.</p>
+<p>More importantly, Khurfel’s death gave the party the last component they needed to end the threat of Gauntlight.</p>
+<h2 id="the-final-descent">The Final Descent<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#the-final-descent" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>Before entering the deepest reaches of the Vaults, Theron and his companions retraced the dungeon they had spent so long exploring. They walked through old battlefields, traps, cells, and rooms where friends had nearly died. Theron treated the journey less as a heroic pilgrimage than as a soldier reviewing an old campaign.</p>
+<p>He even collected a warning note from one of the doors and kept it for his scrapbook.</p>
+<p>The deepest chambers subjected the party to trials associated with Nhimbaloth. Theron was confronted with memories of an easier life and then with visions of his greatest failures. The torment eventually offered him an escape if he would surrender something of himself.</p>
+<p>Theron refused.</p>
+<blockquote>
+<p>“Much has already been taken from me. You will have nothing else.”</p>
+</blockquote>
+<p>The answer captured what the Abomination Vaults had made of him. Theron had already died there. He had lost his original body, endured reincarnation, carried an artifact that filled his mind with rage, and repeatedly watched his companions come within moments of death. There was little the dungeon could threaten him with that it had not already done.</p>
+<p>His deepest fear was not death itself. It was helplessness: the possibility that all his strength, armor, and training might someday prove useless while the people he protected died behind him.</p>
+<p>He continued anyway.</p>
+<h2 id="the-fall-of-gauntlight">The Fall of Gauntlight<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#the-fall-of-gauntlight" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>Theron remained at the front through the last guardians of Nhimbaloth’s sanctum, including the ancient entity known as Lady’s Whisper. When the Fulcrum Lattice was finally ready, he surrendered the Crimson Lens so that the party could complete the mechanism intended to destroy Belcorra.</p>
+<p>The plan worked.</p>
+<p>Nhimbaloth’s power tore through Belcorra Haruvex, and the ancient ghost who had haunted Otari for centuries was finally destroyed. With its master gone and its purpose broken, Gauntlight began collapsing around the adventurers.</p>
+<p>Theron ran.</p>
+<p>The survivors emerged into the night as the lighthouse came down behind them, level after level of the Abomination Vaults disappearing beneath the ruins. Otari was waiting for them with drinks rather than speeches.</p>
+<p>For Theron, it was an unexpectedly appropriate ending. He had first come to Otari as a logger whose ambitions extended little further than earning a living and staying out of trouble. By the time Gauntlight fell, he had died, returned in another body, learned to fly, carried a fragment of an Outer God’s power, fought his way through horrors beneath the earth, and helped destroy the ghost responsible for centuries of suffering.</p>
+<p>Afterward, there was a fishing shack with six made beds.</p>
+<p>Theron took one and slept.</p>
+<h2 id="images">Images<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#images" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<div class="isr-metadata-carousel" data-isr-metadata-carousel data-interval="10"><div class="isr-gallery-track" role="group" aria-roledescription="carousel" aria-label="Image carousel"><figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/trials-of-nhimbaloth/future-failures/theron-future-failure.webp" alt="A possible future shown to Theron during the Trials of Nhimbaloth. His shield cannot stop the incorporeal." width="1122" height="1402" loading="eager" decoding="async"/><figcaption>A possible future shown to Theron during the Trials of Nhimbaloth. His shield cannot stop the incorporeal.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/theron-human.webp" alt="Theron before his reincarnation as a tengu." width="1000" height="1000" loading="lazy" decoding="async"/><figcaption>Theron before his reincarnation as a tengu.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/no-way-to-get-ahead-scared-theron-2.webp" alt="Theron's frightened, silently screaming head." width="712" height="1011" loading="lazy" decoding="async"/><figcaption>Theron's frightened, silently screaming head.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/no-way-to-get-ahead-theron-head-6.webp" alt="Theron's head, hooked up to arcane and esoteric equipment." width="960" height="960" loading="lazy" decoding="async"/><figcaption>Theron's head, hooked up to arcane and esoteric equipment.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/trials-of-nhimbaloth/pleasant-memories/theron-pleasant-memory-01.webp" alt="A pleasant memory shown to Theron during the Trials of Nhimbaloth. An honest day's work." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>A pleasant memory shown to Theron during the Trials of Nhimbaloth. An honest day's work.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/trials-of-nhimbaloth/pleasant-memories/theron-pleasant-memory-02.webp" alt="Another pleasant memory shown to Theron during the Trials of Nhimbaloth. Longsaddle's respect." width="1389" height="1132" loading="lazy" decoding="async"/><figcaption>Another pleasant memory shown to Theron during the Trials of Nhimbaloth. Longsaddle's respect.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/tengu-travis.webp" alt="Theron, immediately after his reincarnation as a tengu." width="1024" height="1024" loading="lazy" decoding="async"/><figcaption>Theron, immediately after his reincarnation as a tengu.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/to-live-or-die-image-02.webp" alt="Theron in the To Live or Die scene. Immediately after slaughtering an unconscious enemy." width="640" height="960" loading="lazy" decoding="async"/><figcaption>Theron in the To Live or Die scene. Immediately after slaughtering an unconscious enemy.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/trials-of-nhimbaloth/failures/theron-failure.webp" alt="A failure from Theron's past, replayed during the Trials of Nhimbaloth. Death by hydra." width="1448" height="1086" loading="lazy" decoding="async"/><figcaption>A failure from Theron's past, replayed during the Trials of Nhimbaloth. Death by hydra.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/reference/new-roseguard-party-reference.webp" alt="The New Roseguard: August Shepard, Talia Nightclaw, Kiri Steelpaws, Theron, and Comet." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>The New Roseguard: August Shepard, Talia Nightclaw, Kiri Steelpaws, Theron, and Comet.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/aftermath-at-the-warped-brew---theron.webp" alt="Theron during Aftermath at the Warped Brew." width="1024" height="1024" loading="lazy" decoding="async"/><figcaption>Theron during Aftermath at the Warped Brew.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/audits-of-absalom-and-a-drow-rebirth---theron.webp" alt="Theron during Audits of Absalom and a Drow Rebirth." width="1024" height="1024" loading="lazy" decoding="async"/><figcaption>Theron during Audits of Absalom and a Drow Rebirth.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-27/session-27-image-insert-3.webp" alt="She chose life; the rite chose its shape." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>She chose life; the rite chose its shape.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-18/session-18-image-insert-3.webp" alt="An introduction conducted through mud, profanity, and tentacles." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>An introduction conducted through mud, profanity, and tentacles.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-18/session-18-image-insert-1.webp" alt="The boat was Future. It passed quickly." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>The boat was Future. It passed quickly.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/blood-in-the-water-and-the-breath-of-the-bog---theron.webp" alt="Theron during Blood in the Water and the Breath of the Bog." width="1024" height="1024" loading="lazy" decoding="async"/><figcaption>Theron during Blood in the Water and the Breath of the Bog.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/brains,-fireballs,-and-bad-decisions---theron.webp" alt="Theron during Brains, Fireballs, and Bad Decisions." width="1024" height="1024" loading="lazy" decoding="async"/><figcaption>Theron during Brains, Fireballs, and Bad Decisions.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-32/session-32-image-insert-1.webp" alt="They had not infiltrated the camp; they had walked into its center." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>They had not infiltrated the camp; they had walked into its center.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-32/session-32-image-insert-2.webp" alt="The wand and the warning escaped; whether together remained uncertain." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>The wand and the warning escaped; whether together remained uncertain.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/confronting-nightmares-and-empty-death---theron.webp" alt="Theron during Confronting Nightmares and Empty Death." width="1024" height="1024" loading="lazy" decoding="async"/><figcaption>Theron during Confronting Nightmares and Empty Death.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-12/session-12-image-insert-3.webp" alt="Predation was offered as exchange; the company declined." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>Predation was offered as exchange; the company declined.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-12/session-12-image-insert-1.webp" alt="One servant of the Empty Death, answered." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>One servant of the Empty Death, answered.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-24/session-24-image-insert-2.webp" alt="Nhalyss asked for minds; the Roseguard asked for one person back." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>Nhalyss asked for minds; the Roseguard asked for one person back.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-24/session-24-image-insert-3.webp" alt="Freedom lasted one road and one battle." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>Freedom lasted one road and one battle.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-24/session-24-image-insert-1.webp" alt="The first confirmed power of the lens was permission." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>The first confirmed power of the lens was permission.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/every-plus-one-warlord-matters---theron.webp" alt="Theron during Every Plus One Warlord Matters." width="1024" height="1024" loading="lazy" decoding="async"/><figcaption>Theron during Every Plus One Warlord Matters.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-33/session-33-image-insert-1.webp" alt="The sword fell with the warlord who had taken it." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>The sword fell with the warlord who had taken it.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-33/session-33-image-insert-3.webp" alt="Yldaris had left before Belcorra could find it where she remembered." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>Yldaris had left before Belcorra could find it where she remembered.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/freedom-for-the-provisions---theron.webp" alt="Theron during Freedom for the Provisions." width="1024" height="1024" loading="lazy" decoding="async"/><figcaption>Theron during Freedom for the Provisions.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/lava-puppycicle-and-other-trials---theron.webp" alt="Theron during Lava Puppycicle and Other Trials." width="1024" height="1024" loading="lazy" decoding="async"/><figcaption>Theron during Lava Puppycicle and Other Trials.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-36/session-36-image-insert-2.webp" alt="August was not expecting the water to work; the statue was given no opportunity to object." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>August was not expecting the water to work; the statue was given no opportunity to object.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-36/session-36-image-insert-1.webp" alt="Theron moved the creature because killing it would not free Kiri quickly enough." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>Theron moved the creature because killing it would not free Kiri quickly enough.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-36/session-36-image-insert-3.webp" alt="Their names were lost; their release was not." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>Their names were lost; their release was not.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-37/session-37-image-insert-3.webp" alt="The Trial of Dreams ended in a place where the mud had claws." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>The Trial of Dreams ended in a place where the mud had claws.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-37/session-37-image-insert-1.webp" alt="The trial began with what each of them still wanted enough to mourn." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>The trial began with what each of them still wanted enough to mourn.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/let-me-take-something-from-you---theron.webp" alt="Theron during Let Me Take Something from You." width="1024" height="1024" loading="lazy" decoding="async"/><figcaption>Theron during Let Me Take Something from You.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-37/session-37-image-insert-2.webp" alt="The bargain remained in the record after its owner did not." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>The bargain remained in the record after its owner did not.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-15/session-15-image-insert-3.webp" alt="The repaired lift descended one hundred feet toward the Black Lake." width="1122" height="1402" loading="lazy" decoding="async"/><figcaption>The repaired lift descended one hundred feet toward the Black Lake.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/loose-ends-and-a-long-way-down---theron.webp" alt="Theron during Loose Ends and a Long Way Down." width="1024" height="1024" loading="lazy" decoding="async"/><figcaption>Theron during Loose Ends and a Long Way Down.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-15/session-15-image-insert-1.webp" alt="The last summoning circle yielded to water and municipal persistence." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>The last summoning circle yielded to water and municipal persistence.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-38/session-38-image-insert-1.webp" alt="Theron's proposed treatment allowed fifty minutes to kill Belcorra and save Absalom." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>Theron's proposed treatment allowed fifty minutes to kill Belcorra and save Absalom.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-38/session-38-image-insert-2.webp" alt="Demigod or not, sufficient trauma remained fatal." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>Demigod or not, sufficient trauma remained fatal.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-38/session-38-image-insert-3.webp" alt="She had sought Nhimbaloth's power and received Nhimbaloth's attention." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>She had sought Nhimbaloth's power and received Nhimbaloth's attention.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/no-thank-you,-nhimbaloth---theron.webp" alt="Theron during No Thank You, Nhimbaloth." width="1024" height="1024" loading="lazy" decoding="async"/><figcaption>Theron during No Thank You, Nhimbaloth.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-38/session-38-image-insert-4.webp" alt="Belcorra did not return, and Gauntlight did not shine again." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>Belcorra did not return, and Gauntlight did not shine again.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-2/image-insert-2.webp" alt="The cavern beneath the fishery, where confidence came at considerable cost." width="1672" height="941" loading="lazy" decoding="async"/><figcaption>The cavern beneath the fishery, where confidence came at considerable cost.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-2/image-insert-1.webp" alt="A mechanism without malice, despite considerable testimony to the contrary." width="1448" height="1086" loading="lazy" decoding="async"/><figcaption>A mechanism without malice, despite considerable testimony to the contrary.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-9/image-insert-1.webp" alt="Evidence that survival occasionally included steam." width="1448" height="1086" loading="lazy" decoding="async"/><figcaption>Evidence that survival occasionally included steam.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-10/session-10-image-insert-3.webp" alt="At Hell's threshold, the danger remained visible after its purpose was gone." width="1491" height="1055" loading="lazy" decoding="async"/><figcaption>At Hell's threshold, the danger remained visible after its purpose was gone.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-10/session-10-image-insert-2.webp" alt="One middling potion, acquired beyond all sober arithmetic." width="1448" height="1086" loading="lazy" decoding="async"/><figcaption>One middling potion, acquired beyond all sober arithmetic.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-34/session-34-image-insert-3.webp" alt="Six weeks had turned the place where the company broke into remembered geography." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>Six weeks had turned the place where the company broke into remembered geography.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-34/session-34-image-insert-2.webp" alt="They entered by the long route because it might be their last." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>They entered by the long route because it might be their last.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/ravens-rebirth-and-the-devils-due---theron.webp" alt="Theron during Ravens Rebirth and the Devils Due." width="1024" height="1024" loading="lazy" decoding="async"/><figcaption>Theron during Ravens Rebirth and the Devils Due.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-20/session-20-image-insert-3.webp" alt="The first destination was not part of the network." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>The first destination was not part of the network.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-20/session-20-image-insert-2.webp" alt="Confidence survived for one sentence." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>Confidence survived for one sentence.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/sinking-ships-and-summoned-spirits---theron.webp" alt="Theron during Sinking Ships and Summoned Spirits." width="1024" height="1024" loading="lazy" decoding="async"/><figcaption>Theron during Sinking Ships and Summoned Spirits.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-20/session-20-image-insert-1.webp" alt="The administration had failed; the infrastructure had not." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>The administration had failed; the infrastructure had not.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-19/session-19-image-insert-1.webp" alt="Surrender began where employment ended." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>Surrender began where employment ended.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/slithering-deals-and-swampy-meals---theron.webp" alt="Theron during Slithering Deals and Swampy Meals." width="1024" height="1024" loading="lazy" decoding="async"/><figcaption>Theron during Slithering Deals and Swampy Meals.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-19/session-19-image-insert-2.webp" alt="The Black Lake had acquired another means of stopping boats." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>The Black Lake had acquired another means of stopping boats.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-21/session-21-image-insert-1.webp" alt="The bridge crossed one problem and overlooked another." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>The bridge crossed one problem and overlooked another.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-21/session-21-image-insert-2.webp" alt="Theron attacked the battlefield, and gravity joined the company." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>Theron attacked the battlefield, and gravity joined the company.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/smut,-scrolls,-and-spiders---theron.webp" alt="Theron during Smut, Scrolls, and Spiders." width="1024" height="1024" loading="lazy" decoding="async"/><figcaption>Theron during Smut, Scrolls, and Spiders.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-26/session-26-image-insert-3.webp" alt="Its teeth contained the material made to defeat armor." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>Its teeth contained the material made to defeat armor.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/songs-of-confusion-and-adamantine-teeth---theron.webp" alt="Theron during Songs of Confusion and Adamantine Teeth." width="1024" height="1024" loading="lazy" decoding="async"/><figcaption>Theron during Songs of Confusion and Adamantine Teeth.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-26/session-26-image-insert-2.webp" alt="Quara's inheritance returned from the lake." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>Quara's inheritance returned from the lake.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-26/session-26-image-insert-1.webp" alt="Comet answered the hunting song before it became everyone's command." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>Comet answered the hunting song before it became everyone's command.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-16/session-16-image-insert-2.webp" alt="She entered, measured them, and left before they could answer." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>She entered, measured them, and left before they could answer.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/the-black-lake-and-the-ladys-warning---theron.webp" alt="Theron during The Black Lake and the Ladys Warning." width="1024" height="1024" loading="lazy" decoding="async"/><figcaption>Theron during The Black Lake and the Ladys Warning.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-16/session-16-image-insert-1.webp" alt="The eggs were not unattended." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>The eggs were not unattended.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/the-boathouse-ambush-and-the-belly-of-the-beast---theron.webp" alt="Theron during The Boathouse Ambush and the Belly of the Beast." width="1024" height="1024" loading="lazy" decoding="async"/><figcaption>Theron during The Boathouse Ambush and the Belly of the Beast.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-25/session-25-image-insert-1.webp" alt="His promise survived until the door opened." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>His promise survived until the door opened.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-25/session-25-image-insert-2.webp" alt="One rescue was shared; the other belonged to Kiri." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>One rescue was shared; the other belonged to Kiri.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-28/session-28-image-insert-2.webp" alt="Once the dragon entered the mud, the fight became mutual." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>Once the dragon entered the mud, the fight became mutual.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/the-bog-dragon-and-the-invisible-assassins---theron.webp" alt="Theron during The Bog Dragon and the Invisible Assassins." width="1024" height="1024" loading="lazy" decoding="async"/><figcaption>Theron during The Bog Dragon and the Invisible Assassins.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-28/session-28-image-insert-1.webp" alt="One lens dulled the world; the other made every inconvenience personal." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>One lens dulled the world; the other made every inconvenience personal.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-28/session-28-image-insert-3.webp" alt="The scouts became easiest to see when standing nearest their corpses." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>The scouts became easiest to see when standing nearest their corpses.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-14/session-14-image-insert-1.webp" alt="The contract required one man who was not present to answer." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>The contract required one man who was not present to answer.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-29/session-29-image-insert-1.webp" alt="The refugees required an escort, not helplessness." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>The refugees required an escort, not helplessness.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-29/session-29-image-insert-2.webp" alt="They learned what the spirits were only after destroying them." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>They learned what the spirits were only after destroying them.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-29/session-29-image-insert-3.webp" alt="The recommended use of fire did not imply personal contact." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>The recommended use of fire did not imply personal contact.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/the-escort,-the-spectres,-and-the-slime---theron.webp" alt="Theron during The Escort, the Spectres, and the Slime." width="1024" height="1024" loading="lazy" decoding="async"/><figcaption>Theron during The Escort, the Spectres, and the Slime.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-31/session-31-image-insert-1.webp" alt="The brew failed before Belcorra arrived; dignity failed during the fight." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>The brew failed before Belcorra arrived; dignity failed during the fight.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/the-fortifying-brew-that-wasnt---theron.webp" alt="Theron during The Fortifying Brew That Wasnt." width="1024" height="1024" loading="lazy" decoding="async"/><figcaption>Theron during The Fortifying Brew That Wasnt.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-31/session-31-image-insert-3.webp" alt="The chamber still moved travelers; direction had become negotiable." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>The chamber still moved travelers; direction had become negotiable.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-17/session-17-image-insert-2.webp" alt="Courtesy survived longer than Gore's theory of ascension." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>Courtesy survived longer than Gore's theory of ascension.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/the-games-of-the-dead---theron.webp" alt="Theron during The Games of the Dead." width="1024" height="1024" loading="lazy" decoding="async"/><figcaption>Theron during The Games of the Dead.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-17/session-17-image-insert-3.webp" alt="The barricade's warning was accurate and insufficient." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>The barricade's warning was accurate and insufficient.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-17/session-17-image-insert-1.webp" alt="The game survived; the possibility of winning did not." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>The game survived; the possibility of winning did not.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-30/session-30-image-insert-2.webp" alt="To the hells with Caliddo, Belcorra, and the place entire." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>To the hells with Caliddo, Belcorra, and the place entire.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-30/session-30-image-insert-1.webp" alt="Nine hundred pounds made the trail rations symbolic." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>Nine hundred pounds made the trail rations symbolic.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-30/session-30-image-insert-3.webp" alt="The plan was ingenious only while the armor remained inside." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>The plan was ingenious only while the armor remained inside.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/the-infernal-prison-and-the-whispering-wisp---theron.webp" alt="Theron during The Infernal Prison and the Whispering Wisp." width="1024" height="1024" loading="lazy" decoding="async"/><figcaption>Theron during The Infernal Prison and the Whispering Wisp.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-11/session-11-image-insert-3.webp" alt="The trap had not been beaten; it had merely waited." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>The trap had not been beaten; it had merely waited.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-22/session-22-image-insert-1.webp" alt="The first alliance began with surrendered weapons and a shared meal." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>The first alliance began with surrendered weapons and a shared meal.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-22/session-22-image-insert-3.webp" alt="The offering was genuine; the theology remained unverified." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>The offering was genuine; the theology remained unverified.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/the-queen-of-yldaris-and-the-lenses-of-power---theron.webp" alt="Theron during The Queen of Yldaris and the Lenses of Power." width="1024" height="1024" loading="lazy" decoding="async"/><figcaption>Theron during The Queen of Yldaris and the Lenses of Power.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-13/session-13-image-insert-2.webp" alt="Cruelty was part of the authentication." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>Cruelty was part of the authentication.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-13/session-13-image-insert-3.webp" alt="Even mercy became infrastructure." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>Even mercy became infrastructure.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-13/session-13-image-insert-1.webp" alt="The collection restored its warden." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>The collection restored its warden.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/the-wardens-prison-and-the-devils-forge---theron.webp" alt="Theron during The Wardens Prison and the Devils Forge." width="1024" height="1024" loading="lazy" decoding="async"/><figcaption>Theron during The Wardens Prison and the Devils Forge.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-35/session-35-image-insert-1.webp" alt="Undeath had disadvantages, but it generally provided hands." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>Undeath had disadvantages, but it generally provided hands.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-35/session-35-image-insert-3.webp" alt="Submission was one interpretation; survival was the criterion." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>Submission was one interpretation; survival was the criterion.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/weasels-all-the-way-down---theron.webp" alt="Theron during Weasels All the Way Down." width="1024" height="1024" loading="lazy" decoding="async"/><figcaption>Theron during Weasels All the Way Down.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-35/session-35-image-insert-2.webp" alt="The plan succeeded only after the bag decided to fail catastrophically." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>The plan succeeded only after the bag decided to fail catastrophically.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-23/session-23-image-insert-2.webp" alt="They entered ignorance with a rope tied around it." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>They entered ignorance with a rope tied around it.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-23/session-23-image-insert-1.webp" alt="The promise landed before the victory did." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>The promise landed before the victory did.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/session-23/session-23-image-insert-3.webp" alt="Taking the lens was quiet; leaving with it was not." width="1536" height="1024" loading="lazy" decoding="async"/><figcaption>Taking the lens was quiet; leaving with it was not.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/whispers-of-the-gug-god---through-urthaguls-eyes---theron.webp" alt="Through Urthagul's altered perception, Theron appeared as a bright-eyed raven warrior bearing a flame-bright sword." width="1024" height="1536" loading="lazy" decoding="async"/><figcaption>Through Urthagul's altered perception, Theron appeared as a bright-eyed raven warrior bearing a flame-bright sword.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/abomination-vaults/whispers-of-the-gug-god---theron.webp" alt="Theron during Whispers of the Gug God." width="1024" height="1024" loading="lazy" decoding="async"/><figcaption>Theron during Whispers of the Gug God.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/a-brief-lesson-in-indoor-voices-content.webp" alt="August Shepard, Comet, Talia Nightclaw, Theron, and Malaroth entangled by black tentacles while fighting Vethris" width="640" height="960" loading="lazy" decoding="async"/><figcaption>August Shepard, Comet, Talia Nightclaw, Theron, and Malaroth entangled by black tentacles while fighting Vethris</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/new-roseguard-lower-vaults.webp" alt="Comet, Theron, Talia Nightclaw, Kiri Steelpaws, and August Shepard. Someone is missing." width="1254" height="1254" loading="lazy" decoding="async"/><figcaption>Comet, Theron, Talia Nightclaw, Kiri Steelpaws, and August Shepard. Someone is missing.</figcaption></figure>
+<figure class="isr-gallery-slide"><img src="../../../assets/images/new-roseguard-portrait.webp" alt="Talia Nightclaw, August Shepard, Comet, Kiri Steelpaws, and Theron as the New Roseguard, celebrating after their victory." width="1448" height="1086" loading="lazy" decoding="async"/><figcaption>Talia Nightclaw, August Shepard, Comet, Kiri Steelpaws, and Theron as the New Roseguard, celebrating after their victory.</figcaption></figure></div></div></div></article><hr/><div class="page-footer"></div></div><div class="right sidebar"><div class="toc"><button type="button" class="toc-header" aria-controls="toc-10" aria-expanded="true"><h3>Table of Contents</h3><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fold"><polyline points="6 9 12 15 18 9"></polyline></svg></button><ul id="list-0" class="toc-content overflow"><li class="depth-0"><a href="#theron" data-for="theron">Theron</a></li><li class="depth-1"><a href="#death-and-reincarnation" data-for="death-and-reincarnation">Death and Reincarnation</a></li><li class="depth-1"><a href="#changing-form" data-for="changing-form">Changing Form</a></li><li class="depth-1"><a href="#the-partys-anchor" data-for="the-partys-anchor">The Party’s Anchor</a></li><li class="depth-1"><a href="#the-crimson-fulcrum-lens" data-for="the-crimson-fulcrum-lens">The Crimson Fulcrum Lens</a></li><li class="depth-1"><a href="#against-belcorra" data-for="against-belcorra">Against Belcorra</a></li><li class="depth-1"><a href="#khurfel-and-the-last-lens" data-for="khurfel-and-the-last-lens">Khurfel and the Last Lens</a></li><li class="depth-1"><a href="#the-final-descent" data-for="the-final-descent">The Final Descent</a></li><li class="depth-1"><a href="#the-fall-of-gauntlight" data-for="the-fall-of-gauntlight">The Fall of Gauntlight</a></li><li class="depth-1"><a href="#images" data-for="images">Images</a></li><li class="overflow-end"></li></ul></div><div class="backlinks"><h3>Backlinks</h3><ul id="list-0" class="overflow"><li><a href="../../../campaigns/abomination-vaults/abomination-vaults---the-story-so-far" class="internal">Abomination Vaults - The Story So Far</a></li><li><a href="../../../campaigns/abomination-vaults/campaign-history/chronicle-of-the-gauntlight-expedition" class="internal">Chronicle of the Gauntlight Expedition</a></li><li><a href="../../../campaigns/abomination-vaults/campaign-history/the-trials-of-nhimbaloth" class="internal">The Trials of Nhimbaloth</a></li><li><a href="../../../campaigns/abomination-vaults/characters/" class="internal">Characters</a></li><li><a href="../../../campaigns/abomination-vaults/groups/new-roseguard" class="internal">New Roseguard</a></li><li><a href="../../../campaigns/abomination-vaults/npcs/captain-lardus-longsaddle" class="internal">Captain Lardus Longsaddle</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/august-shepard/2025-01-05---questions-for-new-companions" class="internal">Questions for New Companions</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/august-shepard/2025-02-17---surrender-as-strategy" class="internal">Surrender as Strategy</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/august-shepard/2025-02-25---lessons-in-sakvroth" class="internal">Lessons in Sakvroth</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/august-shepard/2025-04-07---the-mark-of-the-empty-death" class="internal">The Mark of the Empty Death</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/august-shepard/2025-06-08---we-should-have-died" class="internal">We Should Have Died</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/august-shepard/2025-06-25---the-cost-of-hesitation" class="internal">The Cost of Hesitation</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/august-shepard/2025-08-19---a-new-month-at-gauntlight" class="internal">A New Month at Gauntlight</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/august-shepard/2025-08-24---the-ones-left-behind" class="internal">The Ones Left Behind</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/august-shepard/2025-10-11---saying-goodbye-to-the-captain" class="internal">Saying Goodbye to the Captain</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/august-shepard/2025-11-23---the-motley-man's-bargain" class="internal">The Motley Man's Bargain</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/august-shepard/2025-12-02---captives-in-crystal" class="internal">Captives in Crystal</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/august-shepard/2026-02-24---one-day-of-freedom" class="internal">One Day of Freedom</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/august-shepard/2026-03-09---thirty-days-beneath-gauntlight" class="internal">Thirty Days Beneath Gauntlight</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/august-shepard/2026-05-31---candlemark-in-otari" class="internal">Candlemark in Otari</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/august-shepard/2026-06-01---never-again" class="internal">Never Again</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/comet/2026-02-04---ballad-of-the-new-roseguard" class="internal">Ballad of the New Roseguard</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/kiri-steelpaws/2025-11-12---the-captives-in-the-kitchen" class="internal">The Captives in the Kitchen</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/kiri-steelpaws/2026-02-03---a-body-without-command" class="internal">A Body Without Command</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/kiri-steelpaws/2026-02-10---talia's-chosen-reading" class="internal">Talia's Chosen Reading</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/leif-darkwood/2025-01-02---a-promise-to-keeleno" class="internal">A Promise to Keeleno</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/malaroth/2025-03-04---errands-are-never-simple" class="internal">Errands Are Never Simple</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/malaroth/2025-03-18---the-law-be-damned" class="internal">The Law Be Damned</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/malaroth/2025-06-17---victory-before-disaster" class="internal">Victory Before Disaster</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/malaroth/2025-10-14---one-more-rescue" class="internal">One More Rescue</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/malaroth/2026-03-03---no-grave-too-comfortable" class="internal">No Grave Too Comfortable</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/talia-nightclaw/2025-05-13---one-slap-could-save-him" class="internal">One Slap Could Save Him</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/talia-nightclaw/2025-07-29---prepared-for-the-worm" class="internal">Prepared for the Worm</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/talia-nightclaw/2025-08-26---the-survivors'-cell" class="internal">The Survivors' Cell</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/talia-nightclaw/2025-09-16---rebuilt-without-consent" class="internal">Rebuilt Without Consent</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/talia-nightclaw/2025-10-01---when-their-pain-wasn't-enough" class="internal">When Their Pain Wasn't Enough</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/talia-nightclaw/2025-10-14---the-keys-to-jafaki's-door" class="internal">The Keys to Jafaki's Door</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/talia-nightclaw/2025-10-21---the-only-treatment-left" class="internal">The Only Treatment Left</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/talia-nightclaw/2025-10-28---the-arithmetic-of-damnation" class="internal">The Arithmetic of Damnation</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/talia-nightclaw/2025-11-26---counsel-at-odd-stories" class="internal">Counsel at Odd Stories</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/talia-nightclaw/2025-12-03---the-stasis-matrix" class="internal">The Stasis Matrix</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/talia-nightclaw/2025-12-09---a-choice-that-saved-one" class="internal">A Choice That Saved One</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/talia-nightclaw/2026-01-20---no-one-runs-alone" class="internal">No One Runs Alone</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/talia-nightclaw/2026-02-03---four-hours-of-reading" class="internal">Four Hours of Reading</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/talia-nightclaw/2026-02-17---the-forensic-truth" class="internal">The Forensic Truth</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/talia-nightclaw/2026-03-31---fifteen-silver" class="internal">Fifteen Silver</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/talia-nightclaw/2026-04-07---ten-days-to-return" class="internal">Ten Days to Return</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/talia-nightclaw/2026-05-12---the-bag-begins-to-scratch" class="internal">The Bag Begins to Scratch</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/theron/2025-01-08---the-beast-in-the-swamp" class="internal">The Beast in the Swamp</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/theron/2025-01-21---a-whirling-cyclone" class="internal">A Whirling Cyclone</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/theron/2025-02-04---familiar-faces-at-the-fish-camp" class="internal">Familiar Faces at the Fish Camp</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/theron/2025-02-19---prisoners-in-the-dark" class="internal">Prisoners in the Dark</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/theron/2025-02-25---blood-in-service-to-good" class="internal">Blood in Service to Good</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/theron/2025-03-04---heroism-close-to-home" class="internal">Heroism Close to Home</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/theron/2025-03-18---right-against-law" class="internal">Right Against Law</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/theron/2025-04-15---the-threat-beneath-absalom" class="internal">The Threat Beneath Absalom</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/theron/2025-04-29---no-patience-for-fey" class="internal">No Patience for Fey</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/theron/2025-05-06---lost-time" class="internal">Lost Time</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/theron/2025-06-03---the-blank-where-leif-died" class="internal">The Blank Where Leif Died</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/theron/2025-07-01---absalom,-city-at-the-center-of-the-world" class="internal">Absalom, City at the Center of the World</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/theron/2025-07-08---conviction-against-the-cult" class="internal">Conviction Against the Cult</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/theron/2025-08-05---the-scent-of-fear" class="internal">The Scent of Fear</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/theron/2025-08-26---a-soldier-named-solomon" class="internal">A Soldier Named Solomon</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/theron/2025-08-26---law-and-order-in-otari" class="internal">Law and Order in Otari</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/theron/2025-09-09---the-captain's-hard-lessons" class="internal">The Captain's Hard Lessons</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/theron/2025-11-18---reincarnation-itches" class="internal">Reincarnation Itches</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/theron/2025-12-09---learning-his-wings" class="internal">Learning His Wings</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/theron/2025-12-16---wings-over-black-water" class="internal">Wings over Black Water</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/theron/2025-12-30---after-the-last-wisp" class="internal">After the Last Wisp</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/theron/2026-01-27---the-first-true-flight" class="internal">The First True Flight</a></li><li><a href="../../../campaigns/abomination-vaults/vignettes/theron/" class="internal">Theron Vignettes</a></li><li><a href="../../../campaigns/curtain-call/characters/" class="internal">Curtain Call Characters</a></li><li><a href="../../../campaigns/curtain-call/the-story-so-far" class="internal">Curtain Call - The Story So Far</a></li><li class="overflow-end"></li></ul></div></div><footer class><p>Created with <a href="https://quartz.jzhao.xyz/">Quartz v5.0.0</a> © 2026</p><ul><li><a href="https://bobzap66.github.io/lantern-and-ledger/">Home</a></li><li><a href="https://bobzap66.github.io/lantern-and-ledger/preferences">Preferences</a></li><li><a href="https://github.com/bobzap66/lantern-and-ledger">Source</a></li></ul></footer></div></div></body><script src="../../../static/resource-after-e13fffa1.js" type="application/javascript" data-persist="true"></script><script src="../../../static/resource-after-8b336f9a.js" type="application/javascript" data-persist="true"></script><script src="../../../static/resource-after-baba652b.js" type="application/javascript" data-persist="true"></script><script src="../../../static/resource-after-5eb75950.js" type="module" data-persist="true"></script><script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/copy-tex.min.js" type="application/javascript" data-persist="true"></script><script src="../../../static/resource-after-4ee31800.js" type="application/javascript" data-persist="true"></script><script src="../../../static/resource-after-a68033a6.js" type="application/javascript" data-persist="true"></script><script src="../../../postscript-a6852928.js" type="module" data-persist="true"></script></html>

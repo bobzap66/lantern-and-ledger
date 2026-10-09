@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr"><head><title>Fizzlesticks &amp; Co | Inner Sea Region Archives</title><meta charset="utf-8"/><link rel="preload" href="../../../../../index-2cd46e27.css" as="style"/><link rel="preload" href="../../../../../prescript-2bfc6315.js" as="script"/><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com"/><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre Baskerville:wght@400;700&amp;family=Source Serif 4:ital,wght@0,400;0,600;1,400;1,600&amp;family=IBM Plex Mono:wght@400;600&amp;display=swap"/><link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin="anonymous"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta name="og:site_name" content="The Lantern and Ledger"/><meta property="og:title" content="Fizzlesticks &amp; Co | Inner Sea Region Archives"/><meta property="og:type" content="website"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="Fizzlesticks &amp; Co | Inner Sea Region Archives"/><meta name="twitter:description" content="Fizzlesticks &amp; Co Compiled by Rikka Tallowglass, Lecturer in Civic Alchemy, Nok-Nok College of Practical Arts and Civic Service, Free University of Thumping Waters, with the cooperation of Griggit Fizzlesticks, the Citizen Council of Greengripe, and the town’s fire and sanitation crews If it exp..."/><meta property="og:description" content="Fizzlesticks &amp; Co Compiled by Rikka Tallowglass, Lecturer in Civic Alchemy, Nok-Nok College of Practical Arts and Civic Service, Free University of Thumping Waters, with the cooperation of Griggit Fizzlesticks, the Citizen Council of Greengripe, and the town’s fire and sanitation crews If it exp..."/><meta property="og:image:alt" content="Fizzlesticks &amp; Co Compiled by Rikka Tallowglass, Lecturer in Civic Alchemy, Nok-Nok College of Practical Arts and Civic Service, Free University of Thumping Waters, with the cooperation of Griggit Fizzlesticks, the Citizen Council of Greengripe, and the town’s fire and sanitation crews If it exp..."/><link rel="canonical" href="https://bobzap66.github.io/lantern-and-ledger/campaigns/kingmaker/thumping-waters/settlements/greengripe/fizzlesticks--and--co"/><meta property="twitter:domain" content="bobzap66.github.io/lantern-and-ledger"/><meta property="og:url" content="https://bobzap66.github.io/lantern-and-ledger/campaigns/kingmaker/thumping-waters/settlements/greengripe/fizzlesticks--and--co"/><meta property="twitter:url" content="https://bobzap66.github.io/lantern-and-ledger/campaigns/kingmaker/thumping-waters/settlements/greengripe/fizzlesticks--and--co"/><link rel="icon" type="image/webp" href="../../../../../static/icon.webp"/><meta name="description" content="Fizzlesticks &amp; Co Compiled by Rikka Tallowglass, Lecturer in Civic Alchemy, Nok-Nok College of Practical Arts and Civic Service, Free University of Thumping Waters, with the cooperation of Griggit Fizzlesticks, the Citizen Council of Greengripe, and the town’s fire and sanitation crews If it exp..."/><meta name="generator" content="Quartz"/><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://bobzap66.github.io/lantern-and-ledger"},{"@type":"ListItem","position":2,"name":"Campaigns","item":"https://bobzap66.github.io/lantern-and-ledger/campaigns"},{"@type":"ListItem","position":3,"name":"Kingmaker","item":"https://bobzap66.github.io/lantern-and-ledger/campaigns/kingmaker"},{"@type":"ListItem","position":4,"name":"Thumping Waters","item":"https://bobzap66.github.io/lantern-and-ledger/campaigns/kingmaker/thumping-waters"},{"@type":"ListItem","position":5,"name":"Settlements","item":"https://bobzap66.github.io/lantern-and-ledger/campaigns/kingmaker/thumping-waters/settlements"},{"@type":"ListItem","position":6,"name":"Greengripe","item":"https://bobzap66.github.io/lantern-and-ledger/campaigns/kingmaker/thumping-waters/settlements/greengripe"},{"@type":"ListItem","position":7,"name":"Fizzlesticks & Co","item":"https://bobzap66.github.io/lantern-and-ledger/campaigns/kingmaker/thumping-waters/settlements/greengripe/fizzlesticks--and--co"}]}]}</script><script>
+(() => {
+  const IMAGE_SELECTOR = [
+    ".center article img",
+    ".right.sidebar .world-anvil-side-content img",
+    ".right.sidebar .callout[data-callout='side'] img",
+  ].join(",")
+
+  const ensureLightbox = () => {
+    let overlay = document.getElementById("isr-image-lightbox")
+    if (overlay) return overlay
+
+    overlay = document.createElement("div")
+    overlay.id = "isr-image-lightbox"
+    overlay.setAttribute("aria-hidden", "true")
+    overlay.innerHTML = [
+      '<button class="isr-lightbox-close" type="button" aria-label="Close image">×</button>',
+      '<div class="isr-lightbox-stage">',
+      '  <img class="isr-lightbox-image" alt="">',
+      '  <div class="isr-lightbox-caption"></div>',
+      '</div>',
+    ].join("")
+
+    document.body.appendChild(overlay)
+
+    const close = () => {
+      overlay.classList.remove("is-open", "is-natural-size")
+      overlay.setAttribute("aria-hidden", "true")
+      document.documentElement.classList.remove("isr-lightbox-open")
+
+      const img = overlay.querySelector(".isr-lightbox-image")
+      if (img) img.removeAttribute("src")
+    }
+
+    overlay.querySelector(".isr-lightbox-close")?.addEventListener("click", close)
+
+    overlay.addEventListener("click", (event) => {
+      if (event.target === overlay || event.target?.classList?.contains("isr-lightbox-stage")) {
+        close()
+      }
+    })
+
+    overlay.querySelector(".isr-lightbox-image")?.addEventListener("click", (event) => {
+      event.stopPropagation()
+      overlay.classList.toggle("is-natural-size")
+    })
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && overlay.classList.contains("is-open")) {
+        close()
+      }
+    })
+
+    return overlay
+  }
+
+  const openImage = (source) => {
+    const overlay = ensureLightbox()
+    const target = overlay.querySelector(".isr-lightbox-image")
+    const caption = overlay.querySelector(".isr-lightbox-caption")
+    if (!target) return
+
+    target.src = source.currentSrc || source.src
+    target.alt = source.alt || ""
+
+    const captionText = source.alt?.trim() || source.title?.trim() || ""
+    if (caption) {
+      caption.textContent = captionText
+      caption.hidden = captionText.length === 0
+    }
+
+    overlay.classList.remove("is-natural-size")
+    overlay.classList.add("is-open")
+    overlay.setAttribute("aria-hidden", "false")
+    document.documentElement.classList.add("isr-lightbox-open")
+  }
+
+  const wireImages = () => {
+    ensureLightbox()
+
+    document.querySelectorAll(IMAGE_SELECTOR).forEach((img) => {
+      if (img.dataset.isrLightbox === "1") return
+      if (img.closest("[data-no-lightbox], .no-lightbox")) return
+
+      img.dataset.isrLightbox = "1"
+      img.classList.add("isr-zoomable-image")
+      img.setAttribute("tabindex", "0")
+      img.setAttribute("role", "button")
+
+      const open = (event) => {
+        event.preventDefault()
+        event.stopPropagation()
+        openImage(img)
+      }
+
+      img.addEventListener("click", open)
+      img.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          open(event)
+        }
+      })
+    })
+  }
+
+  document.addEventListener("nav", wireImages)
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", wireImages, { once: true })
+  } else {
+    wireImages()
+  }
+})()
+</script><script>
+(() => {
+  const GALLERY_SELECTOR = [
+    "article h2#session-gallery + p",
+    "article h3#session-gallery + p",
+    "article h2#gallery + p",
+    "article h3#gallery + p",
+  ].join(",")
+
+  const wireGalleries = () => {
+    document.querySelectorAll(GALLERY_SELECTOR).forEach((track) => {
+      if (track.dataset.isrCarousel === "1") return
+
+      const images = Array.from(track.children).filter((node) => node.tagName === "IMG")
+      if (images.length < 2) return
+
+      track.dataset.isrCarousel = "1"
+      track.classList.add("isr-gallery-track")
+      track.setAttribute("tabindex", "0")
+      track.setAttribute("role", "group")
+      track.setAttribute("aria-roledescription", "carousel")
+      track.setAttribute("aria-label", "Image gallery")
+
+      images.forEach((img, index) => {
+        img.classList.add("isr-gallery-slide")
+        img.setAttribute("loading", index === 0 ? "eager" : "lazy")
+        img.setAttribute("decoding", "async")
+      })
+
+      const shell = document.createElement("div")
+      shell.className = "isr-gallery-shell"
+      track.parentNode.insertBefore(shell, track)
+      shell.appendChild(track)
+
+      const previous = document.createElement("button")
+      previous.type = "button"
+      previous.className = "isr-gallery-button isr-gallery-previous"
+      previous.setAttribute("aria-label", "Previous image")
+      previous.textContent = "‹"
+
+      const next = document.createElement("button")
+      next.type = "button"
+      next.className = "isr-gallery-button isr-gallery-next"
+      next.setAttribute("aria-label", "Next image")
+      next.textContent = "›"
+
+      const status = document.createElement("div")
+      status.className = "isr-gallery-status"
+      status.setAttribute("aria-live", "polite")
+
+      shell.append(previous, next, status)
+
+      let current = 0
+      let scrollTimer
+
+      const updateControls = () => {
+        previous.disabled = current <= 0
+        next.disabled = current >= images.length - 1
+        status.textContent = (current + 1) + " / " + images.length
+      }
+
+      const goTo = (index) => {
+        current = Math.max(0, Math.min(images.length - 1, index))
+        images[current].scrollIntoView({
+          behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+          block: "nearest",
+          inline: "start",
+        })
+        updateControls()
+      }
+
+      previous.addEventListener("click", () => goTo(current - 1))
+      next.addEventListener("click", () => goTo(current + 1))
+
+      track.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowLeft") {
+          event.preventDefault()
+          goTo(current - 1)
+        } else if (event.key === "ArrowRight") {
+          event.preventDefault()
+          goTo(current + 1)
+        } else if (event.key === "Home") {
+          event.preventDefault()
+          goTo(0)
+        } else if (event.key === "End") {
+          event.preventDefault()
+          goTo(images.length - 1)
+        }
+      })
+
+      track.addEventListener("scroll", () => {
+        window.clearTimeout(scrollTimer)
+        scrollTimer = window.setTimeout(() => {
+          const trackRect = track.getBoundingClientRect()
+          let nearest = 0
+          let nearestDistance = Infinity
+
+          images.forEach((img, index) => {
+            const distance = Math.abs(img.getBoundingClientRect().left - trackRect.left)
+            if (distance < nearestDistance) {
+              nearestDistance = distance
+              nearest = index
+            }
+          })
+
+          if (nearest !== current) {
+            current = nearest
+            updateControls()
+          }
+        }, 80)
+      }, { passive: true })
+
+      updateControls()
+    })
+  }
+
+  document.addEventListener("nav", wireGalleries)
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", wireGalleries, { once: true })
+  } else {
+    wireGalleries()
+  }
+})()
+</script><script>
+(() => {
+  const moveWorldAnvilSideContent = () => {
+    const rightSidebar = document.querySelector(".right.sidebar")
+    if (!rightSidebar) return
+
+    const currentPath = window.location.pathname
+    const existingSideBlocks = Array.from(
+      rightSidebar.querySelectorAll(":scope > .world-anvil-side-content"),
+    )
+    const sideBlocks = Array.from(
+      document.querySelectorAll(".center article .callout[data-callout='side']"),
+    )
+
+    // This initializer can run more than once for the same Quartz page. After the
+    // first run, the source blocks have already been moved out of the article, so
+    // do not delete them on a repeated initialization of the same route.
+    if (sideBlocks.length === 0) {
+      if (rightSidebar.dataset.isrSidePath === currentPath) return
+
+      existingSideBlocks.forEach((node) => node.remove())
+      rightSidebar.dataset.isrSidePath = currentPath
+      return
+    }
+
+    existingSideBlocks.forEach((node) => node.remove())
+
+    const sidebarHeadingIds = new Set()
+
+    sideBlocks.forEach((block) => {
+      block.querySelectorAll("h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]").forEach((heading) => {
+        sidebarHeadingIds.add(heading.id)
+      })
+
+      block.classList.add("world-anvil-side-content")
+      rightSidebar.appendChild(block)
+    })
+
+    rightSidebar.dataset.isrSidePath = currentPath
+
+    if (sidebarHeadingIds.size > 0) {
+      document.querySelectorAll(".toc a[href^='#']").forEach((link) => {
+        const id = decodeURIComponent(link.getAttribute("href").slice(1))
+        if (sidebarHeadingIds.has(id)) {
+          const item = link.closest("li")
+          if (item) item.remove()
+          else link.remove()
+        }
+      })
+    }
+  }
+
+  document.addEventListener("nav", moveWorldAnvilSideContent)
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", moveWorldAnvilSideContent, { once: true })
+  } else {
+    moveWorldAnvilSideContent()
+  }
+})()
+</script><link href="../../../../../index-2cd46e27.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../../component-735924e0.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../../component-589c1cea.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../../component-bbc3f7c0.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../../component-2911f5d1.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../../component-9d82c5c1.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../../component-84453030.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../../component-ddd117e7.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../../component-a78ee588.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../../component-e4f7c07d.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../../component-0d375ccf.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../../component-e427079e.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../../component-e02e28c3.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../../component-ad1979ca.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../../component-3b8818e7.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../../component-932b2bbc.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../../component-53b25b2b.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../../component-c93c6a44.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../../component-8a06014f.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../../component-77d6a441.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../../component-6ee21cee.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../../component-1ea6ad18.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../../component-788c9ca3.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../../component-642859cd.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../../component-8828e486.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../../component-4abc06bd.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../../component-274a3dfe.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../../component-94cb6c84.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../../component-58d5ff56.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../../component-7262b5a7.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../../static/resource-style-a5c806d2.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../../static/resource-style-6bd36952.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../../static/resource-style-b77a7d35.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../../static/resource-style-f30e4416.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../../static/resource-style-58790c8a.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../../static/resource-style-5ff5e346.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../../static/resource-style-5c0d193a.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../../static/resource-style-8a30a1b4.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../../static/resource-style-d9c3ce3d.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../../static/resource-style-da9eebd8.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../../static/resource-style-97deedac.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../../static/resource-style-e9452787.css" rel="stylesheet" type="text/css" data-persist="true"/><link href="../../../../../static/resource-style-1c442cdd.css" rel="stylesheet" type="text/css" data-persist="true"/><style>
+article .isr-gallery-shell {
+  position: relative;
+  margin: 1.25rem 0 2.5rem;
+  padding: 0.8rem;
+  border: 1px solid var(--isr-rule);
+  border-radius: 0.45rem;
+  background: color-mix(in srgb, var(--light) 82%, var(--lightgray) 18%);
+  box-shadow: inset 0 0 0 3px color-mix(in srgb, var(--light) 75%, transparent);
+}
+
+article .isr-gallery-shell > .isr-gallery-track {
+  display: flex;
+  grid-template-columns: none;
+  gap: 0;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+  background: transparent;
+  border: 0;
+  border-radius: 0.3rem;
+  box-shadow: none;
+}
+
+article .isr-gallery-track::-webkit-scrollbar {
+  display: none;
+}
+
+article .isr-gallery-track > img.isr-gallery-slide {
+  flex: 0 0 100%;
+  width: 100%;
+  min-width: 100%;
+  height: clamp(18rem, 58vw, 42rem);
+  margin: 0;
+  object-fit: contain;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  background: color-mix(in srgb, var(--light) 88%, black 12%);
+  border-radius: 0.28rem;
+  transform: none;
+}
+
+article .isr-gallery-track > img.isr-gallery-slide:hover {
+  transform: none;
+}
+
+article .isr-gallery-button {
+  position: absolute;
+  top: 50%;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--light) 55%, var(--dark) 45%);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--light) 82%, transparent);
+  color: var(--dark);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+  font: 400 2rem/1 system-ui, sans-serif;
+  cursor: pointer;
+  transform: translateY(-50%);
+  backdrop-filter: blur(4px);
+}
+
+article .isr-gallery-previous {
+  left: 1.25rem;
+}
+
+article .isr-gallery-next {
+  right: 1.25rem;
+}
+
+article .isr-gallery-button:hover:not(:disabled),
+article .isr-gallery-button:focus-visible {
+  background: var(--light);
+  border-color: var(--tertiary);
+  outline: none;
+}
+
+article .isr-gallery-button:disabled {
+  opacity: 0.28;
+  cursor: default;
+}
+
+article .isr-gallery-status {
+  position: absolute;
+  right: 1.25rem;
+  bottom: 1.2rem;
+  z-index: 3;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(20, 18, 15, 0.72);
+  color: #fff;
+  font-family: var(--bodyFont);
+  font-size: 0.78rem;
+  line-height: 1.4;
+  pointer-events: none;
+}
+
+article .isr-gallery-track:focus-visible {
+  outline: 2px solid var(--tertiary);
+  outline-offset: 3px;
+}
+
+@media (max-width: 800px) {
+  article .isr-gallery-shell {
+    padding: 0.55rem;
+  }
+
+  article .isr-gallery-track > img.isr-gallery-slide {
+    height: clamp(16rem, 72vw, 32rem);
+  }
+
+  article .isr-gallery-button {
+    width: 2.35rem;
+    height: 2.35rem;
+    font-size: 1.65rem;
+  }
+
+  article .isr-gallery-previous {
+    left: 0.85rem;
+  }
+
+  article .isr-gallery-next {
+    right: 0.85rem;
+  }
+
+  article .isr-gallery-status {
+    right: 0.85rem;
+    bottom: 0.85rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  article .isr-gallery-shell > .isr-gallery-track {
+    scroll-behavior: auto;
+  }
+}
+</style><script src="../../../../../prescript-2bfc6315.js" type="application/javascript" data-persist="true"></script><script type="application/javascript" data-persist="true">const fetchData = (() => {
+  let request
+  const load = () => request ??= fetch("../../../../../static/contentIndex.json").then((response) => {
+    if (!response.ok) throw new Error("Content index request failed: " + response.status)
+    return response.json()
+  })
+  return {
+    then: (onFulfilled, onRejected) => load().then(onFulfilled, onRejected),
+    catch: (onRejected) => load().catch(onRejected),
+    finally: (onFinally) => load().finally(onFinally),
+  }
+})()</script><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=%5C%22Libre%20Baskerville%5C%22%2C%20Georgia%2C%20serif%3Awght%40400%3B700&amp;family=%5C%22Source%20Serif%204%5C%22%2C%20Georgia%2C%20serif%3Aital%2Cwght%400%2C400%3B0%2C600%3B1%2C400%3B1%2C600&amp;family=%5C%22IBM%20Plex%20Mono%5C%22%2C%20monospace%3Awght%40400%3B600&amp;display=swap"/><meta property="og:image" content="https://bobzap66.github.io/lantern-and-ledger/static/assets/images/university-of-thumping-waters-header.webp"/><meta property="og:image:url" content="https://bobzap66.github.io/lantern-and-ledger/static/assets/images/university-of-thumping-waters-header.webp"/><meta name="twitter:image" content="https://bobzap66.github.io/lantern-and-ledger/static/assets/images/university-of-thumping-waters-header.webp"/><meta property="og:image:type" content="image/webp"/></head><body data-slug="campaigns/kingmaker/thumping-waters/settlements/greengripe/fizzlesticks--and--co" data-basepath="/lantern-and-ledger"><style>
+html.campaign-spoiler-locked {
+  overflow: hidden;
+}
+
+.campaign-spoiler-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  padding: 1.5rem;
+  background: var(--light);
+  color: var(--dark);
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.campaign-spoiler-gate[hidden] {
+  display: none !important;
+}
+
+.campaign-spoiler-gate-card {
+  width: min(100%, 42rem);
+  box-sizing: border-box;
+  padding: clamp(1.5rem, 5vw, 3rem);
+  border: 1px solid var(--tertiary);
+  border-radius: 0.35rem;
+  background: var(--light);
+  color: var(--dark);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.22);
+  text-align: center;
+}
+
+.campaign-spoiler-eyebrow {
+  margin: 0 0 0.65rem;
+  color: var(--tertiary);
+  font-family: var(--bodyFont);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.campaign-spoiler-gate-card h2 {
+  margin: 0 0 1rem;
+  font-size: clamp(1.55rem, 5vw, 2.45rem);
+}
+
+.campaign-spoiler-gate-card p:not(.campaign-spoiler-eyebrow) {
+  max-width: 34rem;
+  margin: 0 auto;
+  line-height: 1.65;
+}
+
+.campaign-spoiler-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1.6rem;
+}
+
+.campaign-spoiler-actions button,
+.campaign-spoiler-reset {
+  appearance: none;
+  border: 1px solid var(--gray);
+  border-radius: 0.25rem;
+  padding: 0.72rem 1rem;
+  background: var(--lightgray);
+  color: var(--dark);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.campaign-spoiler-actions button.is-primary {
+  border-color: var(--tertiary);
+  background: var(--tertiary);
+  color: var(--light);
+}
+
+.campaign-spoiler-actions button:hover,
+.campaign-spoiler-actions button:focus-visible,
+.campaign-spoiler-reset:hover,
+.campaign-spoiler-reset:focus-visible {
+  filter: brightness(0.96);
+  outline: 2px solid var(--secondary);
+  outline-offset: 2px;
+}
+
+.campaign-spoiler-reset {
+  display: block;
+  width: fit-content;
+  margin: 0.8rem 0 0 auto;
+  padding: 0.5rem 0.75rem;
+  border-color: var(--campaign-page-accent, var(--tertiary));
+  background: color-mix(
+    in srgb,
+    var(--campaign-page-accent, var(--tertiary)) 82%,
+    var(--dark) 18%
+  );
+  color: #fff8e8;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--campaign-page-accent, var(--tertiary)) 24%, transparent);
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+.campaign-spoiler-reset[hidden] {
+  display: none !important;
+}
+
+@media (max-width: 600px) {
+  .campaign-spoiler-actions {
+    flex-direction: column;
+  }
+
+  .campaign-spoiler-actions button {
+    width: 100%;
+  }
+}
+
+#quartz-body.campaign-spoiler-pending > :not(.campaign-spoiler-gate) {
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+#quartz-body.campaign-spoiler-pending > .campaign-spoiler-gate {
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+:root {
+  --isr-gold: #c58b2b !important;
+  --isr-gold-soft: rgba(197, 139, 43, 0.14) !important;
+  --isr-navy: #405c68 !important;
+  --isr-burgundy: #685238 !important;
+  --isr-paper: #eee1c3 !important;
+  --isr-ink: #17140f !important;
+  --isr-rule: rgba(104, 82, 56, 0.28) !important;
+  --isr-shadow: 0 12px 32px rgba(72, 52, 28, 0.09) !important;
+}
+
+[saved-theme="dark"] {
+  --isr-gold: #d6a64c !important;
+  --isr-gold-soft: rgba(214, 166, 76, 0.14) !important;
+  --isr-navy: #89a4ae !important;
+  --isr-burgundy: #b9a27d !important;
+  --isr-paper: #1b1915 !important;
+  --isr-ink: #eee1c3 !important;
+  --isr-rule: rgba(238, 225, 195, 0.2) !important;
+  --isr-shadow: 0 12px 32px rgba(0, 0, 0, 0.24) !important;
+}
+
+/* The old shared cover is superseded by the Lantern and Ledger masthead. */
+.global-page-cover {
+  display: none !important;
+}
+
+.lantern-ledger-site-header {
+  display: block;
+  width: 100%;
+  margin: 0 0 1.6rem;
+}
+
+.lantern-ledger-masthead {
+  display: block;
+  width: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+
+.lantern-ledger-masthead picture,
+.lantern-ledger-masthead img {
+  display: block;
+  width: 100%;
+}
+
+.lantern-ledger-masthead img {
+  width: min(100%, 24rem);
+  height: auto;
+  max-height: none;
+  margin-inline: auto;
+  object-fit: contain;
+  aspect-ratio: 8 / 3;
+  border: 1px solid var(--isr-rule);
+  border-radius: 0.22rem;
+  background: var(--light);
+  box-shadow: 0 8px 24px rgba(54, 40, 24, 0.1);
+}
+
+.lantern-ledger-archive-rule {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin: 0.7rem 0 0;
+  color: var(--darkgray);
+  font-family: var(--bodyFont);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.lantern-ledger-archive-rule::before,
+.lantern-ledger-archive-rule::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--isr-rule);
+}
+
+.lantern-ledger-header-children {
+  margin-top: 1rem;
+}
+
+/* Retire the old Gazetteer label wherever the page-title component appears. */
+.page-title::after {
+  content: "THE LANTERN AND LEDGER · ARCHIVES" !important;
+  color: var(--tertiary) !important;
+  font-family: var(--bodyFont) !important;
+  font-size: 0.62rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.18em !important;
+}
+
+@media (max-width: 800px) {
+  .lantern-ledger-site-header {
+    margin-bottom: 1.1rem;
+  }
+
+  .lantern-ledger-masthead picture {
+    display: grid;
+    place-items: center;
+  }
+
+  .lantern-ledger-masthead img {
+    width: clamp(6rem, 28vw, 7.5rem);
+    max-height: none;
+    margin-inline: auto;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    object-fit: contain;
+    aspect-ratio: 1;
+  }
+
+  .lantern-ledger-archive-rule {
+    margin-top: 0.55rem;
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+  }
+}
+
+@media (max-width: 430px) {
+  .lantern-ledger-archive-rule {
+    gap: 0.45rem;
+    font-size: 0.55rem;
+    letter-spacing: 0.08em;
+  }
+}
+</style><div id="quartz-root" class="page" data-frame="default"><div id="quartz-body" class="campaign--kingmaker campaign-spoiler-pending"><div class="campaign-spoiler-gate" data-campaign-key="kingmaker" data-campaign-name="Kingmaker" role="dialog" aria-modal="true" aria-labelledby="campaign-spoiler-title"><div class="campaign-spoiler-gate-card"><p class="campaign-spoiler-eyebrow">Campaign Spoiler Warning</p><h2 id="campaign-spoiler-title">Warning: Spoilers for Kingmaker</h2><p>This section contains spoilers for the Kingmaker campaign. Continue only if you are a player in this campaign and want access to its archive.</p><div class="campaign-spoiler-actions"><button type="button" data-spoiler-action="back">Go Back</button><button class="is-primary" type="button" data-spoiler-action="opt-in">Player in the Kingmaker Campaign</button></div></div></div><div class="left sidebar"><h2 class="page-title"><a href="../../../../..">The Lantern and Ledger</a></h2><div class="mobile-only"><div class="spacer"></div></div><div class="flex-component" style="flex-direction: row; flex-wrap: nowrap; gap: 0.5rem;"><div style="flex-grow: 1; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><div class="search"><button class="search-button" aria-label="Search" aria-expanded="false"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.9 19.7"><title>Search</title><g class="search-path" fill="none"><path stroke-linecap="square" d="M18.5 18.3l-5.4-5.4"></path><circle cx="8" cy="8" r="7"></circle></g></svg><p>Search</p></button><div class="search-container"><div class="search-space"><input autocomplete="off" class="search-bar" name="search" type="text" aria-label="Search for something..." placeholder="Search for something..."/><div class="search-layout" data-preview="true" data-field-priority="[&quot;title&quot;,&quot;content&quot;,&quot;tags&quot;]"></div></div></div></div></div><div style="flex-grow: 0; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><button class="darkmode" aria-label="Dark mode"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="dayIcon" x="0px" y="0px" viewBox="0 0 35 35" style="enable-background:new 0 0 35 35" xml:space="preserve" aria-label="Dark mode"><title>Dark mode</title><path d="M6,17.5C6,16.672,5.328,16,4.5,16h-3C0.672,16,0,16.672,0,17.5    S0.672,19,1.5,19h3C5.328,19,6,18.328,6,17.5z M7.5,26c-0.414,0-0.789,0.168-1.061,0.439l-2,2C4.168,28.711,4,29.086,4,29.5    C4,30.328,4.671,31,5.5,31c0.414,0,0.789-0.168,1.06-0.44l2-2C8.832,28.289,9,27.914,9,27.5C9,26.672,8.329,26,7.5,26z M17.5,6    C18.329,6,19,5.328,19,4.5v-3C19,0.672,18.329,0,17.5,0S16,0.672,16,1.5v3C16,5.328,16.671,6,17.5,6z M27.5,9    c0.414,0,0.789-0.168,1.06-0.439l2-2C30.832,6.289,31,5.914,31,5.5C31,4.672,30.329,4,29.5,4c-0.414,0-0.789,0.168-1.061,0.44    l-2,2C26.168,6.711,26,7.086,26,7.5C26,8.328,26.671,9,27.5,9z M6.439,8.561C6.711,8.832,7.086,9,7.5,9C8.328,9,9,8.328,9,7.5    c0-0.414-0.168-0.789-0.439-1.061l-2-2C6.289,4.168,5.914,4,5.5,4C4.672,4,4,4.672,4,5.5c0,0.414,0.168,0.789,0.439,1.06    L6.439,8.561z M33.5,16h-3c-0.828,0-1.5,0.672-1.5,1.5s0.672,1.5,1.5,1.5h3c0.828,0,1.5-0.672,1.5-1.5S34.328,16,33.5,16z     M28.561,26.439C28.289,26.168,27.914,26,27.5,26c-0.828,0-1.5,0.672-1.5,1.5c0,0.414,0.168,0.789,0.439,1.06l2,2    C28.711,30.832,29.086,31,29.5,31c0.828,0,1.5-0.672,1.5-1.5c0-0.414-0.168-0.789-0.439-1.061L28.561,26.439z M17.5,29    c-0.829,0-1.5,0.672-1.5,1.5v3c0,0.828,0.671,1.5,1.5,1.5s1.5-0.672,1.5-1.5v-3C19,29.672,18.329,29,17.5,29z M17.5,7    C11.71,7,7,11.71,7,17.5S11.71,28,17.5,28S28,23.29,28,17.5S23.29,7,17.5,7z M17.5,25c-4.136,0-7.5-3.364-7.5-7.5    c0-4.136,3.364-7.5,7.5-7.5c4.136,0,7.5,3.364,7.5,7.5C25,21.636,21.636,25,17.5,25z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="nightIcon" x="0px" y="0px" viewBox="0 0 100 100" style="enable-background:new 0 0 100 100" xml:space="preserve" aria-label="Light mode"><title>Light mode</title><path d="M96.76,66.458c-0.853-0.852-2.15-1.064-3.23-0.534c-6.063,2.991-12.858,4.571-19.655,4.571  C62.022,70.495,50.88,65.88,42.5,57.5C29.043,44.043,25.658,23.536,34.076,6.47c0.532-1.08,0.318-2.379-0.534-3.23  c-0.851-0.852-2.15-1.064-3.23-0.534c-4.918,2.427-9.375,5.619-13.246,9.491c-9.447,9.447-14.65,22.008-14.65,35.369  c0,13.36,5.203,25.921,14.65,35.368s22.008,14.65,35.368,14.65c13.361,0,25.921-5.203,35.369-14.65  c3.872-3.871,7.064-8.328,9.491-13.246C97.826,68.608,97.611,67.309,96.76,66.458z"></path></svg></button></div><div style="flex-grow: 0; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><button class="readermode" aria-label="Reader mode"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="readerIcon" fill="currentColor" stroke="currentColor" stroke-width="0.2" stroke-linecap="round" stroke-linejoin="round" width="64px" height="64px" viewBox="0 0 24 24" aria-label="Reader mode"><title>Reader mode</title><g transform="translate(-1.8, -1.8) scale(1.15, 1.2)"><path d="M8.9891247,2.5 C10.1384702,2.5 11.2209868,2.96705384 12.0049645,3.76669482 C12.7883914,2.96705384 13.8709081,2.5 15.0202536,2.5 L18.7549359,2.5 C19.1691495,2.5 19.5049359,2.83578644 19.5049359,3.25 L19.5046891,4.004 L21.2546891,4.00457396 C21.6343849,4.00457396 21.9481801,4.28672784 21.9978425,4.6528034 L22.0046891,4.75457396 L22.0046891,20.25 C22.0046891,20.6296958 21.7225353,20.943491 21.3564597,20.9931534 L21.2546891,21 L2.75468914,21 C2.37499337,21 2.06119817,20.7178461 2.01153575,20.3517706 L2.00468914,20.25 L2.00468914,4.75457396 C2.00468914,4.37487819 2.28684302,4.061083 2.65291858,4.01142057 L2.75468914,4.00457396 L4.50368914,4.004 L4.50444233,3.25 C4.50444233,2.87030423 4.78659621,2.55650904 5.15267177,2.50684662 L5.25444233,2.5 L8.9891247,2.5 Z M4.50368914,5.504 L3.50468914,5.504 L3.50468914,19.5 L10.9478955,19.4998273 C10.4513189,18.9207296 9.73864328,18.5588115 8.96709342,18.5065584 L8.77307039,18.5 L5.25444233,18.5 C4.87474657,18.5 4.56095137,18.2178461 4.51128895,17.8517706 L4.50444233,17.75 L4.50368914,5.504 Z M19.5049359,17.75 C19.5049359,18.1642136 19.1691495,18.5 18.7549359,18.5 L15.2363079,18.5 C14.3910149,18.5 13.5994408,18.8724714 13.0614828,19.4998273 L20.5046891,19.5 L20.5046891,5.504 L19.5046891,5.504 L19.5049359,17.75 Z M18.0059359,3.999 L15.0202536,4 L14.8259077,4.00692283 C13.9889509,4.06666544 13.2254227,4.50975805 12.7549359,5.212 L12.7549359,17.777 L12.7782651,17.7601316 C13.4923805,17.2719483 14.3447024,17 15.2363079,17 L18.0059359,16.999 L18.0056891,4.798 L18.0033792,4.75457396 L18.0056891,4.71 L18.0059359,3.999 Z M8.9891247,4 L6.00368914,3.999 L6.00599909,4.75457396 L6.00599909,4.75457396 L6.00368914,4.783 L6.00368914,16.999 L8.77307039,17 C9.57551536,17 10.3461406,17.2202781 11.0128313,17.6202194 L11.2536891,17.776 L11.2536891,5.211 C10.8200889,4.56369974 10.1361548,4.13636104 9.37521067,4.02745763 L9.18347055,4.00692283 L8.9891247,4 Z"></path></g></svg></button></div></div><div class="explorer nav-files-container" data-behavior="link" data-collapsed="collapsed" data-savestate="true" data-data-fns="{&quot;order&quot;:[&quot;filter&quot;,&quot;map&quot;,&quot;sort&quot;],&quot;sortFn&quot;:&quot;(a2, b2) => {\n    if (!a2.isFolder &amp;&amp; !b2.isFolder || a2.isFolder &amp;&amp; b2.isFolder) {\n      return (a2.displayName || \&quot;\&quot;).localeCompare(b2.displayName || \&quot;\&quot;, void 0, {\n        numeric: true,\n        sensitivity: \&quot;base\&quot;\n      });\n    }\n    if (!a2.isFolder &amp;&amp; b2.isFolder) {\n      return 1;\n    }\n    return -1;\n  }&quot;,&quot;filterFn&quot;:&quot;(node) => node.slugSegment !== \&quot;tags\&quot;&quot;,&quot;mapFn&quot;:&quot;(node) => {\n    return node;\n  }&quot;}"><button type="button" class="explorer-toggle mobile-explorer hide-until-loaded" data-mobile="true" aria-controls="explorer-759" aria-label="Explorer"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-menu"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button><button type="button" class="title-button explorer-toggle desktop-explorer" data-mobile="false" aria-expanded="true"><h2>Explorer</h2><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="5 8 14 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fold"><polyline points="6 9 12 15 18 9"></polyline></svg></button><div id="explorer-759" class="explorer-content" aria-expanded="false" role="group"><ul class="explorer-ul overflow" id="list-0"><li class="overflow-end"></li></ul></div><template id="template-file"><li><a href="#" class="nav-file-title tree-item-self"></a></li></template><template id="template-folder"><li><div class="folder-container nav-folder-title tree-item-self"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="5 8 14 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="folder-icon nav-folder-collapse-indicator collapse-icon"><polyline points="6 9 12 15 18 9"></polyline></svg><div><button class="folder-button"><span class="folder-title"></span></button></div></div><div class="folder-outer"><ul class="content tree-item-children"></ul></div></li></template></div></div><div class="center"><div class="page-header"><link rel="stylesheet" href="/lantern-and-ledger/static/preferences.css"/><script src="/lantern-and-ledger/static/campaign-spoilers.js"></script><script src="/lantern-and-ledger/static/preferences.js"></script><script src="/lantern-and-ledger/static/golarion-page-loader.js"></script><header class="lantern-ledger-site-header"><a class="lantern-ledger-masthead" href="/lantern-and-ledger/" aria-label="Campaign site home"><picture><source media="(max-width: 800px)" srcset="/lantern-and-ledger/assets/images/lantern-and-ledger-branding/lantern-and-ledger-compact.webp" width="1254" height="1254"/><img src="/lantern-and-ledger/assets/images/lantern-and-ledger-branding/wide_vintage_newspaper_masthead_style_illustration.webp" alt="The Lantern and Ledger — Light for the Present. Record for the Future." width="2048" height="768" decoding="async"/></picture></a><div class="lantern-ledger-archive-rule" aria-hidden="true"><span>THE LANTERN AND LEDGER · ARCHIVES</span></div></header><div class="popover-hint"><nav class="breadcrumb-container" aria-label="breadcrumbs"><div class="breadcrumb-element"><a href="../../../../../">Home</a><p> ❯ </p></div><div class="breadcrumb-element"><a href="../../../../../campaigns/">Campaigns</a><p> ❯ </p></div><div class="breadcrumb-element"><a href="../../../../../campaigns/kingmaker/">Kingmaker</a><p> ❯ </p></div><div class="breadcrumb-element"><a href="../../../../../campaigns/kingmaker/thumping-waters/">Thumping Waters</a><p> ❯ </p></div><div class="breadcrumb-element"><a href="../../../../../campaigns/kingmaker/thumping-waters/settlements/">Settlements</a><p> ❯ </p></div><div class="breadcrumb-element"><a href="../../../../../campaigns/kingmaker/thumping-waters/settlements/greengripe/">Greengripe</a><p> ❯ </p></div><div class="breadcrumb-element"><a href>Fizzlesticks &amp; Co</a></div></nav><h1 class="article-title">Fizzlesticks &amp; Co</h1><p show-comma="true" class="content-meta"><time datetime="2026-09-18T21:04:28.000Z">Sep 18, 2026</time><span>17 min read</span></p><template class="faceted-search-template"><div class="faceted-search"><button class="faceted-search__trigger" type="button" aria-haspopup="dialog" aria-expanded="false"><svg aria-hidden="true" viewBox="0 0 20 20"><circle cx="8.25" cy="8.25" r="5.75" fill="none"></circle><path d="m12.5 12.5 5 5"></path></svg><span>Search archive</span><kbd>Ctrl K</kbd></button><div class="faceted-search__overlay" hidden><section class="faceted-search__dialog" role="dialog" aria-modal="true" aria-labelledby="faceted-search-title"><header class="faceted-search__header"><div><p class="faceted-search__eyebrow">Lantern &amp; Ledger Archive</p><h2 id="faceted-search-title">Search the records</h2></div><button class="faceted-search__close" type="button" aria-label="Close search">×</button></header><label class="faceted-search__query-label"><span class="visually-hidden">Search terms</span><svg aria-hidden="true" viewBox="0 0 20 20"><circle cx="8.25" cy="8.25" r="5.75" fill="none"></circle><path d="m12.5 12.5 5 5"></path></svg><input class="faceted-search__query" type="search" autocomplete="off" placeholder="Search people, places, sessions, and stories…"/></label><div class="faceted-search__filters" aria-label="Search filters"><label><span>Campaign</span><select class="faceted-search__campaign"><option value>All campaigns</option></select></label><label><span>Record type</span><select class="faceted-search__type"><option value>All record types</option></select></label><button class="faceted-search__clear" type="button">Clear</button></div><div class="faceted-search__status" aria-live="polite">Loading the archive…</div><div class="faceted-search__results" role="listbox" aria-label="Search results"></div></section></div></div></template><span class="reading-progress-anchor" aria-hidden="true"></span></div></div><article class="popover-hint"><div class="markdown-preview-view markdown-rendered"><h1 id="fizzlesticks--co">Fizzlesticks &amp; Co<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#fizzlesticks--co" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h1>
+<p><img src="../../../../../assets/images/fizzlesticks-and-co-portrait.webp" alt="Goblin alchemists fill the workshop, storefront, and yard at Fizzlesticks &amp; Co. in Greengripe." decoding="async" loading="eager" width="1536" height="1024"/></p>
+<p><em>Compiled by Rikka Tallowglass, Lecturer in Civic Alchemy, <a href="../../../npcs/nok-nok" class="internal internal-link alias" data-slug="campaigns/kingmaker/npcs/nok-nok">Nok-Nok</a> College of Practical Arts and Civic Service, <a href="../thumpington/free-university-of-thumping-waters" class="internal internal-link alias" data-slug="campaigns/kingmaker/thumping-waters/settlements/thumpington/free-university-of-thumping-waters">Free University of Thumping Waters</a>, with the cooperation of Griggit Fizzlesticks, the Citizen Council of <a href="." class="internal internal-link alias" data-slug="campaigns/kingmaker/thumping-waters/settlements/greengripe/index">Greengripe</a>, and the town’s fire and sanitation crews</em></p>
+<blockquote>
+<p>If it explodes, record why. If it does not explode, record why not.</p>
+<p>— Rule painted above the mixing floor</p>
+</blockquote>
+<p>Fizzlesticks &amp; Co. is an alchemical shop, laboratory, and civic testing house in Greengripe. Founded and directed by the goblin alchemist Griggit Fizzlesticks, it produces medicines, cleaning compounds, dyes, lamp oils, fire suppressants, smoke signals, construction mixtures, pest treatments, and a changing selection of preparations whose usefulness became apparent only after their intended purpose failed.</p>
+<p>The establishment is best known for combining Greengripe’s enthusiasm for experimentation with systems designed to ensure that experiments remain survivable, explainable, and preferably within the property line. Its low stone walls, copper vents, outward-opening shutters, and deliberately replaceable roof panels have become a recognizable part of the town’s workshop district.</p>
+<p>Fizzlesticks &amp; Co. also serves as a field laboratory for Nok-Nok College of Practical Arts and Civic Service. Students come to Greengripe to learn production alchemy, emergency response, waste treatment, batch records, and the uncomfortable distinction between a dramatic reaction and a useful product.</p>
+<h3 id="at-a-glance">At a Glance<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#at-a-glance" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>Type:</strong> Alchemical shop, laboratory, and testing house</p>
+<p><strong>Location:</strong> Workshop district, Greengripe</p>
+<p><strong>Founder and Proprietor:</strong> Griggit Fizzlesticks</p>
+<p><strong>Primary Work:</strong> Medicines, household compounds, civic alchemy, signals, and controlled experimental products</p>
+<p><strong>Best-Known Product:</strong> <em>Hanspur’s Breath</em></p>
+<p><strong>Academic Partner:</strong> Nok-Nok College of Practical Arts and Civic Service</p>
+<p><strong>Glass Supplier:</strong> Gleams and Shards</p>
+<p><strong>Operating Maxim:</strong> <em>Interesting is not the same as ready</em></p>
+<h3 id="from-market-stall-to-testing-house">From Market Stall to Testing House<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#from-market-stall-to-testing-house" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>Griggit Fizzlesticks began selling mixtures from a painted market cart whose drawers contained remedies, polishes, powders, snacks, and ingredients that could become any of the preceding categories if handled carelessly. He earned a reputation for inexpensive preparations that worked, unusual preparations that worked differently than expected, and demonstrations whose audiences learned to stand behind the cart rather than beside it.</p>
+<p>Governor Nok-Nok encouraged Griggit and other local inventors to treat their work as an industry rather than a curiosity performed for visiting merchants. The new prosperity brought larger contracts, apprentices, glassware, imported reagents, and the realization that Greengripe could not conduct every promising reaction in a market crowded with food stalls and children.</p>
+<p>The Citizen Council granted Griggit a workshop plot near the edge of the central district, within reach of the market but close to the prepared testing grounds outside the densest streets. The original building had one mixing room, a counter, and a chimney whose first design is now displayed upon the Wall of Useful Failures as an example of how not to persuade smoke to leave.</p>
+<p>Later expansions added a separate Quiet Room, a bermed test yard, storage vaults, a public viewing gallery, a wash garden, and a second roof built according to lessons supplied by the departure of the first. The shop became a licensed producer for public works, healers, soldiers, breweries, and traders throughout the Republic.</p>
+<p>Griggit has refused proposals to rename it the Greengripe Institute of Applied Alchemical Development. He maintains that institutions should have names short enough to shout while running away from them.</p>
+<h3 id="the-building">The Building<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#the-building" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>Fizzlesticks &amp; Co. is a low, broad structure of brick and stone around a central mixing floor. The walls nearest neighboring properties are the thickest. Roof sections above active work areas are built from light timber and fitted so pressure can lift them without bringing the main beams down. Replacement panels of several colors wait beneath a side awning.</p>
+<p>Copper ventilation cowls turn above the roofline. Their different shapes serve particular rooms and make the building resemble, according to one visiting architect, a disciplined collection of hats. Gutters carry ordinary rainwater toward storage barrels while runoff from work surfaces passes through a separate treatment system.</p>
+<p>The exterior bears repairs in brick, timber, plaster, ceramic tile, and one patch of fused green glass that proved easier to build around than remove. Greengripe residents regard the mismatched surfaces as a record of improvement. Griggit can identify the experiment associated with each repair and often does so before customers have decided whether they wanted to know.</p>
+<h4 id="the-front-counter">The Front Counter<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#the-front-counter" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h4>
+<p>The public shop occupies the safest room in the building. Shelves hold sealed bottles, tins, ceramic jars, waxed packets, cleaning brushes, measuring spoons, lamp fittings, and printed instructions. Products are grouped by intended use rather than by color, since Griggit considers <em>the blue shelf</em> an inadequate safety system.</p>
+<p>Common purchases include fever remedies, wound washes, stain removers, lamp oils, waterproofing wax, boot powder, insect repellent, dyes, smoke pellets, odor treatments, brewing cleaners, and fire-suppressing globes. Potent medicines, explosives, poisons, and preparations requiring professional use remain behind locked cabinets and are sold only under appropriate restrictions.</p>
+<p>A broad section of counter is faced with thick glass. Customers may place damaged objects, unidentified residue, spoiled mixtures, or suspicious substances behind it for examination. They are requested not to open containers in order to demonstrate that the smell is unusual.</p>
+<h4 id="the-viewing-gallery">The Viewing Gallery<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#the-viewing-gallery" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h4>
+<p>A narrow public gallery overlooks the principal mixing floor through heavy panes supplied by Kuppa and Snip of Gleams and Shards. The glassblowers developed the layered panels after concluding that ordinary windows allowed experiments to become conversations too quickly.</p>
+<p>Visitors may watch scheduled demonstrations, apprentice examinations, and the preparation of large civic batches. Brass speaking tubes allow instructors to explain the work without opening the barrier. A weighted shutter can cover the gallery glass when a reaction ceases to deserve an audience.</p>
+<p>Children from Greengripe’s schools visit regularly. Their lessons emphasize labels, ventilation, fire response, and the fact that knowing an adult alchemist personally does not authorize touching anything in an alchemist’s workshop.</p>
+<h4 id="the-mixing-floor">The Mixing Floor<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#the-mixing-floor" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h4>
+<p>The central laboratory contains stone benches, adjustable burners, water taps, scales, presses, grinders, condensers, settling vessels, and racks fitted to secure glassware against vibration. Colored floor lines separate preparation, heating, cooling, and transit areas. Ingredients travel in one direction through the room so raw material, active mixtures, finished products, and waste do not cross unnecessarily.</p>
+<p>Every active batch carries a slate identifying its maker, contents, starting time, expected behavior, known hazards, and the person authorized to declare it finished. An abandoned vessel without a slate is treated as dangerous until proved otherwise. A slate without a vessel is treated as evidence that someone has begun a very unpleasant conversation.</p>
+<p>The maxim above the floor—<em>If it explodes, record why. If it does not explode, record why not</em>—is not entirely a joke. Greengripe’s advances in civic alchemy depend upon preserving negative results, failed proportions, unexpected reactions, and near misses instead of allowing every apprentice to rediscover them personally.</p>
+<h4 id="the-quiet-room">The Quiet Room<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#the-quiet-room" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h4>
+<p>The Quiet Room is a cool, windowless chamber separated from the mixing floor by two doors and a short empty passage. It houses preparations sensitive to heat, sunlight, vibration, open flame, magic, loud noises, sudden movement, or one another.</p>
+<p>Tools are made from wood, ceramic, copper, bone, or other materials selected for the work. No fixed flame enters the room. Light comes from protected alchemical lamps mounted outside thick glass panels. Shelves stand within shallow containment trays, and every vessel is tied, padded, or nested according to its habits.</p>
+<p>Conversation is kept low because several mixtures genuinely respond to vibration and because the rule prevents apprentices from competing to invent increasingly dramatic reasons for whispering.</p>
+<h4 id="the-test-yard">The Test Yard<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#the-test-yard" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h4>
+<p>Behind the shop lies an earthen-banked yard used for fireworks, smoke devices, fire suppressants, construction compounds, demolition charges, and any prototype accompanied by the phrase <em>probably only a little</em>. Stone firing bays face away from the town. Observation shelters stand behind angled walls with narrow viewing slits.</p>
+<p>Colored flags announce the day’s authorized hazards. A blue flag indicates smoke, red indicates heat or flame, yellow indicates force or flying fragments, green indicates fumes requiring masks, and a white flag indicates a public demonstration considered safe from the marked line. More than one flag may fly. No flag means the yard is closed, not that conditions are ideal for an unscheduled experiment.</p>
+<p>The town’s famous prohibition against explosions before breakfast applies with particular force. The testing clock begins after the fire crew has eaten, inspected the yard, and confirmed that no civic festival, visiting delegation, funeral, nesting animal, or unexplained wagon occupies the impact area.</p>
+<h4 id="the-wash-garden">The Wash Garden<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#the-wash-garden" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h4>
+<p>Water leaving the laboratory passes through settling tanks, charcoal beds, sand filters, and planted basins containing reeds and other hardy vegetation. Each stage can be isolated if contamination is discovered. Treated water is tested before entering the town’s drainage system.</p>
+<p>The wash garden began as a condition imposed by Greengripe’s sewer crews. It has since become a working demonstration of how sanitation, herbal knowledge, and alchemy support one another. Plants unsuitable for medicine or consumption may still reveal changes in water quality through color, growth, or the development of qualities the gardeners record under <em>other</em>.</p>
+<p><a href="../../../characters/velka" class="internal internal-link alias" data-slug="campaigns/kingmaker/characters/velka">Velka of the Sootscale</a> has assisted with the garden and insists that a workshop depending upon clean water incurs an obligation to return water capable of continuing downstream. Griggit summarizes the same principle as <em>do not poison the neighbors</em>. Both formulations appear in university teaching materials.</p>
+<h4 id="the-wall-of-useful-failures">The Wall of Useful Failures<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#the-wall-of-useful-failures" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h4>
+<p>One long corridor displays cracked vessels, warped tools, failed valves, separated mixtures, scorched labels, collapsed packaging, and products that became useful for something other than their intended purpose. Each object bears a short account of its ingredients, result, failure, and later application if one was found.</p>
+<p>The display includes a roofing sealant now sold as boot waterproofing, a medicine too unpleasant to swallow that became an effective pest treatment, an invisible dye visible only to certain animals, and the first chimney cap, whose principal contribution to alchemy was returning smoke with greater confidence.</p>
+<p>The wall does not celebrate negligence. Objects produced by ignored instructions, concealed hazards, or reckless treatment of another person are kept in the restricted incident archive instead. A useful failure teaches because uncertainty was managed honestly. An avoidable injury teaches something else.</p>
+<h3 id="products-of-fizzlesticks--co">Products of Fizzlesticks &amp; Co.<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#products-of-fizzlesticks--co" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<h4 id="hanspurs-breath">Hanspur’s Breath<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#hanspurs-breath" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h4>
+<p><em>Hanspur’s Breath</em> is a blue-green bubbling tonic developed by Griggit and Velka from restorative herbs, cleansing salts, mineral water, and several ingredients whose proportions remain proprietary. Properly diluted, it serves as a wound wash and treatment for common hangover symptoms. It is also advertised as making the drinker <em>more interesting</em>, a claim the university has classified as unverified and the customers have classified as obvious.</p>
+<p>The preparation originated during one of Velka’s visits to Greengripe. She and Griggit were attempting to produce a stable cleansing mixture suitable for river travelers. The first batch removed grime, dulled pain, produced a cloud of fragrant foam, and turned a wooden spoon purple for three days. Later batches retained the useful effects and most of the color while becoming less opinionated about utensils.</p>
+<p>Velka blesses the water used for ceremonial batches when present. Ordinary production follows the same written formula without claiming that every bottle received individual divine attention.</p>
+<h4 id="civic-and-household-alchemy">Civic and Household Alchemy<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#civic-and-household-alchemy" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h4>
+<p>Most of the shop’s income comes from preparations less famous than Hanspur’s Breath. Fire-suppressing globes break upon impact and spread a smothering foam across small fires. Luminous road paint marks bridge edges, steps, public pumps, and evacuation routes. Colored signal smoke allows scouts, road crews, and isolated settlements to communicate simple warnings across distance.</p>
+<p>Breweries purchase vessel cleaners, yeast treatments, testing drops, and compounds that reveal contamination before a batch is served. Builders use waterproofing pastes, mortar additives, rust removers, wood treatments, and dyes that show whether a repaired surface has shifted. Households buy pest powders, soaps, stove cleaners, lamp oils, stain treatments, and sealed warming stones.</p>
+<p>Fizzlesticks &amp; Co. also fills military and emergency contracts. Such work includes smoke cover, signal devices, field disinfectants, water-testing preparations, portable light, cold-weather fire starters, and limited explosive charges. The shop no longer advertises weapons in its front window. Greengripe has learned that visiting children, foreign agents, and enthusiastic customers may be difficult to distinguish at a glance.</p>
+<h3 id="people-of-fizzlesticks--co">People of Fizzlesticks &amp; Co.<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#people-of-fizzlesticks--co" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<h4 id="griggit-fizzlesticks-proprietor">Griggit Fizzlesticks, Proprietor<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#griggit-fizzlesticks-proprietor" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h4>
+<p>Griggit Fizzlesticks is an energetic goblin alchemist whose coat pockets contain pencils, corks, string, chalk, measuring spoons, emergency biscuits, and at least one object he has forgotten. His laboratory smells of citrus, smoke, wet stone, and whatever problem occupied him most recently.</p>
+<p>Griggit calls alchemy <em>the art of asking matter a question loudly enough to receive an answer</em>. He values curiosity, improvisation, and speed, but years of production have made him equally insistent upon records, clean apparatus, honest labels, and admitting when an answer is not yet understood.</p>
+<p>He teaches through demonstration and interruption. Apprentices are encouraged to propose unusual methods, then required to identify containment, measurements, escape routes, and what evidence would prove the method unsuccessful. Griggit considers enthusiasm without preparation a valuable natural resource that must be refined before use.</p>
+<h4 id="keeka-bottlesnap-master-compounder">Keeka Bottlesnap, Master Compounder<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#keeka-bottlesnap-master-compounder" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h4>
+<p>Keeka Bottlesnap directs ordinary production upon the mixing floor. A compact goblin with smoked-glass spectacles and an exceptional memory for ratios, she converts Griggit’s successful experiments into formulas that other trained workers can reproduce safely.</p>
+<p>Keeka has authority to stop any batch, including Griggit’s. The condition was imposed by the Citizen Council after it became clear that a proprietor supervising his own favorite experiment might experience a temporary shortage of skepticism. She maintains production schedules, assigns inspections, and signs the final slate before a new preparation reaches the front counter.</p>
+<h4 id="orrik-fume-eater-keeper-of-vents">Orrik Fume-Eater, Keeper of Vents<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#orrik-fume-eater-keeper-of-vents" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h4>
+<p>Orrik Fume-Eater maintains the chimneys, pressure shutters, water lines, drains, filters, fire stations, and test-yard barriers. He acquired his name after clearing a blocked vent during an emergency while wearing a filter mask large enough to cover most of his head. He denies the more colorful versions of the story.</p>
+<p>Orrik is empowered to close rooms whose safety systems are not functioning. Researchers who describe ventilation as unrelated to their intellectual work receive a tour of the roof, gutters, filter beds, ash traps, replacement panels, and invoices produced by the last person who shared that opinion.</p>
+<h4 id="vara-moss-herbal-buyer">Vara Moss, Herbal Buyer<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#vara-moss-herbal-buyer" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h4>
+<p>Vara Moss is a half-elf herbalist who purchases cultivated and gathered ingredients, verifies their identity, and maintains agreements with farmers, foresters, healers, and collectors throughout the western <a href="../../../../../external-references/locations/inner-sea-region/river-kingdoms/stolen-lands/greenbelt" class="internal internal-link alias" data-slug="external-references/locations/inner-sea-region/river-kingdoms/stolen-lands/greenbelt">Greenbelt</a>. She rejects rare plants harvested in ways that destroy the stand supplying them.</p>
+<p>Vara also supervises the shop’s small reference garden and drying loft. She frequently travels with university students conducting field surveys and has prevented several promising alchemists from poisoning themselves with plants they identified principally through confidence.</p>
+<h3 id="velka-and-griggit">Velka and Griggit<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#velka-and-griggit" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>Velka visits Fizzlesticks &amp; Co. whenever her travels bring her to Greengripe. She helps gather river and marsh plants, inspects the wash garden, blesses water used in particular preparations, and intervenes when an experiment catches fire or attempts to become a form of local wildlife.</p>
+<p>Griggit describes magic as the science of convincing the world to behave differently. Velka describes it as learning which changes the world is already attempting. Their disagreement has produced useful medicines, prolonged arguments, and one cleaning compound that refuses to work unless its container is opened beside running water.</p>
+<p>The shop keeps a low shelf of driftwood, blue glass, shells, wire, and failed metal fittings for Velka’s talismans. In return, she supplies unusual ingredients and observations from settlements whose practical problems may suggest the next product worth developing.</p>
+<h3 id="warnings-and-emergency-signals">Warnings and Emergency Signals<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#warnings-and-emergency-signals" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>The shop uses bells, whistles, flags, and lamps because no single warning method remains reliable in smoke, darkness, noise, or panic. One bell calls the floor supervisor. Two bells halt active heating. Three bells order evacuation of the affected room. A continuous bell empties the building and summons the town fire brigade.</p>
+<p>A rising whistle indicates airborne fumes and requires masks or movement upwind. A descending whistle warns of liquid entering drains. Red lamps mark fire, green lamps mark fumes, and blue lamps mark contamination involving water. Workers learn the signals before they are allowed to prepare a batch.</p>
+<p>Every alarm is investigated, including false alarms. The person who sounds one in good faith is not punished for interrupting work. Greengripe’s safety officers regard embarrassment as cheaper than rebuilding.</p>
+<h3 id="fizzlesticks--co-and-the-free-university">Fizzlesticks &amp; Co. and the Free University<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#fizzlesticks--co-and-the-free-university" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>Nok-Nok College of Practical Arts and Civic Service recognizes Fizzlesticks &amp; Co. as a field teaching laboratory. Students spend several weeks in Greengripe learning commercial production, fire response, sanitation, waste treatment, public demonstration, and the documentation of failure.</p>
+<p>Griggit serves as a visiting practitioner rather than a conventional professor. His university lectures usually begin with a prepared topic and conclude with a demonstration the faculty believed had been described differently. Keeka teaches batch control and argues that her sessions should occur first, while students still possess notebooks with intact corners.</p>
+<p>Research conducted at the shop remains subject to both university review and Greengripe law. Academic affiliation does not exempt an experiment from fire codes, drainage restrictions, controlled-substance rules, or the prohibition against explosions before breakfast. The Citizen Council required this sentence to appear in the agreement more than once.</p>
+<p>The best-known paper produced through the partnership is <em>After the Flash: Converting Experimental Alchemy into Civic Supply</em>. It examines the steps between discovering that a mixture works once and producing it reliably for people who cannot afford to learn its limitations through personal experience.</p>
+<h3 id="customs-of-the-shop">Customs of the Shop<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#customs-of-the-shop" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<h4 id="breakfast-before-ignition">Breakfast before Ignition<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#breakfast-before-ignition" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h4>
+<p>No burner, fuse, heated retort, or powered grinder begins before the morning crew has eaten. The custom began as compliance with Nok-Nok’s famous law and survived because hungry alchemists make poor measurements. Cold preparation and cleaning may begin earlier, though Griggit insists cleaning is not sufficiently exciting to violate the governor’s memory.</p>
+<h4 id="the-second-label">The Second Label<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#the-second-label" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h4>
+<p>Every new preparation is labeled twice: once by its maker and once by someone who did not make it. If the second person cannot understand the first label, the product is not ready to leave the bench. Elaborate handwriting, private abbreviations, and confidence do not count as ingredients.</p>
+<h4 id="the-useful-failure">The Useful Failure<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#the-useful-failure" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h4>
+<p>At the end of each month, workers nominate one failed experiment for the public wall. The maker explains what was attempted, what occurred, and whether any honest use was found. The selected object receives a brass tag and a place in the corridor. The ceremony includes applause but no claim that failure is automatically admirable.</p>
+<h4 id="the-first-safe-sip">The First Safe Sip<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#the-first-safe-sip" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h4>
+<p>An apprentice who completes training prepares a simple restorative tonic from a standard formula. The apprentice tests the equipment, documents the batch, cleans the station, and serves the first safe sip to the person who most often stopped them from doing something memorable. Most choose Keeka.</p>
+<h3 id="place-in-greengripe">Place in Greengripe<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#place-in-greengripe" class="internal internal-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>Fizzlesticks &amp; Co. embodies modern Greengripe’s refusal to choose between goblin exuberance and public responsibility. Its patched walls, colored vents, experimental products, and unpredictable proprietor are not evidence that regulation failed. They exist beside batch ledgers, fire brigades, sewer authority, university review, and a master compounder empowered to tell the proprietor no.</p>
+<p>The shop’s most important products are not necessarily its most dramatic. A fire-suppressing globe in a kitchen, clean water leaving a workshop, a signal seen by a road crew, or an affordable wound wash may matter more than the firework visible above the walls. Greengripe understands spectacle. Fizzlesticks &amp; Co. demonstrates that it also understands repetition, maintenance, and the quiet dignity of something working correctly for the hundredth time.</p>
+<p>Visitors often pause outside to watch the copper cowls turn and guess which roof panel is newest. Residents listen instead for the ordinary sounds: grinders, bottles, whistles, laughter, and the absence of an alarm where one might reasonably have been expected.</p>
+<blockquote>
+<p>The difference between alchemy and a mess is whether the next person can learn from it.</p>
+<p>— Keeka Bottlesnap</p>
+</blockquote></div></article><hr/><div class="page-footer"></div></div><div class="right sidebar"><div class="toc"><button type="button" class="toc-header" aria-controls="toc-253" aria-expanded="true"><h3>Table of Contents</h3><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fold"><polyline points="6 9 12 15 18 9"></polyline></svg></button><ul id="list-0" class="toc-content overflow"><li class="depth-0"><a href="#fizzlesticks--co" data-for="fizzlesticks--co">Fizzlesticks &amp; Co</a></li><li class="depth-2"><a href="#at-a-glance" data-for="at-a-glance">At a Glance</a></li><li class="depth-2"><a href="#from-market-stall-to-testing-house" data-for="from-market-stall-to-testing-house">From Market Stall to Testing House</a></li><li class="depth-2"><a href="#the-building" data-for="the-building">The Building</a></li><li class="depth-2"><a href="#products-of-fizzlesticks--co" data-for="products-of-fizzlesticks--co">Products of Fizzlesticks &amp; Co.</a></li><li class="depth-2"><a href="#people-of-fizzlesticks--co" data-for="people-of-fizzlesticks--co">People of Fizzlesticks &amp; Co.</a></li><li class="depth-2"><a href="#velka-and-griggit" data-for="velka-and-griggit">Velka and Griggit</a></li><li class="depth-2"><a href="#warnings-and-emergency-signals" data-for="warnings-and-emergency-signals">Warnings and Emergency Signals</a></li><li class="depth-2"><a href="#fizzlesticks--co-and-the-free-university" data-for="fizzlesticks--co-and-the-free-university">Fizzlesticks &amp; Co. and the Free University</a></li><li class="depth-2"><a href="#customs-of-the-shop" data-for="customs-of-the-shop">Customs of the Shop</a></li><li class="depth-2"><a href="#place-in-greengripe" data-for="place-in-greengripe">Place in Greengripe</a></li><li class="overflow-end"></li></ul></div><div class="backlinks"><h3>Backlinks</h3><ul id="list-0" class="overflow"><li><a href="../../../../../campaigns/kingmaker/characters/velka/travels-and-connections" class="internal">Velka of the Sootscale – Travels and Connections</a></li><li><a href="../../../../../campaigns/kingmaker/thumping-waters/settlements/greengripe/" class="internal">Greengripe</a></li><li class="overflow-end"></li></ul></div></div><footer class><p>Created with <a href="https://quartz.jzhao.xyz/">Quartz v5.0.0</a> © 2026</p><ul><li><a href="https://bobzap66.github.io/lantern-and-ledger/">Home</a></li><li><a href="https://bobzap66.github.io/lantern-and-ledger/preferences">Preferences</a></li><li><a href="https://github.com/bobzap66/lantern-and-ledger">Source</a></li></ul></footer></div></div></body><script src="../../../../../static/resource-after-e13fffa1.js" type="application/javascript" data-persist="true"></script><script src="../../../../../static/resource-after-8b336f9a.js" type="application/javascript" data-persist="true"></script><script src="../../../../../static/resource-after-baba652b.js" type="application/javascript" data-persist="true"></script><script src="../../../../../static/resource-after-5eb75950.js" type="module" data-persist="true"></script><script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/copy-tex.min.js" type="application/javascript" data-persist="true"></script><script src="../../../../../static/resource-after-4ee31800.js" type="application/javascript" data-persist="true"></script><script src="../../../../../static/resource-after-a68033a6.js" type="application/javascript" data-persist="true"></script><script src="../../../../../postscript-a6852928.js" type="module" data-persist="true"></script></html>
