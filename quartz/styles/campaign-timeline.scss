@@ -63,6 +63,19 @@
   --timeline-card-shadow: 0 8px 20px rgba(48, 37, 38, 0.16);
 }
 
+/* Malevolence: subdued violet, slate, and the manor's cold occult palette. */
+#quartz-body.campaign--malevolence {
+  --timeline-minor: #526a70;
+  --timeline-major: #65536f;
+  --timeline-surface-accent: #b7a3c1;
+  --timeline-heading-accent: #65536f;
+  --timeline-card-radius: 0.22rem;
+  --timeline-marker-radius: 0;
+  --timeline-marker-rotation: 45deg;
+  --timeline-heading-symbol: "✧";
+  --timeline-card-shadow: 0 8px 18px rgba(54, 42, 62, 0.12);
+}
+
 /* Timeline group headings read as chapter markers instead of ordinary h2s. */
 #quartz-body[class*="campaign--"] article:has(.callout[data-callout^="timeline-"]) h2 {
   display: flex;
