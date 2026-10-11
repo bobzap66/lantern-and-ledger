@@ -63,7 +63,9 @@ function campaignLabel(
   const key = campaignKeyFromSlug(slug)
   if (key && campaignLabels[key]) return campaignLabels[key]
 
-  const campaign = String(frontmatter?.campaign ?? "").trim()
+  const rawCampaign = String(frontmatter?.campaign ?? "").trim()
+  const campaignLink = /^\[\[[^\]|]+(?:\|([^\]]+))?\]\]$/.exec(rawCampaign)
+  const campaign = campaignLink?.[1]?.trim() || rawCampaign
   return campaign ? campaign.toUpperCase() : null
 }
 
