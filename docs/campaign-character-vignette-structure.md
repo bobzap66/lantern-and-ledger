@@ -41,6 +41,15 @@ parent: "[[../index|Vignettes]]"
 
 The archive page is generated from every `type: vignette` note in its own folder. Its `character` link is the authoritative association back to the character page.
 
+## Generated archive counts
+
+Vignette index pages can use these HTML comment markers for counts that should stay current:
+
+- `<!-- VIGNETTE_TOTAL -->` becomes the number of published vignette notes below that index folder.
+- `<!-- VIGNETTE_COUNT:./<Child folder> -->` becomes the number of published vignette notes below that child folder. Use it after a wiki link to a chapter or character archive.
+
+The deployment workflow runs `scripts/generate-vignette-counts.mjs content` before Quartz builds. The comments are invisible in the authoring vault; the build replaces them in its content checkout. Counts include notes with `type: vignette` and exclude drafts and notes with `publish: false`.
+
 ## Vignette page
 
 Required frontmatter:
