@@ -45,7 +45,7 @@ The campaign soundtrack index is:
 
 `Campaigns/Curtain Call/Music/index.md`
 
-Each finished track may also have its own note containing:
+Each published MP3 should have one canonical record under `Audio Metadata/`, using the root-relative `asset` path so other pages can reuse the same recording. A score or source vignette can remain the canonical home for lyrics and production context, with the audio record linking back to it. For example, the Salted Fish recording record links to its separate score and lyrics page. Track records can also include lyrics directly when no other archival note is the better home. When useful, the track record can contain:
 
 - song title and session number;
 - musical form or dramatic function;
@@ -54,7 +54,7 @@ Each finished track may also have its own note containing:
 - production notes;
 - a link back to the session note.
 
-The session article should contain the compact player. The track page can hold the full lyrics and commentary.
+A score index or session article can link to or reuse the track record and its single MP3 asset. The track page can hold the full lyrics and commentary.
 
 ## Publishing flow
 
@@ -62,7 +62,7 @@ The session article should contain the compact player. The track page can hold t
 2. Preserve the archival master outside the website repository.
 3. Export a web-ready MP3.
 4. Add it to `assets/audio/curtain-call/`.
-5. Add the `[!opera]` block to the session note.
+5. Add the `[!opera]` block to the session note and create or update the canonical audio record.
 6. Commit the vault.
 7. The vault workflow mirrors audio to R2 and then triggers the Quartz rebuild.
 8. Quartz validates the local MP3, rewrites its public URL to R2, and removes the local audio copy from the Pages artifact.
