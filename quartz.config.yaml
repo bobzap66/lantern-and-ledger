@@ -13,6 +13,10 @@ configuration:
     - private
     - templates
     - .obsidian
+    - Audio Metadata/**
+    - Image Metadata/**
+    - Meta/**
+    - "**/*Metadata*.md"
     - "AGENTS.md"
     - "Campaigns/Abomination Vaults/Reconstruction/**"
     - "**/*.csv"
