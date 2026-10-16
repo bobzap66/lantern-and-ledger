@@ -32,6 +32,8 @@ After a successful asset sync, the vault workflow sends the `vault-updated` repo
 
 The production workflow checks out the complete vault, including images and audio. This is intentional: Quartz rendering and internal asset validation can operate against local files before publication.
 
+Authoring metadata Markdown is not published as site pages. Quartz excludes the `Audio Metadata/`, `Image Metadata/`, and `Meta/` trees, along with Markdown files whose names contain `Metadata`. The build can still read image and audio records from the checked-out vault when rendering gallery and media features.
+
 After Quartz builds the site and `scripts/check-built-links.mjs` validates local output, `scripts/externalize-published-images.mjs` rewrites rendered references to both `assets/images/` and `assets/audio/` so they use the public R2 asset base. It then removes the corresponding local directories from the Pages artifact.
 
 The script name is retained for compatibility, but its job now covers published media generally.

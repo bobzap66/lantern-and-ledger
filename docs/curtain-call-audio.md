@@ -45,7 +45,7 @@ The campaign soundtrack index is:
 
 `Campaigns/Curtain Call/Music/index.md`
 
-Each published MP3 should have one canonical record under `Audio Metadata/`, using the root-relative `asset` path so other pages can reuse the same recording. A score or source vignette can remain the canonical home for lyrics and production context, with the audio record linking back to it. For example, the Salted Fish recording record links to its separate score and lyrics page. Track records can also include lyrics directly when no other archival note is the better home. When useful, the track record can contain:
+Each published MP3 should have one canonical record under `Audio Metadata/`, using the root-relative `asset` path so other pages can reuse the same recording. These metadata Markdown files are authoring records and are excluded from the public Quartz site. Public pages should embed the audio or link to a public song, score, or session page; they should not link to the metadata record. A score or source vignette can remain the canonical home for lyrics and production context, with the audio record linking back to it. Track records can also include lyrics directly when no other archival note is the better home. When useful, the track record can contain:
 
 - song title and session number;
 - musical form or dramatic function;
