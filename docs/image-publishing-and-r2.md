@@ -36,6 +36,8 @@ Authoring metadata Markdown is not published as site pages. Quartz excludes the 
 
 After Quartz builds the site and `scripts/check-built-links.mjs` validates local output, `scripts/externalize-published-images.mjs` rewrites rendered references to both `assets/images/` and `assets/audio/` so they use the public R2 asset base. It then removes the corresponding local directories from the Pages artifact.
 
+When rewriting URLs, the script must apply the same per-component normalization as the vault sync: decode URL-escaped components, lowercase them, replace spaces with hyphens, then URL-escape them again. Otherwise rendered paths such as `Session 65/Generated Artwork/` point to R2 keys that do not exist (`session-65/generated-artwork/`).
+
 The script name is retained for compatibility, but its job now covers published media generally.
 
 The current public asset base is:

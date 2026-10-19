@@ -38,7 +38,23 @@ function rewriteAssetUrls(source) {
       const index = match.indexOf(marker)
       if (index < 0) return match
       count += 1
-      return `${assetBase}/${match.slice(index)}`
+      const assetPath = match.slice(index)
+      const suffixIndex = assetPath.search(/[?#]/)
+      const pathname = suffixIndex < 0 ? assetPath : assetPath.slice(0, suffixIndex)
+      const suffix = suffixIndex < 0 ? "" : assetPath.slice(suffixIndex)
+      const normalizedPath = pathname
+        .split("/")
+        .map((segment) => {
+          let decoded
+          try {
+            decoded = decodeURIComponent(segment)
+          } catch {
+            decoded = segment
+          }
+          return encodeURIComponent(decoded.toLowerCase().replace(/ /g, "-"))
+        })
+        .join("/")
+      return `${assetBase}/${normalizedPath}${suffix}`
     },
   )
   return { updated, count }
