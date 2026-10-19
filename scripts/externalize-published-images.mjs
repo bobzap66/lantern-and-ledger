@@ -32,7 +32,7 @@ async function walk(dir) {
 function rewriteAssetUrls(source) {
   let count = 0
   const updated = source.replace(
-    /(?:(?:https?:)?\/\/[^"'()\s]+)?(?:\/lantern-and-ledger)?(?:\.{1,2}\/|\/)*assets\/(?:images|audio)\/[^"'()\s<>]+/g,
+    /(?:(?:https?:)?\/\/[^"'()\s]+)?(?:\/lantern-and-ledger)?(?:\.{1,2}\/|\/)*assets\/(?:images|audio)\/[^"'()<>\r\n]+/g,
     (match) => {
       const marker = "assets/"
       const index = match.indexOf(marker)
