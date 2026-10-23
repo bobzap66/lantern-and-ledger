@@ -9,6 +9,7 @@ const CONTENT_ROOT = path.resolve(process.argv[2] ?? "content")
 const INDEX_FILE = path.join(CONTENT_ROOT, "index.md")
 const HOME_COUNT = 4
 const CAMPAIGN_COUNT = 3
+const DEFAULT_SITE_PUBLICATION = "Lantern & Ledger"
 
 const HOME_START = "<!-- HOMEPAGE_RECENTS_START -->"
 const HOME_END = "<!-- HOMEPAGE_RECENTS_END -->"
@@ -81,6 +82,16 @@ function parseFrontmatter(text) {
     fm[m[1].toLowerCase()] = value
   }
   return fm
+}
+
+function normalizeSitePublication(value) {
+  const normalized = String(value ?? "")
+    .trim()
+    .replace(/\s+/g, " ")
+    .toLowerCase()
+
+  if (normalized === "beacon & bulletin") return "Beacon & Bulletin"
+  return DEFAULT_SITE_PUBLICATION
 }
 
 function gitHistory(rel) {
@@ -406,6 +417,8 @@ async function injectBlock(file, start, end, block, preferredMarker = null) {
   await fs.writeFile(file, text, "utf8")
 }
 
+const indexText = await fs.readFile(INDEX_FILE, "utf8")
+const homeSitePublication = normalizeSitePublication(parseFrontmatter(indexText).site_publication)
 const notes = []
 const campaigns = []
 
@@ -416,6 +429,7 @@ for (const file of await walk(CONTENT_ROOT)) {
 
   const text = await fs.readFile(file, "utf8")
   const fm = parseFrontmatter(text)
+  const sitePublication = normalizeSitePublication(fm.site_publication)
   const noteType = String(fm.type ?? "")
     .trim()
     .toLowerCase()
@@ -428,6 +442,7 @@ for (const file of await walk(CONTENT_ROOT)) {
         rel,
         dir: path.posix.dirname(rel),
         title: String(fm.title || match[1]),
+        sitePublication,
       })
   }
 
@@ -455,12 +470,19 @@ for (const file of await walk(CONTENT_ROOT)) {
     sessionNumber: sessionNumberFromFrontmatter(fm),
     description: descriptionFromFrontmatter(fm) || descriptionFromBody(text),
     campaign: campaignFromRel(rel),
+    sitePublication,
     created,
     modified,
   })
 }
 
-const homeRecents = chooseRecents(notes.filter(isHomepageEditorial), new Set(), HOME_COUNT)
+const homeRecents = chooseRecents(
+  notes.filter(
+    (note) => note.sitePublication === homeSitePublication && isHomepageEditorial(note),
+  ),
+  new Set(),
+  HOME_COUNT,
+)
 await injectBlock(
   INDEX_FILE,
   HOME_START,
@@ -469,7 +491,7 @@ await injectBlock(
   "<!-- HOMEPAGE_RECENTS -->",
 )
 
-console.log("Homepage recents generated")
+console.log(`${homeSitePublication} homepage recents generated`)
 console.log(
   "Brand New:",
   homeRecents.brandNew.map((note) => `${note.campaign}: ${note.title}`).join(", "),
@@ -481,11 +503,13 @@ console.log(
 
 for (const campaign of campaigns) {
   const prefix = `${campaign.dir}/`
-  const pool = notes.filter((note) => note.rel.startsWith(prefix))
+  const pool = notes.filter(
+    (note) => note.rel.startsWith(prefix) && note.sitePublication === campaign.sitePublication,
+  )
   const recents = chooseRecents(pool, new Set([campaign.rel]), CAMPAIGN_COUNT)
   const block = renderBlock(CAMPAIGN_START, CAMPAIGN_END, recents, campaign.dir)
   await injectBlock(campaign.file, CAMPAIGN_START, CAMPAIGN_END, block)
-  console.log(`${campaign.title} recents generated`)
+  console.log(`${campaign.title} (${campaign.sitePublication}) recents generated`)
   console.log("  Brand New:", recents.brandNew.map((note) => note.title).join(", "))
   console.log("  Recently Updated:", recents.recentlyUpdated.map((note) => note.title).join(", "))
 }
