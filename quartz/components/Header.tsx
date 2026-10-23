@@ -11,7 +11,12 @@ const Header: QuartzComponent = (props: QuartzComponentProps) => {
     ctx.argv.serve || !cfg.baseUrl
       ? ""
       : new URL(`https://${cfg.baseUrl}`).pathname.replace(/\/$/, "")
-  const homePath = `${siteRoot}/`
+  const encodedHomeSlug = sitePublication.homeSlug
+    .split("/")
+    .filter(Boolean)
+    .map(encodeURIComponent)
+    .join("/")
+  const homePath = encodedHomeSlug ? `${siteRoot}/${encodedHomeSlug}` : `${siteRoot}/`
   const spoilerControllerPath = `${siteRoot}/static/campaign-spoilers.js`
   const preferencesControllerPath = `${siteRoot}/static/preferences.js`
   const preferencesStylesPath = `${siteRoot}/static/preferences.css`
@@ -34,6 +39,7 @@ const Header: QuartzComponent = (props: QuartzComponentProps) => {
         class={`site-publication-header site-publication-header--${sitePublication.key}`}
         data-site-publication={sitePublication.key}
         data-site-publication-title={sitePublication.title}
+        data-site-publication-home={homePath}
         data-favicon-path={faviconPath || undefined}
       >
         <a class="site-publication-masthead" href={homePath} aria-label={`${sitePublication.title} home`}>
@@ -310,11 +316,13 @@ const syncSitePublicationChrome = () => {
     body?.getAttribute("data-site-publication-title") ||
     header?.getAttribute("data-site-publication-title") ||
     "The Lantern and Ledger"
+  const publicationHome = header?.getAttribute("data-site-publication-home") || "/"
   const pageTitle = document.querySelector(".page-title a, a.page-title")
 
   if (pageTitle) {
     pageTitle.textContent = publicationTitle
     pageTitle.setAttribute("aria-label", publicationTitle + " home")
+    pageTitle.setAttribute("href", publicationHome)
   }
 
   let icon = document.querySelector('link[rel~="icon"]')
