@@ -10,6 +10,7 @@ const DIRECTORY_START = "<!-- CAMPAIGN_DIRECTORY_GENERATED_START -->"
 const DIRECTORY_END = "<!-- CAMPAIGN_DIRECTORY_GENERATED_END -->"
 const ARCHIVE_START = "<!-- CAMPAIGN_ARCHIVE_GENERATED_START -->"
 const ARCHIVE_END = "<!-- CAMPAIGN_ARCHIVE_GENERATED_END -->"
+const DEFAULT_SITE_PUBLICATION = "Lantern & Ledger"
 const STATUS_GROUPS = [
   { status: "active", title: "Active Campaigns" },
   { status: "upcoming", title: "Upcoming Campaigns" },
@@ -20,6 +21,16 @@ function parseFrontmatter(text) {
   const match = /^---\s*\r?\n([\s\S]*?)\r?\n---/.exec(text)
   if (!match) return {}
   return YAML.parse(match[1]) ?? {}
+}
+
+function normalizeSitePublication(value) {
+  const normalized = String(value ?? "")
+    .trim()
+    .replace(/\s+/g, " ")
+    .toLowerCase()
+
+  if (normalized === "beacon & bulletin") return "Beacon & Bulletin"
+  return DEFAULT_SITE_PUBLICATION
 }
 
 function escapeHtml(value) {
@@ -93,7 +104,7 @@ function replaceGeneratedBlock(source, startMarker, endMarker, generated, filePa
   return `${source.slice(0, start + startMarker.length)}${newline}${newline}${normalized}${newline}${newline}${source.slice(end)}`
 }
 
-async function loadCampaigns() {
+async function loadCampaigns(sitePublication) {
   const entries = await fs.readdir(campaignsRoot, { withFileTypes: true })
   const campaigns = []
   for (const entry of entries) {
@@ -108,6 +119,7 @@ async function loadCampaigns() {
 
     const metadata = parseFrontmatter(text)
     if (metadata.type !== "campaign" || metadata.draft === true || metadata.publish === false) continue
+    if (normalizeSitePublication(metadata.site_publication) !== sitePublication) continue
     if (!STATUS_GROUPS.some((group) => group.status === metadata.status)) {
       throw new Error(`${indexPath} needs status active, upcoming, or archived`)
     }
@@ -125,13 +137,10 @@ async function loadCampaigns() {
   }
 
   campaigns.sort((a, b) => startYear(b) - startYear(a) || a.name.localeCompare(b.name))
-  if (!campaigns.some((campaign) => campaign.metadata.status === "archived")) {
-    throw new Error("No published archived campaigns found")
-  }
   return campaigns
 }
 
-function buildDirectory(campaigns) {
+function buildDirectory(campaigns, sitePublication) {
   const counts = STATUS_GROUPS.map(({ status }) => {
     const count = campaigns.filter((campaign) => campaign.metadata.status === status).length
     return `${count} ${status === "upcoming" ? "upcoming" : status} campaign${count === 1 ? "" : "s"}`
@@ -153,7 +162,7 @@ function buildDirectory(campaigns) {
   }).filter(Boolean)
 
   return [
-    '<div class="campaign-directory">',
+    `<div class="campaign-directory" data-site-publication="${escapeHtml(sitePublication)}">`,
     `<p class="campaign-directory__intro">${counts.join(", ")}, preserved below.</p>`,
     ...sections,
     '<p><a href="./Archive">Browse the completed campaign chronicles →</a></p>',
@@ -161,41 +170,64 @@ function buildDirectory(campaigns) {
   ].join("\n")
 }
 
-function buildArchive(campaigns) {
+function buildArchive(campaigns, sitePublication) {
   const archived = campaigns.filter((campaign) => campaign.metadata.status === "archived")
+  const archiveContent =
+    archived.length > 0
+      ? archived.map((campaign) => card(campaign, { archived: true, titleLevel: 2 })).join("\n")
+      : '<p class="campaign-directory__empty">No archived campaigns yet.</p>'
+
   return [
-    '<div class="campaign-directory">',
+    `<div class="campaign-directory" data-site-publication="${escapeHtml(sitePublication)}">`,
     '<div class="campaign-directory__grid campaign-directory__grid--archived">',
-    archived.map((campaign) => card(campaign, { archived: true, titleLevel: 2 })).join("\n"),
+    archiveContent,
     "</div>",
     "</div>",
   ].join("\n")
 }
 
 async function main() {
-  const campaigns = await loadCampaigns()
-  for (const { filePath, startMarker, endMarker, generated } of [
+  const [directorySource, archiveSource] = await Promise.all([
+    fs.readFile(directoryFile, "utf8"),
+    fs.readFile(archiveFile, "utf8"),
+  ])
+  const directoryPublication = normalizeSitePublication(
+    parseFrontmatter(directorySource).site_publication,
+  )
+  const archivePublication = normalizeSitePublication(parseFrontmatter(archiveSource).site_publication)
+
+  if (directoryPublication !== archivePublication) {
+    throw new Error(
+      `${directoryFile} and ${archiveFile} must use the same site_publication (found ${directoryPublication} and ${archivePublication})`,
+    )
+  }
+
+  const campaigns = await loadCampaigns(directoryPublication)
+  for (const { filePath, source, startMarker, endMarker, generated } of [
     {
       filePath: directoryFile,
+      source: directorySource,
       startMarker: DIRECTORY_START,
       endMarker: DIRECTORY_END,
-      generated: buildDirectory(campaigns),
+      generated: buildDirectory(campaigns, directoryPublication),
     },
     {
       filePath: archiveFile,
+      source: archiveSource,
       startMarker: ARCHIVE_START,
       endMarker: ARCHIVE_END,
-      generated: buildArchive(campaigns),
+      generated: buildArchive(campaigns, directoryPublication),
     },
   ]) {
-    const source = await fs.readFile(filePath, "utf8")
     const newline = source.includes("\r\n") ? "\r\n" : "\n"
     const updated = replaceGeneratedBlock(source, startMarker, endMarker, generated, filePath, newline)
     await fs.writeFile(filePath, updated, "utf8")
   }
 
   const archivedCount = campaigns.filter((campaign) => campaign.metadata.status === "archived").length
-  console.log(`Generated campaign directory and archive from ${campaigns.length} campaign roots (${archivedCount} archived)`)
+  console.log(
+    `Generated ${directoryPublication} campaign directory and archive from ${campaigns.length} campaign roots (${archivedCount} archived)`,
+  )
 }
 
 main().catch((error) => {
