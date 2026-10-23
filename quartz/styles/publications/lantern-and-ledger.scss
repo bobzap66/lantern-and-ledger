@@ -1,0 +1,19 @@
+/*
+ * Lantern & Ledger publication layer.
+ *
+ * The established gazetteer theme remains the site's baseline in custom.scss.
+ * Keep publication-specific hooks here so future visual changes do not need to
+ * share selectors with Beacon & Bulletin.
+ */
+
+#quartz-body.site-publication--lantern-and-ledger,
+.site-publication-header--lantern-and-ledger {
+  --publication-accent: var(--isr-gold);
+  --publication-secondary: var(--isr-navy);
+  --publication-rule: var(--isr-rule);
+  --publication-surface: var(--light);
+}
+
+#quartz-body.site-publication--lantern-and-ledger .page-title::after {
+  color: var(--isr-gold);
+}
