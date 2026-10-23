@@ -24,7 +24,7 @@ const SITE_PUBLICATIONS: Record<string, SitePublication> = {
     title: "Beacon & Bulletin",
     homeSlug: "Beacon and Bulletin",
     archiveLabel: "BEACON & BULLETIN · ARCHIVES",
-    wordmarkSubtitle: "STARFINDER CAMPAIGN ARCHIVE",
+    wordmarkSubtitle: "Current Signals. Lasting Record.",
   },
 }
 
