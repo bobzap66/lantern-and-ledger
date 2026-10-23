@@ -1,6 +1,6 @@
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 import { CampaignSpoilerGate } from "./CampaignSpoilerGate"
-import { getSitePublication } from "../util/sitePublication"
+import { getSitePublication, getSitePublicationBoundaries } from "../util/sitePublication"
 
 function campaignKeyFromSlug(slug: string | undefined) {
   if (!slug) return null
@@ -212,11 +212,12 @@ function hasReadingProgress(
 }
 
 const Body: QuartzComponent = (props: QuartzComponentProps) => {
-  const { children, fileData } = props
+  const { children, fileData, allFiles } = props
   const lockedByDefault = isCampaignPage(fileData.slug)
   const campaignClass = campaignClassFromSlug(fileData.slug)
   const frontmatter = fileData.frontmatter as Record<string, unknown> | undefined
   const sitePublication = getSitePublication(frontmatter)
+  const publicationBoundaries = JSON.stringify(getSitePublicationBoundaries(allFiles))
   const formalPublication = isFormalPublication(frontmatter, fileData.slug)
   const readingProgress = hasReadingProgress(frontmatter, formalPublication)
   const kicker = articleKicker(frontmatter, fileData.slug)
@@ -247,6 +248,11 @@ const Body: QuartzComponent = (props: QuartzComponentProps) => {
       data-editorial-format={editorialFormat || undefined}
       data-editorial-series={editorialSeries || undefined}
     >
+      <span
+        id="site-publication-explorer-context"
+        hidden
+        data-publication-boundaries={publicationBoundaries}
+      />
       {kicker && (
         <style>{`
           #quartz-body.has-article-kicker .article-title::before {
