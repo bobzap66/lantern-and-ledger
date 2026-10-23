@@ -1,4 +1,3 @@
-import * as ExternalPlugin from "./.quartz/plugins"
 import { loadQuartzConfig, loadQuartzLayout } from "./quartz/plugins/loader/config-loader"
 import { CampaignDossiers } from "./quartz/plugins/transformers/campaignDossiers"
 import { CharacterCards } from "./quartz/plugins/transformers/characterCards"
@@ -30,7 +29,7 @@ import PublicationStyles from "./quartz/components/PublicationStyles"
 import { componentRegistry } from "./quartz/components/registry"
 import { sitePublicationExplorerFilter } from "./quartz/util/sitePublication"
 
-ExternalPlugin.Explorer({
+componentRegistry.setOptionOverrides("@quartz-community/explorer", {
   filterFn: sitePublicationExplorerFilter,
 })
 
