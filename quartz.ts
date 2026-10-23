@@ -12,6 +12,7 @@ import { VignetteIndexes } from "./quartz/plugins/transformers/vignetteIndexes"
 import { ImageAltText } from "./quartz/plugins/transformers/imageAltText"
 import { EditorialSemantics } from "./quartz/plugins/transformers/editorialSemantics"
 import { PublishPlaguestoneArchive } from "./quartz/plugins/transformers/publishPlaguestoneArchive"
+import { PageTypeDispatcher } from "./quartz/plugins/pageTypes"
 import CharacterVignettes from "./quartz/components/CharacterVignettes"
 import ChapterLanding from "./quartz/components/ChapterLanding"
 import HomepageEditorialCards from "./quartz/components/HomepageEditorialCards"
@@ -26,6 +27,8 @@ import VignetteNavigation from "./quartz/components/VignetteNavigation"
 import FacetedSearch from "./quartz/components/FacetedSearch"
 import ExplorerCurator from "./quartz/components/ExplorerCurator"
 import PublicationStyles from "./quartz/components/PublicationStyles"
+import PublicationHead from "./quartz/components/PublicationHead"
+import PublicationBrandingRuntime from "./quartz/components/PublicationBrandingRuntime"
 import { componentRegistry } from "./quartz/components/registry"
 import { sitePublicationExplorerFilter } from "./quartz/util/sitePublication"
 
@@ -47,9 +50,12 @@ const vignetteNavigation = VignetteNavigation()
 const facetedSearch = FacetedSearch()
 const explorerCurator = ExplorerCurator()
 const publicationStyles = PublicationStyles()
+const publicationHead = PublicationHead()
+const publicationBrandingRuntime = PublicationBrandingRuntime()
 const localLayout = {
   beforeBody: [
     publicationStyles,
+    publicationBrandingRuntime,
     explorerCurator,
     facetedSearch,
     responsiveCompatibility,
@@ -64,6 +70,7 @@ const localLayout = {
 }
 
 componentRegistry.register("publication-styles", publicationStyles, "local")
+componentRegistry.register("publication-branding-runtime", publicationBrandingRuntime, "local")
 componentRegistry.register("explorer-curator", explorerCurator, "local")
 componentRegistry.register("responsive-compatibility", responsiveCompatibility, "local")
 componentRegistry.register("legacy-series-nav-cleanup", legacySeriesNavCleanup, "local")
@@ -103,7 +110,15 @@ config.plugins.transformers.push(SeriesContributorStrips())
 config.plugins.transformers.push(VignetteIndexes())
 config.plugins.transformers.push(CampaignDossiers())
 
-const layout = await loadQuartzLayout(undefined, localLayout)
+const layout = await loadQuartzLayout({ defaults: { head: publicationHead } }, localLayout)
+const dispatcherIndex = config.plugins.emitters.findIndex((emitter) => emitter.name === "PageTypeDispatcher")
+if (dispatcherIndex >= 0) config.plugins.emitters.splice(dispatcherIndex, 1)
+config.plugins.emitters.push(
+  PageTypeDispatcher({
+    defaults: layout.defaults,
+    byPageType: layout.byPageType,
+  }),
+)
 
 export default config
 export { layout }
