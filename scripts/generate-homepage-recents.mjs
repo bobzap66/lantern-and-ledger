@@ -6,13 +6,13 @@ import { execFileSync } from "node:child_process"
 import { isVisibleInRecents } from "./recents-visibility.mjs"
 
 const CONTENT_ROOT = path.resolve(process.argv[2] ?? "content")
-const INDEX_FILE = path.join(CONTENT_ROOT, "index.md")
 const HOME_COUNT = 4
 const CAMPAIGN_COUNT = 3
 const DEFAULT_SITE_PUBLICATION = "Lantern & Ledger"
 
 const HOME_START = "<!-- HOMEPAGE_RECENTS_START -->"
 const HOME_END = "<!-- HOMEPAGE_RECENTS_END -->"
+const HOME_MARKER = "<!-- HOMEPAGE_RECENTS -->"
 const CAMPAIGN_START = "<!-- CAMPAIGN_RECENTS_START -->"
 const CAMPAIGN_END = "<!-- CAMPAIGN_RECENTS_END -->"
 
@@ -417,10 +417,9 @@ async function injectBlock(file, start, end, block, preferredMarker = null) {
   await fs.writeFile(file, text, "utf8")
 }
 
-const indexText = await fs.readFile(INDEX_FILE, "utf8")
-const homeSitePublication = normalizeSitePublication(parseFrontmatter(indexText).site_publication)
 const notes = []
 const campaigns = []
+const publicationHomes = []
 
 for (const file of await walk(CONTENT_ROOT)) {
   const rel = path.relative(CONTENT_ROOT, file).replace(/\\/g, "/")
@@ -434,6 +433,16 @@ for (const file of await walk(CONTENT_ROOT)) {
     .trim()
     .toLowerCase()
 
+  if (text.includes(HOME_MARKER)) {
+    publicationHomes.push({
+      file,
+      rel,
+      dir: path.posix.dirname(rel) === "." ? "." : path.posix.dirname(rel),
+      title: String(fm.title || path.basename(rel, path.extname(rel))),
+      sitePublication,
+    })
+  }
+
   if (noteType === "campaign") {
     const match = /^Campaigns\/([^/]+)\/[^/]+\.md$/i.exec(rel)
     if (match)
@@ -446,7 +455,6 @@ for (const file of await walk(CONTENT_ROOT)) {
       })
   }
 
-  if (rel.toLowerCase() === "index.md") continue
   // `unlisted` pages are intentionally reachable only by direct link (for
   // example, the Lantern King easter egg). Never surface them through an
   // automatically generated discovery list.
@@ -476,30 +484,32 @@ for (const file of await walk(CONTENT_ROOT)) {
   })
 }
 
-const homeRecents = chooseRecents(
-  notes.filter(
-    (note) => note.sitePublication === homeSitePublication && isHomepageEditorial(note),
-  ),
-  new Set(),
-  HOME_COUNT,
-)
-await injectBlock(
-  INDEX_FILE,
-  HOME_START,
-  HOME_END,
-  renderBlock(HOME_START, HOME_END, homeRecents, "."),
-  "<!-- HOMEPAGE_RECENTS -->",
-)
+for (const home of publicationHomes) {
+  const homeRecents = chooseRecents(
+    notes.filter(
+      (note) => note.sitePublication === home.sitePublication && isHomepageEditorial(note),
+    ),
+    new Set(),
+    HOME_COUNT,
+  )
+  await injectBlock(
+    home.file,
+    HOME_START,
+    HOME_END,
+    renderBlock(HOME_START, HOME_END, homeRecents, home.dir),
+    HOME_MARKER,
+  )
 
-console.log(`${homeSitePublication} homepage recents generated`)
-console.log(
-  "Brand New:",
-  homeRecents.brandNew.map((note) => `${note.campaign}: ${note.title}`).join(", "),
-)
-console.log(
-  "Recently Updated:",
-  homeRecents.recentlyUpdated.map((note) => `${note.campaign}: ${note.title}`).join(", "),
-)
+  console.log(`${home.sitePublication} homepage recents generated for ${home.rel}`)
+  console.log(
+    "Brand New:",
+    homeRecents.brandNew.map((note) => `${note.campaign}: ${note.title}`).join(", "),
+  )
+  console.log(
+    "Recently Updated:",
+    homeRecents.recentlyUpdated.map((note) => `${note.campaign}: ${note.title}`).join(", "),
+  )
+}
 
 for (const campaign of campaigns) {
   const prefix = `${campaign.dir}/`
