@@ -22,6 +22,7 @@ const Header: QuartzComponent = (props: QuartzComponentProps) => {
   const brandingRoot = `${siteRoot}/assets/images/lantern-and-ledger-branding`
   const mastheadPath = `${brandingRoot}/wide_vintage_newspaper_masthead_style_illustration.webp`
   const compactPath = `${brandingRoot}/lantern-and-ledger-compact.webp`
+  const faviconPath = isLanternLedger ? `${brandingRoot}/lantern-and-ledger-favicon.webp` : ""
 
   return (
     <>
@@ -32,6 +33,8 @@ const Header: QuartzComponent = (props: QuartzComponentProps) => {
       <header
         class={`site-publication-header site-publication-header--${sitePublication.key}`}
         data-site-publication={sitePublication.key}
+        data-site-publication-title={sitePublication.title}
+        data-favicon-path={faviconPath || undefined}
       >
         <a class="site-publication-masthead" href={homePath} aria-label={`${sitePublication.title} home`}>
           {isLanternLedger ? (
@@ -108,12 +111,26 @@ Header.css = `${CampaignSpoilerGate.css ?? ""}
   --site-publication-glow: 0 12px 32px rgba(41, 68, 95, 0.12);
 }
 
+#quartz-body.site-publication--beacon-and-bulletin {
+  --secondary: #3f7fa3 !important;
+  --tertiary: #5b6fa8 !important;
+  --highlight: rgba(63, 127, 163, 0.14) !important;
+  --textHighlight: rgba(91, 111, 168, 0.2) !important;
+}
+
 [saved-theme="dark"] #quartz-body.site-publication--beacon-and-bulletin,
 [saved-theme="dark"] .site-publication-header--beacon-and-bulletin {
   --site-publication-accent: #79b7d7;
   --site-publication-secondary: #a9c7da;
   --site-publication-rule: rgba(121, 183, 215, 0.28);
   --site-publication-glow: 0 12px 32px rgba(0, 0, 0, 0.28);
+}
+
+[saved-theme="dark"] #quartz-body.site-publication--beacon-and-bulletin {
+  --secondary: #79b7d7 !important;
+  --tertiary: #a8a9db !important;
+  --highlight: rgba(121, 183, 215, 0.15) !important;
+  --textHighlight: rgba(168, 169, 219, 0.22) !important;
 }
 
 /* The old shared cover is superseded by the publication masthead. */
@@ -287,9 +304,12 @@ Header.css = `${CampaignSpoilerGate.css ?? ""}
 Header.afterDOMLoaded = `
 const syncSitePublicationChrome = () => {
   const body = document.querySelector("#quartz-body[data-site-publication]")
+  const header = document.querySelector(".site-publication-header[data-site-publication]")
   const publicationKey = body?.getAttribute("data-site-publication") || "lantern-and-ledger"
   const publicationTitle =
-    body?.getAttribute("data-site-publication-title") || "The Lantern and Ledger"
+    body?.getAttribute("data-site-publication-title") ||
+    header?.getAttribute("data-site-publication-title") ||
+    "The Lantern and Ledger"
   const pageTitle = document.querySelector(".page-title a, a.page-title")
 
   if (pageTitle) {
@@ -308,12 +328,9 @@ const syncSitePublicationChrome = () => {
     icon.setAttribute("data-site-publication-original-href", icon.getAttribute("href") || "")
   }
 
-  if (publicationKey === "lantern-and-ledger") {
-    const base = (document.body?.dataset?.basepath || "").replace(/\/$/, "")
-    icon.setAttribute(
-      "href",
-      base + "/assets/images/lantern-and-ledger-branding/lantern-and-ledger-favicon.webp",
-    )
+  const faviconPath = header?.getAttribute("data-favicon-path") || ""
+  if (publicationKey === "lantern-and-ledger" && faviconPath) {
+    icon.setAttribute("href", faviconPath)
   } else {
     const originalHref = icon.getAttribute("data-site-publication-original-href")
     if (originalHref) icon.setAttribute("href", originalHref)
