@@ -100,7 +100,8 @@ export function getSitePublicationBoundaries(
 }
 
 // This function is serialized by the Explorer plugin and reconstructed in the browser.
-// Keep all runtime logic self-contained: it must not close over imports or module constants.
+// Keep all runtime logic self-contained and avoid nested/local functions: bundlers may
+// rewrite those with helpers that are unavailable inside Explorer's reconstructed callback.
 export function sitePublicationExplorerFilter(node: SitePublicationExplorerNode) {
   if (String(node.slugSegment ?? "").toLowerCase() === "tags") return false
 
@@ -117,49 +118,47 @@ export function sitePublicationExplorerFilter(node: SitePublicationExplorerNode)
     const parsed = JSON.parse(rawBoundaries)
     if (!Array.isArray(parsed) || parsed.length === 0) return true
 
-    const boundaries = parsed
-      .map((boundary) => ({
-        path: String(boundary?.path ?? "")
-          .replace(/^\/+|\/+$/g, "")
-          .toLowerCase(),
-        publication: String(boundary?.publication ?? "").toLowerCase(),
-      }))
-      .filter((boundary) => boundary.publication.length > 0)
-      .sort((a, b) => b.path.length - a.path.length)
-
-    if (boundaries.length === 0) return true
-
-    const path = (Array.isArray(node.slugSegments)
-      ? node.slugSegments.filter(Boolean).join("/")
-      : String(node.slugSegment ?? "")
-    )
-      .replace(/^\/+|\/+$/g, "")
-      .toLowerCase()
-
-    const publicationForPath = (value: string) => {
-      const boundary = boundaries.find(
-        (candidate) =>
-          candidate.path === "" ||
-          value === candidate.path ||
-          value.startsWith(`${candidate.path}/`),
-      )
-      return boundary?.publication ?? "lantern-and-ledger"
-    }
-
+    const sourceParts = Array.isArray(node.slugSegments) ? node.slugSegments : []
+    const sourcePath =
+      sourceParts.length > 0
+        ? sourceParts.filter(Boolean).join("/")
+        : String(node.slugSegment ?? "")
+    const path = sourcePath.replace(/^\/+|\/+$/g, "").toLowerCase()
     const normalizedPublication = currentPublication.toLowerCase()
 
-    if (!node.isFolder) {
-      return publicationForPath(path) === normalizedPublication
+    let ownPublication = "lantern-and-ledger"
+    let bestBoundaryLength = -1
+    let hasCurrentPublicationDescendant = false
+
+    for (const rawBoundary of parsed) {
+      const boundaryPath = String(rawBoundary?.path ?? "")
+        .replace(/^\/+|\/+$/g, "")
+        .toLowerCase()
+      const publication = String(rawBoundary?.publication ?? "").toLowerCase()
+      if (!publication) continue
+
+      const matchesPath =
+        boundaryPath === "" ||
+        path === boundaryPath ||
+        path.startsWith(`${boundaryPath}/`)
+
+      if (matchesPath && boundaryPath.length > bestBoundaryLength) {
+        ownPublication = publication
+        bestBoundaryLength = boundaryPath.length
+      }
+
+      if (
+        node.isFolder &&
+        publication === normalizedPublication &&
+        (boundaryPath === path ||
+          (path ? boundaryPath.startsWith(`${path}/`) : boundaryPath.length > 0))
+      ) {
+        hasCurrentPublicationDescendant = true
+      }
     }
 
-    if (publicationForPath(path) === normalizedPublication) return true
-
-    const prefix = path ? `${path}/` : ""
-    return boundaries.some(
-      (boundary) =>
-        boundary.publication === normalizedPublication &&
-        (boundary.path === path || boundary.path.startsWith(prefix)),
-    )
+    if (!node.isFolder) return ownPublication === normalizedPublication
+    return ownPublication === normalizedPublication || hasCurrentPublicationDescendant
   } catch {
     return true
   }
