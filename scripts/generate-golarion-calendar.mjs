@@ -7,18 +7,12 @@ const CONTENT_ROOT = path.resolve(process.argv[2] ?? "content")
 const STATIC_OUTPUT = path.resolve("quartz/static/golarion-events.json")
 const PUBLIC_OUTPUT = path.resolve("public/static/golarion-events.json")
 const CALENDARIUM_DATA = path.join(CONTENT_ROOT, ".obsidian/plugins/calendarium/data.json")
+const TIMELINE_SOURCES_ROOT = path.join(CONTENT_ROOT, "Meta/Timeline Sources/Lantern and Ledger")
 const HISTORICAL_DATA = path.join(
-  CONTENT_ROOT,
-  "Meta/Chronicler Voices/golarion-timegraphics-history-reshaped.json",
+  TIMELINE_SOURCES_ROOT,
+  "golarion-timegraphics-history-reshaped.json",
 )
-const VERIFIED_ANNIVERSARIES = path.join(
-  CONTENT_ROOT,
-  "Meta/Chronicler Voices/golarion-verified-anniversaries.json",
-)
-const VERIFIED_YEAR_HISTORY = path.join(
-  CONTENT_ROOT,
-  "Meta/Chronicler Voices/golarion-verified-year-history.json",
-)
+const VERIFIED_HISTORY_DATA = path.join(TIMELINE_SOURCES_ROOT, "golarion-verified-history.json")
 const CALENDAR_NAME = "Calendar of Golarion"
 const MONTHS = [
   "Abadius",
@@ -254,15 +248,21 @@ async function readHolidays() {
   }
 }
 
-function normalizeHistoricalEvent(event) {
-  if (!Number.isInteger(event.year)) return null
+function normalizeHistoricalEvent(event, sourceDescription, eventIndex) {
+  const eventLabel = `${sourceDescription}, event ${eventIndex + 1}`
+  if (!event || typeof event !== "object" || Array.isArray(event))
+    throw new Error(`${eventLabel}: expected an event object`)
+  if (!Number.isInteger(event.year))
+    throw new Error(`${eventLabel}: missing or invalid integer year`)
   const precision = event.datePrecision || "day"
-  if (!new Set(["year", "month", "day"]).has(precision)) return null
+  if (!new Set(["year", "month", "day"]).has(precision))
+    throw new Error(`${eventLabel}: unsupported datePrecision ${JSON.stringify(precision)}`)
   if (precision !== "year") {
     if (!Number.isInteger(event.month) || event.month < 0 || event.month >= MONTHS.length)
-      return null
+      throw new Error(`${eventLabel}: missing or invalid month for ${precision}-precision event`)
   }
-  if (precision === "day" && !Number.isInteger(event.day)) return null
+  if (precision === "day" && !Number.isInteger(event.day))
+    throw new Error(`${eventLabel}: missing or invalid day for day-precision event`)
 
   const campaign = typeof event.campaign === "string" ? event.campaign.trim() : ""
   const visibility = event.visibility === "campaign-only" && campaign ? "campaign-only" : null
@@ -293,47 +293,62 @@ function normalizeHistoricalEvent(event) {
   return historicalEvent
 }
 
+async function readJson(file, description) {
+  let text
+  try {
+    text = await fs.readFile(file, "utf8")
+  } catch (error) {
+    throw new Error(`${description}: could not read ${file}: ${error.message}`)
+  }
+
+  try {
+    return JSON.parse(text)
+  } catch (error) {
+    throw new Error(`${description}: invalid JSON in ${file}: ${error.message}`)
+  }
+}
+
+async function readManifestEvents(manifestPath, description) {
+  const manifest = await readJson(manifestPath, `${description} manifest`)
+  if (!manifest || typeof manifest !== "object" || Array.isArray(manifest))
+    throw new Error(`${description} manifest: expected an object in ${manifestPath}`)
+  if (!Array.isArray(manifest.parts) || manifest.parts.length === 0)
+    throw new Error(`${description} manifest: expected a non-empty parts array in ${manifestPath}`)
+
+  const manifestDirectory = path.dirname(manifestPath)
+  const sourceEvents = []
+  for (const [partIndex, partName] of manifest.parts.entries()) {
+    if (typeof partName !== "string" || !partName.trim())
+      throw new Error(
+        `${description} manifest: part ${partIndex + 1} must be a non-empty path string`,
+      )
+
+    const partPath = path.resolve(manifestDirectory, partName)
+    if (path.relative(manifestDirectory, partPath).startsWith(".."))
+      throw new Error(`${description} manifest: part ${partIndex + 1} escapes its source directory`)
+
+    const part = await readJson(partPath, `${description} part ${partIndex + 1}`)
+    if (!part || typeof part !== "object" || Array.isArray(part) || !Array.isArray(part.events))
+      throw new Error(
+        `${description} part ${partIndex + 1}: expected an object with an events array`,
+      )
+    sourceEvents.push(...part.events)
+  }
+
+  if (Number.isInteger(manifest.eventCount) && manifest.eventCount !== sourceEvents.length)
+    throw new Error(
+      `${description} manifest: eventCount is ${manifest.eventCount}, but its parts contain ${sourceEvents.length} events`,
+    )
+
+  return sourceEvents.map((event, index) => normalizeHistoricalEvent(event, description, index))
+}
+
 async function readHistoricalEvents() {
-  try {
-    const manifest = JSON.parse(await fs.readFile(HISTORICAL_DATA, "utf8"))
-    let sourceEvents = manifest.events ?? []
-
-    if (!sourceEvents.length && Array.isArray(manifest.parts)) {
-      sourceEvents = []
-      for (const partName of manifest.parts) {
-        const partPath = path.resolve(path.dirname(HISTORICAL_DATA), partName)
-        const part = JSON.parse(await fs.readFile(partPath, "utf8"))
-        sourceEvents.push(...(part.events ?? []))
-      }
-    }
-
-    return sourceEvents.map(normalizeHistoricalEvent).filter(Boolean)
-  } catch (error) {
-    console.warn(`Could not load historical events: ${error.message}`)
-    return []
-  }
+  return readManifestEvents(HISTORICAL_DATA, "Time.Graphics Golarion history")
 }
 
-async function readVerifiedAnniversaries() {
-  try {
-    const raw = JSON.parse(await fs.readFile(VERIFIED_ANNIVERSARIES, "utf8"))
-    return (raw.events ?? []).map(normalizeHistoricalEvent).filter(Boolean)
-  } catch (error) {
-    console.warn(`Could not load verified anniversaries: ${error.message}`)
-    return []
-  }
-}
-
-async function readVerifiedYearHistory() {
-  try {
-    const raw = JSON.parse(await fs.readFile(VERIFIED_YEAR_HISTORY, "utf8"))
-    return (raw.events ?? [])
-      .map(normalizeHistoricalEvent)
-      .filter((event) => event && event.datePrecision === "year")
-  } catch (error) {
-    console.warn(`Could not load verified year-only history: ${error.message}`)
-    return []
-  }
+async function readVerifiedHistory() {
+  return readManifestEvents(VERIFIED_HISTORY_DATA, "Verified Golarion history")
 }
 
 const files = await walk(CONTENT_ROOT)
@@ -417,9 +432,8 @@ for (const candidate of pendingFrontmatterEvents) {
 }
 
 const historicalEvents = await readHistoricalEvents()
-const verifiedAnniversaries = await readVerifiedAnniversaries()
-const verifiedYearHistory = await readVerifiedYearHistory()
-events.push(...historicalEvents, ...verifiedAnniversaries, ...verifiedYearHistory)
+const verifiedHistory = await readVerifiedHistory()
+events.push(...historicalEvents, ...verifiedHistory)
 
 events.sort(
   (a, b) =>
@@ -446,5 +460,5 @@ for (const target of [STATIC_OUTPUT, PUBLIC_OUTPUT]) {
   await fs.writeFile(target, output, "utf8")
 }
 console.log(
-  `Generated ${events.length - historicalEvents.length - verifiedAnniversaries.length - verifiedYearHistory.length} campaign event dates, ${historicalEvents.length} timeline events, ${verifiedAnniversaries.length} verified anniversaries, ${verifiedYearHistory.length} verified year-only events, ${payload.holidays.length} holidays, and ${payload.campaigns.length} campaigns`,
+  `Generated ${events.length - historicalEvents.length - verifiedHistory.length} campaign event dates, ${historicalEvents.length} Time.Graphics timeline events, ${verifiedHistory.length} verified history events, ${payload.holidays.length} holidays, and ${payload.campaigns.length} campaigns`,
 )
