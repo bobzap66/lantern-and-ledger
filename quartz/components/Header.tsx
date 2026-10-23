@@ -17,6 +17,8 @@ const Header: QuartzComponent = (props: QuartzComponentProps) => {
     .map(encodeURIComponent)
     .join("/")
   const homePath = encodedHomeSlug ? `${siteRoot}/${encodedHomeSlug}` : `${siteRoot}/`
+  const lanternHomePath = `${siteRoot}/`
+  const beaconHomePath = `${siteRoot}/beacon-and-bulletin/`
   const spoilerControllerPath = `${siteRoot}/static/campaign-spoilers.js`
   const preferencesControllerPath = `${siteRoot}/static/preferences.js`
   const preferencesStylesPath = `${siteRoot}/static/preferences.css`
@@ -41,6 +43,7 @@ const Header: QuartzComponent = (props: QuartzComponentProps) => {
         data-site-publication={sitePublication.key}
         data-site-publication-title={sitePublication.title}
         data-site-publication-home={homePath}
+        data-site-root={siteRoot}
         data-favicon-path={faviconPath || undefined}
       >
         <a class="site-publication-masthead" href={homePath} aria-label={`${sitePublication.title} home`}>
@@ -69,6 +72,23 @@ const Header: QuartzComponent = (props: QuartzComponentProps) => {
         <div class="site-publication-archive-rule" aria-hidden="true">
           <span>{sitePublication.archiveLabel}</span>
         </div>
+        <nav class="site-publication-switcher" aria-label="Publications">
+          <a
+            class={`site-publication-switcher__link${isLanternLedger ? " is-current" : ""}`}
+            href={lanternHomePath}
+            aria-current={isLanternLedger ? "page" : undefined}
+          >
+            Lantern & Ledger
+          </a>
+          <span class="site-publication-switcher__divider" aria-hidden="true">/</span>
+          <a
+            class={`site-publication-switcher__link${!isLanternLedger ? " is-current" : ""}`}
+            href={beaconHomePath}
+            aria-current={!isLanternLedger ? "page" : undefined}
+          >
+            Beacon & Bulletin
+          </a>
+        </nav>
         {children.length > 0 && <div class="site-publication-header-children">{children}</div>}
       </header>
     </>
@@ -237,6 +257,40 @@ Header.css = `${CampaignSpoilerGate.css ?? ""}
   background: var(--site-publication-rule);
 }
 
+.site-publication-switcher {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.48rem;
+  margin-top: 0.55rem;
+  font-family: var(--codeFont, var(--bodyFont));
+  font-size: 0.66rem;
+  font-weight: 650;
+  letter-spacing: 0.055em;
+}
+
+.site-publication-switcher__link {
+  color: var(--darkgray);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.site-publication-switcher__link:hover,
+.site-publication-switcher__link:focus-visible,
+.site-publication-switcher__link.is-current {
+  color: var(--site-publication-accent);
+}
+
+.site-publication-switcher__link.is-current {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+}
+
+.site-publication-switcher__divider {
+  color: var(--site-publication-rule);
+}
+
 .site-publication-header-children {
   margin-top: 1rem;
 }
@@ -299,6 +353,12 @@ Header.css = `${CampaignSpoilerGate.css ?? ""}
     font-size: 0.6rem;
     letter-spacing: 0.12em;
   }
+
+  .site-publication-switcher {
+    gap: 0.42rem;
+    font-size: 0.61rem;
+    letter-spacing: 0.035em;
+  }
 }
 
 @media (max-width: 430px) {
@@ -306,6 +366,10 @@ Header.css = `${CampaignSpoilerGate.css ?? ""}
     gap: 0.45rem;
     font-size: 0.55rem;
     letter-spacing: 0.08em;
+  }
+
+  .site-publication-switcher {
+    flex-wrap: wrap;
   }
 }
 `
