@@ -184,6 +184,28 @@ const curateExplorerList = (list) => {
   if (sentinel && sentinel !== list.lastElementChild) list.appendChild(sentinel)
 }
 
+const routePublicationCampaigns = () => {
+  const body = document.querySelector("#quartz-body[data-site-publication]")
+  const header = document.querySelector(".site-publication-header[data-site-root]")
+  const publication = body?.getAttribute("data-site-publication")
+  if (!publication) return
+
+  const siteRoot = header?.getAttribute("data-site-root") || ""
+  const target =
+    publication === "beacon-and-bulletin"
+      ? `${siteRoot}/beacon-and-bulletin/campaigns/`
+      : `${siteRoot}/campaigns/`
+  for (const list of document.querySelectorAll(".explorer ul.explorer-ul")) {
+    for (const item of list.children) {
+      if (item.tagName !== "LI") continue
+      const folder = item.querySelector(":scope > .folder-container")
+      if (normalizeExplorerPath(folder?.dataset.folderpath ?? "") !== "campaigns") continue
+      const link = item.querySelector(":scope > a")
+      if (link) link.setAttribute("href", target)
+    }
+  }
+}
+
 let explorerCuratorFrame = 0
 const curateAllExplorers = () => {
   cancelAnimationFrame(explorerCuratorFrame)
@@ -192,6 +214,7 @@ const curateAllExplorers = () => {
       for (const list of document.querySelectorAll(".explorer ul")) {
         curateExplorerList(list)
       }
+      routePublicationCampaigns()
     } catch (error) {
       console.warn("[Explorer curator] Leaving stock Explorer order in place", error)
     }
@@ -209,3 +232,4 @@ const attachExplorerCurator = () => {
 
 document.addEventListener("nav", attachExplorerCurator)
 document.addEventListener("render", attachExplorerCurator)
+document.addEventListener("nav", routePublicationCampaigns)

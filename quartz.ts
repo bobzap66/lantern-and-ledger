@@ -29,6 +29,7 @@ import ExplorerCurator from "./quartz/components/ExplorerCurator"
 import PublicationStyles from "./quartz/components/PublicationStyles"
 import PublicationHead from "./quartz/components/PublicationHead"
 import PublicationBrandingRuntime from "./quartz/components/PublicationBrandingRuntime"
+import PublicationPageTitle from "./quartz/components/PublicationPageTitle"
 import { componentRegistry } from "./quartz/components/registry"
 import { sitePublicationExplorerFilter } from "./quartz/util/sitePublication"
 
@@ -52,7 +53,9 @@ const explorerCurator = ExplorerCurator()
 const publicationStyles = PublicationStyles()
 const publicationHead = PublicationHead()
 const publicationBrandingRuntime = PublicationBrandingRuntime()
+const publicationPageTitle = PublicationPageTitle()
 const localLayout = {
+  left: [publicationPageTitle],
   beforeBody: [
     publicationStyles,
     publicationBrandingRuntime,
@@ -111,7 +114,16 @@ config.plugins.transformers.push(VignetteIndexes())
 config.plugins.transformers.push(CampaignDossiers())
 
 const layout = await loadQuartzLayout({ defaults: { head: publicationHead } }, localLayout)
-const dispatcherIndex = config.plugins.emitters.findIndex((emitter) => emitter.name === "PageTypeDispatcher")
+for (const pageLayout of [layout.defaults, ...Object.values(layout.byPageType)]) {
+  const left = pageLayout.left ?? []
+  pageLayout.left = [
+    publicationPageTitle,
+    ...left.filter((component) => component !== publicationPageTitle),
+  ]
+}
+const dispatcherIndex = config.plugins.emitters.findIndex(
+  (emitter) => emitter.name === "PageTypeDispatcher",
+)
 if (dispatcherIndex >= 0) config.plugins.emitters.splice(dispatcherIndex, 1)
 config.plugins.emitters.push(
   PageTypeDispatcher({

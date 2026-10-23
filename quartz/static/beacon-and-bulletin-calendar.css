@@ -19,6 +19,12 @@
   font-weight: 600;
 }
 
+.pact-calendar-filter-note {
+  max-width: 22rem;
+  color: var(--gray);
+  font-size: 0.82rem;
+}
+
 .pact-calendar-toolbar select,
 .pact-calendar-navigation button {
   min-height: 2.5rem;
@@ -37,10 +43,35 @@
 }
 
 .pact-calendar-navigation h2 {
+  display: flex;
   min-width: 12rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
   margin: 0;
   text-align: center;
   font-size: 1.25rem;
+}
+
+.pact-calendar-navigation [data-year-edit],
+.pact-calendar-navigation [data-focus] {
+  width: auto;
+  min-height: 2.5rem;
+  padding: 0.4rem 0.65rem;
+}
+
+.pact-calendar-navigation [data-focus] {
+  margin-left: 0.35rem;
+}
+
+.pact-calendar-navigation input {
+  width: 6.5rem;
+  min-height: 2.5rem;
+  border: 1px solid var(--lightgray);
+  border-radius: 0.45rem;
+  background: var(--light);
+  color: var(--dark);
+  font: inherit;
 }
 
 .pact-calendar-navigation button {
@@ -96,6 +127,15 @@ button.pact-calendar-day {
   font-weight: 800;
 }
 
+.pact-calendar-day.is-today .pact-calendar-day__number {
+  color: var(--tertiary);
+  font-weight: 800;
+}
+
+.pact-calendar-day.has-holiday {
+  border-color: var(--secondary);
+}
+
 .pact-calendar-day__number {
   font-weight: 700;
 }
@@ -105,6 +145,14 @@ button.pact-calendar-day {
   color: var(--gray);
   font-size: 0.68rem;
   line-height: 1.2;
+}
+
+.pact-calendar-day__events > span {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .pact-calendar-details {
@@ -119,6 +167,34 @@ button.pact-calendar-day {
   margin-top: 0;
 }
 
+.pact-calendar-campaigns,
+.pact-calendar-today {
+  margin-top: 1.25rem;
+  padding: 1rem 1.2rem;
+  border: 1px solid var(--lightgray);
+  border-radius: 0.6rem;
+  background: var(--light);
+}
+
+.pact-calendar-campaigns > h3,
+.pact-calendar-today > h3 {
+  margin-top: 0;
+}
+
+.pact-calendar-campaigns section + section {
+  margin-top: 0.65rem;
+}
+
+.pact-calendar-campaigns h4,
+.pact-calendar-details h4,
+.pact-calendar-today h4 {
+  margin: 0.7rem 0 0.35rem;
+}
+
+.pact-calendar-campaigns ul {
+  margin: 0;
+}
+
 .pact-calendar-events {
   margin: 0;
   padding-inline-start: 1.2rem;
@@ -126,6 +202,13 @@ button.pact-calendar-day {
 
 .pact-calendar-events li + li {
   margin-top: 0.8rem;
+}
+
+.pact-calendar-events li > span,
+.pact-calendar-events li > small {
+  display: block;
+  color: var(--gray);
+  font-size: 0.82rem;
 }
 
 .pact-calendar-events p {
@@ -159,5 +242,20 @@ button.pact-calendar-day {
 
   .pact-calendar-weekday {
     font-size: 0.68rem;
+  }
+
+  .pact-calendar-navigation {
+    width: 100%;
+    justify-content: center;
+    gap: 0.35rem;
+  }
+
+  .pact-calendar-navigation h2 {
+    min-width: 0;
+    font-size: 1rem;
+  }
+
+  .pact-calendar-navigation [data-focus] {
+    margin-left: 0;
   }
 }

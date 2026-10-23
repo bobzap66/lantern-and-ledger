@@ -1,0 +1,106 @@
+{
+  "title": "Pact Worlds Observances",
+  "citation": "Starfinder Player Core, “A Year on Absalom Station.”",
+  "events": [
+    {
+      "id": "abadius-31-days-of-deals",
+      "name": "31 Days of Deals",
+      "month": 0,
+      "datePrecision": "month",
+      "recurrence": "yearly",
+      "description": "AbadarCorp's month-long commercial campaign fills Abadius with deals."
+    },
+    {
+      "id": "abadius-freegames",
+      "name": "The Freegames",
+      "month": 0,
+      "datePrecision": "month",
+      "durationDays": 13,
+      "description": "A 13-day sports festival showcases competitions from across the Pact Worlds; the source does not specify its start date."
+    },
+    {
+      "id": "calistril-eternal-fondness",
+      "name": "Eternal Fondness",
+      "month": 1,
+      "datePrecision": "month",
+      "recurrence": "yearly",
+      "description": "Throughout Calistril, residents leave flowers for the beloved and blades or other sharp objects for the loathed."
+    },
+    {
+      "id": "gozran-flowering-moon",
+      "name": "Flowering Moon",
+      "month": 3,
+      "datePrecision": "month",
+      "description": "A festival honoring Iwalewa begins on Gozran's first new moon; its exact date varies and is not specified."
+    },
+    {
+      "id": "desnus-cosmic-birthday",
+      "name": "Cosmic Birthday",
+      "year": 324,
+      "month": 4,
+      "datePrecision": "month",
+      "description": "An early-Desnus observance remembering the Newborn's birth in 324 AG; no exact day is given."
+    },
+    {
+      "id": "sarenith-catharsis",
+      "name": "Catharsis",
+      "month": 5,
+      "datePrecision": "month",
+      "description": "A Sarenith celebration of Shelyn and Zon-Kuthon's reconciliation; the source does not specify the anniversary date."
+    },
+    {
+      "id": "erastus-remembrance-day",
+      "name": "Remembrance Day",
+      "month": 6,
+      "datePrecision": "weekday-rule",
+      "weekday": 6,
+      "occurrence": "last",
+      "recurrence": "yearly",
+      "description": "Held on the last Seventhday of Erastus, mourning Golarion and other losses of the Gap and later conflicts."
+    },
+    {
+      "id": "rova-defrag-day",
+      "name": "Defrag Day",
+      "month": 8,
+      "day": 26,
+      "datePrecision": "day",
+      "recurrence": "yearly",
+      "description": "On 26 Rova, Aballon's anacites go dormant for a day of rest; the Pact Worlds adopted it as a broader day off."
+    },
+    {
+      "id": "lamashan-picklefest",
+      "name": "Picklefest",
+      "month": 9,
+      "datePrecision": "month",
+      "description": "A grassroots goblin festival with extreme-flavor potlucks, junk races, and swap meets; no fixed date is specified."
+    },
+    {
+      "id": "lamashan-mother-may-i",
+      "name": "Mother May I?",
+      "month": 9,
+      "datePrecision": "month",
+      "description": "A late-Lamashan celebration honoring Lamashtu, with monster mazes, costumes, unusual food, and parties."
+    },
+    {
+      "id": "neth-reunion",
+      "name": "Reunion",
+      "month": 10,
+      "datePrecision": "month",
+      "description": "An Akitonian community holiday centered on pooled messages, gifts, and a shared meal; local dates vary."
+    },
+    {
+      "id": "kuthona-first-choices",
+      "name": "First Choices",
+      "month": 11,
+      "datePrecision": "month",
+      "description": "A shirren-innovated holiday featuring the exchange and show-and-tell of personally meaningful creations; no fixed date is specified."
+    },
+    {
+      "id": "kuthona-newspark",
+      "name": "Newspark",
+      "month": 11,
+      "datePrecision": "month",
+      "description": "An android abolitionist tradition of parades, music, and gifts. The famed Absalom Station parade begins at Kuthona's end and continues into Abadius, but Newspark has no fixed date."
+    }
+  ]
+}

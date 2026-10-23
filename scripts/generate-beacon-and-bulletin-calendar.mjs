@@ -1,9 +1,11 @@
 import { promises as fs } from "node:fs"
 import path from "node:path"
 import YAML from "yaml"
+import prettier from "prettier"
 import { simplifySlug, slugifyFilePath } from "@quartz-community/utils"
 
 const CONTENT_ROOT = path.resolve(process.argv[2] ?? "content")
+const OUTPUT_ROOT = path.resolve(process.argv[3] ?? "public")
 const CAMPAIGNS_ROOT = path.join(CONTENT_ROOT, "Campaigns")
 const CALENDAR_NAME = "Calendar of Pact Worlds"
 const MONTHS = [
@@ -31,7 +33,15 @@ const WEEKDAYS = [
   "Seventhday",
 ]
 const STATIC_OUTPUT = path.resolve("quartz/static/beacon-and-bulletin-calendar.json")
-const PUBLIC_OUTPUT = path.resolve("public/static/beacon-and-bulletin-calendar.json")
+const PUBLIC_OUTPUT = path.join(OUTPUT_ROOT, "static", "beacon-and-bulletin-calendar.json")
+const HISTORY_SOURCE = path.resolve("quartz/static/beacon-and-bulletin-events.json")
+const HOLIDAY_SOURCE = path.join(
+  CONTENT_ROOT,
+  "Meta",
+  "Timeline Sources",
+  "Beacon and Bulletin",
+  "beacon-and-bulletin-holidays.json",
+)
 
 async function walk(dir) {
   const out = []
@@ -203,6 +213,84 @@ async function loadCampaignsAndEvents() {
 }
 
 const { campaigns, events } = await loadCampaignsAndEvents()
+const history = JSON.parse(await fs.readFile(HISTORY_SOURCE, "utf8"))
+if (!Array.isArray(history.events))
+  throw new Error(`Timeline history source has no events array: ${HISTORY_SOURCE}`)
+const historicalEvents = history.events.map((event, index) => {
+  if (!event.id || !Number.isInteger(event.sortOrder) || !event.title)
+    throw new Error(`Invalid Pact history event at ${HISTORY_SOURCE} events[${index}]`)
+  return {
+    id: event.id,
+    year: event.sortOrder,
+    datePrecision: "year",
+    dateLabel: event.dateLabel,
+    name: event.title,
+    description: event.description ?? "",
+    kind: "historical",
+    visibility: "public",
+    verification: event.verification,
+    citation: event.citation,
+    source: "beacon-and-bulletin/timeline",
+  }
+})
+const holidayData = JSON.parse(await fs.readFile(HOLIDAY_SOURCE, "utf8"))
+if (!Array.isArray(holidayData.events))
+  throw new Error(`Pact observance source has no events array: ${HOLIDAY_SOURCE}`)
+const mod = (value, divisor) => ((value % divisor) + divisor) % divisor
+const weekdayAt = (year, month, day) => {
+  const anchor = { year: 325, weekday: 2 }
+  const leapDays = Math.floor((year - 1) / 4) - Math.floor((anchor.year - 1) / 4)
+  let days = (year - anchor.year) * 365 + leapDays + day - 1
+  for (let index = 0; index < month; index += 1)
+    days += MONTH_LENGTHS[index] + (index === 1 && year % 4 === 0 ? 1 : 0)
+  return mod(anchor.weekday + days, WEEKDAYS.length)
+}
+const holidayEvents = holidayData.events.map((holiday, index) => {
+  if (
+    !holiday.id ||
+    !holiday.name ||
+    !Number.isInteger(holiday.month) ||
+    holiday.month < 0 ||
+    holiday.month >= 12
+  )
+    throw new Error(`Invalid Pact observance at ${HOLIDAY_SOURCE} events[${index}]`)
+  let day = holiday.day
+  if (holiday.datePrecision === "weekday-rule") {
+    if (!Number.isInteger(holiday.weekday) || !["last"].includes(holiday.occurrence))
+      throw new Error(`Unsupported weekday rule for ${holiday.name} in ${HOLIDAY_SOURCE}`)
+    const year = 325
+    day = MONTH_LENGTHS[holiday.month] + (holiday.month === 1 && year % 4 === 0 ? 1 : 0)
+    while (weekdayAt(year, holiday.month, day) !== holiday.weekday) day -= 1
+  }
+  if (
+    holiday.datePrecision === "day" &&
+    (!Number.isInteger(day) || day < 1 || day > MONTH_LENGTHS[holiday.month])
+  )
+    throw new Error(`Invalid fixed date for ${holiday.name} in ${HOLIDAY_SOURCE}`)
+  return {
+    id: holiday.id,
+    ...(Number.isInteger(holiday.year) ? { year: holiday.year } : {}),
+    month: holiday.month,
+    monthName: MONTHS[holiday.month],
+    ...(Number.isInteger(day) ? { day } : {}),
+    datePrecision: holiday.datePrecision,
+    ...(holiday.durationDays ? { durationDays: holiday.durationDays } : {}),
+    name: holiday.name,
+    description: holiday.description ?? "",
+    kind: "holiday",
+    visibility: "public",
+    recurrence: holiday.recurrence ?? (Number.isInteger(holiday.year) ? undefined : "yearly"),
+    citation: holidayData.citation,
+    source: "beacon-and-bulletin/calendar",
+  }
+})
+const formatJson = (value) =>
+  prettier.format(`${JSON.stringify(value, null, 2)}\n`, { parser: "json" })
+await fs.writeFile(
+  path.resolve("quartz/static/beacon-and-bulletin-holidays.json"),
+  await formatJson(holidayData),
+  "utf8",
+)
 const payload = {
   calendar: CALENDAR_NAME,
   months: MONTHS,
@@ -211,9 +299,15 @@ const payload = {
   leapRule: { interval: 4, month: 1 },
   weekdayAnchor: { year: 325, month: 0, day: 1, weekday: 2 },
   campaigns,
-  events,
+  events: [...historicalEvents, ...holidayEvents, ...events].sort(
+    (a, b) =>
+      a.year - b.year ||
+      (a.month ?? -1) - (b.month ?? -1) ||
+      (a.day ?? -1) - (b.day ?? -1) ||
+      a.name.localeCompare(b.name),
+  ),
 }
-const output = `${JSON.stringify(payload, null, 2)}\n`
+const output = await formatJson(payload)
 for (const target of [STATIC_OUTPUT, PUBLIC_OUTPUT]) {
   await fs.mkdir(path.dirname(target), { recursive: true })
   await fs.writeFile(target, output, "utf8")
