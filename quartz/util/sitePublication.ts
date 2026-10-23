@@ -22,7 +22,7 @@ const SITE_PUBLICATIONS: Record<string, SitePublication> = {
     frontmatterValue: "Beacon & Bulletin",
     key: "beacon-and-bulletin",
     title: "Beacon & Bulletin",
-    homeSlug: "Beacon and Bulletin",
+    homeSlug: "beacon-and-bulletin",
     archiveLabel: "BEACON & BULLETIN · ARCHIVES",
     wordmarkSubtitle: "Current Signals. Lasting Record.",
   },

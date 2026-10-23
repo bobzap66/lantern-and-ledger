@@ -18,6 +18,7 @@ test("resolves Beacon & Bulletin case-insensitively", () => {
   const publication = getSitePublication({ site_publication: " beacon & bulletin " })
   assert.equal(publication.key, "beacon-and-bulletin")
   assert.equal(publication.title, "Beacon & Bulletin")
+  assert.equal(publication.homeSlug, "beacon-and-bulletin")
   assert.equal(publication.archiveLabel, "BEACON & BULLETIN · ARCHIVES")
 })
 
