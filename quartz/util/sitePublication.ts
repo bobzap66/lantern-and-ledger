@@ -4,6 +4,7 @@ export type SitePublication = {
   frontmatterValue: string
   key: string
   title: string
+  homeSlug: string
   archiveLabel: string
   wordmarkSubtitle: string
 }
@@ -13,6 +14,7 @@ const SITE_PUBLICATIONS: Record<string, SitePublication> = {
     frontmatterValue: "Lantern & Ledger",
     key: "lantern-and-ledger",
     title: "The Lantern and Ledger",
+    homeSlug: "",
     archiveLabel: "THE LANTERN AND LEDGER · ARCHIVES",
     wordmarkSubtitle: "Light for the Present. Record for the Future.",
   },
@@ -20,6 +22,7 @@ const SITE_PUBLICATIONS: Record<string, SitePublication> = {
     frontmatterValue: "Beacon & Bulletin",
     key: "beacon-and-bulletin",
     title: "Beacon & Bulletin",
+    homeSlug: "Beacon and Bulletin",
     archiveLabel: "BEACON & BULLETIN · ARCHIVES",
     wordmarkSubtitle: "STARFINDER CAMPAIGN ARCHIVE",
   },
