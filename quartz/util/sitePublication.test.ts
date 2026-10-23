@@ -65,7 +65,8 @@ test("builds minimal publication boundaries for nested publications", () => {
 })
 
 test("Explorer filter keeps shared folders but scopes publication branches", () => {
-  const originalDocument = globalThis.document
+  const runtime = globalThis as unknown as { document?: unknown }
+  const originalDocument = runtime.document
   let currentPublication = "beacon-and-bulletin"
   const boundaries = JSON.stringify([
     { path: "", publication: "lantern-and-ledger" },
@@ -73,7 +74,7 @@ test("Explorer filter keeps shared folders but scopes publication branches", () 
     { path: "campaigns/murder-in-metal-city", publication: "beacon-and-bulletin" },
   ])
 
-  ;(globalThis as typeof globalThis & { document: unknown }).document = {
+  runtime.document = {
     querySelector(selector: string) {
       if (selector === "#quartz-body") {
         return {
@@ -122,13 +123,14 @@ test("Explorer filter keeps shared folders but scopes publication branches", () 
     )
     assert.equal(sitePublicationExplorerFilter(node("beacon-and-bulletin", true)), false)
   } finally {
-    ;(globalThis as typeof globalThis & { document: unknown }).document = originalDocument
+    runtime.document = originalDocument
   }
 })
 
 test("Explorer filter fails open when publication context is unavailable", () => {
-  const originalDocument = globalThis.document
-  ;(globalThis as typeof globalThis & { document: unknown }).document = {
+  const runtime = globalThis as unknown as { document?: unknown }
+  const originalDocument = runtime.document
+  runtime.document = {
     querySelector() {
       return null
     },
@@ -144,6 +146,6 @@ test("Explorer filter fails open when publication context is unavailable", () =>
       true,
     )
   } finally {
-    ;(globalThis as typeof globalThis & { document: unknown }).document = originalDocument
+    runtime.document = originalDocument
   }
 })
