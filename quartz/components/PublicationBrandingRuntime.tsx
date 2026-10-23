@@ -23,42 +23,21 @@ const syncPublicationBrandingAssets = () => {
   const body = document.querySelector("#quartz-body[data-site-publication]")
   const header = document.querySelector(".site-publication-header[data-site-publication]")
   if (!body || !header) return
+  if (body.getAttribute("data-site-publication") !== "beacon-and-bulletin") return
 
-  const publicationKey = body.getAttribute("data-site-publication") || "lantern-and-ledger"
+  const beaconImage = header.querySelector(".site-publication-masthead__beacon")
+  if (!beaconImage) return
+
   const siteRoot = header.getAttribute("data-site-root") || ""
-  const isBeacon = publicationKey === "beacon-and-bulletin"
-
-  if (isBeacon) {
-    const beaconImage = header.querySelector(".site-publication-masthead__beacon")
-    if (beaconImage) {
-      const compact = window.matchMedia("(max-width: 800px)").matches
-      beaconImage.setAttribute(
-        "src",
-        compact
-          ? siteRoot + "/static/branding/beacon-and-bulletin-compact.webp"
-          : siteRoot + "/static/branding/beacon-and-bulletin-masthead.webp",
-      )
-      beaconImage.setAttribute("width", compact ? "1254" : "2048")
-      beaconImage.setAttribute("height", compact ? "1254" : "768")
-    }
-  }
-
-  let icon = document.querySelector('link[rel~="icon"]')
-  if (!icon) {
-    icon = document.createElement("link")
-    icon.setAttribute("rel", "icon")
-    icon.setAttribute("type", "image/webp")
-    document.head.appendChild(icon)
-  }
-
-  if (isBeacon) {
-    const beaconFavicon = siteRoot + "/static/branding/beacon-and-bulletin-favicon.webp"
-    header.setAttribute("data-favicon-path", beaconFavicon)
-    icon.setAttribute("href", beaconFavicon)
-  } else {
-    const lanternFavicon = header.getAttribute("data-favicon-path")
-    if (lanternFavicon) icon.setAttribute("href", lanternFavicon)
-  }
+  const compact = window.matchMedia("(max-width: 800px)").matches
+  beaconImage.setAttribute(
+    "src",
+    compact
+      ? siteRoot + "/static/branding/beacon-and-bulletin-compact.webp"
+      : siteRoot + "/static/branding/beacon-and-bulletin-masthead.webp",
+  )
+  beaconImage.setAttribute("width", compact ? "1254" : "2048")
+  beaconImage.setAttribute("height", compact ? "1254" : "768")
 }
 
 document.addEventListener("nav", syncPublicationBrandingAssets)
