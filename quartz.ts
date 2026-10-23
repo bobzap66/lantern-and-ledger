@@ -1,3 +1,4 @@
+import * as ExternalPlugin from "./.quartz/plugins"
 import { loadQuartzConfig, loadQuartzLayout } from "./quartz/plugins/loader/config-loader"
 import { CampaignDossiers } from "./quartz/plugins/transformers/campaignDossiers"
 import { CharacterCards } from "./quartz/plugins/transformers/characterCards"
@@ -27,6 +28,11 @@ import FacetedSearch from "./quartz/components/FacetedSearch"
 import ExplorerCurator from "./quartz/components/ExplorerCurator"
 import PublicationStyles from "./quartz/components/PublicationStyles"
 import { componentRegistry } from "./quartz/components/registry"
+import { sitePublicationExplorerFilter } from "./quartz/util/sitePublication"
+
+ExternalPlugin.Explorer({
+  filterFn: sitePublicationExplorerFilter,
+})
 
 const characterVignettes = CharacterVignettes()
 const chapterLanding = ChapterLanding()
