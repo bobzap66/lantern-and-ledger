@@ -105,85 +105,6 @@ const normalizeExplorerPath = (value) => {
   return parts.join("/")
 }
 
-const siteRootPath = () => {
-  const publicationHeader = document.querySelector(".site-publication-header[data-site-root]")
-  const configuredRoot = publicationHeader?.dataset.siteRoot
-  if (configuredRoot !== undefined) return normalizeExplorerPath(configuredRoot)
-
-  const masthead = document.querySelector(".site-publication-masthead[href]")
-  if (!masthead) return ""
-  try {
-    const path = normalizeExplorerPath(new URL(masthead.href, document.baseURI).pathname)
-    const publicationSlug = normalizeExplorerPath(
-      document.querySelector("#quartz-body")?.dataset.sitePublication || "",
-    )
-    return publicationSlug && path.endsWith(`/${publicationSlug}`)
-      ? path.slice(0, -(publicationSlug.length + 1))
-      : path
-  } catch {
-    return ""
-  }
-}
-
-const stripSiteRoot = (value) => {
-  const path = normalizeExplorerPath(value)
-  const root = siteRootPath()
-  if (!root) return path
-  if (path === root) return ""
-  return path.startsWith(`${root}/`) ? path.slice(root.length + 1) : path
-}
-
-const readPublicationContext = () => {
-  const context = document.querySelector("#site-publication-explorer-context")
-  const currentPublication =
-    context?.dataset.currentPublication ||
-    document.querySelector("#quartz-body")?.dataset.sitePublication ||
-    "lantern-and-ledger"
-
-  let boundaries = []
-  try {
-    boundaries = JSON.parse(context?.dataset.publicationBoundaries || "[]")
-  } catch {
-    boundaries = []
-  }
-
-  if (!Array.isArray(boundaries) || boundaries.length === 0) {
-    boundaries = [{ path: "", publication: "lantern-and-ledger" }]
-  }
-
-  return {
-    currentPublication,
-    boundaries: boundaries
-      .map((boundary) => ({
-        path: normalizeExplorerPath(boundary?.path),
-        publication: String(boundary?.publication || "lantern-and-ledger"),
-      }))
-      .sort((a, b) => b.path.length - a.path.length),
-  }
-}
-
-const publicationForPath = (path, context) => {
-  const normalized = normalizeExplorerPath(path)
-  const boundary = context.boundaries.find(
-    (candidate) =>
-      candidate.path === "" ||
-      normalized === candidate.path ||
-      normalized.startsWith(`${candidate.path}/`),
-  )
-  return boundary?.publication || "lantern-and-ledger"
-}
-
-const folderHasCurrentPublication = (path, context) => {
-  const normalized = normalizeExplorerPath(path)
-  if (publicationForPath(normalized, context) === context.currentPublication) return true
-
-  return context.boundaries.some(
-    (boundary) =>
-      boundary.publication === context.currentPublication &&
-      (boundary.path === normalized || boundary.path.startsWith(`${normalized}/`)),
-  )
-}
-
 const parentPathForList = (list) => {
   if (list.classList.contains("explorer-ul")) return ""
   const folderItem = list.closest("li")
@@ -191,27 +112,25 @@ const parentPathForList = (list) => {
   return normalizeExplorerPath(folderContainer?.dataset.folderpath ?? "")
 }
 
-const explorerItemPath = (item) => {
+const explorerItemKey = (item) => {
   const folderContainer = item.querySelector(":scope > .folder-container")
   if (folderContainer) {
-    return normalizeExplorerPath(folderContainer.dataset.folderpath ?? "")
+    const path = normalizeExplorerPath(folderContainer.dataset.folderpath ?? "")
+    return path.split("/").filter(Boolean).at(-1) ?? ""
   }
 
   const link = item.querySelector(":scope > a")
   if (link) {
     try {
-      return stripSiteRoot(new URL(link.href, document.baseURI).pathname)
+      const url = new URL(link.href, document.baseURI)
+      const parts = url.pathname.split("/").filter(Boolean)
+      return normalizeExplorerSegment(parts.at(-1) ?? "")
     } catch {
-      return normalizeExplorerPath(link.textContent)
+      return normalizeExplorerSegment(link.textContent)
     }
   }
 
   return ""
-}
-
-const explorerItemKey = (item) => {
-  const path = explorerItemPath(item)
-  return path.split("/").filter(Boolean).at(-1) ?? ""
 }
 
 const explorerItemLabel = (item) => {
@@ -222,14 +141,7 @@ const explorerItemLabel = (item) => {
 
 const explorerItemIsFolder = (item) => Boolean(item.querySelector(":scope > .folder-container"))
 
-const explorerItemMatchesPublication = (item, context) => {
-  const path = explorerItemPath(item)
-  return explorerItemIsFolder(item)
-    ? folderHasCurrentPublication(path, context)
-    : publicationForPath(path, context) === context.currentPublication
-}
-
-const curateExplorerList = (list, context) => {
+const curateExplorerList = (list) => {
   const parentPath = parentPathForList(list)
   const rankedKeys = explorerOrder[parentPath] ?? []
   const rank = new Map(rankedKeys.map((key, index) => [key, index]))
@@ -242,14 +154,10 @@ const curateExplorerList = (list, context) => {
   )
 
   for (const item of items) {
-    if (hiddenExplorerItems.has(explorerItemKey(item))) {
-      item.remove()
-      continue
-    }
-    item.hidden = !explorerItemMatchesPublication(item, context)
+    if (hiddenExplorerItems.has(explorerItemKey(item))) item.remove()
   }
 
-  const visibleItems = items.filter((item) => item.isConnected && !item.hidden)
+  const visibleItems = items.filter((item) => item.isConnected)
   const sorted = [...visibleItems].sort((a, b) => {
     const aKey = explorerItemKey(a)
     const bKey = explorerItemKey(b)
@@ -281,9 +189,8 @@ const curateAllExplorers = () => {
   cancelAnimationFrame(explorerCuratorFrame)
   explorerCuratorFrame = requestAnimationFrame(() => {
     try {
-      const context = readPublicationContext()
       for (const list of document.querySelectorAll(".explorer ul")) {
-        curateExplorerList(list, context)
+        curateExplorerList(list)
       }
     } catch (error) {
       console.warn("[Explorer curator] Leaving stock Explorer order in place", error)
@@ -294,67 +201,11 @@ const curateAllExplorers = () => {
 const explorerCuratorObserver = new MutationObserver(curateAllExplorers)
 
 const attachExplorerCurator = () => {
-  explorerCuratorObserver.disconnect()
   for (const explorer of document.querySelectorAll(".explorer")) {
     explorerCuratorObserver.observe(explorer, { childList: true, subtree: true })
   }
   curateAllExplorers()
 }
 
-const mobileExplorerFallbacks = new WeakMap()
-
-const primeMobileExplorer = () => {
-  for (const button of document.querySelectorAll(".explorer .mobile-explorer.hide-until-loaded")) {
-    if (mobileExplorerFallbacks.has(button)) continue
-
-    const explorer = button.closest(".explorer")
-    const list = explorer?.querySelector(".explorer-ul")
-    if (!explorer || !list) continue
-
-    explorer.classList.add("collapsed")
-    explorer.setAttribute("aria-expanded", "false")
-    button.setAttribute("aria-expanded", "false")
-    button.classList.remove("hide-until-loaded")
-
-    const fallbackClick = () => {
-      if (list.children.length > 1) return
-      const collapsed = explorer.classList.toggle("collapsed")
-      explorer.setAttribute("aria-expanded", collapsed ? "false" : "true")
-      button.setAttribute("aria-expanded", collapsed ? "false" : "true")
-      explorer.dataset.fallbackWantedOpen = collapsed ? "false" : "true"
-      document.documentElement.classList.toggle("mobile-no-scroll", !collapsed)
-    }
-
-    button.addEventListener("click", fallbackClick)
-
-    const readyObserver = new MutationObserver(() => {
-      if (list.children.length <= 1) return
-
-      button.removeEventListener("click", fallbackClick)
-      readyObserver.disconnect()
-      mobileExplorerFallbacks.delete(button)
-
-      if (explorer.dataset.fallbackWantedOpen === "true") {
-        explorer.classList.remove("collapsed")
-        explorer.setAttribute("aria-expanded", "true")
-        button.setAttribute("aria-expanded", "true")
-        document.documentElement.classList.add("mobile-no-scroll")
-      }
-      delete explorer.dataset.fallbackWantedOpen
-    })
-
-    readyObserver.observe(list, { childList: true })
-    mobileExplorerFallbacks.set(button, { fallbackClick, readyObserver })
-  }
-}
-
-document.addEventListener("nav", () => {
-  primeMobileExplorer()
-  attachExplorerCurator()
-})
-document.addEventListener("render", () => {
-  primeMobileExplorer()
-  attachExplorerCurator()
-})
-primeMobileExplorer()
-attachExplorerCurator()
+document.addEventListener("nav", attachExplorerCurator)
+document.addEventListener("render", attachExplorerCurator)
