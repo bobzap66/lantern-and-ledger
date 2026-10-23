@@ -20,8 +20,8 @@ type SitePublicationFile = {
 }
 
 type SitePublicationExplorerNode = {
+  slug?: string
   slugSegment?: string
-  slugSegments?: string[]
   isFolder: boolean
 }
 
@@ -118,12 +118,10 @@ export function sitePublicationExplorerFilter(node: SitePublicationExplorerNode)
     const parsed = JSON.parse(rawBoundaries)
     if (!Array.isArray(parsed) || parsed.length === 0) return true
 
-    const sourceParts = Array.isArray(node.slugSegments) ? node.slugSegments : []
-    const sourcePath =
-      sourceParts.length > 0
-        ? sourceParts.filter(Boolean).join("/")
-        : String(node.slugSegment ?? "")
-    const path = sourcePath.replace(/^\/+|\/+$/g, "").toLowerCase()
+    let sourcePath = String(node.slug ?? node.slugSegment ?? "").replace(/^\/+|\/+$/g, "")
+    if (sourcePath === "index") sourcePath = ""
+    if (sourcePath.endsWith("/index")) sourcePath = sourcePath.slice(0, -"/index".length)
+    const path = sourcePath.toLowerCase()
     const normalizedPublication = currentPublication.toLowerCase()
 
     let ownPublication = "lantern-and-ledger"
