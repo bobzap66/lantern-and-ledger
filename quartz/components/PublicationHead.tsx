@@ -1,6 +1,6 @@
 import { toChildArray } from "preact"
 import { i18n } from "../i18n"
-import { joinSegments, pathToRoot } from "../util/path"
+import { FullSlug, joinSegments, pathToRoot } from "../util/path"
 import { getSitePublication } from "../util/sitePublication"
 import DefaultHeadConstructor from "./Head"
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
@@ -31,7 +31,8 @@ export default (() => {
     if (!rendered || typeof rendered !== "object" || !("props" in rendered)) return rendered
 
     const slug = props.fileData.slug
-    const baseDir = slug === "404" ? "/" : pathToRoot(slug!)
+    const sitePath = new URL(`https://${props.cfg.baseUrl ?? "example.com"}`).pathname as FullSlug
+    const baseDir = slug === "404" ? sitePath : pathToRoot(slug!)
     const faviconPath = isBeacon
       ? joinSegments(baseDir, "static/branding/beacon-and-bulletin-favicon.webp")
       : joinSegments(
