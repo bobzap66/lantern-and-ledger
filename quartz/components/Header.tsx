@@ -1,8 +1,12 @@
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 import { CampaignSpoilerGate } from "./CampaignSpoilerGate"
+import { getSitePublication } from "../util/sitePublication"
 
 const Header: QuartzComponent = (props: QuartzComponentProps) => {
-  const { children, cfg, ctx } = props
+  const { children, cfg, ctx, fileData } = props
+  const frontmatter = fileData.frontmatter as Record<string, unknown> | undefined
+  const sitePublication = getSitePublication(frontmatter)
+  const isLanternLedger = sitePublication.key === "lantern-and-ledger"
   const siteRoot =
     ctx.argv.serve || !cfg.baseUrl
       ? ""
@@ -25,23 +29,35 @@ const Header: QuartzComponent = (props: QuartzComponentProps) => {
       <script src={spoilerControllerPath}></script>
       <script src={preferencesControllerPath}></script>
       <script src={golarionPageLoaderPath}></script>
-      <header class="lantern-ledger-site-header">
-        <a class="lantern-ledger-masthead" href={homePath} aria-label="Campaign site home">
-          <picture>
-            <source media="(max-width: 800px)" srcSet={compactPath} width={1254} height={1254} />
-            <img
-              src={mastheadPath}
-              alt="The Lantern and Ledger — Light for the Present. Record for the Future."
-              width={2048}
-              height={768}
-              decoding="async"
-            />
-          </picture>
+      <header
+        class={`site-publication-header site-publication-header--${sitePublication.key}`}
+        data-site-publication={sitePublication.key}
+      >
+        <a class="site-publication-masthead" href={homePath} aria-label={`${sitePublication.title} home`}>
+          {isLanternLedger ? (
+            <picture>
+              <source media="(max-width: 800px)" srcSet={compactPath} width={1254} height={1254} />
+              <img
+                src={mastheadPath}
+                alt="The Lantern and Ledger — Light for the Present. Record for the Future."
+                width={2048}
+                height={768}
+                decoding="async"
+              />
+            </picture>
+          ) : (
+            <span class="site-publication-wordmark">
+              <span class="site-publication-wordmark__title">{sitePublication.title}</span>
+              <span class="site-publication-wordmark__subtitle">
+                {sitePublication.wordmarkSubtitle}
+              </span>
+            </span>
+          )}
         </a>
-        <div class="lantern-ledger-archive-rule" aria-hidden="true">
-          <span>THE LANTERN AND LEDGER · ARCHIVES</span>
+        <div class="site-publication-archive-rule" aria-hidden="true">
+          <span>{sitePublication.archiveLabel}</span>
         </div>
-        {children.length > 0 && <div class="lantern-ledger-header-children">{children}</div>}
+        {children.length > 0 && <div class="site-publication-header-children">{children}</div>}
       </header>
     </>
   )
@@ -67,6 +83,10 @@ Header.css = `${CampaignSpoilerGate.css ?? ""}
   --isr-ink: #17140f !important;
   --isr-rule: rgba(104, 82, 56, 0.28) !important;
   --isr-shadow: 0 12px 32px rgba(72, 52, 28, 0.09) !important;
+  --site-publication-accent: var(--isr-gold);
+  --site-publication-secondary: var(--isr-navy);
+  --site-publication-rule: var(--isr-rule);
+  --site-publication-glow: var(--isr-shadow);
 }
 
 [saved-theme="dark"] {
@@ -80,44 +100,96 @@ Header.css = `${CampaignSpoilerGate.css ?? ""}
   --isr-shadow: 0 12px 32px rgba(0, 0, 0, 0.24) !important;
 }
 
-/* The old shared cover is superseded by the Lantern and Ledger masthead. */
+#quartz-body.site-publication--beacon-and-bulletin,
+.site-publication-header--beacon-and-bulletin {
+  --site-publication-accent: #3f7fa3;
+  --site-publication-secondary: #29445f;
+  --site-publication-rule: rgba(63, 127, 163, 0.3);
+  --site-publication-glow: 0 12px 32px rgba(41, 68, 95, 0.12);
+}
+
+[saved-theme="dark"] #quartz-body.site-publication--beacon-and-bulletin,
+[saved-theme="dark"] .site-publication-header--beacon-and-bulletin {
+  --site-publication-accent: #79b7d7;
+  --site-publication-secondary: #a9c7da;
+  --site-publication-rule: rgba(121, 183, 215, 0.28);
+  --site-publication-glow: 0 12px 32px rgba(0, 0, 0, 0.28);
+}
+
+/* The old shared cover is superseded by the publication masthead. */
 .global-page-cover {
   display: none !important;
 }
 
-.lantern-ledger-site-header {
+.site-publication-header {
   display: block;
   width: 100%;
   margin: 0 0 1.6rem;
 }
 
-.lantern-ledger-masthead {
+.site-publication-masthead {
   display: block;
   width: 100%;
   color: inherit;
   text-decoration: none;
 }
 
-.lantern-ledger-masthead picture,
-.lantern-ledger-masthead img {
+.site-publication-masthead picture,
+.site-publication-masthead img {
   display: block;
   width: 100%;
 }
 
-.lantern-ledger-masthead img {
+.site-publication-masthead img {
   width: min(100%, 24rem);
   height: auto;
   max-height: none;
   margin-inline: auto;
   object-fit: contain;
   aspect-ratio: 8 / 3;
-  border: 1px solid var(--isr-rule);
+  border: 1px solid var(--site-publication-rule);
   border-radius: 0.22rem;
   background: var(--light);
-  box-shadow: 0 8px 24px rgba(54, 40, 24, 0.1);
+  box-shadow: var(--site-publication-glow);
 }
 
-.lantern-ledger-archive-rule {
+.site-publication-wordmark {
+  display: grid;
+  place-items: center;
+  width: min(100%, 24rem);
+  min-height: 8rem;
+  margin-inline: auto;
+  padding: 1.25rem 1.5rem 1.1rem;
+  box-sizing: border-box;
+  border: 1px solid var(--site-publication-rule);
+  border-radius: 0.22rem;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--site-publication-secondary) 8%, transparent), transparent 52%),
+    var(--light);
+  box-shadow: var(--site-publication-glow);
+  text-align: center;
+}
+
+.site-publication-wordmark__title {
+  color: var(--dark);
+  font-family: var(--headerFont);
+  font-size: clamp(1.75rem, 5vw, 2.8rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: 0.015em;
+}
+
+.site-publication-wordmark__subtitle {
+  margin-top: 0.65rem;
+  color: var(--site-publication-accent);
+  font-family: var(--codeFont, var(--bodyFont));
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.site-publication-archive-rule {
   display: flex;
   align-items: center;
   gap: 0.8rem;
@@ -131,39 +203,46 @@ Header.css = `${CampaignSpoilerGate.css ?? ""}
   white-space: nowrap;
 }
 
-.lantern-ledger-archive-rule::before,
-.lantern-ledger-archive-rule::after {
+.site-publication-archive-rule::before,
+.site-publication-archive-rule::after {
   content: "";
   flex: 1;
   height: 1px;
-  background: var(--isr-rule);
+  background: var(--site-publication-rule);
 }
 
-.lantern-ledger-header-children {
+.site-publication-header-children {
   margin-top: 1rem;
 }
 
-/* Retire the old Gazetteer label wherever the page-title component appears. */
+/* Keep the sidebar's site identity synchronized with the page publication. */
 .page-title::after {
-  content: "THE LANTERN AND LEDGER · ARCHIVES" !important;
-  color: var(--tertiary) !important;
+  color: var(--site-publication-accent, var(--tertiary)) !important;
   font-family: var(--bodyFont) !important;
   font-size: 0.62rem !important;
   font-weight: 700 !important;
   letter-spacing: 0.18em !important;
 }
 
+#quartz-body.site-publication--lantern-and-ledger .page-title::after {
+  content: "THE LANTERN AND LEDGER · ARCHIVES" !important;
+}
+
+#quartz-body.site-publication--beacon-and-bulletin .page-title::after {
+  content: "BEACON & BULLETIN · ARCHIVES" !important;
+}
+
 @media (max-width: 800px) {
-  .lantern-ledger-site-header {
+  .site-publication-header {
     margin-bottom: 1.1rem;
   }
 
-  .lantern-ledger-masthead picture {
+  .site-publication-masthead picture {
     display: grid;
     place-items: center;
   }
 
-  .lantern-ledger-masthead img {
+  .site-publication-masthead img {
     width: clamp(6rem, 28vw, 7.5rem);
     max-height: none;
     margin-inline: auto;
@@ -174,7 +253,22 @@ Header.css = `${CampaignSpoilerGate.css ?? ""}
     aspect-ratio: 1;
   }
 
-  .lantern-ledger-archive-rule {
+  .site-publication-wordmark {
+    width: min(100%, 18rem);
+    min-height: 6.5rem;
+    padding: 1rem 1.1rem 0.9rem;
+  }
+
+  .site-publication-wordmark__title {
+    font-size: clamp(1.5rem, 8vw, 2.15rem);
+  }
+
+  .site-publication-wordmark__subtitle {
+    font-size: 0.58rem;
+    letter-spacing: 0.12em;
+  }
+
+  .site-publication-archive-rule {
     margin-top: 0.55rem;
     font-size: 0.6rem;
     letter-spacing: 0.12em;
@@ -182,7 +276,7 @@ Header.css = `${CampaignSpoilerGate.css ?? ""}
 }
 
 @media (max-width: 430px) {
-  .lantern-ledger-archive-rule {
+  .site-publication-archive-rule {
     gap: 0.45rem;
     font-size: 0.55rem;
     letter-spacing: 0.08em;
@@ -191,22 +285,43 @@ Header.css = `${CampaignSpoilerGate.css ?? ""}
 `
 
 Header.afterDOMLoaded = `
-const setLanternLedgerFavicon = () => {
-  const base = (document.body?.dataset?.basepath || "").replace(/\/$/, "")
-  const href = base + "/assets/images/lantern-and-ledger-branding/lantern-and-ledger-favicon.webp"
-  let icon = document.querySelector('link[rel~="icon"]')
+const syncSitePublicationChrome = () => {
+  const body = document.querySelector("#quartz-body[data-site-publication]")
+  const publicationKey = body?.getAttribute("data-site-publication") || "lantern-and-ledger"
+  const publicationTitle =
+    body?.getAttribute("data-site-publication-title") || "The Lantern and Ledger"
+  const pageTitle = document.querySelector(".page-title a, a.page-title")
 
+  if (pageTitle) {
+    pageTitle.textContent = publicationTitle
+    pageTitle.setAttribute("aria-label", publicationTitle + " home")
+  }
+
+  let icon = document.querySelector('link[rel~="icon"]')
   if (!icon) {
     icon = document.createElement("link")
     icon.setAttribute("rel", "icon")
     document.head.appendChild(icon)
   }
 
-  icon.setAttribute("href", href)
+  if (!icon.hasAttribute("data-site-publication-original-href")) {
+    icon.setAttribute("data-site-publication-original-href", icon.getAttribute("href") || "")
+  }
+
+  if (publicationKey === "lantern-and-ledger") {
+    const base = (document.body?.dataset?.basepath || "").replace(/\/$/, "")
+    icon.setAttribute(
+      "href",
+      base + "/assets/images/lantern-and-ledger-branding/lantern-and-ledger-favicon.webp",
+    )
+  } else {
+    const originalHref = icon.getAttribute("data-site-publication-original-href")
+    if (originalHref) icon.setAttribute("href", originalHref)
+  }
 }
 
-document.addEventListener("nav", setLanternLedgerFavicon)
-setLanternLedgerFavicon()
+document.addEventListener("nav", syncSitePublicationChrome)
+syncSitePublicationChrome()
 `
 
 export default (() => Header) satisfies QuartzComponentConstructor

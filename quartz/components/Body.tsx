@@ -1,5 +1,6 @@
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 import { CampaignSpoilerGate } from "./CampaignSpoilerGate"
+import { getSitePublication } from "../util/sitePublication"
 
 function campaignKeyFromSlug(slug: string | undefined) {
   if (!slug) return null
@@ -169,10 +170,7 @@ function isFormalPublication(
     return true
   }
 
-  if (
-    type === "report" &&
-    /^campaigns\/kingmaker\/session-notes\//.test(normalizedSlug)
-  ) {
+  if (type === "report" && /^campaigns\/kingmaker\/session-notes\//.test(normalizedSlug)) {
     return true
   }
 
@@ -218,6 +216,7 @@ const Body: QuartzComponent = (props: QuartzComponentProps) => {
   const lockedByDefault = isCampaignPage(fileData.slug)
   const campaignClass = campaignClassFromSlug(fileData.slug)
   const frontmatter = fileData.frontmatter as Record<string, unknown> | undefined
+  const sitePublication = getSitePublication(frontmatter)
   const formalPublication = isFormalPublication(frontmatter, fileData.slug)
   const readingProgress = hasReadingProgress(frontmatter, formalPublication)
   const kicker = articleKicker(frontmatter, fileData.slug)
@@ -226,6 +225,7 @@ const Body: QuartzComponent = (props: QuartzComponentProps) => {
   const editorialSeries = String(frontmatter?.series ?? "").trim()
   const bodyClasses = [
     campaignClass,
+    `site-publication--${sitePublication.key}`,
     lockedByDefault ? "campaign-spoiler-pending" : "",
     formalPublication ? "formal-publication" : "",
     readingProgress ? "has-reading-progress" : "",
@@ -240,6 +240,9 @@ const Body: QuartzComponent = (props: QuartzComponentProps) => {
       id="quartz-body"
       class={bodyClasses || undefined}
       style={bodyStyle}
+      data-site-publication={sitePublication.key}
+      data-site-publication-title={sitePublication.title}
+      data-site-publication-label={sitePublication.archiveLabel}
       data-article-title={kicker && articleTitle ? articleTitle : undefined}
       data-editorial-format={editorialFormat || undefined}
       data-editorial-series={editorialSeries || undefined}
@@ -256,7 +259,7 @@ const Body: QuartzComponent = (props: QuartzComponentProps) => {
             line-height: 1.3;
             letter-spacing: 0.12em;
             text-transform: uppercase;
-            color: var(--campaign-page-accent, var(--tertiary));
+            color: var(--campaign-page-accent, var(--site-publication-accent, var(--tertiary)));
           }
 
           @media (max-width: 600px) {
