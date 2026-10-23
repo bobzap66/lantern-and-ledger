@@ -232,15 +232,14 @@ const curateExplorerList = (list, context) => {
   )
 
   for (const item of items) {
-    if (
-      hiddenExplorerItems.has(explorerItemKey(item)) ||
-      !explorerItemMatchesPublication(item, context)
-    ) {
+    if (hiddenExplorerItems.has(explorerItemKey(item))) {
       item.remove()
+      continue
     }
+    item.hidden = !explorerItemMatchesPublication(item, context)
   }
 
-  const visibleItems = items.filter((item) => item.isConnected)
+  const visibleItems = items.filter((item) => item.isConnected && !item.hidden)
   const sorted = [...visibleItems].sort((a, b) => {
     const aKey = explorerItemKey(a)
     const bKey = explorerItemKey(b)
