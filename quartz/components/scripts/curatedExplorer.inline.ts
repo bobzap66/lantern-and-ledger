@@ -105,6 +105,75 @@ const normalizeExplorerPath = (value) => {
   return parts.join("/")
 }
 
+const siteRootPath = () => {
+  const masthead = document.querySelector(".site-publication-masthead[href]")
+  if (!masthead) return ""
+  try {
+    return normalizeExplorerPath(new URL(masthead.href, document.baseURI).pathname)
+  } catch {
+    return ""
+  }
+}
+
+const stripSiteRoot = (value) => {
+  const path = normalizeExplorerPath(value)
+  const root = siteRootPath()
+  if (!root) return path
+  if (path === root) return ""
+  return path.startsWith(`${root}/`) ? path.slice(root.length + 1) : path
+}
+
+const readPublicationContext = () => {
+  const context = document.querySelector("#site-publication-explorer-context")
+  const currentPublication =
+    context?.dataset.currentPublication ||
+    document.querySelector("#quartz-body")?.dataset.sitePublication ||
+    "lantern-and-ledger"
+
+  let boundaries = []
+  try {
+    boundaries = JSON.parse(context?.dataset.publicationBoundaries || "[]")
+  } catch {
+    boundaries = []
+  }
+
+  if (!Array.isArray(boundaries) || boundaries.length === 0) {
+    boundaries = [{ path: "", publication: "lantern-and-ledger" }]
+  }
+
+  return {
+    currentPublication,
+    boundaries: boundaries
+      .map((boundary) => ({
+        path: normalizeExplorerPath(boundary?.path),
+        publication: String(boundary?.publication || "lantern-and-ledger"),
+      }))
+      .sort((a, b) => b.path.length - a.path.length),
+  }
+}
+
+const publicationForPath = (path, context) => {
+  const normalized = normalizeExplorerPath(path)
+  const boundary = context.boundaries.find(
+    (candidate) =>
+      candidate.path === "" ||
+      normalized === candidate.path ||
+      normalized.startsWith(`${candidate.path}/`),
+  )
+  return boundary?.publication || "lantern-and-ledger"
+}
+
+const folderHasCurrentPublication = (path, context) => {
+  const normalized = normalizeExplorerPath(path)
+  if (publicationForPath(normalized, context) === context.currentPublication) return true
+
+  return context.boundaries.some(
+    (boundary) =>
+      boundary.publication === context.currentPublication &&
+      (boundary.path === normalized || boundary.path.startsWith(`${normalized}/`)),
+  )
+}
+
 const parentPathForList = (list) => {
   if (list.classList.contains("explorer-ul")) return ""
   const folderItem = list.closest("li")
@@ -112,25 +181,27 @@ const parentPathForList = (list) => {
   return normalizeExplorerPath(folderContainer?.dataset.folderpath ?? "")
 }
 
-const explorerItemKey = (item) => {
+const explorerItemPath = (item) => {
   const folderContainer = item.querySelector(":scope > .folder-container")
   if (folderContainer) {
-    const path = normalizeExplorerPath(folderContainer.dataset.folderpath ?? "")
-    return path.split("/").filter(Boolean).at(-1) ?? ""
+    return normalizeExplorerPath(folderContainer.dataset.folderpath ?? "")
   }
 
   const link = item.querySelector(":scope > a")
   if (link) {
     try {
-      const url = new URL(link.href, document.baseURI)
-      const parts = url.pathname.split("/").filter(Boolean)
-      return normalizeExplorerSegment(parts.at(-1) ?? "")
+      return stripSiteRoot(new URL(link.href, document.baseURI).pathname)
     } catch {
-      return normalizeExplorerSegment(link.textContent)
+      return normalizeExplorerPath(link.textContent)
     }
   }
 
   return ""
+}
+
+const explorerItemKey = (item) => {
+  const path = explorerItemPath(item)
+  return path.split("/").filter(Boolean).at(-1) ?? ""
 }
 
 const explorerItemLabel = (item) => {
@@ -141,7 +212,14 @@ const explorerItemLabel = (item) => {
 
 const explorerItemIsFolder = (item) => Boolean(item.querySelector(":scope > .folder-container"))
 
-const curateExplorerList = (list) => {
+const explorerItemMatchesPublication = (item, context) => {
+  const path = explorerItemPath(item)
+  return explorerItemIsFolder(item)
+    ? folderHasCurrentPublication(path, context)
+    : publicationForPath(path, context) === context.currentPublication
+}
+
+const curateExplorerList = (list, context) => {
   const parentPath = parentPathForList(list)
   const rankedKeys = explorerOrder[parentPath] ?? []
   const rank = new Map(rankedKeys.map((key, index) => [key, index]))
@@ -154,7 +232,12 @@ const curateExplorerList = (list) => {
   )
 
   for (const item of items) {
-    if (hiddenExplorerItems.has(explorerItemKey(item))) item.remove()
+    if (
+      hiddenExplorerItems.has(explorerItemKey(item)) ||
+      !explorerItemMatchesPublication(item, context)
+    ) {
+      item.remove()
+    }
   }
 
   const visibleItems = items.filter((item) => item.isConnected)
@@ -189,8 +272,9 @@ const curateAllExplorers = () => {
   cancelAnimationFrame(explorerCuratorFrame)
   explorerCuratorFrame = requestAnimationFrame(() => {
     try {
+      const context = readPublicationContext()
       for (const list of document.querySelectorAll(".explorer ul")) {
-        curateExplorerList(list)
+        curateExplorerList(list, context)
       }
     } catch (error) {
       console.warn("[Explorer curator] Leaving stock Explorer order in place", error)
@@ -201,6 +285,7 @@ const curateAllExplorers = () => {
 const explorerCuratorObserver = new MutationObserver(curateAllExplorers)
 
 const attachExplorerCurator = () => {
+  explorerCuratorObserver.disconnect()
   for (const explorer of document.querySelectorAll(".explorer")) {
     explorerCuratorObserver.observe(explorer, { childList: true, subtree: true })
   }
@@ -209,3 +294,4 @@ const attachExplorerCurator = () => {
 
 document.addEventListener("nav", attachExplorerCurator)
 document.addEventListener("render", attachExplorerCurator)
+attachExplorerCurator()
