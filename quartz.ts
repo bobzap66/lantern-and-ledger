@@ -25,6 +25,7 @@ import SessionNavigation from "./quartz/components/SessionNavigation"
 import VignetteNavigation from "./quartz/components/VignetteNavigation"
 import FacetedSearch from "./quartz/components/FacetedSearch"
 import ExplorerCurator from "./quartz/components/ExplorerCurator"
+import PublicationStyles from "./quartz/components/PublicationStyles"
 import { componentRegistry } from "./quartz/components/registry"
 
 const characterVignettes = CharacterVignettes()
@@ -40,8 +41,10 @@ const sessionNavigation = SessionNavigation()
 const vignetteNavigation = VignetteNavigation()
 const facetedSearch = FacetedSearch()
 const explorerCurator = ExplorerCurator()
+const publicationStyles = PublicationStyles()
 const localLayout = {
   beforeBody: [
+    publicationStyles,
     explorerCurator,
     facetedSearch,
     responsiveCompatibility,
@@ -55,6 +58,7 @@ const localLayout = {
   afterBody: [chapterLanding, relatedRecords, sessionNavigation, vignetteNavigation],
 }
 
+componentRegistry.register("publication-styles", publicationStyles, "local")
 componentRegistry.register("explorer-curator", explorerCurator, "local")
 componentRegistry.register("responsive-compatibility", responsiveCompatibility, "local")
 componentRegistry.register("legacy-series-nav-cleanup", legacySeriesNavCleanup, "local")
