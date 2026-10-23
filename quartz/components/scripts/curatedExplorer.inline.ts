@@ -106,10 +106,20 @@ const normalizeExplorerPath = (value) => {
 }
 
 const siteRootPath = () => {
+  const publicationHeader = document.querySelector(".site-publication-header[data-site-root]")
+  const configuredRoot = publicationHeader?.dataset.siteRoot
+  if (configuredRoot !== undefined) return normalizeExplorerPath(configuredRoot)
+
   const masthead = document.querySelector(".site-publication-masthead[href]")
   if (!masthead) return ""
   try {
-    return normalizeExplorerPath(new URL(masthead.href, document.baseURI).pathname)
+    const path = normalizeExplorerPath(new URL(masthead.href, document.baseURI).pathname)
+    const publicationSlug = normalizeExplorerPath(
+      document.querySelector("#quartz-body")?.dataset.sitePublication || "",
+    )
+    return publicationSlug && path.endsWith(`/${publicationSlug}`)
+      ? path.slice(0, -(publicationSlug.length + 1))
+      : path
   } catch {
     return ""
   }
@@ -291,6 +301,60 @@ const attachExplorerCurator = () => {
   curateAllExplorers()
 }
 
-document.addEventListener("nav", attachExplorerCurator)
-document.addEventListener("render", attachExplorerCurator)
+const mobileExplorerFallbacks = new WeakMap()
+
+const primeMobileExplorer = () => {
+  for (const button of document.querySelectorAll(".explorer .mobile-explorer.hide-until-loaded")) {
+    if (mobileExplorerFallbacks.has(button)) continue
+
+    const explorer = button.closest(".explorer")
+    const list = explorer?.querySelector(".explorer-ul")
+    if (!explorer || !list) continue
+
+    explorer.classList.add("collapsed")
+    explorer.setAttribute("aria-expanded", "false")
+    button.setAttribute("aria-expanded", "false")
+    button.classList.remove("hide-until-loaded")
+
+    const fallbackClick = () => {
+      if (list.children.length > 1) return
+      const collapsed = explorer.classList.toggle("collapsed")
+      explorer.setAttribute("aria-expanded", collapsed ? "false" : "true")
+      button.setAttribute("aria-expanded", collapsed ? "false" : "true")
+      explorer.dataset.fallbackWantedOpen = collapsed ? "false" : "true"
+      document.documentElement.classList.toggle("mobile-no-scroll", !collapsed)
+    }
+
+    button.addEventListener("click", fallbackClick)
+
+    const readyObserver = new MutationObserver(() => {
+      if (list.children.length <= 1) return
+
+      button.removeEventListener("click", fallbackClick)
+      readyObserver.disconnect()
+      mobileExplorerFallbacks.delete(button)
+
+      if (explorer.dataset.fallbackWantedOpen === "true") {
+        explorer.classList.remove("collapsed")
+        explorer.setAttribute("aria-expanded", "true")
+        button.setAttribute("aria-expanded", "true")
+        document.documentElement.classList.add("mobile-no-scroll")
+      }
+      delete explorer.dataset.fallbackWantedOpen
+    })
+
+    readyObserver.observe(list, { childList: true })
+    mobileExplorerFallbacks.set(button, { fallbackClick, readyObserver })
+  }
+}
+
+document.addEventListener("nav", () => {
+  primeMobileExplorer()
+  attachExplorerCurator()
+})
+document.addEventListener("render", () => {
+  primeMobileExplorer()
+  attachExplorerCurator()
+})
+primeMobileExplorer()
 attachExplorerCurator()
