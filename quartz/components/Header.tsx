@@ -287,8 +287,9 @@ Header.css = `${CampaignSpoilerGate.css ?? ""}
 Header.afterDOMLoaded = `
 const syncSitePublicationChrome = () => {
   const body = document.querySelector("#quartz-body[data-site-publication]")
-  const publicationKey = body?.dataset?.sitePublication || "lantern-and-ledger"
-  const publicationTitle = body?.dataset?.sitePublicationTitle || "The Lantern and Ledger"
+  const publicationKey = body?.getAttribute("data-site-publication") || "lantern-and-ledger"
+  const publicationTitle =
+    body?.getAttribute("data-site-publication-title") || "The Lantern and Ledger"
   const pageTitle = document.querySelector(".page-title a, a.page-title")
 
   if (pageTitle) {
@@ -303,8 +304,8 @@ const syncSitePublicationChrome = () => {
     document.head.appendChild(icon)
   }
 
-  if (!icon.dataset.sitePublicationOriginalHref) {
-    icon.dataset.sitePublicationOriginalHref = icon.getAttribute("href") || ""
+  if (!icon.hasAttribute("data-site-publication-original-href")) {
+    icon.setAttribute("data-site-publication-original-href", icon.getAttribute("href") || "")
   }
 
   if (publicationKey === "lantern-and-ledger") {
@@ -314,7 +315,7 @@ const syncSitePublicationChrome = () => {
       base + "/assets/images/lantern-and-ledger-branding/lantern-and-ledger-favicon.webp",
     )
   } else {
-    const originalHref = icon.dataset.sitePublicationOriginalHref
+    const originalHref = icon.getAttribute("data-site-publication-original-href")
     if (originalHref) icon.setAttribute("href", originalHref)
   }
 }
