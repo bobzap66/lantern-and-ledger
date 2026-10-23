@@ -268,7 +268,7 @@ Header.css = `${CampaignSpoilerGate.css ?? ""}
     place-items: center;
   }
 
-  .site-publication-masthead img {
+  .site-publication-header--lantern-and-ledger .site-publication-masthead img {
     width: clamp(6rem, 28vw, 7.5rem);
     max-height: none;
     margin-inline: auto;
