@@ -4,8 +4,6 @@ import YAML from "yaml"
 
 const contentRoot = path.resolve(process.argv[2] ?? "content")
 const campaignsRoot = path.join(contentRoot, "Campaigns")
-const directoryFile = path.join(campaignsRoot, "index.md")
-const archiveFile = path.join(campaignsRoot, "Archive.md")
 const DIRECTORY_START = "<!-- CAMPAIGN_DIRECTORY_GENERATED_START -->"
 const DIRECTORY_END = "<!-- CAMPAIGN_DIRECTORY_GENERATED_END -->"
 const ARCHIVE_START = "<!-- CAMPAIGN_ARCHIVE_GENERATED_START -->"
@@ -45,6 +43,12 @@ function encodedPath(value) {
   return value.split("/").map(encodeURIComponent).join("/")
 }
 
+function relativeUrl(fromDir, target) {
+  let relative = path.posix.relative(fromDir || ".", target)
+  if (!relative.startsWith(".")) relative = `./${relative}`
+  return encodedPath(relative)
+}
+
 function campaignSlug(value) {
   return value
     .normalize("NFKD")
@@ -61,7 +65,7 @@ function startYear(campaign) {
   return dateYear ? Number(dateYear) : 0
 }
 
-function card(campaign, { archived = false, titleLevel = 3 } = {}) {
+function card(campaign, sourceDir, { archived = false, titleLevel = 3 } = {}) {
   const { folder, metadata, name } = campaign
   const slug = campaignSlug(folder)
   const classes = ["campaign-directory__card", `campaign-directory__card--${slug}`]
@@ -70,10 +74,11 @@ function card(campaign, { archived = false, titleLevel = 3 } = {}) {
   const accent = /^#[\da-f]{6}$/i.test(String(metadata.directory_accent ?? ""))
     ? ` style="--campaign-directory-accent: ${metadata.directory_accent}"`
     : ""
-  const href = `./${encodedPath(folder)}`
+  const href = relativeUrl(sourceDir, path.posix.join("Campaigns", folder))
   const image = typeof metadata.directory_image === "string" ? metadata.directory_image : ""
-  const imageMarkup = image
-    ? `\n<img class="campaign-directory__image" src="../${escapeHtml(image)}" alt="">`
+  const imageTarget = image.replace(/^\/+/, "")
+  const imageMarkup = imageTarget
+    ? `\n<img class="campaign-directory__image" src="${escapeHtml(relativeUrl(sourceDir, imageTarget))}" alt="">`
     : ""
   const status = archived ? "Archived" : metadata.status === "upcoming" ? "Upcoming" : "Active"
   const statusMarkup = `\n<div class="campaign-directory__status">${status}</div>`
@@ -140,7 +145,7 @@ async function loadCampaigns(sitePublication) {
   return campaigns
 }
 
-function buildDirectory(campaigns, sitePublication) {
+function buildDirectory(campaigns, sitePublication, sourceDir) {
   const counts = STATUS_GROUPS.map(({ status }) => {
     const count = campaigns.filter((campaign) => campaign.metadata.status === status).length
     return `${count} ${status === "upcoming" ? "upcoming" : status} campaign${count === 1 ? "" : "s"}`
@@ -150,7 +155,9 @@ function buildDirectory(campaigns, sitePublication) {
     const members = campaigns.filter((campaign) => campaign.metadata.status === status)
     if (members.length === 0) return ""
     const archived = status === "archived"
-    const cards = members.map((campaign) => card(campaign, { archived, titleLevel: 3 })).join("\n")
+    const cards = members
+      .map((campaign) => card(campaign, sourceDir, { archived, titleLevel: 3 }))
+      .join("\n")
     return [
       '<section class="campaign-directory__section">',
       `<h2 class="campaign-directory__section-title">${title}</h2>`,
@@ -163,18 +170,22 @@ function buildDirectory(campaigns, sitePublication) {
 
   return [
     `<div class="campaign-directory" data-site-publication="${escapeHtml(sitePublication)}">`,
-    `<p class="campaign-directory__intro">${counts.join(", ")}, preserved below.</p>`,
+    campaigns.length > 0
+      ? `<p class="campaign-directory__intro">${counts.join(", ")}, preserved below.</p>`
+      : '<p class="campaign-directory__empty">No campaigns have been added yet.</p>',
     ...sections,
     '<p><a href="./Archive">Browse the completed campaign chronicles →</a></p>',
     "</div>",
   ].join("\n")
 }
 
-function buildArchive(campaigns, sitePublication) {
+function buildArchive(campaigns, sitePublication, sourceDir) {
   const archived = campaigns.filter((campaign) => campaign.metadata.status === "archived")
   const archiveContent =
     archived.length > 0
-      ? archived.map((campaign) => card(campaign, { archived: true, titleLevel: 2 })).join("\n")
+      ? archived
+          .map((campaign) => card(campaign, sourceDir, { archived: true, titleLevel: 2 }))
+          .join("\n")
       : '<p class="campaign-directory__empty">No archived campaigns yet.</p>'
 
   return [
@@ -186,48 +197,90 @@ function buildArchive(campaigns, sitePublication) {
   ].join("\n")
 }
 
-async function main() {
-  const [directorySource, archiveSource] = await Promise.all([
-    fs.readFile(directoryFile, "utf8"),
-    fs.readFile(archiveFile, "utf8"),
-  ])
-  const directoryPublication = normalizeSitePublication(
-    parseFrontmatter(directorySource).site_publication,
-  )
-  const archivePublication = normalizeSitePublication(parseFrontmatter(archiveSource).site_publication)
+async function findDirectoryTargets(dir = contentRoot) {
+  const entries = await fs.readdir(dir, { withFileTypes: true })
+  const targets = []
 
-  if (directoryPublication !== archivePublication) {
-    throw new Error(
-      `${directoryFile} and ${archiveFile} must use the same site_publication (found ${directoryPublication} and ${archivePublication})`,
+  for (const entry of entries) {
+    if (entry.name.startsWith(".")) continue
+    const full = path.join(dir, entry.name)
+    if (entry.isDirectory()) {
+      targets.push(...(await findDirectoryTargets(full)))
+      continue
+    }
+    if (!entry.isFile() || entry.name.toLowerCase() !== "index.md") continue
+
+    const source = await fs.readFile(full, "utf8")
+    if (!source.includes(DIRECTORY_START) || !source.includes(DIRECTORY_END)) continue
+
+    const archiveFile = path.join(path.dirname(full), "Archive.md")
+    const archiveSource = await fs.readFile(archiveFile, "utf8")
+    if (!archiveSource.includes(ARCHIVE_START) || !archiveSource.includes(ARCHIVE_END)) {
+      throw new Error(`${archiveFile} must contain campaign archive generation markers`)
+    }
+
+    targets.push({ directoryFile: full, directorySource: source, archiveFile, archiveSource })
+  }
+
+  return targets
+}
+
+async function main() {
+  const targets = await findDirectoryTargets()
+
+  for (const target of targets) {
+    const directoryPublication = normalizeSitePublication(
+      parseFrontmatter(target.directorySource).site_publication,
+    )
+    const archivePublication = normalizeSitePublication(
+      parseFrontmatter(target.archiveSource).site_publication,
+    )
+
+    if (directoryPublication !== archivePublication) {
+      throw new Error(
+        `${target.directoryFile} and ${target.archiveFile} must use the same site_publication (found ${directoryPublication} and ${archivePublication})`,
+      )
+    }
+
+    const sourceDir = path
+      .relative(contentRoot, path.dirname(target.directoryFile))
+      .replace(/\\/g, "/")
+    const campaigns = await loadCampaigns(directoryPublication)
+    const outputs = [
+      {
+        filePath: target.directoryFile,
+        source: target.directorySource,
+        startMarker: DIRECTORY_START,
+        endMarker: DIRECTORY_END,
+        generated: buildDirectory(campaigns, directoryPublication, sourceDir),
+      },
+      {
+        filePath: target.archiveFile,
+        source: target.archiveSource,
+        startMarker: ARCHIVE_START,
+        endMarker: ARCHIVE_END,
+        generated: buildArchive(campaigns, directoryPublication, sourceDir),
+      },
+    ]
+
+    for (const { filePath, source, startMarker, endMarker, generated } of outputs) {
+      const newline = source.includes("\r\n") ? "\r\n" : "\n"
+      const updated = replaceGeneratedBlock(
+        source,
+        startMarker,
+        endMarker,
+        generated,
+        filePath,
+        newline,
+      )
+      await fs.writeFile(filePath, updated, "utf8")
+    }
+
+    const archivedCount = campaigns.filter((campaign) => campaign.metadata.status === "archived").length
+    console.log(
+      `Generated ${directoryPublication} campaign directory and archive from ${campaigns.length} campaign roots (${archivedCount} archived)`,
     )
   }
-
-  const campaigns = await loadCampaigns(directoryPublication)
-  for (const { filePath, source, startMarker, endMarker, generated } of [
-    {
-      filePath: directoryFile,
-      source: directorySource,
-      startMarker: DIRECTORY_START,
-      endMarker: DIRECTORY_END,
-      generated: buildDirectory(campaigns, directoryPublication),
-    },
-    {
-      filePath: archiveFile,
-      source: archiveSource,
-      startMarker: ARCHIVE_START,
-      endMarker: ARCHIVE_END,
-      generated: buildArchive(campaigns, directoryPublication),
-    },
-  ]) {
-    const newline = source.includes("\r\n") ? "\r\n" : "\n"
-    const updated = replaceGeneratedBlock(source, startMarker, endMarker, generated, filePath, newline)
-    await fs.writeFile(filePath, updated, "utf8")
-  }
-
-  const archivedCount = campaigns.filter((campaign) => campaign.metadata.status === "archived").length
-  console.log(
-    `Generated ${directoryPublication} campaign directory and archive from ${campaigns.length} campaign roots (${archivedCount} archived)`,
-  )
 }
 
 main().catch((error) => {
