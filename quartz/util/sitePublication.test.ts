@@ -96,10 +96,11 @@ test("Explorer filter keeps shared folders but scopes publication branches", () 
 
   try {
     const node = (path: string, isFolder: boolean) => {
-      const slugSegments = path.split("/").filter(Boolean)
+      const cleanPath = path.replace(/^\/+|\/+$/g, "")
+      const slugSegment = cleanPath.split("/").filter(Boolean).at(-1) ?? ""
       return {
-        slugSegment: slugSegments.at(-1) ?? "",
-        slugSegments,
+        slug: isFolder ? `${cleanPath}/index` : cleanPath,
+        slugSegment,
         isFolder,
       }
     }
@@ -139,8 +140,8 @@ test("Explorer filter fails open when publication context is unavailable", () =>
   try {
     assert.equal(
       sitePublicationExplorerFilter({
+        slug: "campaigns/index",
         slugSegment: "campaigns",
-        slugSegments: ["campaigns"],
         isFolder: true,
       }),
       true,
@@ -148,4 +149,10 @@ test("Explorer filter fails open when publication context is unavailable", () =>
   } finally {
     runtime.document = originalDocument
   }
+})
+
+test("Explorer filter source has no nested function syntax that can gain bundler helpers", () => {
+  const source = sitePublicationExplorerFilter.toString()
+  assert.equal(source.includes("=>"), false)
+  assert.equal(source.includes("__name("), false)
 })
