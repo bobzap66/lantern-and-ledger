@@ -27,6 +27,7 @@ const Header: QuartzComponent = (props: QuartzComponentProps) => {
   const brandingRoot = `${siteRoot}/assets/images/lantern-and-ledger-branding`
   const mastheadPath = `${brandingRoot}/wide_vintage_newspaper_masthead_style_illustration.webp`
   const compactPath = `${brandingRoot}/lantern-and-ledger-compact.webp`
+  const beaconMastheadPath = `${siteRoot}/static/branding/beacon-and-bulletin-masthead.webp`
   const faviconPath = isLanternLedger ? `${brandingRoot}/lantern-and-ledger-favicon.webp` : ""
 
   return (
@@ -55,12 +56,14 @@ const Header: QuartzComponent = (props: QuartzComponentProps) => {
               />
             </picture>
           ) : (
-            <span class="site-publication-wordmark">
-              <span class="site-publication-wordmark__title">{sitePublication.title}</span>
-              <span class="site-publication-wordmark__subtitle">
-                {sitePublication.wordmarkSubtitle}
-              </span>
-            </span>
+            <img
+              class="site-publication-masthead__beacon"
+              src={beaconMastheadPath}
+              alt="Beacon & Bulletin — Current Signals. Lasting Record."
+              width={2048}
+              height={768}
+              decoding="async"
+            />
           )}
         </a>
         <div class="site-publication-archive-rule" aria-hidden="true">
