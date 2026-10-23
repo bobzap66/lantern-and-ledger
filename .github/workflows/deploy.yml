@@ -86,6 +86,12 @@ jobs:
       - name: Generate Golarion calendar data
         run: node scripts/generate-golarion-calendar.mjs
 
+      - name: Generate Beacon & Bulletin timeline data
+        run: node scripts/generate-beacon-and-bulletin-timeline.mjs content
+
+      - name: Generate Beacon & Bulletin calendar data
+        run: node scripts/generate-beacon-and-bulletin-calendar.mjs content
+
       - name: Copy theme ornament assets
         run: |
           mkdir -p public/ornaments

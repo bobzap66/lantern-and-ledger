@@ -1,0 +1,80 @@
+{
+  "calendar": "Calendar of Pact Worlds",
+  "months": [
+    "Abadius",
+    "Calistril",
+    "Pharast",
+    "Gozran",
+    "Desnus",
+    "Sarenith",
+    "Erastus",
+    "Arodus",
+    "Rova",
+    "Lamashan",
+    "Neth",
+    "Kuthona"
+  ],
+  "monthLengths": [
+    31,
+    28,
+    31,
+    30,
+    31,
+    30,
+    31,
+    31,
+    30,
+    31,
+    30,
+    31
+  ],
+  "weekdays": [
+    "Firstday",
+    "Seconday",
+    "Thirday",
+    "Fourthday",
+    "Fifthday",
+    "Sixthday",
+    "Seventhday"
+  ],
+  "leapRule": {
+    "interval": 4,
+    "month": 1
+  },
+  "weekdayAnchor": {
+    "year": 325,
+    "month": 0,
+    "day": 1,
+    "weekday": 2
+  },
+  "campaigns": [
+    {
+      "id": "Murder in Metal City",
+      "name": "Murder in Metal City",
+      "status": "upcoming",
+      "currentDate": {
+        "year": 325,
+        "month": 0,
+        "monthName": "Abadius",
+        "day": 1
+      },
+      "source": "campaigns/murder-in-metal-city/"
+    }
+  ],
+  "events": [
+    {
+      "year": 325,
+      "month": 0,
+      "monthName": "Abadius",
+      "day": 1,
+      "datePrecision": "day",
+      "dateLabel": "1 Abadius 325 AG",
+      "name": "Meeting with Tier-99 Professor",
+      "description": "Table-selected campaign anchor date based on the adventure's 2025 publication year; not a canonical date from the adventure.",
+      "campaign": "Murder in Metal City",
+      "kind": "campaign-event",
+      "visibility": "campaign-only",
+      "source": "campaigns/murder-in-metal-city/murder-in-metal-city-timeline"
+    }
+  ]
+}

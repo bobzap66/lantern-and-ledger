@@ -1,0 +1,42 @@
+{
+  "title": "Beacon & Bulletin Timeline",
+  "description": "Publication-wide Starfinder chronology",
+  "events": [
+    {
+      "id": "pact-worlds-0-ag-gap",
+      "sortOrder": 0,
+      "dateLabel": "0 AG",
+      "title": "The Gap",
+      "description": "The Gap erases much of recorded history and marks the beginning of the modern era.",
+      "verification": "official-paizo-source",
+      "citation": "Starfinder Player Core, “A Year on Absalom Station” (history overview)."
+    },
+    {
+      "id": "triunes-signal-3-ag",
+      "sortOrder": 3,
+      "dateLabel": "3 AG",
+      "title": "Triune’s Signal",
+      "description": "Triune’s Signal leads to the discovery of the Drift and Drift travel.",
+      "verification": "official-paizo-source",
+      "citation": "Starfinder Player Core, “A Year on Absalom Station” (history overview)."
+    },
+    {
+      "id": "pact-worlds-unify-41-ag",
+      "sortOrder": 41,
+      "dateLabel": "41 AG",
+      "title": "The Pact Worlds Unite",
+      "description": "The Pact Worlds unify.",
+      "verification": "official-paizo-source",
+      "citation": "Starfinder Player Core, “A Year on Absalom Station” (history overview)."
+    },
+    {
+      "id": "aucturn-hatches-324-ag",
+      "sortOrder": 324,
+      "dateLabel": "324 AG",
+      "title": "Aucturn Hatches",
+      "description": "Aucturn hatches, birthing the outer godling called the Newborn and forming the Gelid Edge at the Pact Worlds’ fringes.",
+      "verification": "official-paizo-source",
+      "citation": "Starfinder Player Core, “A Year on Absalom Station” (history overview)."
+    }
+  ]
+}

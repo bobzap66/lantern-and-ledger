@@ -1,0 +1,49 @@
+.beacon-timeline-list {
+  display: grid;
+  gap: 1rem;
+  margin: 1.5rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.beacon-timeline-event {
+  padding: 1rem 1.2rem;
+  border: 1px solid var(--lightgray);
+  border-inline-start: 0.25rem solid var(--secondary);
+  border-radius: 0.55rem;
+  background: var(--light);
+}
+
+.beacon-timeline-event time {
+  color: var(--gray);
+  font-size: 0.9rem;
+}
+
+.beacon-timeline-verified {
+  display: inline-block;
+  margin-inline-start: 0.5rem;
+  padding: 0.12rem 0.45rem;
+  border: 1px solid var(--lightgray);
+  border-radius: 999px;
+  color: var(--gray);
+  font-size: 0.72rem;
+  vertical-align: 0.08rem;
+}
+
+.beacon-timeline-event h2 {
+  margin: 0.25rem 0 0.5rem;
+  font-size: 1.2rem;
+}
+
+.beacon-timeline-sources {
+  margin-bottom: 0;
+  font-size: 0.9rem;
+}
+
+.beacon-timeline-empty,
+.beacon-timeline-error {
+  padding: 1rem;
+  border: 1px solid var(--lightgray);
+  border-radius: 0.55rem;
+  color: var(--gray);
+}

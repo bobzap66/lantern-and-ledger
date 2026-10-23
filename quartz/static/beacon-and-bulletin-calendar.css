@@ -1,0 +1,163 @@
+.pact-calendar {
+  margin: 1.5rem 0;
+}
+
+.pact-calendar-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: end;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.pact-calendar-toolbar label {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 14rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.pact-calendar-toolbar select,
+.pact-calendar-navigation button {
+  min-height: 2.5rem;
+  padding: 0.4rem 0.65rem;
+  border: 1px solid var(--lightgray);
+  border-radius: 0.45rem;
+  background: var(--light);
+  color: var(--dark);
+  font: inherit;
+}
+
+.pact-calendar-navigation {
+  display: flex;
+  gap: 0.7rem;
+  align-items: center;
+}
+
+.pact-calendar-navigation h2 {
+  min-width: 12rem;
+  margin: 0;
+  text-align: center;
+  font-size: 1.25rem;
+}
+
+.pact-calendar-navigation button {
+  width: 2.5rem;
+  cursor: pointer;
+}
+
+.pact-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.35rem;
+}
+
+.pact-calendar-weekday {
+  padding: 0.55rem 0.2rem;
+  color: var(--gray);
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.pact-calendar-day {
+  display: flex;
+  min-height: 5rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+  padding: 0.45rem;
+  border: 1px solid var(--lightgray);
+  border-radius: 0.45rem;
+  background: var(--light);
+  color: var(--dark);
+  text-align: left;
+  font: inherit;
+}
+
+button.pact-calendar-day {
+  cursor: pointer;
+}
+
+.pact-calendar-day--blank {
+  border-color: transparent;
+  background: transparent;
+}
+
+.pact-calendar-day.is-selected {
+  outline: 2px solid var(--secondary);
+  outline-offset: 1px;
+}
+
+.pact-calendar-day.is-campaign-date .pact-calendar-day__number {
+  color: var(--secondary);
+  font-weight: 800;
+}
+
+.pact-calendar-day__number {
+  font-weight: 700;
+}
+
+.pact-calendar-day__marker,
+.pact-calendar-day__events {
+  color: var(--gray);
+  font-size: 0.68rem;
+  line-height: 1.2;
+}
+
+.pact-calendar-details {
+  margin-top: 1rem;
+  padding: 1rem 1.2rem;
+  border: 1px solid var(--lightgray);
+  border-radius: 0.6rem;
+  background: var(--light);
+}
+
+.pact-calendar-details h3 {
+  margin-top: 0;
+}
+
+.pact-calendar-events {
+  margin: 0;
+  padding-inline-start: 1.2rem;
+}
+
+.pact-calendar-events li + li {
+  margin-top: 0.8rem;
+}
+
+.pact-calendar-events p {
+  margin: 0.25rem 0;
+}
+
+.pact-calendar-empty-day,
+.pact-calendar-note,
+.pact-calendar-error {
+  color: var(--gray);
+}
+
+.pact-calendar-note {
+  margin-top: 0.8rem;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 600px) {
+  .pact-calendar-grid {
+    gap: 0.2rem;
+  }
+
+  .pact-calendar-day {
+    min-height: 3.6rem;
+    padding: 0.3rem;
+  }
+
+  .pact-calendar-day__marker {
+    display: none;
+  }
+
+  .pact-calendar-weekday {
+    font-size: 0.68rem;
+  }
+}

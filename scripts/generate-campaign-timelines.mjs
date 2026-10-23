@@ -57,7 +57,7 @@ function parseManualEvents(text) {
   const pattern = /<!--\s*timeline-event\s*\n([\s\S]*?)\n\s*-->/gi
   for (const match of text.matchAll(pattern)) {
     const event = parseKeyValueLines(match[1])
-    if (event.title && (event.date || event.start || event.event_start || event.campaign_date_start || event.campaign_date)) events.push(event)
+    if (event.title && (event.date || event.start || event.event_start || event.campaign_date_start || event.campaign_date || event.sort_order || event.timeline_sort_order)) events.push(event)
   }
   return events
 }
@@ -195,6 +195,9 @@ function renderEntry(entry, index, isFirstInGroup) {
 }
 
 function renderGroups(entries, grouping) {
+  if (grouping === "none") {
+    return entries.map((entry, index) => renderEntry(entry, index, index === 0)).join("\n\n")
+  }
   const groups = new Map()
   for (const entry of entries) {
     let key
@@ -248,11 +251,12 @@ for (const timeline of timelineFiles) {
     if (String(fm.publish || "").toLowerCase() === "false") continue
 
     const hasCampaignDate = Boolean(fm.campaign_date_start || fm.campaign_date)
+    const explicitOrder = Number(fm.timeline_sort_order)
     const explicitlyIncluded = String(fm.timeline_include || "").toLowerCase() === "true"
     const isSessionReport = String(fm.type || "").toLowerCase() === "report" && /^Session\s+\d+/i.test(String(fm.title || path.basename(file, ".md")))
     const calendarRange = isSessionReport ? parseCalendarEventRange(text) : null
     const hasSessionDate = isSessionReport && Boolean(fm.event_start || fm.event_date || calendarRange)
-    if (!hasCampaignDate && !explicitlyIncluded && !hasSessionDate) continue
+    if (!hasCampaignDate && !explicitlyIncluded && !hasSessionDate && !Number.isFinite(explicitOrder)) continue
     if (String(fm.source_layer || "").toLowerCase() === "reconstructed-retrospective" && !explicitlyIncluded) continue
 
     const sessionMatch = /^Session\s+0*(\d+)/i.exec(String(fm.title || path.basename(file, ".md")))
@@ -267,25 +271,42 @@ for (const timeline of timelineFiles) {
 
     const startRaw = fm.campaign_date_start || fm.campaign_date || fm.event_start || fm.event_date || calendarRange?.start.raw
     const endRaw = fm.campaign_date_end || fm.campaign_date || fm.event_end || fm.event_date || calendarRange?.end.raw || startRaw
-    const start = parseGolarionDate(startRaw)
-    const end = parseGolarionDate(endRaw)
+    let start = parseGolarionDate(startRaw)
+    let end = parseGolarionDate(endRaw)
+    const sortOrder = Number.isFinite(explicitOrder) ? explicitOrder : null
+    if ((!start || !end) && sortOrder !== null) {
+      if (!String(fm.timeline_date_label || fm.date_label || "").trim()) {
+        throw new Error(`Timeline entry needs timeline_date_label when using timeline_sort_order: ${path.relative(contentRoot, file)}`)
+      }
+      start = { raw: String(sortOrder), year: 0, month: null, monthName: null, day: null }
+      end = start
+    }
     if (!start || !end) continue
 
-    entries.push({ file, timelineFile: timeline.file, basename: path.basename(file, ".md"), fm: effectiveFm, start, end, manual: false })
+    entries.push({ file, timelineFile: timeline.file, basename: path.basename(file, ".md"), fm: effectiveFm, start, end, sortOrder, manual: false })
   }
 
   for (const sourceText of manualSources) {
     for (const fm of parseManualEvents(sourceText)) {
       const startRaw = fm.start || fm.date || fm.event_start || fm.campaign_date_start || fm.campaign_date
       const endRaw = fm.end || fm.event_end || fm.campaign_date_end || startRaw
-      const start = parseGolarionDate(startRaw)
-      const end = parseGolarionDate(endRaw)
+      let start = parseGolarionDate(startRaw)
+      let end = parseGolarionDate(endRaw)
+      const sortValue = fm.timeline_sort_order || fm.sort_order
+      const sortOrder = sortValue !== undefined && sortValue !== "" ? Number(sortValue) : null
+      if ((!start || !end) && Number.isFinite(sortOrder)) {
+        if (!String(fm.timeline_date_label || fm.date_label || "").trim()) {
+          throw new Error(`Manual timeline event needs date_label when using sort_order: ${fm.title}`)
+        }
+        start = { raw: String(sortOrder), year: 0, month: null, monthName: null, day: null }
+        end = start
+      }
       if (!start || !end) continue
-      entries.push({ file: timeline.file, timelineFile: timeline.file, basename: fm.title, fm, start, end, manual: true })
+      entries.push({ file: timeline.file, timelineFile: timeline.file, basename: fm.title, fm, start, end, sortOrder: Number.isFinite(sortOrder) ? sortOrder : null, manual: true })
     }
   }
 
-  entries.sort((a, b) => sortKey(a.start) - sortKey(b.start) || sortKey(a.end) - sortKey(b.end) || String(a.fm.title || a.basename).localeCompare(String(b.fm.title || b.basename)))
+  entries.sort((a, b) => (a.sortOrder ?? sortKey(a.start)) - (b.sortOrder ?? sortKey(b.start)) || sortKey(a.end) - sortKey(b.end) || String(a.fm.title || a.basename).localeCompare(String(b.fm.title || b.basename)))
 
   const grouping = String(timeline.fm.timeline_grouping || "year").toLowerCase()
   const rendered = renderGroups(entries, grouping)
