@@ -191,16 +191,25 @@ const routePublicationCampaigns = () => {
   if (!publication) return
 
   const siteRoot = header?.getAttribute("data-site-root") || ""
+  const homeTarget = header?.getAttribute("data-site-publication-home") || `${siteRoot}/`
   const target =
     publication === "beacon-and-bulletin"
       ? `${siteRoot}/beacon-and-bulletin/campaigns/`
       : `${siteRoot}/campaigns/`
+
+  for (const link of document.querySelectorAll(".breadcrumb-container .breadcrumb-element a")) {
+    if (link.textContent?.trim() === "Home") link.setAttribute("href", homeTarget)
+  }
+
   for (const list of document.querySelectorAll(".explorer ul.explorer-ul")) {
     for (const item of list.children) {
       if (item.tagName !== "LI") continue
       const folder = item.querySelector(":scope > .folder-container")
       if (normalizeExplorerPath(folder?.dataset.folderpath ?? "") !== "campaigns") continue
-      const link = item.querySelector(":scope > a")
+      // In link behavior, the Explorer renders the folder's index link inside
+      // `.folder-container` (as a replacement for `.folder-button`), not as a
+      // direct child of the `<li>`.
+      const link = folder?.querySelector(":scope > div > a")
       if (link) link.setAttribute("href", target)
     }
   }
