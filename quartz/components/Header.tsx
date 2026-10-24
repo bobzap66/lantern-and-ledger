@@ -30,7 +30,10 @@ const Header: QuartzComponent = (props: QuartzComponentProps) => {
   const mastheadPath = `${brandingRoot}/wide_vintage_newspaper_masthead_style_illustration.webp`
   const compactPath = `${brandingRoot}/lantern-and-ledger-compact.webp`
   const beaconMastheadPath = `${siteRoot}/static/branding/beacon-and-bulletin-masthead.webp`
-  const faviconPath = isLanternLedger ? `${brandingRoot}/lantern-and-ledger-favicon.webp` : ""
+  const beaconCompactPath = `${siteRoot}/static/branding/beacon-and-bulletin-compact.webp`
+  const faviconPath = isLanternLedger
+    ? `${brandingRoot}/lantern-and-ledger-favicon.webp`
+    : `${siteRoot}/static/branding/beacon-and-bulletin-favicon.webp`
 
   return (
     <>
@@ -46,7 +49,11 @@ const Header: QuartzComponent = (props: QuartzComponentProps) => {
         data-site-root={siteRoot}
         data-favicon-path={faviconPath || undefined}
       >
-        <a class="site-publication-masthead" href={homePath} aria-label={`${sitePublication.title} home`}>
+        <a
+          class="site-publication-masthead"
+          href={homePath}
+          aria-label={`${sitePublication.title} home`}
+        >
           {isLanternLedger ? (
             <picture>
               <source media="(max-width: 800px)" srcSet={compactPath} width={1254} height={1254} />
@@ -62,6 +69,7 @@ const Header: QuartzComponent = (props: QuartzComponentProps) => {
             <img
               class="site-publication-masthead__beacon"
               src={beaconMastheadPath}
+              data-compact-src={beaconCompactPath}
               alt="Beacon & Bulletin — Current Signals. Lasting Record."
               width={2048}
               height={768}
@@ -80,7 +88,9 @@ const Header: QuartzComponent = (props: QuartzComponentProps) => {
           >
             Lantern & Ledger
           </a>
-          <span class="site-publication-switcher__divider" aria-hidden="true">/</span>
+          <span class="site-publication-switcher__divider" aria-hidden="true">
+            /
+          </span>
           <a
             class={`site-publication-switcher__link${!isLanternLedger ? " is-current" : ""}`}
             href={beaconHomePath}
@@ -404,7 +414,7 @@ const syncSitePublicationChrome = () => {
   }
 
   const faviconPath = header?.getAttribute("data-favicon-path") || ""
-  if (publicationKey === "lantern-and-ledger" && faviconPath) {
+  if (faviconPath) {
     icon.setAttribute("href", faviconPath)
   } else {
     const originalHref = icon.getAttribute("data-site-publication-original-href")
