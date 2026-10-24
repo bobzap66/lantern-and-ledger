@@ -8,6 +8,14 @@ This document records the project-specific authoring components, metadata contra
 
 The GitHub Pages workflow checks `bobzap66/inner-sea-region-vault` out into `content/` and runs Quartz against that directory. Files under this repository's `docs/` directory are repository documentation only and are not part of the public site content.
 
+## Publication contexts
+
+`site_publication` in page frontmatter selects the publication identity. Untagged pages default to Lantern & Ledger; Beacon & Bulletin pages use `site_publication: "Beacon & Bulletin"`. The mapping and route boundaries live in `quartz/util/sitePublication.ts`.
+
+The shared header, masthead, favicon, page-title home link, search label, footer home link, Explorer, and faceted search respond to the current publication. Explorer and search use the nearest publication boundary so B&B campaign notes can remain in the canonical `Campaigns/` tree while appearing in the B&B experience. The publication switcher is the explicit route between the two identities; publication scoping is presentation and navigation, not access control.
+
+When adding or moving a publication page, set its `site_publication` metadata and confirm the generated boundary and route. The helper `getSitePublicationForPath` is covered by `quartz/util/sitePublication.test.ts`; the Explorer filter remains independently tested because it is serialized into the browser.
+
 ## Campaign identity and page theming
 
 Campaign pages automatically receive a body class based on their campaign slug:
@@ -51,6 +59,7 @@ Basic usage:
 
 ````markdown
 ```character-cards
+
 ```
 ````
 
@@ -105,6 +114,7 @@ Basic usage:
 
 ````markdown
 ```npc-cards
+
 ```
 ````
 
@@ -417,17 +427,17 @@ type: author
 type: contributor
 ```
 
-Article records use:
+Articles and vignettes can use an author record's title, alias, or an Obsidian link to that record:
 
 ```yaml
 type: article
-author: Roald Celinnas
+author: "[[../Staff/Roald Celinnas|Roald Celinnas]]"
 contributors:
   - Another Contributor
 publication_date: 4716-Rova-12
 ```
 
-The transformer matches author/contributor names case-insensitively. Published notes with `draft: true` or `publish: false` are excluded from its index.
+The transformer supports B&B vignettes as bylined posts only when they have both an `author` and `publication: "Beacon & Bulletin"`; this distinguishes published B&B posts from GM vignettes or NPC point-of-view entries. It places the card immediately after a visible `By ...` paragraph when present, or after the title otherwise. The card links to the staff profile and shows its portrait, role, short bio, and published-post count. Published notes with `draft: true` or `publish: false` are excluded from its index.
 
 This system is automatic; authors do not insert a fenced component block into the article body.
 

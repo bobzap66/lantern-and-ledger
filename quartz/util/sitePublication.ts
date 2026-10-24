@@ -6,6 +6,7 @@ export type SitePublication = {
   title: string
   homeSlug: string
   archiveLabel: string
+  searchLabel: string
   wordmarkSubtitle: string
 }
 
@@ -32,6 +33,7 @@ const SITE_PUBLICATIONS: Record<string, SitePublication> = {
     title: "The Lantern and Ledger",
     homeSlug: "",
     archiveLabel: "THE LANTERN AND LEDGER · ARCHIVES",
+    searchLabel: "Lantern & Ledger Archive",
     wordmarkSubtitle: "Light for the Present. Record for the Future.",
   },
   "beacon & bulletin": {
@@ -40,6 +42,7 @@ const SITE_PUBLICATIONS: Record<string, SitePublication> = {
     title: "Beacon & Bulletin",
     homeSlug: "beacon-and-bulletin",
     archiveLabel: "BEACON & BULLETIN · ARCHIVES",
+    searchLabel: "Beacon & Bulletin Archive",
     wordmarkSubtitle: "Current Signals. Lasting Record.",
   },
 }
@@ -99,6 +102,28 @@ export function getSitePublicationBoundaries(
     .sort((a, b) => a.path.localeCompare(b.path))
 }
 
+export function getSitePublicationForPath(
+  slug: string,
+  boundaries: readonly SitePublicationBoundary[],
+): string {
+  const path = simplifyPublicationSlug(slug).toLowerCase()
+  let publication = boundaries.find((boundary) => boundary.path === "")?.publication ?? ""
+  let bestBoundaryLength = -1
+
+  for (const boundary of boundaries) {
+    const boundaryPath = boundary.path.replace(/^\/+|\/+$/g, "").toLowerCase()
+    const matchesPath =
+      boundaryPath === "" || path === boundaryPath || path.startsWith(`${boundaryPath}/`)
+
+    if (matchesPath && boundaryPath.length > bestBoundaryLength) {
+      publication = boundary.publication
+      bestBoundaryLength = boundaryPath.length
+    }
+  }
+
+  return publication || getSitePublication(undefined).key
+}
+
 // This function is serialized by the Explorer plugin and reconstructed in the browser.
 // Keep all runtime logic self-contained and avoid nested/local functions: bundlers may
 // rewrite those with helpers that are unavailable inside Explorer's reconstructed callback.
@@ -136,9 +161,7 @@ export function sitePublicationExplorerFilter(node: SitePublicationExplorerNode)
       if (!publication) continue
 
       const matchesPath =
-        boundaryPath === "" ||
-        path === boundaryPath ||
-        path.startsWith(`${boundaryPath}/`)
+        boundaryPath === "" || path === boundaryPath || path.startsWith(`${boundaryPath}/`)
 
       if (matchesPath && boundaryPath.length > bestBoundaryLength) {
         ownPublication = publication

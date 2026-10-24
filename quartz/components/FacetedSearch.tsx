@@ -1,83 +1,89 @@
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
+import { getSitePublication } from "../util/sitePublication"
 // @ts-expect-error - Inline script loaded as text by the Quartz esbuild plugin
 import searchScript from "./scripts/facetedSearch.inline"
 
 export default (() => {
-  const FacetedSearch: QuartzComponent = ({ displayClass }: QuartzComponentProps) => (
-    <template class="faceted-search-template">
-      <div class={["faceted-search", displayClass].filter(Boolean).join(" ")}>
-        <button
-          class="faceted-search__trigger"
-          type="button"
-          aria-haspopup="dialog"
-          aria-expanded="false"
-        >
-          <svg aria-hidden="true" viewBox="0 0 20 20">
-            <circle cx="8.25" cy="8.25" r="5.75" fill="none" />
-            <path d="m12.5 12.5 5 5" />
-          </svg>
-          <span>Search archive</span>
-          <kbd>Ctrl K</kbd>
-        </button>
+  const FacetedSearch: QuartzComponent = (props: QuartzComponentProps) => {
+    const { displayClass, fileData } = props
+    const sitePublication = getSitePublication(fileData.frontmatter as Record<string, unknown>)
 
-        <div class="faceted-search__overlay" hidden>
-          <section
-            class="faceted-search__dialog"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="faceted-search-title"
+    return (
+      <template class="faceted-search-template">
+        <div class={["faceted-search", displayClass].filter(Boolean).join(" ")}>
+          <button
+            class="faceted-search__trigger"
+            type="button"
+            aria-haspopup="dialog"
+            aria-expanded="false"
           >
-            <header class="faceted-search__header">
-              <div>
-                <p class="faceted-search__eyebrow">Lantern &amp; Ledger Archive</p>
-                <h2 id="faceted-search-title">Search the records</h2>
+            <svg aria-hidden="true" viewBox="0 0 20 20">
+              <circle cx="8.25" cy="8.25" r="5.75" fill="none" />
+              <path d="m12.5 12.5 5 5" />
+            </svg>
+            <span>Search archive</span>
+            <kbd>Ctrl K</kbd>
+          </button>
+
+          <div class="faceted-search__overlay" hidden>
+            <section
+              class="faceted-search__dialog"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="faceted-search-title"
+            >
+              <header class="faceted-search__header">
+                <div>
+                  <p class="faceted-search__eyebrow">{sitePublication.searchLabel}</p>
+                  <h2 id="faceted-search-title">Search the records</h2>
+                </div>
+                <button class="faceted-search__close" type="button" aria-label="Close search">
+                  ×
+                </button>
+              </header>
+
+              <label class="faceted-search__query-label">
+                <span class="visually-hidden">Search terms</span>
+                <svg aria-hidden="true" viewBox="0 0 20 20">
+                  <circle cx="8.25" cy="8.25" r="5.75" fill="none" />
+                  <path d="m12.5 12.5 5 5" />
+                </svg>
+                <input
+                  class="faceted-search__query"
+                  type="search"
+                  autocomplete="off"
+                  placeholder="Search people, places, sessions, and stories…"
+                />
+              </label>
+
+              <div class="faceted-search__filters" aria-label="Search filters">
+                <label>
+                  <span>Campaign</span>
+                  <select class="faceted-search__campaign">
+                    <option value="">All campaigns</option>
+                  </select>
+                </label>
+                <label>
+                  <span>Record type</span>
+                  <select class="faceted-search__type">
+                    <option value="">All record types</option>
+                  </select>
+                </label>
+                <button class="faceted-search__clear" type="button">
+                  Clear
+                </button>
               </div>
-              <button class="faceted-search__close" type="button" aria-label="Close search">
-                ×
-              </button>
-            </header>
 
-            <label class="faceted-search__query-label">
-              <span class="visually-hidden">Search terms</span>
-              <svg aria-hidden="true" viewBox="0 0 20 20">
-                <circle cx="8.25" cy="8.25" r="5.75" fill="none" />
-                <path d="m12.5 12.5 5 5" />
-              </svg>
-              <input
-                class="faceted-search__query"
-                type="search"
-                autocomplete="off"
-                placeholder="Search people, places, sessions, and stories…"
-              />
-            </label>
-
-            <div class="faceted-search__filters" aria-label="Search filters">
-              <label>
-                <span>Campaign</span>
-                <select class="faceted-search__campaign">
-                  <option value="">All campaigns</option>
-                </select>
-              </label>
-              <label>
-                <span>Record type</span>
-                <select class="faceted-search__type">
-                  <option value="">All record types</option>
-                </select>
-              </label>
-              <button class="faceted-search__clear" type="button">
-                Clear
-              </button>
-            </div>
-
-            <div class="faceted-search__status" aria-live="polite">
-              Loading the archive…
-            </div>
-            <div class="faceted-search__results" role="listbox" aria-label="Search results" />
-          </section>
+              <div class="faceted-search__status" aria-live="polite">
+                Loading the archive…
+              </div>
+              <div class="faceted-search__results" role="listbox" aria-label="Search results" />
+            </section>
+          </div>
         </div>
-      </div>
-    </template>
-  )
+      </template>
+    )
+  }
 
   FacetedSearch.css = `
 .faceted-search {

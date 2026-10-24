@@ -40,8 +40,24 @@ const syncBeaconAndBulletinMasthead = () => {
   masthead.setAttribute("height", isCompact ? "1254" : "768")
 }
 
+const syncPublicationFooterHome = () => {
+  const body = document.querySelector("#quartz-body[data-site-publication]")
+  const header = document.querySelector(".site-publication-header[data-site-publication]")
+  const footerHome = [...document.querySelectorAll("footer a")].find(
+    (link) => link.textContent?.trim() === "Home",
+  )
+  if (!body || !header || !footerHome) return
+
+  if (body.getAttribute("data-site-publication") === "beacon-and-bulletin") {
+    const homePath = header.getAttribute("data-site-publication-home")
+    if (homePath) footerHome.setAttribute("href", homePath)
+  }
+}
+
 document.addEventListener("nav", syncBeaconAndBulletinMasthead)
 syncBeaconAndBulletinMasthead()
+document.addEventListener("nav", syncPublicationFooterHome)
+syncPublicationFooterHome()
 
 if (!window.__sitePublicationBrandingMediaBound) {
   window.__sitePublicationBrandingMediaBound = true

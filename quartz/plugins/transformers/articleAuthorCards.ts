@@ -268,15 +268,33 @@ function markdownFiles(directory: string): string[] {
 }
 
 function authorKey(value: unknown) {
-  return String(value ?? "")
-    .trim()
-    .toLowerCase()
+  let text = String(value ?? "").trim()
+  const wikiLink = text.match(/^\[\[([\s\S]*?)\]\]$/)
+  if (wikiLink) {
+    const [target, label] = wikiLink[1].split("|", 2)
+    text = label?.trim() || path.posix.basename(target.split("#", 1)[0]).replace(/\.md$/i, "")
+  }
+  return text.trim().toLowerCase()
 }
 
 function contributorNames(value: unknown): string[] {
   if (Array.isArray(value)) return value.map((item) => String(item ?? "").trim()).filter(Boolean)
   if (typeof value === "string" && value.trim()) return [value.trim()]
   return []
+}
+
+function authorNames(note: Note): string[] {
+  const title = String(note.frontmatter?.title ?? path.basename(note.relativePath, ".md"))
+  return [
+    title,
+    path.basename(note.relativePath, ".md"),
+    ...contributorNames(note.frontmatter?.aliases),
+  ]
+}
+
+function plainText(node: any): string {
+  if (node?.type === "text") return String(node.value ?? "")
+  return Array.isArray(node?.children) ? node.children.map(plainText).join("") : ""
 }
 
 function initials(value: string) {
@@ -319,6 +337,7 @@ export const ArticleAuthorCards: QuartzTransformerPlugin = () => {
   let root = ""
   let authors = new Map<string, Note>()
   let articlesByAuthor = new Map<string, Note[]>()
+  let postsByAuthor = new Map<string, Note[]>()
   let contributionsByAuthor = new Map<string, Note[]>()
 
   const ensureIndex = (vaultRoot: string) => {
@@ -326,6 +345,7 @@ export const ArticleAuthorCards: QuartzTransformerPlugin = () => {
     root = vaultRoot
     authors = new Map()
     articlesByAuthor = new Map()
+    postsByAuthor = new Map()
     contributionsByAuthor = new Map()
 
     const all = markdownFiles(vaultRoot).map((absolutePath) => {
@@ -343,25 +363,55 @@ export const ArticleAuthorCards: QuartzTransformerPlugin = () => {
       if (!isPublished) continue
 
       if (note.frontmatter?.type === "author" || note.frontmatter?.type === "contributor") {
-        const key = authorKey(note.frontmatter?.title ?? path.basename(note.relativePath, ".md"))
-        if (key) authors.set(key, note)
+        for (const name of authorNames(note)) {
+          const key = authorKey(name)
+          if (key) authors.set(key, note)
+        }
       }
+    }
 
-      if (note.frontmatter?.type === "article") {
+    for (const note of all) {
+      const isPublished = note.frontmatter?.draft !== true && note.frontmatter?.publish !== false
+      if (!isPublished) continue
+
+      const type = String(note.frontmatter?.type ?? "")
+        .trim()
+        .toLowerCase()
+      const isBAndBPublishedVignette =
+        type === "vignette" &&
+        String(note.frontmatter?.publication ?? "")
+          .trim()
+          .replace(/\s+/g, " ")
+          .toLowerCase() === "beacon & bulletin"
+      if (type === "article" || isBAndBPublishedVignette) {
         const key = authorKey(note.frontmatter?.author)
         if (key) {
-          const list = articlesByAuthor.get(key) ?? []
-          list.push(note)
-          articlesByAuthor.set(key, list)
+          const author = authors.get(key)
+          const canonicalKey = author
+            ? authorKey(author.frontmatter?.title ?? path.basename(author.relativePath, ".md"))
+            : key
+          const posts = postsByAuthor.get(canonicalKey) ?? []
+          posts.push(note)
+          postsByAuthor.set(canonicalKey, posts)
+
+          if (type === "article") {
+            const articles = articlesByAuthor.get(canonicalKey) ?? []
+            articles.push(note)
+            articlesByAuthor.set(canonicalKey, articles)
+          }
         }
       }
 
       for (const contributor of contributorNames(note.frontmatter?.contributors)) {
         const key = authorKey(contributor)
         if (!key) continue
-        const list = contributionsByAuthor.get(key) ?? []
+        const author = authors.get(key)
+        const canonicalKey = author
+          ? authorKey(author.frontmatter?.title ?? path.basename(author.relativePath, ".md"))
+          : key
+        const list = contributionsByAuthor.get(canonicalKey) ?? []
         list.push(note)
-        contributionsByAuthor.set(key, list)
+        contributionsByAuthor.set(canonicalKey, list)
       }
     }
 
@@ -459,7 +509,16 @@ export const ArticleAuthorCards: QuartzTransformerPlugin = () => {
           }
 
           let authorCard = ""
-          if (sourceFm?.type === "article") {
+          const sourceType = String(sourceFm?.type ?? "")
+            .trim()
+            .toLowerCase()
+          const isBAndBPublishedVignette =
+            sourceType === "vignette" &&
+            String(sourceFm?.publication ?? "")
+              .trim()
+              .replace(/\s+/g, " ")
+              .toLowerCase() === "beacon & bulletin"
+          if (sourceType === "article" || isBAndBPublishedVignette) {
             const key = authorKey(sourceFm?.author)
             const author = authors.get(key)
             if (author) {
@@ -468,7 +527,10 @@ export const ArticleAuthorCards: QuartzTransformerPlugin = () => {
               const role = typeof fm.role === "string" ? fm.role : ""
               const shortBio = typeof fm.short_bio === "string" ? fm.short_bio : ""
               const portrait = typeof fm.portrait === "string" ? fm.portrait : ""
-              const count = articlesByAuthor.get(key)?.length ?? 0
+              const authorKeyForIndex = authorKey(
+                fm.title ?? path.basename(author.relativePath, ".md"),
+              )
+              const count = postsByAuthor.get(authorKeyForIndex)?.length ?? 0
               const authorHref = relativeSlugHref(relativeSource, author.slug)
               const sourceDirectory = path.dirname(absoluteSource)
               const imageHtml = portrait
@@ -485,7 +547,7 @@ export const ArticleAuthorCards: QuartzTransformerPlugin = () => {
                 shortBio ? `<p class="isr-author-card-bio">${escapeHtml(shortBio)}</p>` : "",
                 '<div class="isr-author-card-footer">',
                 `<a class="isr-author-card-link" href="${escapeHtml(authorHref)}">About ${escapeHtml(name)} →</a>`,
-                `<span class="isr-author-card-count">${count} article${count === 1 ? "" : "s"} in the archive</span>`,
+                `<span class="isr-author-card-count">${count} published post${count === 1 ? "" : "s"} in the archive</span>`,
                 "</div>",
                 "</div>",
                 "</aside>",
@@ -530,8 +592,23 @@ export const ArticleAuthorCards: QuartzTransformerPlugin = () => {
 
           if (!authorCard && !contributorStrip) return
 
+          const byline = authorCard
+            ? tree.children.findIndex(
+                (node: any) => node?.type === "paragraph" && /^by\b/i.test(plainText(node).trim()),
+              )
+            : -1
+          const heading = authorCard
+            ? tree.children.findIndex((node: any) => node?.type === "heading")
+            : -1
           const firstBreak = tree.children.findIndex((node: any) => node?.type === "thematicBreak")
-          const insertAt = firstBreak >= 0 ? firstBreak + 1 : 0
+          const insertAt =
+            byline >= 0
+              ? byline + 1
+              : heading >= 0
+                ? heading + 1
+                : firstBreak >= 0
+                  ? firstBreak + 1
+                  : 0
           const blocks = [authorCard, contributorStrip]
             .filter(Boolean)
             .map((value) => ({ type: "html", value }))

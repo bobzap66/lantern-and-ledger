@@ -5,6 +5,7 @@ const facetCampaignNames = {
   "claws-of-the-tyrant": "Claws of the Tyrant",
   "curtain-call": "Curtain Call",
   kingmaker: "Kingmaker",
+  "murder-in-metal-city": "Murder in Metal City",
   "season-of-ghosts": "Season of Ghosts",
   general: "General reference",
 }
@@ -86,6 +87,50 @@ const facetLabel = (names, key) => {
 
 const facetBasePath = () => document.body?.dataset?.basepath ?? ""
 const facetHref = (slug) => `${facetBasePath()}/${slug}`.replace(/\/{2,}/g, "/")
+
+const facetPublicationContext = () => {
+  const body = document.querySelector("#quartz-body[data-site-publication]")
+  const context = document.querySelector("#site-publication-explorer-context")
+  const currentPublication = body?.getAttribute("data-site-publication")
+  const rawBoundaries = context?.getAttribute("data-publication-boundaries")
+  if (!currentPublication || !rawBoundaries) return null
+
+  try {
+    const boundaries = JSON.parse(rawBoundaries)
+    if (!Array.isArray(boundaries) || boundaries.length === 0) return null
+    return { currentPublication: currentPublication.toLowerCase(), boundaries }
+  } catch {
+    return null
+  }
+}
+
+const facetMatchesPublication = (slug, context) => {
+  if (!context) return true
+
+  const path = String(slug ?? "")
+    .replace(/^\/+|\/+$/g, "")
+    .replace(/\/index$/i, "")
+    .toLowerCase()
+  let publication = "lantern-and-ledger"
+  let bestBoundaryLength = -1
+
+  for (const boundary of context.boundaries) {
+    const boundaryPath = String(boundary?.path ?? "")
+      .replace(/^\/+|\/+$/g, "")
+      .toLowerCase()
+    const nextPublication = String(boundary?.publication ?? "").toLowerCase()
+    if (!nextPublication) continue
+
+    const matchesPath =
+      boundaryPath === "" || path === boundaryPath || path.startsWith(`${boundaryPath}/`)
+    if (matchesPath && boundaryPath.length > bestBoundaryLength) {
+      publication = nextPublication
+      bestBoundaryLength = boundaryPath.length
+    }
+  }
+
+  return publication === context.currentPublication
+}
 
 const facetDecode = (value) => {
   const textarea = document.createElement("textarea")
@@ -180,6 +225,7 @@ const setupFacetedSearch = async () => {
   }
 
   let entries = []
+  const publicationContext = facetPublicationContext()
   const loadEntries = (source) => {
     entries = Object.entries(source ?? {})
       .map(([slug, details]) => ({
@@ -193,7 +239,12 @@ const setupFacetedSearch = async () => {
         normalizedSlug: facetNormalize(slug.replaceAll("-", " ").replaceAll("/", " ")),
         normalizedTags: facetNormalize((details?.tags || []).join(" ")),
       }))
-      .filter((entry) => entry.slug !== "index" && facetCampaignIsUnlocked(entry.campaign))
+      .filter(
+        (entry) =>
+          entry.slug !== "index" &&
+          facetCampaignIsUnlocked(entry.campaign) &&
+          facetMatchesPublication(entry.slug, publicationContext),
+      )
   }
   loadEntries(index)
 

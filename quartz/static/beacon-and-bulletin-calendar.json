@@ -41,9 +41,9 @@
       "status": "upcoming",
       "currentDate": {
         "year": 325,
-        "month": 0,
-        "monthName": "Abadius",
-        "day": 1
+        "month": 8,
+        "monthName": "Rova",
+        "day": 15
       },
       "source": "campaigns/murder-in-metal-city/"
     }
@@ -168,20 +168,6 @@
       "source": "beacon-and-bulletin/calendar"
     },
     {
-      "year": 325,
-      "month": 0,
-      "monthName": "Abadius",
-      "day": 1,
-      "datePrecision": "day",
-      "dateLabel": "1 Abadius 325 AG",
-      "name": "Meeting with Tier-99 Professor",
-      "description": "Table-selected campaign anchor date based on the adventure's 2025 publication year; not a canonical date from the adventure.",
-      "campaign": "Murder in Metal City",
-      "kind": "campaign-event",
-      "visibility": "campaign-only",
-      "source": "campaigns/murder-in-metal-city/murder-in-metal-city-timeline"
-    },
-    {
       "id": "sarenith-catharsis",
       "month": 5,
       "monthName": "Sarenith",
@@ -207,6 +193,20 @@
       "recurrence": "yearly",
       "citation": "Starfinder Player Core, “A Year on Absalom Station.”",
       "source": "beacon-and-bulletin/calendar"
+    },
+    {
+      "year": 325,
+      "month": 8,
+      "monthName": "Rova",
+      "day": 15,
+      "datePrecision": "day",
+      "dateLabel": "15 Rova 325 AG",
+      "name": "Meeting with Tier-99 Professor",
+      "description": "Table-selected campaign anchor date based on the adventure's 2025 publication year; not a canonical date from the adventure.",
+      "campaign": "Murder in Metal City",
+      "kind": "campaign-event",
+      "visibility": "campaign-only",
+      "source": "campaigns/murder-in-metal-city/murder-in-metal-city-timeline"
     },
     {
       "id": "rova-defrag-day",
