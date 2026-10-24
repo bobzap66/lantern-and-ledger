@@ -42,7 +42,8 @@ const chapterLanding = ChapterLanding()
 const homepageEditorialCards = HomepageEditorialCards()
 const legacySeriesNavCleanup = LegacySeriesNavCleanup()
 const readingProgress = ReadingProgress()
-const advertisement = Advertisement()
+const sidebarAdvertisement = Advertisement({ placement: "sidebar" })
+const stripAdvertisement = Advertisement({ placement: "strip" })
 const relatedRecords = RelatedRecords()
 const sessionArchiveActions = ArchiveReadingActions()
 const responsiveCompatibility = ResponsiveCompatibility()
@@ -67,8 +68,9 @@ const localLayout = {
     readingProgress,
     characterVignettes,
     sessionArchiveActions,
+    stripAdvertisement,
   ],
-  right: [advertisement],
+  right: [sidebarAdvertisement],
   afterBody: [chapterLanding, relatedRecords, sessionNavigation, vignetteNavigation],
 }
 
@@ -81,7 +83,8 @@ componentRegistry.register("homepage-editorial-cards", homepageEditorialCards, "
 componentRegistry.register("reading-progress", readingProgress, "local")
 componentRegistry.register("character-vignettes", characterVignettes, "local")
 componentRegistry.register("chapter-landing", chapterLanding, "local")
-componentRegistry.register("advertisement", advertisement, "local")
+componentRegistry.register("advertisement", sidebarAdvertisement, "local")
+componentRegistry.register("advertisement-strip", stripAdvertisement, "local")
 componentRegistry.register("related-records", relatedRecords, "local")
 componentRegistry.register("session-archive-actions", sessionArchiveActions, "local")
 componentRegistry.register("session-navigation", sessionNavigation, "local")

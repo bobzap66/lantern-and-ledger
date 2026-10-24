@@ -32,7 +32,7 @@ async function walk(dir) {
 function rewriteAssetUrls(source) {
   let count = 0
   const updated = source.replace(
-    /(?:(?:https?:)?\/\/[^"'()\s]+)?(?:\/lantern-and-ledger)?(?:\.{1,2}\/|\/)*assets\/(?:images|audio)\/[^"'()<>\r\n]+/g,
+    /(?:(?:https?:)?\/\/[^"'()\s]+)?(?:\/lantern-and-ledger)?(?:\.{1,2}\/|\/)*assets\/(?:images|audio|videos)\/[^"'()<>\r\n]+/g,
     (match) => {
       const marker = "assets/"
       const index = match.indexOf(marker)
@@ -72,7 +72,7 @@ for (const file of await walk(outputRoot)) {
 }
 
 const removedLocalAssetDirectories = []
-for (const assetType of ["images", "audio"]) {
+for (const assetType of ["images", "audio", "videos"]) {
   const localDirectory = path.join(outputRoot, "assets", assetType)
   await fs.rm(localDirectory, { recursive: true, force: true })
   removedLocalAssetDirectories.push(`public/assets/${assetType}`)

@@ -301,6 +301,36 @@ interval: 10
 
 `interval` is the automatic advance interval in seconds. `0` disables automatic advancement. Values are clamped between 0 and 120 seconds. Automatic motion pauses for reduced-motion users, while hovered, while keyboard focus is inside the carousel, when the carousel is offscreen, and when the browser tab is hidden.
 
+## Advertisements
+
+Implementation:
+
+```text
+quartz/components/Advertisement.tsx
+quartz/util/advertisements.ts
+```
+
+Advertisement records live in `Image Metadata/Advertisements/` and remain `type: image` records so their `asset` can serve as the still image or video poster. Existing records default to Lantern & Ledger and the sidebar, preserving current ad behavior.
+
+Video ads use a separate media field and can be targeted to the Beacon & Bulletin publication and one or more placements:
+
+```yaml
+type: image
+asset: assets/images/analog-cafe/poster.webp
+advertisement_media: video
+video_asset: assets/videos/analog-cafe/analog-cafe-spot.mp4
+video_captions_asset: assets/videos/analog-cafe/analog-cafe-spot.en.vtt
+site_publication: "Beacon & Bulletin"
+advertisement_placements:
+  - strip
+  - sidebar
+advertisement_autoplay: false
+```
+
+Supported placements are `sidebar` and `strip`; media format and placement are independent. `asset` is required for both formats and is the video's poster. Video files may use MP4/M4V, WebM, or Ogg video extensions. Captions are optional WebVTT files. Video controls are always available, media is not downloaded until requested, and autoplay—when explicitly enabled—is muted, inline, viewport-limited, and disabled for reduced-motion users. Selection is scoped by `site_publication`, so B&B ads do not appear on Lantern & Ledger pages.
+
+The selector favors ads at the article's exact location or on its parent planet, while still allowing untargeted/system-wide ads into the pool. For B&B pages without a location or bureau, Absalom Station is the fallback. Keep source media in the vault and point metadata at the vault-relative asset path; do not author R2 URLs directly. The vault publishing workflow mirrors `assets/videos/` to the matching Cloudflare R2 path, alongside images and audio.
+
 ## Calendar campaign index
 
 Generator:

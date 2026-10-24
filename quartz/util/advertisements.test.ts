@@ -2,6 +2,7 @@ import assert from "node:assert/strict"
 import test from "node:test"
 import {
   AdvertisementRecord,
+  advertisementLocationMatches,
   eligibleAdvertisements,
   pageAdvertisementLocations,
   parseGolarionDate,
@@ -17,6 +18,10 @@ function advertisement(
     sourcePath: `${title}.md`,
     title,
     asset: `assets/images/${title}.webp`,
+    mediaType: "image",
+    autoplay: false,
+    placements: ["sidebar"],
+    publication: "Lantern & Ledger",
     headline: title,
     copy: `${title} copy`,
     locations: ["Absalom"],
@@ -85,28 +90,30 @@ test("uses half the deterministic buckets for limited-run advertisements", () =>
   }
 })
 
-test("uses half the deterministic buckets for matching locations and half for all ads", () => {
+test("strongly favors matching locations while retaining a random all-ad bucket", () => {
   const local = advertisement("Local", { locations: ["Willowshore"] })
   const elsewhere = advertisement("Elsewhere", { locations: ["Kintargo"] })
   const seeds = new Map<number, string[]>()
   for (let index = 0; index < 1000; index += 1) {
     const seed = `location-page-${index}`
-    const bucket = stableBucket(`${seed}|location-bucket`, 2)
+    const bucket = stableBucket(`${seed}|location-bucket`, 4)
     seeds.set(bucket, [...(seeds.get(bucket) ?? []), seed])
   }
 
-  assert.equal(seeds.size, 2)
-  for (const seed of seeds.get(0) ?? []) {
-    const selected = selectAdvertisement([local, elsewhere], {
-      pageDate: "4721-Abadius-2",
-      pageLocations: ["Willowshore"],
-      seed,
-    })
-    assert.equal(selected?.title, "Local")
+  assert.equal(seeds.size, 4)
+  for (const bucket of [0, 1, 2]) {
+    for (const seed of seeds.get(bucket) ?? []) {
+      const selected = selectAdvertisement([local, elsewhere], {
+        pageDate: "4721-Abadius-2",
+        pageLocations: ["Willowshore"],
+        seed,
+      })
+      assert.equal(selected?.title, "Local")
+    }
   }
 
   const randomBucketTitles = new Set(
-    (seeds.get(1) ?? []).map(
+    (seeds.get(3) ?? []).map(
       (seed) =>
         selectAdvertisement([local, elsewhere], {
           pageDate: "4721-Abadius-2",
@@ -142,6 +149,44 @@ test("honors an eligible pinned advertisement", () => {
   assert.equal(selected?.title, "Chosen Ad")
 })
 
+test("keeps advertisement pools separate by publication and placement", () => {
+  const records = [
+    advertisement("Lantern sidebar ad"),
+    advertisement("B&B video", {
+      mediaType: "video",
+      videoAsset: "assets/videos/advertisements/spot.mp4",
+      publicationDate: "325-Abadius-1",
+      publication: "Beacon & Bulletin",
+      placements: ["strip", "sidebar"],
+      autoplay: true,
+    }),
+    advertisement("B&B sidebar-only ad", {
+      publication: "Beacon & Bulletin",
+      placements: ["sidebar"],
+    }),
+  ]
+
+  const strip = selectAdvertisement(records, {
+    pageDate: "325-Rova-14",
+    pageLocations: ["Aballon"],
+    pagePublication: "Beacon & Bulletin",
+    placement: "strip",
+    seed: "beacon-article",
+  })
+  assert.equal(strip?.title, "B&B video")
+  assert.equal(strip?.mediaType, "video")
+  assert.equal(strip?.autoplay, true)
+
+  const lantern = selectAdvertisement(records, {
+    pageDate: "4721-Abadius-15",
+    pageLocations: ["Absalom"],
+    pagePublication: "Lantern & Ledger",
+    placement: "sidebar",
+    seed: "lantern-article",
+  })
+  assert.equal(lantern?.title, "Lantern sidebar ad")
+})
+
 test("uses datelines, bureaus, and campaign location suggestions", () => {
   assert.deepEqual(pageAdvertisementLocations({ dateline: "Vellumis" }), ["Vellumis"])
   assert.deepEqual(pageAdvertisementLocations({ bureau: "Absalom" }), ["Absalom", "Otari"])
@@ -160,4 +205,49 @@ test("uses datelines, bureaus, and campaign location suggestions", () => {
     }),
     ["Absalom"],
   )
+})
+
+test("favors a planet-level ad match for articles from a city on that planet", () => {
+  assert.equal(
+    advertisementLocationMatches(
+      advertisement("Aballon ad", {
+        locations: ["Aballon"],
+      }),
+      ["Striving"],
+    ),
+    true,
+  )
+  assert.equal(
+    advertisementLocationMatches(
+      advertisement("Castrovel ad", {
+        locations: ["Castrovel"],
+      }),
+      ["Qabarat"],
+    ),
+    true,
+  )
+  assert.equal(
+    advertisementLocationMatches(
+      advertisement("Eox ad", {
+        locations: ["Eox"],
+      }),
+      ["Striving"],
+    ),
+    false,
+  )
+  assert.equal(
+    advertisementLocationMatches(
+      advertisement("System-wide ad", {
+        locations: ["Pact Worlds"],
+      }),
+      ["Striving"],
+    ),
+    true,
+  )
+})
+
+test("uses Absalom Station as the location fallback for B&B pages", () => {
+  assert.deepEqual(pageAdvertisementLocations({ site_publication: "Beacon & Bulletin" }), [
+    "Absalom Station",
+  ])
 })

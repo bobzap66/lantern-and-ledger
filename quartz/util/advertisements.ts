@@ -6,6 +6,12 @@ export type AdvertisementRecord = {
   sourcePath: string
   title: string
   asset: string
+  videoAsset?: string
+  videoCaptionsAsset?: string
+  mediaType: "image" | "video"
+  autoplay: boolean
+  placements: string[]
+  publication: string
   caption?: string
   advertiser?: string
   advertiserRecord?: string
@@ -22,6 +28,8 @@ export type AdvertisementSelection = {
   pageDate: string
   pageLocations: string[]
   seed: string
+  pagePublication?: string
+  placement?: string
   pinned?: string
 }
 
@@ -45,6 +53,13 @@ const BUREAU_ADVERTISEMENT_LOCATION_ALIASES: Record<string, string[]> = {
   "absalom bureau": ["Otari"],
   thumpington: ["Thumping Waters"],
   "thumpington bureau": ["Thumping Waters"],
+}
+
+const ADVERTISEMENT_LOCATION_PARENTS: Record<string, string[]> = {
+  striving: ["Aballon"],
+  qabarat: ["Castrovel"],
+  "golden vault": ["Absalom Station"],
+  "lorespire complex": ["Absalom Station"],
 }
 
 const catalogCache = new Map<string, AdvertisementRecord[]>()
@@ -111,9 +126,23 @@ export function readAdvertisementCatalog(vaultRoot: string): AdvertisementRecord
       const asset = String(fm.asset ?? "")
         .replaceAll("\\", "/")
         .replace(/^\/+/, "")
+      const videoAsset = String(fm.video_asset ?? "")
+        .replaceAll("\\", "/")
+        .replace(/^\/+/, "")
+      const mediaType = String(fm.advertisement_media ?? (videoAsset ? "video" : "image"))
+        .trim()
+        .toLowerCase()
+      const placements = list(fm.advertisement_placements ?? fm.advertisement_placement)
       const publicationDate = String(fm.publication_date ?? "").trim()
       const copy = String(fm.advertisement_copy ?? "").trim()
-      if (!asset || !publicationDate || !copy || parseGolarionDate(publicationDate) == null)
+      if (
+        !asset ||
+        !["image", "video"].includes(mediaType) ||
+        (mediaType === "video" && !videoAsset) ||
+        !publicationDate ||
+        !copy ||
+        parseGolarionDate(publicationDate) == null
+      )
         return []
 
       const limitedRun = fm.limited_run === true || String(fm.limited_run).toLowerCase() === "true"
@@ -131,6 +160,19 @@ export function readAdvertisementCatalog(vaultRoot: string): AdvertisementRecord
           sourcePath,
           title: String(fm.title ?? path.basename(entry.name, ".md")),
           asset,
+          videoAsset: mediaType === "video" ? videoAsset : undefined,
+          videoCaptionsAsset:
+            mediaType === "video" && typeof fm.video_captions_asset === "string"
+              ? fm.video_captions_asset.trim().replaceAll("\\", "/").replace(/^\/+/, "")
+              : undefined,
+          mediaType: mediaType as AdvertisementRecord["mediaType"],
+          autoplay:
+            fm.advertisement_autoplay === true ||
+            String(fm.advertisement_autoplay).toLowerCase() === "true",
+          placements: placements.length > 0 ? placements : ["sidebar"],
+          publication: String(
+            fm.advertisement_publication ?? fm.site_publication ?? "Lantern & Ledger",
+          ).trim(),
           caption: typeof fm.caption === "string" ? fm.caption.trim() : undefined,
           advertiser: typeof fm.advertiser === "string" ? fm.advertiser.trim() : undefined,
           advertiserRecord:
@@ -167,11 +209,35 @@ export function stableBucket(value: string, bucketCount: number) {
   return Math.floor((stableHash(value) / 0x100000000) * bucketCount)
 }
 
-function locationMatches(advertisement: AdvertisementRecord, pageLocations: string[]) {
-  if (advertisement.locations.length === 0) return true
-  const wanted = new Set(pageLocations.map(semanticName).filter(Boolean))
+function expandedLocationNames(locations: string[]) {
+  const expanded = new Set<string>()
+  const pending = [...locations]
+
+  while (pending.length > 0) {
+    const location = semanticName(pending.pop() ?? "")
+    if (!location || expanded.has(location)) continue
+    expanded.add(location)
+    pending.push(...(ADVERTISEMENT_LOCATION_PARENTS[location] ?? []))
+  }
+
+  return expanded
+}
+
+export function advertisementLocationMatches(
+  advertisement: AdvertisementRecord,
+  pageLocations: string[],
+) {
+  if (
+    advertisement.locations.length === 0 ||
+    advertisement.locations.some((location) => semanticName(location) === "pact worlds")
+  ) {
+    return true
+  }
+  const wanted = expandedLocationNames(pageLocations)
   if (wanted.size === 0) return false
-  return advertisement.locations.some((location) => wanted.has(semanticName(location)))
+  return Array.from(expandedLocationNames(advertisement.locations)).some((location) =>
+    wanted.has(location),
+  )
 }
 
 export function eligibleAdvertisements(
@@ -204,7 +270,13 @@ export function selectAdvertisement(
   records: AdvertisementRecord[],
   selection: AdvertisementSelection,
 ): AdvertisementRecord | undefined {
+  const pagePublication = semanticName(selection.pagePublication ?? "Lantern & Ledger")
+  const placement = semanticName(selection.placement ?? "sidebar")
   const eligible = eligibleAdvertisements(records, selection.pageDate, selection.pageLocations)
+    .filter((advertisement) => semanticName(advertisement.publication) === pagePublication)
+    .filter((advertisement) =>
+      advertisement.placements.some((item) => semanticName(item) === placement),
+    )
   if (eligible.length === 0) return undefined
 
   if (selection.pinned) {
@@ -224,10 +296,11 @@ export function selectAdvertisement(
   }
 
   const local = pool.filter((advertisement) =>
-    locationMatches(advertisement, selection.pageLocations),
+    advertisementLocationMatches(advertisement, selection.pageLocations),
   )
   if (local.length > 0 && local.length < pool.length) {
-    pool = stableBucket(`${selection.seed}|location-bucket`, 2) === 0 ? local : pool
+    // Keep the rotation broad, but make a matching location the clear favorite.
+    pool = stableBucket(`${selection.seed}|location-bucket`, 4) < 3 ? local : pool
   }
 
   return pool[stableBucket(`${selection.seed}|advertisement`, pool.length)]
@@ -249,6 +322,12 @@ export function pageAdvertisementLocations(frontmatter: Record<string, unknown>,
   })
 
   const campaign = semanticName(String(frontmatter.campaign ?? ""))
+  if (
+    values.length === 0 &&
+    semanticName(String(frontmatter.site_publication ?? "")) === "beacon bulletin"
+  ) {
+    values.push("Absalom Station")
+  }
   if (values.length === 0) {
     if (campaign === "kingmaker") values.push("Thumpington")
     if (campaign === "claws of the tyrant") values.push("Vellumis")

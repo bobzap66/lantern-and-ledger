@@ -10,6 +10,9 @@ import { FilePath, FullSlug, resolveRelative, simplifySlug, slugifyFilePath } fr
 import { readImageDimensions } from "../plugins/transformers/imageAltText"
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 
+type AdvertisementPlacement = "sidebar" | "strip"
+type AdvertisementOptions = { placement?: AdvertisementPlacement }
+
 function hasExistingAdvertisement(node: Node): boolean {
   const candidate = node as Node & {
     properties?: Record<string, unknown>
@@ -39,7 +42,15 @@ function copyParagraphs(copy: string, headline: string) {
   return paragraphs
 }
 
-export default (() => {
+function videoMimeType(asset: string) {
+  const extension = path.extname(asset).toLowerCase()
+  if (extension === ".mp4" || extension === ".m4v") return "video/mp4"
+  if (extension === ".webm") return "video/webm"
+  if (extension === ".ogv" || extension === ".ogg") return "video/ogg"
+  return undefined
+}
+
+export default (({ placement = "sidebar" }: AdvertisementOptions = {}) => {
   const Advertisement: QuartzComponent = ({
     ctx,
     fileData,
@@ -60,7 +71,9 @@ export default (() => {
     const advertisement = selectAdvertisement(readAdvertisementCatalog(ctx.argv.directory), {
       pageDate,
       pageLocations,
-      seed: `${pageSlug}|${pageDate}|${String(fm.advertisement_seed ?? "")}`,
+      pagePublication: String(fm.site_publication ?? "Lantern & Ledger"),
+      placement,
+      seed: `${pageSlug}|${pageDate}|${placement}|${String(fm.advertisement_seed ?? "")}`,
       pinned: typeof fm.advertisement === "string" ? fm.advertisement : undefined,
     })
     if (!advertisement) return null
@@ -69,6 +82,12 @@ export default (() => {
     const imageDimensions = readImageDimensions(
       path.resolve(ctx.argv.directory, advertisement.asset),
     )
+    const videoSrc = advertisement.videoAsset
+      ? resolveRelative(fileData.slug, advertisement.videoAsset as FullSlug)
+      : undefined
+    const captionsSrc = advertisement.videoCaptionsAsset
+      ? resolveRelative(fileData.slug, advertisement.videoCaptionsAsset as FullSlug)
+      : undefined
     const advertiserTarget = wikilinkTarget(advertisement.advertiserRecord)
     const advertiserHref = advertiserTarget
       ? resolveRelative(
@@ -80,21 +99,41 @@ export default (() => {
 
     return (
       <aside
-        class={`random-advertisement ${displayClass ?? ""}`.trim()}
+        class={`random-advertisement random-advertisement--${placement} ${displayClass ?? ""}`.trim()}
         aria-label={`Advertisement: ${advertisement.headline}`}
         data-advertisement={advertisement.title}
+        data-advertisement-placement={placement}
       >
         <div class="random-advertisement__label">Paid Advertisement</div>
         <div class="random-advertisement__layout">
           <figure class="random-advertisement__image world-anvil-side-content">
-            <img
-              src={imageSrc}
-              alt={advertisement.caption ?? `${advertisement.headline} advertisement`}
-              width={imageDimensions?.width}
-              height={imageDimensions?.height}
-              loading="lazy"
-              decoding="async"
-            />
+            {videoSrc ? (
+              <video
+                aria-label={advertisement.caption ?? `${advertisement.headline} advertisement`}
+                controls
+                loop={advertisement.autoplay}
+                muted={advertisement.autoplay}
+                playsInline
+                poster={imageSrc}
+                preload="none"
+                data-advertisement-autoplay={advertisement.autoplay ? "true" : undefined}
+              >
+                {captionsSrc && (
+                  <track kind="captions" src={captionsSrc} srcLang="en" label="English" default />
+                )}
+                <source src={videoSrc} type={videoMimeType(advertisement.videoAsset!)} />
+                Your browser does not support embedded video.
+              </video>
+            ) : (
+              <img
+                src={imageSrc}
+                alt={advertisement.caption ?? `${advertisement.headline} advertisement`}
+                width={imageDimensions?.width}
+                height={imageDimensions?.height}
+                loading="lazy"
+                decoding="async"
+              />
+            )}
           </figure>
           <div class="random-advertisement__copy">
             <h2>
@@ -165,6 +204,35 @@ export default (() => {
   object-fit: contain;
 }
 
+.random-advertisement__image video {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  background: var(--dark);
+  object-fit: contain;
+}
+
+.random-advertisement--strip .random-advertisement__layout {
+  grid-template-columns: minmax(0, 1.4fr) minmax(13rem, 0.8fr);
+}
+
+.random-advertisement--strip .random-advertisement__image {
+  border-right: 1px solid var(--isr-rule, var(--lightgray));
+  border-bottom: 0;
+}
+
+@media (max-width: 700px) {
+  .random-advertisement--strip .random-advertisement__layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .random-advertisement--strip .random-advertisement__image {
+    border-right: 0;
+    border-bottom: 1px solid var(--isr-rule, var(--lightgray));
+  }
+}
+
 .random-advertisement__copy {
   align-self: center;
   min-width: 0;
@@ -202,5 +270,43 @@ export default (() => {
 }
 `
 
+  Advertisement.afterDOMLoaded = `
+(() => {
+  const videos = [...document.querySelectorAll("video[data-advertisement-autoplay='true']")]
+  if (videos.length === 0 || !("IntersectionObserver" in window)) return
+
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)")
+  const observer = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      const video = entry.target
+      if (reducedMotion.matches || !entry.isIntersecting) {
+        video.dataset.visibilityPaused = "true"
+        video.pause()
+      } else if (video.dataset.userPaused !== "true") {
+        delete video.dataset.visibilityPaused
+        video.play().catch(() => {})
+      }
+    }
+  }, { threshold: 0.4 })
+
+  for (const video of videos) {
+    video.addEventListener("pause", () => {
+      if (video.dataset.visibilityPaused !== "true") video.dataset.userPaused = "true"
+    })
+    video.addEventListener("play", () => {
+      delete video.dataset.userPaused
+      delete video.dataset.visibilityPaused
+    })
+    observer.observe(video)
+  }
+
+  reducedMotion.addEventListener("change", () => {
+    if (reducedMotion.matches) {
+      for (const video of videos) video.pause()
+    }
+  })
+})()
+`
+
   return Advertisement
-}) satisfies QuartzComponentConstructor
+}) satisfies QuartzComponentConstructor<AdvertisementOptions | undefined>

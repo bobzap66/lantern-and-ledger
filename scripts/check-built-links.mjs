@@ -103,7 +103,9 @@ for (const file of htmlFiles) {
     brokenImagesByTarget.get(target).add(sourceRoute)
   }
 
-  for (const match of html.matchAll(/<(?:audio|video|source)\b[^>]*\bsrc=(?:"([^"]*)"|'([^']*)')[^>]*>/gi)) {
+  for (const match of html.matchAll(
+    /<(?:audio|video|source|track)\b[^>]*\bsrc=(?:"([^"]*)"|'([^']*)')[^>]*>/gi,
+  )) {
     const src = match[1] ?? match[2]
     const inspected = inspectHref(src, sourceRoute)
     if (!inspected) continue
