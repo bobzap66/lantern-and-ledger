@@ -1722,3 +1722,82 @@
 
   #quartz-body.campaign--hell-s-rebels article hr { width: 100%; }
 }
+
+/* Murder in Metal City — neon circuitry and Aballonian machine geometry. */
+#quartz-body.campaign--murder-in-metal-city {
+  --campaign-color-primary: #7f4cff;
+  --campaign-color-secondary: #19bdf2;
+  --campaign-color-ink: #20233a;
+  --campaign-color-paper: #e6e3ef;
+  --campaign-color-material: #4f5571;
+  --campaign-color-highlight: #f05ac8;
+  --campaign-page-accent: var(--campaign-color-primary);
+  --campaign-page-secondary: var(--campaign-color-secondary);
+  --campaign-page-shadow: rgba(35, 32, 71, 0.12);
+  --campaign-h3-ornament-width: clamp(3.3rem, 7vw, 4.2rem);
+  --campaign-list-marker: url("/lantern-and-ledger/ornaments/murder-in-metal-city-h2-emblem.webp");
+}
+
+.campaign-hero--murder-in-metal-city {
+  --campaign-accent: #7f4cff;
+}
+
+.center:has(.campaign-hero--murder-in-metal-city) .campaign-primary-nav,
+.center:has(.campaign-hero--murder-in-metal-city) .campaign-editorial-note,
+.center:has(.campaign-hero--murder-in-metal-city) .campaign-archive-grid {
+  --campaign-nav-accent: #19bdf2;
+}
+
+#quartz-body.campaign--murder-in-metal-city
+  article:not(:has(.callout[data-callout^="timeline-"]))
+  h2::after {
+  width: 100%;
+  max-width: none;
+  aspect-ratio: 8 / 1;
+  height: auto;
+  margin-top: -0.18rem;
+  background: url("/lantern-and-ledger/ornaments/murder-in-metal-city-h2-underline-8x1.webp") left
+    center / 100% 100% no-repeat;
+}
+
+#quartz-body.campaign--murder-in-metal-city article h3 {
+  position: relative;
+  padding-left: calc(var(--campaign-h3-ornament-width) + 0.55rem);
+}
+
+#quartz-body.campaign--murder-in-metal-city article h3::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: var(--campaign-h3-ornament-width);
+  height: calc(var(--campaign-h3-ornament-width) / 2);
+  transform: translateY(-50%);
+  background: url("/lantern-and-ledger/ornaments/murder-in-metal-city-h3-ornament.webp") center /
+    contain no-repeat;
+  opacity: 0.9;
+}
+
+#quartz-body.campaign--murder-in-metal-city article hr {
+  width: min(100%, 52rem);
+  height: auto;
+  min-height: 0;
+  aspect-ratio: 4 / 1;
+  margin-block: clamp(2.6rem, 6vw, 4rem);
+  background: url("/lantern-and-ledger/ornaments/murder-in-metal-city-major-divider.webp") center /
+    contain no-repeat;
+}
+
+#quartz-body.campaign--murder-in-metal-city article hr::after {
+  content: none;
+}
+
+@media (max-width: 520px) {
+  #quartz-body.campaign--murder-in-metal-city {
+    --campaign-h3-ornament-width: 3.7rem;
+  }
+
+  #quartz-body.campaign--murder-in-metal-city article hr {
+    width: 100%;
+  }
+}
