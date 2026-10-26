@@ -4,8 +4,12 @@ import { execFileSync } from "node:child_process"
 
 const CONTENT_ROOT = path.resolve(process.argv[2] ?? "content")
 const INDEX_FILE = path.join(CONTENT_ROOT, "Articles.md")
+const HOME_FILE = path.join(CONTENT_ROOT, "index.md")
 const START = "<!-- PUBLIC_ARTICLES_START -->"
 const END = "<!-- PUBLIC_ARTICLES_END -->"
+const HOME_LINK_START = "<!-- PUBLIC_ARTICLES_LINK_START -->"
+const HOME_LINK_END = "<!-- PUBLIC_ARTICLES_LINK_END -->"
+const HOMEPAGE_RECENTS_START = "<!-- HOMEPAGE_RECENTS_START -->"
 const IGNORED_DIRS = new Set([".git", ".obsidian", "private", "templates", "image metadata"])
 const EXCLUDED_TYPES = new Set(["index", "reference", "timeline-metadata"])
 
@@ -150,6 +154,14 @@ function render(items) {
   return lines.join("\n")
 }
 
+function renderHomeLink() {
+  return [
+    HOME_LINK_START,
+    '<p class="public-articles-link"><a href="./Articles">Browse spoiler-free Lantern & Ledger articles →</a></p>',
+    HOME_LINK_END,
+  ].join("\n")
+}
+
 let indexText = await fs.readFile(INDEX_FILE, "utf8")
 const items = []
 
@@ -193,4 +205,17 @@ if (existing.test(indexText)) {
 }
 
 await fs.writeFile(INDEX_FILE, indexText, "utf8")
+
+let homeText = await fs.readFile(HOME_FILE, "utf8")
+const homeLink = renderHomeLink()
+const existingHomeLink = new RegExp(`${HOME_LINK_START}[\\s\\S]*?${HOME_LINK_END}\\n*`, "m")
+homeText = homeText.replace(existingHomeLink, "")
+
+if (homeText.includes(HOMEPAGE_RECENTS_START)) {
+  homeText = homeText.replace(HOMEPAGE_RECENTS_START, `${homeLink}\n\n${HOMEPAGE_RECENTS_START}`)
+} else {
+  homeText = `${homeText.trimEnd()}\n\n${homeLink}\n`
+}
+
+await fs.writeFile(HOME_FILE, homeText, "utf8")
 console.log(`Generated ${items.length} spoiler-free Lantern & Ledger article entries in Articles.md`)
