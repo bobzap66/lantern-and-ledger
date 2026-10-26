@@ -3,7 +3,9 @@ import path from "node:path"
 import { execFileSync } from "node:child_process"
 
 const CONTENT_ROOT = path.resolve(process.argv[2] ?? "content")
-const INDEX_FILE = path.join(CONTENT_ROOT, "Articles.md")
+const INDEX_REL = "The Lantern and Ledger/Articles.md"
+const INDEX_FILE = path.join(CONTENT_ROOT, INDEX_REL)
+const INDEX_DIR = path.posix.dirname(INDEX_REL)
 const HOME_FILE = path.join(CONTENT_ROOT, "index.md")
 const START = "<!-- PUBLIC_ARTICLES_START -->"
 const END = "<!-- PUBLIC_ARTICLES_END -->"
@@ -130,7 +132,10 @@ function formatDate(date) {
 }
 
 function linkTo(rel) {
-  return encodeURI(`./${rel.replace(/\.md$/i, "")}`)
+  const withoutExtension = rel.replace(/\.md$/i, "")
+  let relative = path.posix.relative(INDEX_DIR, withoutExtension)
+  if (!relative.startsWith(".")) relative = `./${relative}`
+  return encodeURI(relative)
 }
 
 function render(items) {
@@ -157,7 +162,7 @@ function render(items) {
 function renderHomeLink() {
   return [
     HOME_LINK_START,
-    '<p class="public-articles-link"><a href="./Articles">Browse spoiler-free Lantern & Ledger articles →</a></p>',
+    '<p class="public-articles-link"><a href="./The%20Lantern%20and%20Ledger/Articles">Browse spoiler-free Lantern & Ledger articles →</a></p>',
     HOME_LINK_END,
   ].join("\n")
 }
@@ -218,4 +223,4 @@ if (homeText.includes(HOMEPAGE_RECENTS_START)) {
 }
 
 await fs.writeFile(HOME_FILE, homeText, "utf8")
-console.log(`Generated ${items.length} spoiler-free Lantern & Ledger article entries in Articles.md`)
+console.log(`Generated ${items.length} spoiler-free Lantern & Ledger article entries in ${INDEX_REL}`)
