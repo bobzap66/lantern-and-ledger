@@ -53,9 +53,13 @@ export function campaignFromSlug(slug: string | undefined) {
   return { key: normalizedKey, name: words.join(" ") }
 }
 
+export function shouldGateCampaignPage(slug: string | undefined, spoiler: unknown) {
+  return campaignFromSlug(slug) !== null && spoiler !== false
+}
+
 export const CampaignSpoilerGate: QuartzComponent = ({ fileData }: QuartzComponentProps) => {
   const campaign = campaignFromSlug(fileData.slug)
-  if (!campaign) return null
+  if (!campaign || fileData.frontmatter?.spoiler === false) return null
 
   return (
     <div
