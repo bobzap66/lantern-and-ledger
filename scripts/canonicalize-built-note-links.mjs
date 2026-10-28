@@ -14,6 +14,41 @@ const publicationOutputRoots = [
   ["Beacon-and-Bulletin", "beacon-and-bulletin"],
 ]
 
+async function pathsEqual(left, right) {
+  const [leftBuffer, rightBuffer] = await Promise.all([fs.readFile(left), fs.readFile(right)])
+  return leftBuffer.equals(rightBuffer)
+}
+
+async function mergeDirectory(source, destination) {
+  await fs.mkdir(destination, { recursive: true })
+
+  for (const entry of await fs.readdir(source, { withFileTypes: true })) {
+    const sourcePath = path.join(source, entry.name)
+    const destinationPath = path.join(destination, entry.name)
+
+    if (entry.isDirectory()) {
+      await mergeDirectory(sourcePath, destinationPath)
+      await fs.rm(sourcePath, { recursive: true, force: true })
+      continue
+    }
+
+    if (!entry.isFile()) continue
+
+    try {
+      await fs.access(destinationPath)
+      if (!(await pathsEqual(sourcePath, destinationPath))) {
+        throw new Error(
+          `Refusing to merge publication output: conflicting files ${sourcePath} and ${destinationPath}`,
+        )
+      }
+      await fs.unlink(sourcePath)
+    } catch (error) {
+      if (error?.code !== "ENOENT") throw error
+      await fs.rename(sourcePath, destinationPath)
+    }
+  }
+}
+
 async function normalizePublicationOutputRoots() {
   for (const [generatedName, canonicalName] of publicationOutputRoots) {
     const generatedPath = path.join(outputRoot, generatedName)
@@ -25,17 +60,22 @@ async function normalizePublicationOutputRoots() {
       continue
     }
 
+    let canonicalExists = true
     try {
       await fs.access(canonicalPath)
-      throw new Error(
-        `Refusing to normalize publication output: both ${generatedName} and ${canonicalName} exist in ${outputRoot}`,
-      )
     } catch (error) {
       if (error?.code !== "ENOENT") throw error
+      canonicalExists = false
     }
 
-    await fs.rename(generatedPath, canonicalPath)
-    console.log(`Normalized publication output root: ${generatedName} -> ${canonicalName}`)
+    if (canonicalExists) {
+      await mergeDirectory(generatedPath, canonicalPath)
+      await fs.rm(generatedPath, { recursive: true, force: true })
+      console.log(`Merged publication output root: ${generatedName} -> ${canonicalName}`)
+    } else {
+      await fs.rename(generatedPath, canonicalPath)
+      console.log(`Normalized publication output root: ${generatedName} -> ${canonicalName}`)
+    }
   }
 }
 
