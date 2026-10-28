@@ -26,13 +26,38 @@ jobs:
           fetch-depth: 0
 
       - name: Checkout migrated vault branch
-        uses: actions/checkout@v7
-        with:
-          repository: bobzap66/inner-sea-region-vault
-          ref: greene-gaming-publication-roots
-          path: content
-          fetch-depth: 1
-          token: ${{ secrets.VAULT_TOKEN }}
+        env:
+          VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # The vault is large because of binary media. For this branch-only structural
+          # validation, partially clone the branch and materialize everything except the
+          # audio/video blobs. Images remain real so galleries and image checks are still
+          # exercised. Audio/video paths are recreated as empty placeholders so the
+          # existing built-link checker still validates that references resolve.
+          rm -rf content
+          mkdir content
+          git -C content init
+          git -C content remote add origin https://github.com/bobzap66/inner-sea-region-vault.git
+          git -C content config core.sparseCheckout true
+          git -C content config core.sparseCheckoutCone false
+          cat > content/.git/info/sparse-checkout <<'EOF'
+          /*
+          !/assets/audio/
+          !/assets/videos/
+          EOF
+
+          AUTH="$(printf 'x-access-token:%s' "$VAULT_TOKEN" | base64 -w0)"
+          git -C content -c http.extraheader="AUTHORIZATION: basic $AUTH" \
+            fetch --depth=1 --filter=blob:none origin greene-gaming-publication-roots
+          git -C content checkout --detach FETCH_HEAD
+
+          while IFS= read -r media; do
+            mkdir -p "content/$(dirname "$media")"
+            : > "content/$media"
+          done < <(git -C content ls-tree -r --name-only HEAD -- assets/audio assets/videos)
 
       - name: Setup Node
         uses: actions/setup-node@v7
