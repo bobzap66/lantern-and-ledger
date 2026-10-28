@@ -47,18 +47,13 @@ test("builds minimal publication boundaries for sibling publications", () => {
   const boundaries = getSitePublicationBoundaries([
     { slug: "index", frontmatter: { site_publication: "Greene Gaming" } },
     { slug: "lantern-and-ledger/index", frontmatter: { site_publication: "Lantern & Ledger" } },
-    { slug: "campaigns/index", frontmatter: { site_publication: "Lantern & Ledger" } },
     {
-      slug: "campaigns/kingmaker/index",
+      slug: "lantern-and-ledger/campaigns/index",
       frontmatter: { site_publication: "Lantern & Ledger" },
     },
     {
-      slug: "campaigns/murder-in-metal-city/index",
-      frontmatter: { site_publication: "Beacon & Bulletin" },
-    },
-    {
-      slug: "campaigns/murder-in-metal-city/session-1",
-      frontmatter: { site_publication: "Beacon & Bulletin" },
+      slug: "lantern-and-ledger/campaigns/kingmaker/index",
+      frontmatter: { site_publication: "Lantern & Ledger" },
     },
     {
       slug: "beacon-and-bulletin/index",
@@ -68,13 +63,15 @@ test("builds minimal publication boundaries for sibling publications", () => {
       slug: "beacon-and-bulletin/campaigns/index",
       frontmatter: { site_publication: "Beacon & Bulletin" },
     },
+    {
+      slug: "beacon-and-bulletin/campaigns/murder-in-metal-city/index",
+      frontmatter: { site_publication: "Beacon & Bulletin" },
+    },
   ])
 
   assert.deepEqual(boundaries, [
     { path: "", publication: "greene-gaming" },
     { path: "beacon-and-bulletin", publication: "beacon-and-bulletin" },
-    { path: "campaigns", publication: "lantern-and-ledger" },
-    { path: "campaigns/murder-in-metal-city", publication: "beacon-and-bulletin" },
     { path: "lantern-and-ledger", publication: "lantern-and-ledger" },
   ])
 })
@@ -84,13 +81,11 @@ test("resolves sibling publication routes for publication-scoped search", () => 
     { path: "", publication: "greene-gaming" },
     { path: "lantern-and-ledger", publication: "lantern-and-ledger" },
     { path: "beacon-and-bulletin", publication: "beacon-and-bulletin" },
-    { path: "campaigns", publication: "lantern-and-ledger" },
-    { path: "campaigns/murder-in-metal-city", publication: "beacon-and-bulletin" },
   ]
 
   assert.equal(getSitePublicationForPath("index", boundaries), "greene-gaming")
   assert.equal(
-    getSitePublicationForPath("lantern-and-ledger/index", boundaries),
+    getSitePublicationForPath("lantern-and-ledger/campaigns/kingmaker/index", boundaries),
     "lantern-and-ledger",
   )
   assert.equal(
@@ -98,16 +93,12 @@ test("resolves sibling publication routes for publication-scoped search", () => 
     "beacon-and-bulletin",
   )
   assert.equal(
-    getSitePublicationForPath("campaigns/murder-in-metal-city/index", boundaries),
+    getSitePublicationForPath("beacon-and-bulletin/campaigns/murder-in-metal-city/index", boundaries),
     "beacon-and-bulletin",
-  )
-  assert.equal(
-    getSitePublicationForPath("campaigns/kingmaker/index", boundaries),
-    "lantern-and-ledger",
   )
 })
 
-test("Explorer filter keeps shared folders but scopes publication branches", () => {
+test("Explorer filter scopes sibling publication trees", () => {
   const runtime = globalThis as unknown as { document?: unknown }
   const originalDocument = runtime.document
   let currentPublication = "beacon-and-bulletin"
@@ -115,8 +106,6 @@ test("Explorer filter keeps shared folders but scopes publication branches", () 
     { path: "", publication: "greene-gaming" },
     { path: "lantern-and-ledger", publication: "lantern-and-ledger" },
     { path: "beacon-and-bulletin", publication: "beacon-and-bulletin" },
-    { path: "campaigns", publication: "lantern-and-ledger" },
-    { path: "campaigns/murder-in-metal-city", publication: "beacon-and-bulletin" },
   ])
 
   runtime.document = {
@@ -150,22 +139,22 @@ test("Explorer filter keeps shared folders but scopes publication branches", () 
       }
     }
 
-    assert.equal(sitePublicationExplorerFilter(node("campaigns", true)), true)
-    assert.equal(sitePublicationExplorerFilter(node("campaigns/kingmaker", true)), false)
-    assert.equal(sitePublicationExplorerFilter(node("campaigns/murder-in-metal-city", true)), true)
     assert.equal(sitePublicationExplorerFilter(node("beacon-and-bulletin", true)), true)
+    assert.equal(sitePublicationExplorerFilter(node("beacon-and-bulletin/campaigns", true)), true)
+    assert.equal(
+      sitePublicationExplorerFilter(node("beacon-and-bulletin/campaigns/murder-in-metal-city", true)),
+      true,
+    )
     assert.equal(sitePublicationExplorerFilter(node("lantern-and-ledger", true)), false)
     assert.equal(sitePublicationExplorerFilter(node("tags", true)), false)
 
     currentPublication = "lantern-and-ledger"
-    assert.equal(sitePublicationExplorerFilter(node("campaigns", true)), true)
-    assert.equal(sitePublicationExplorerFilter(node("campaigns/kingmaker", true)), true)
-    assert.equal(sitePublicationExplorerFilter(node("campaigns/murder-in-metal-city", true)), false)
-    assert.equal(sitePublicationExplorerFilter(node("beacon-and-bulletin", true)), false)
     assert.equal(sitePublicationExplorerFilter(node("lantern-and-ledger", true)), true)
+    assert.equal(sitePublicationExplorerFilter(node("lantern-and-ledger/campaigns", true)), true)
+    assert.equal(sitePublicationExplorerFilter(node("lantern-and-ledger/campaigns/kingmaker", true)), true)
+    assert.equal(sitePublicationExplorerFilter(node("beacon-and-bulletin", true)), false)
 
     currentPublication = "greene-gaming"
-    assert.equal(sitePublicationExplorerFilter(node("campaigns", true)), false)
     assert.equal(sitePublicationExplorerFilter(node("lantern-and-ledger", true)), false)
     assert.equal(sitePublicationExplorerFilter(node("beacon-and-bulletin", true)), false)
   } finally {
@@ -185,7 +174,7 @@ test("Explorer filter fails open when publication context is unavailable", () =>
   try {
     assert.equal(
       sitePublicationExplorerFilter({
-        slug: "campaigns/index",
+        slug: "lantern-and-ledger/campaigns/index",
         slugSegment: "campaigns",
         isFolder: true,
       }),
