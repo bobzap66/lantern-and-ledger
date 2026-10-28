@@ -5,6 +5,10 @@ const CONTENT_ROOT = path.resolve(process.argv[2] ?? "content")
 const IGNORED_DIRS = new Set([".git", ".obsidian", "node_modules", "private", "templates"])
 const RESOURCE_EXTENSIONS =
   /\.(?:png|jpe?g|webp|gif|svg|pdf|json|ya?ml|css|js|mjs|cjs|mp3|mp4|webm|ogg|wav|zip|stl|3mf|obj|xlsx?|docx?|pptx?|csv|txt)$/i
+const PUBLICATION_CAMPAIGN_PREFIXES = [
+  "Lantern and Ledger/Campaigns",
+  "Beacon and Bulletin/Campaigns",
+]
 let noteTargets = new Set()
 
 function toPosix(value) {
@@ -42,14 +46,29 @@ function decodePath(value) {
   }
 }
 
+function resolveNoteTarget(decoded) {
+  const candidates = [decoded]
+  const legacyCampaign = /^Campaigns\/(.+)$/i.exec(decoded)
+  if (legacyCampaign) {
+    for (const prefix of PUBLICATION_CAMPAIGN_PREFIXES) {
+      candidates.unshift(`${prefix}/${legacyCampaign[1]}`)
+    }
+  }
+
+  for (const candidate of candidates) {
+    if (noteTargets.has(candidate)) return candidate
+    if (noteTargets.has(`${candidate}/index`)) return `${candidate}/index`
+  }
+
+  return decoded
+}
+
 function relativeTarget(file, vaultTarget) {
   const [rawPath, anchor = ""] = vaultTarget.split(/(?=#)/, 2)
-  let decoded = decodePath(rawPath).replace(/^\/+/, "").replace(/\.md$/i, "")
-  if (!noteTargets.has(decoded) && noteTargets.has(`${decoded}/index`)) {
-    decoded = `${decoded}/index`
-  }
+  const decoded = decodePath(rawPath).replace(/^\/+/, "").replace(/\.md$/i, "")
+  const resolved = resolveNoteTarget(decoded)
   const fromDir = path.dirname(path.relative(CONTENT_ROOT, file))
-  let rel = toPosix(path.relative(fromDir, decoded))
+  let rel = toPosix(path.relative(fromDir, resolved))
   if (!rel.startsWith(".")) rel = `./${rel}`
   return `${rel}${anchor}`
 }
