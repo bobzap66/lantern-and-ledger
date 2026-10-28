@@ -6,7 +6,7 @@ import { simplifySlug, slugifyFilePath } from "@quartz-community/utils"
 
 const CONTENT_ROOT = path.resolve(process.argv[2] ?? "content")
 const OUTPUT_ROOT = path.resolve(process.argv[3] ?? "public")
-const CAMPAIGNS_ROOT = path.join(CONTENT_ROOT, "Campaigns")
+const CAMPAIGNS_ROOT = path.join(CONTENT_ROOT, "Beacon and Bulletin", "Campaigns")
 const CALENDAR_NAME = "Calendar of Pact Worlds"
 const MONTHS = [
   "Abadius",
@@ -112,8 +112,8 @@ async function loadCampaignsAndEvents() {
   const eventKeys = new Set()
 
   for (const file of indexFiles) {
-    const relative = path.relative(CONTENT_ROOT, file).replace(/\\/g, "/")
-    const match = /^Campaigns\/([^/]+)\/index\.md$/i.exec(relative)
+    const relative = path.relative(CAMPAIGNS_ROOT, file).replace(/\\/g, "/")
+    const match = /^([^/]+)\/index\.md$/i.exec(relative)
     if (!match) continue
     const text = await fs.readFile(file, "utf8")
     const metadata = parseFrontmatter(text, file)
