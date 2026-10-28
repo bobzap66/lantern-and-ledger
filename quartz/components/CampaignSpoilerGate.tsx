@@ -24,7 +24,12 @@ type CampaignLocation = {
 function campaignLocationFromSlug(slug: string | undefined): CampaignLocation | null {
   if (!slug) return null
 
-  const directMatch = /^campaigns\/([^/]+)(?:\/|$)/i.exec(slug)
+  const publicationMatch = /^(?:(lantern-and-ledger|beacon-and-bulletin)\/)?(campaigns\/.*)$/i.exec(slug)
+  if (!publicationMatch) return null
+
+  const publicationPrefix = publicationMatch[1] ? `${publicationMatch[1]}/` : ""
+  const campaignPath = publicationMatch[2]
+  const directMatch = /^campaigns\/([^/]+)(?:\/|$)/i.exec(campaignPath)
   if (!directMatch) return null
 
   const first = directMatch[1]?.toLowerCase()
@@ -32,11 +37,11 @@ function campaignLocationFromSlug(slug: string | undefined): CampaignLocation | 
   let rootSlug: string | undefined
 
   if (first === "archived") {
-    key = /^campaigns\/archived\/([^/]+)(?:\/|$)/i.exec(slug)?.[1]
-    if (key) rootSlug = `campaigns/archived/${key}`
+    key = /^campaigns\/archived\/([^/]+)(?:\/|$)/i.exec(campaignPath)?.[1]
+    if (key) rootSlug = `${publicationPrefix}campaigns/archived/${key}`
   } else {
     key = directMatch[1]
-    if (key) rootSlug = `campaigns/${key}`
+    if (key) rootSlug = `${publicationPrefix}campaigns/${key}`
   }
 
   const normalizedKey = key?.toLowerCase()
@@ -295,7 +300,11 @@ const installCampaignSpoilerGate = () => {
     }
 
     const base = (document.body?.dataset?.basepath || "").replace(/\/$/, "")
-    location.href = base + "/campaigns"
+    const publication = body?.dataset?.sitePublication
+    const campaignsPath = publication === "beacon-and-bulletin"
+      ? "/beacon-and-bulletin/campaigns"
+      : "/lantern-and-ledger/campaigns"
+    location.href = base + campaignsPath
   })
 
   gate.querySelector('[data-spoiler-action="opt-in"]')?.addEventListener("click", () => {
