@@ -27,11 +27,20 @@ type SitePublicationExplorerNode = {
 }
 
 const SITE_PUBLICATIONS: Record<string, SitePublication> = {
+  "greene gaming": {
+    frontmatterValue: "Greene Gaming",
+    key: "greene-gaming",
+    title: "Greene Gaming",
+    homeSlug: "",
+    archiveLabel: "GREENE GAMING",
+    searchLabel: "Greene Gaming",
+    wordmarkSubtitle: "Campaigns, chronicles, and actual play.",
+  },
   "lantern & ledger": {
     frontmatterValue: "Lantern & Ledger",
     key: "lantern-and-ledger",
     title: "The Lantern and Ledger",
-    homeSlug: "",
+    homeSlug: "lantern-and-ledger",
     archiveLabel: "THE LANTERN AND LEDGER · ARCHIVES",
     searchLabel: "Lantern & Ledger Archive",
     wordmarkSubtitle: "Light for the Present. Record for the Future.",

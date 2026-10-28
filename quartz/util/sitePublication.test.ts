@@ -11,12 +11,20 @@ test("defaults untagged pages to Lantern & Ledger", () => {
   const publication = getSitePublication(undefined)
   assert.equal(publication.key, "lantern-and-ledger")
   assert.equal(publication.title, "The Lantern and Ledger")
+  assert.equal(publication.homeSlug, "lantern-and-ledger")
+})
+
+test("resolves Greene Gaming explicitly", () => {
+  const publication = getSitePublication({ site_publication: "Greene Gaming" })
+  assert.equal(publication.key, "greene-gaming")
+  assert.equal(publication.title, "Greene Gaming")
   assert.equal(publication.homeSlug, "")
 })
 
 test("resolves Lantern & Ledger explicitly", () => {
   const publication = getSitePublication({ site_publication: "Lantern & Ledger" })
   assert.equal(publication.key, "lantern-and-ledger")
+  assert.equal(publication.homeSlug, "lantern-and-ledger")
   assert.equal(publication.archiveLabel, "THE LANTERN AND LEDGER · ARCHIVES")
   assert.equal(publication.searchLabel, "Lantern & Ledger Archive")
 })
@@ -35,9 +43,10 @@ test("falls back safely for unknown publication values", () => {
   assert.equal(publication.key, "lantern-and-ledger")
 })
 
-test("builds minimal publication boundaries for nested publications", () => {
+test("builds minimal publication boundaries for sibling publications", () => {
   const boundaries = getSitePublicationBoundaries([
-    { slug: "index", frontmatter: { site_publication: "Lantern & Ledger" } },
+    { slug: "index", frontmatter: { site_publication: "Greene Gaming" } },
+    { slug: "lantern-and-ledger/index", frontmatter: { site_publication: "Lantern & Ledger" } },
     { slug: "campaigns/index", frontmatter: { site_publication: "Lantern & Ledger" } },
     {
       slug: "campaigns/kingmaker/index",
@@ -62,19 +71,28 @@ test("builds minimal publication boundaries for nested publications", () => {
   ])
 
   assert.deepEqual(boundaries, [
-    { path: "", publication: "lantern-and-ledger" },
+    { path: "", publication: "greene-gaming" },
     { path: "beacon-and-bulletin", publication: "beacon-and-bulletin" },
+    { path: "campaigns", publication: "lantern-and-ledger" },
     { path: "campaigns/murder-in-metal-city", publication: "beacon-and-bulletin" },
+    { path: "lantern-and-ledger", publication: "lantern-and-ledger" },
   ])
 })
 
-test("resolves nested B&B routes to Beacon & Bulletin for publication-scoped search", () => {
+test("resolves sibling publication routes for publication-scoped search", () => {
   const boundaries = [
-    { path: "", publication: "lantern-and-ledger" },
+    { path: "", publication: "greene-gaming" },
+    { path: "lantern-and-ledger", publication: "lantern-and-ledger" },
     { path: "beacon-and-bulletin", publication: "beacon-and-bulletin" },
+    { path: "campaigns", publication: "lantern-and-ledger" },
     { path: "campaigns/murder-in-metal-city", publication: "beacon-and-bulletin" },
   ]
 
+  assert.equal(getSitePublicationForPath("index", boundaries), "greene-gaming")
+  assert.equal(
+    getSitePublicationForPath("lantern-and-ledger/index", boundaries),
+    "lantern-and-ledger",
+  )
   assert.equal(
     getSitePublicationForPath("beacon-and-bulletin/staff/joy", boundaries),
     "beacon-and-bulletin",
@@ -94,8 +112,10 @@ test("Explorer filter keeps shared folders but scopes publication branches", () 
   const originalDocument = runtime.document
   let currentPublication = "beacon-and-bulletin"
   const boundaries = JSON.stringify([
-    { path: "", publication: "lantern-and-ledger" },
+    { path: "", publication: "greene-gaming" },
+    { path: "lantern-and-ledger", publication: "lantern-and-ledger" },
     { path: "beacon-and-bulletin", publication: "beacon-and-bulletin" },
+    { path: "campaigns", publication: "lantern-and-ledger" },
     { path: "campaigns/murder-in-metal-city", publication: "beacon-and-bulletin" },
   ])
 
@@ -134,13 +154,19 @@ test("Explorer filter keeps shared folders but scopes publication branches", () 
     assert.equal(sitePublicationExplorerFilter(node("campaigns/kingmaker", true)), false)
     assert.equal(sitePublicationExplorerFilter(node("campaigns/murder-in-metal-city", true)), true)
     assert.equal(sitePublicationExplorerFilter(node("beacon-and-bulletin", true)), true)
-    assert.equal(sitePublicationExplorerFilter(node("the-lantern-and-ledger", true)), false)
+    assert.equal(sitePublicationExplorerFilter(node("lantern-and-ledger", true)), false)
     assert.equal(sitePublicationExplorerFilter(node("tags", true)), false)
 
     currentPublication = "lantern-and-ledger"
     assert.equal(sitePublicationExplorerFilter(node("campaigns", true)), true)
     assert.equal(sitePublicationExplorerFilter(node("campaigns/kingmaker", true)), true)
     assert.equal(sitePublicationExplorerFilter(node("campaigns/murder-in-metal-city", true)), false)
+    assert.equal(sitePublicationExplorerFilter(node("beacon-and-bulletin", true)), false)
+    assert.equal(sitePublicationExplorerFilter(node("lantern-and-ledger", true)), true)
+
+    currentPublication = "greene-gaming"
+    assert.equal(sitePublicationExplorerFilter(node("campaigns", true)), false)
+    assert.equal(sitePublicationExplorerFilter(node("lantern-and-ledger", true)), false)
     assert.equal(sitePublicationExplorerFilter(node("beacon-and-bulletin", true)), false)
   } finally {
     runtime.document = originalDocument
