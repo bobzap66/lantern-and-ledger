@@ -1,0 +1,104 @@
+name: Validate Publication Roots
+
+on:
+  push:
+    branches:
+      - greene-gaming-publication-roots
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout site branch
+        uses: actions/checkout@v7
+        with:
+          ref: greene-gaming-publication-roots
+          fetch-depth: 0
+
+      - name: Checkout migrated vault branch
+        uses: actions/checkout@v7
+        with:
+          repository: bobzap66/inner-sea-region-vault
+          ref: greene-gaming-publication-roots
+          path: content
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Quartz plugins
+        run: npx quartz plugin install --from-config --clean
+
+      - name: Check types
+        run: npm run typecheck
+
+      - name: Run test suite
+        run: npm test
+
+      - name: Normalize vault note links
+        run: node scripts/normalize-vault-note-links.mjs
+
+      - name: Check vault link conventions
+        run: node scripts/check-link-conventions.mjs
+
+      - name: Normalize content asset paths
+        run: node scripts/normalize-content-asset-paths.mjs
+
+      - name: Expand folder galleries
+        run: node scripts/expand-folder-galleries.mjs
+
+      - name: Generate homepage recent notes
+        run: node scripts/generate-homepage-recents.mjs
+
+      - name: Generate spoiler-free article archive
+        run: node scripts/generate-public-articles.mjs content
+
+      - name: Generate calendar campaign index
+        run: node scripts/generate-calendar-campaign-index.mjs content
+
+      - name: Generate campaign directory and archive
+        run: node scripts/generate-campaign-directory.mjs content
+
+      - name: Generate vignette counts
+        run: node scripts/generate-vignette-counts.mjs content
+
+      - name: Build Quartz
+        run: npx quartz build
+
+      - name: Generate Golarion calendar data
+        run: node scripts/generate-golarion-calendar.mjs
+
+      - name: Generate Beacon & Bulletin timeline data
+        run: node scripts/generate-beacon-and-bulletin-timeline.mjs content
+
+      - name: Generate Beacon & Bulletin calendar data
+        run: node scripts/generate-beacon-and-bulletin-calendar.mjs content
+
+      - name: Merge campaign timeline metadata
+        run: node scripts/merge-golarion-timeline-metadata.mjs
+
+      - name: Canonicalize rendered note links
+        run: node scripts/canonicalize-built-note-links.mjs
+
+      - name: Check internal links
+        run: node scripts/check-built-links.mjs
+
+      - name: Upload validation artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: publication-roots-validation
+          path: |
+            public
+          retention-days: 1
