@@ -26,7 +26,7 @@ jobs:
           repository: bobzap66/inner-sea-region-vault
           ref: greene-gaming-publication-roots
           path: content
-          fetch-depth: 0
+          fetch-depth: 1
           token: ${{ secrets.VAULT_TOKEN }}
 
       - name: Setup Node
