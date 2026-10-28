@@ -9,7 +9,7 @@ const HOME_LINK_START = "<!-- PUBLIC_ARTICLES_LINK_START -->"
 const HOME_LINK_END = "<!-- PUBLIC_ARTICLES_LINK_END -->"
 const HOMEPAGE_RECENTS_START = "<!-- HOMEPAGE_RECENTS_START -->"
 const IGNORED_DIRS = new Set([".git", ".obsidian", "private", "templates", "image metadata"])
-const EXCLUDED_TYPES = new Set(["index", "reference", "timeline-metadata"])
+const EXCLUDED_TYPES = new Set(["index", "reference", "timeline-metadata", "campaign"])
 
 const PUBLICATIONS = [
   {
