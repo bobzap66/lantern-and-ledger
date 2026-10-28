@@ -7,6 +7,8 @@ const DIRECTORY_START = "<!-- CAMPAIGN_DIRECTORY_GENERATED_START -->"
 const DIRECTORY_END = "<!-- CAMPAIGN_DIRECTORY_GENERATED_END -->"
 const ARCHIVE_START = "<!-- CAMPAIGN_ARCHIVE_GENERATED_START -->"
 const ARCHIVE_END = "<!-- CAMPAIGN_ARCHIVE_GENERATED_END -->"
+const HOMEPAGE_START = "<!-- HOMEPAGE_CAMPAIGNS_GENERATED_START -->"
+const HOMEPAGE_END = "<!-- HOMEPAGE_CAMPAIGNS_GENERATED_END -->"
 const DEFAULT_SITE_PUBLICATION = "Lantern & Ledger"
 const STATUS_GROUPS = [
   { status: "active", title: "Active Campaigns" },
@@ -16,6 +18,10 @@ const STATUS_GROUPS = [
 const PUBLICATION_CAMPAIGN_ROOTS = new Map([
   ["Lantern & Ledger", path.join(contentRoot, "Lantern and Ledger", "Campaigns")],
   ["Beacon & Bulletin", path.join(contentRoot, "Beacon and Bulletin", "Campaigns")],
+])
+const PUBLICATION_HOMEPAGES = new Map([
+  ["Lantern & Ledger", path.join(contentRoot, "Lantern and Ledger", "index.md")],
+  ["Beacon & Bulletin", path.join(contentRoot, "Beacon and Bulletin", "index.md")],
 ])
 
 function parseFrontmatter(text) {
@@ -219,6 +225,111 @@ function buildArchive(campaigns, sitePublication, sourceDir, campaignBaseRel) {
   ].join("\n")
 }
 
+function homepageArchiveCard(sourceDir, campaignBaseRel) {
+  const href = relativeUrl(sourceDir, path.posix.join(campaignBaseRel, "Archive"))
+  const image = relativeUrl(sourceDir, "assets/images/campaign-archive-chest.webp")
+  return [
+    '<section class="campaign-directory__section">',
+    '<h3 class="campaign-directory__section-title">Campaign Archive</h3>',
+    '<div class="campaign-directory__grid campaign-directory__grid--archived">',
+    '<div class="campaign-directory__card campaign-directory__card--archived campaign-directory__card--campaign-archive">',
+    `<a class="campaign-directory__link" href="${href}" aria-label="Browse the Campaign Archive"></a>`,
+    `<img class="campaign-directory__image" src="${image}" alt="">`,
+    '<div class="campaign-directory__copy">',
+    '<div class="campaign-directory__status">Completed Campaigns</div>',
+    '<div class="campaign-directory__eyebrow">Preserved by The Lantern and Ledger</div>',
+    '<h4 class="campaign-directory__title">Campaign Archive</h4>',
+    '<p class="campaign-directory__subtitle">Browse the completed campaign chronicles, characters, and stories preserved here.</p>',
+    "</div>",
+    "</div>",
+    "</div>",
+    "</section>",
+  ].join("\n")
+}
+
+function buildHomepageCampaigns(campaigns, sitePublication, sourceDir, campaignBaseRel) {
+  const sections = STATUS_GROUPS.filter(({ status }) => status !== "archived")
+    .map(({ status, title }) => {
+      const members = campaigns.filter((campaign) => campaign.metadata.status === status)
+      if (members.length === 0) return ""
+      return [
+        '<section class="campaign-directory__section">',
+        `<h3 class="campaign-directory__section-title">${title}</h3>`,
+        '<div class="campaign-directory__grid">',
+        members
+          .map((campaign) => card(campaign, sourceDir, campaignBaseRel, { titleLevel: 4 }))
+          .join("\n"),
+        "</div>",
+        "</section>",
+      ].join("\n")
+    })
+    .filter(Boolean)
+
+  return [
+    `<div class="campaign-directory" data-site-publication="${escapeHtml(sitePublication)}">`,
+    ...sections,
+    homepageArchiveCard(sourceDir, campaignBaseRel),
+    "</div>",
+    `<p><a href="${relativeUrl(sourceDir, campaignBaseRel)}">Browse the complete campaign directory →</a></p>`,
+  ].join("\n")
+}
+
+function replaceLegacyHomepageCampaigns(source, generated, filePath, newline) {
+  const heading = "## Campaigns"
+  const headingIndex = source.indexOf(heading)
+  if (headingIndex < 0) return null
+
+  const blockStart = source.indexOf('<div class="campaign-directory">', headingIndex + heading.length)
+  if (blockStart < 0) return null
+
+  const browseLink = '<p><a href="./Campaigns">Browse the complete campaign directory →</a></p>'
+  const browseIndex = source.indexOf(browseLink, blockStart)
+  if (browseIndex < 0) return null
+
+  const blockEnd = browseIndex + browseLink.length
+  const normalized = generated.replaceAll("\n", newline)
+  const wrapped = `${HOMEPAGE_START}${newline}${newline}${normalized}${newline}${newline}${HOMEPAGE_END}`
+  return `${source.slice(0, blockStart)}${wrapped}${source.slice(blockEnd)}`
+}
+
+async function generateHomepageCampaigns(sitePublication, campaigns) {
+  const homepageFile = PUBLICATION_HOMEPAGES.get(sitePublication)
+  if (!homepageFile) return
+
+  let source
+  try {
+    source = await fs.readFile(homepageFile, "utf8")
+  } catch {
+    return
+  }
+
+  const sourceDir = relativeContentPath(path.dirname(homepageFile))
+  const campaignBaseRel = relativeContentPath(campaignRootForPublication(sitePublication))
+  const generated = buildHomepageCampaigns(campaigns, sitePublication, sourceDir, campaignBaseRel)
+  const newline = source.includes("\r\n") ? "\r\n" : "\n"
+
+  let updated = source
+  if (source.includes(HOMEPAGE_START) && source.includes(HOMEPAGE_END)) {
+    updated = replaceGeneratedBlock(
+      source,
+      HOMEPAGE_START,
+      HOMEPAGE_END,
+      generated,
+      homepageFile,
+      newline,
+    )
+  } else {
+    const migrated = replaceLegacyHomepageCampaigns(source, generated, homepageFile, newline)
+    if (migrated === null) return
+    updated = migrated
+  }
+
+  if (updated !== source) {
+    await fs.writeFile(homepageFile, updated, "utf8")
+    console.log(`Generated ${sitePublication} homepage campaign cards from campaign status`)
+  }
+}
+
 async function findDirectoryTargets(dir = contentRoot) {
   const entries = await fs.readdir(dir, { withFileTypes: true })
   const targets = []
@@ -249,6 +360,7 @@ async function findDirectoryTargets(dir = contentRoot) {
 
 async function main() {
   const targets = await findDirectoryTargets()
+  const campaignsByPublication = new Map()
 
   for (const target of targets) {
     const directoryPublication = normalizeSitePublication(
@@ -267,6 +379,7 @@ async function main() {
     const sourceDir = relativeContentPath(path.dirname(target.directoryFile))
     const campaignBaseRel = relativeContentPath(campaignRootForPublication(directoryPublication))
     const campaigns = await loadCampaigns(directoryPublication)
+    campaignsByPublication.set(directoryPublication, campaigns)
     const outputs = [
       {
         filePath: target.directoryFile,
@@ -303,6 +416,10 @@ async function main() {
     console.log(
       `Generated ${directoryPublication} campaign directory and archive from ${campaigns.length} campaign roots (${archivedCount} archived)`,
     )
+  }
+
+  for (const [sitePublication, campaigns] of campaignsByPublication) {
+    await generateHomepageCampaigns(sitePublication, campaigns)
   }
 }
 
