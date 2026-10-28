@@ -19,7 +19,10 @@ const CAMPAIGN_END = "<!-- CAMPAIGN_RECENTS_END -->"
 const IGNORED_DIRS = new Set([".git", ".obsidian", "private", "templates", "image metadata"])
 const MAINTENANCE_COMMIT =
   /(autolink|wikilink|link conversion|resolver|homepage navigation|one-shot|migration|maintenance|script|quartz|workflow)/i
-const HIDDEN_RECENT_PATHS = ["campaigns/abomination vaults/reconstruction/"]
+const HIDDEN_RECENT_PATHS = [
+  "campaigns/abomination vaults/reconstruction/",
+  "lantern and ledger/campaigns/abomination vaults/reconstruction/",
+]
 const NON_RECENT_TYPES = new Set(["index", "series-chapter"])
 const HOME_EDITORIAL_FOLDERS = new Set([
   "session notes",
@@ -90,6 +93,7 @@ function normalizeSitePublication(value) {
     .replace(/\s+/g, " ")
     .toLowerCase()
 
+  if (normalized === "greene gaming") return "Greene Gaming"
   if (normalized === "beacon & bulletin") return "Beacon & Bulletin"
   return DEFAULT_SITE_PUBLICATION
 }
@@ -147,7 +151,7 @@ function formatDate(date) {
 }
 
 function campaignFromRel(rel) {
-  return /^Campaigns\/([^/]+)\//i.exec(rel)?.[1] ?? ""
+  return /^(?:(?:Lantern and Ledger|Beacon and Bulletin)\/)?Campaigns\/([^/]+)\//i.exec(rel)?.[1] ?? ""
 }
 
 function cleanDescription(value) {
@@ -444,7 +448,7 @@ for (const file of await walk(CONTENT_ROOT)) {
   }
 
   if (noteType === "campaign") {
-    const match = /^Campaigns\/([^/]+)\/[^/]+\.md$/i.exec(rel)
+    const match = /^(?:(?:Lantern and Ledger|Beacon and Bulletin)\/)?Campaigns\/([^/]+)\/index\.md$/i.exec(rel)
     if (match)
       campaigns.push({
         file,
