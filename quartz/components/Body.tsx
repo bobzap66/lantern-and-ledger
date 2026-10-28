@@ -2,17 +2,28 @@ import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } fro
 import { CampaignSpoilerGate } from "./CampaignSpoilerGate"
 import { getSitePublication, getSitePublicationBoundaries } from "../util/sitePublication"
 
-function campaignKeyFromSlug(slug: string | undefined) {
+function campaignPathFromSlug(slug: string | undefined) {
   if (!slug) return null
+  const match = /^(?:(lantern-and-ledger|beacon-and-bulletin)\/)?(campaigns\/.*)$/i.exec(slug)
+  if (!match) return null
+  return {
+    publicationPrefix: match[1] ? `${match[1]}/` : "",
+    campaignPath: match[2],
+  }
+}
 
-  const directMatch = /^campaigns\/([^/]+)(?:\/|$)/i.exec(slug)
+function campaignKeyFromSlug(slug: string | undefined) {
+  const location = campaignPathFromSlug(slug)
+  if (!location) return null
+
+  const directMatch = /^campaigns\/([^/]+)(?:\/|$)/i.exec(location.campaignPath)
   if (!directMatch) return null
 
   const first = directMatch[1]?.toLowerCase()
   if (!first || first === "index" || first === "archive") return null
 
   if (first === "archived") {
-    const archivedKey = /^campaigns\/archived\/([^/]+)(?:\/|$)/i.exec(slug)?.[1]?.toLowerCase()
+    const archivedKey = /^campaigns\/archived\/([^/]+)(?:\/|$)/i.exec(location.campaignPath)?.[1]?.toLowerCase()
     return archivedKey && archivedKey !== "index" ? archivedKey : null
   }
 
@@ -20,20 +31,23 @@ function campaignKeyFromSlug(slug: string | undefined) {
 }
 
 function campaignRootSlugFromSlug(slug: string | undefined) {
-  if (!slug) return null
+  const location = campaignPathFromSlug(slug)
+  if (!location) return null
 
-  const directMatch = /^campaigns\/([^/]+)(?:\/|$)/i.exec(slug)
+  const directMatch = /^campaigns\/([^/]+)(?:\/|$)/i.exec(location.campaignPath)
   if (!directMatch) return null
 
   const first = directMatch[1]?.toLowerCase()
   if (!first || first === "index" || first === "archive") return null
 
   if (first === "archived") {
-    const archivedKey = /^campaigns\/archived\/([^/]+)(?:\/|$)/i.exec(slug)?.[1]
-    return archivedKey ? `campaigns/archived/${archivedKey}`.toLowerCase() : null
+    const archivedKey = /^campaigns\/archived\/([^/]+)(?:\/|$)/i.exec(location.campaignPath)?.[1]
+    return archivedKey
+      ? `${location.publicationPrefix}campaigns/archived/${archivedKey}`.toLowerCase()
+      : null
   }
 
-  return `campaigns/${directMatch[1]}`.toLowerCase()
+  return `${location.publicationPrefix}campaigns/${directMatch[1]}`.toLowerCase()
 }
 
 function safeCampaignClassKey(value: string) {
@@ -204,14 +218,19 @@ function isFormalPublication(
 
   if (
     type === "vignette" &&
-    /^campaigns\/kingmaker\/vignettes\/(?:the-lantern-and-ledger|pitax-gazette|scholarly-journals|intelligence-reports)\//.test(
+    /^(?:(?:lantern-and-ledger|beacon-and-bulletin)\/)?campaigns\/kingmaker\/vignettes\/(?:the-lantern-and-ledger|pitax-gazette|scholarly-journals|intelligence-reports)\//.test(
       normalizedSlug,
     )
   ) {
     return true
   }
 
-  if (type === "report" && /^campaigns\/kingmaker\/session-notes\//.test(normalizedSlug)) {
+  if (
+    type === "report" &&
+    /^(?:(?:lantern-and-ledger|beacon-and-bulletin)\/)?campaigns\/kingmaker\/session-notes\//.test(
+      normalizedSlug,
+    )
+  ) {
     return true
   }
 
