@@ -9,6 +9,36 @@ const siteOrigin = new URL(process.argv[4] ?? "https://greene-gaming.com").origi
 const htmlFiles = []
 const outputPaths = new Set()
 
+const publicationOutputRoots = [
+  ["Lantern-and-Ledger", "lantern-and-ledger"],
+  ["Beacon-and-Bulletin", "beacon-and-bulletin"],
+]
+
+async function normalizePublicationOutputRoots() {
+  for (const [generatedName, canonicalName] of publicationOutputRoots) {
+    const generatedPath = path.join(outputRoot, generatedName)
+    const canonicalPath = path.join(outputRoot, canonicalName)
+
+    try {
+      await fs.access(generatedPath)
+    } catch {
+      continue
+    }
+
+    try {
+      await fs.access(canonicalPath)
+      throw new Error(
+        `Refusing to normalize publication output: both ${generatedName} and ${canonicalName} exist in ${outputRoot}`,
+      )
+    } catch (error) {
+      if (error?.code !== "ENOENT") throw error
+    }
+
+    await fs.rename(generatedPath, canonicalPath)
+    console.log(`Normalized publication output root: ${generatedName} -> ${canonicalName}`)
+  }
+}
+
 async function collectOutput(dir) {
   for (const entry of await fs.readdir(dir, { withFileTypes: true })) {
     const fullPath = path.join(dir, entry.name)
@@ -42,6 +72,14 @@ function suffixFor(originalHref) {
 
 function legacyPublicationCandidates(pathname) {
   const candidates = [pathname]
+
+  if (pathname === "/Lantern-and-Ledger" || pathname.startsWith("/Lantern-and-Ledger/")) {
+    candidates.push(pathname.replace("/Lantern-and-Ledger", "/lantern-and-ledger"))
+  }
+
+  if (pathname === "/Beacon-and-Bulletin" || pathname.startsWith("/Beacon-and-Bulletin/")) {
+    candidates.push(pathname.replace("/Beacon-and-Bulletin", "/beacon-and-bulletin"))
+  }
 
   if (pathname === "/campaigns" || pathname.startsWith("/campaigns/")) {
     candidates.push(`/lantern-and-ledger${pathname}`, `/beacon-and-bulletin${pathname}`)
@@ -85,6 +123,7 @@ function canonicalSlugHref(dataSlug, originalHref) {
   return `${canonicalRoutePath(pathname)}${suffix}`
 }
 
+await normalizePublicationOutputRoots()
 await collectOutput(outputRoot)
 
 const canonicalRoutes = new Map()
