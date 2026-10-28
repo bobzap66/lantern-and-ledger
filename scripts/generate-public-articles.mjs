@@ -3,10 +3,11 @@ import path from "node:path"
 import { execFileSync } from "node:child_process"
 
 const CONTENT_ROOT = path.resolve(process.argv[2] ?? "content")
-const INDEX_REL = "The Lantern and Ledger/Articles.md"
+const LANTERN_ROOT = "Lantern and Ledger"
+const INDEX_REL = `${LANTERN_ROOT}/Articles.md`
 const INDEX_FILE = path.join(CONTENT_ROOT, INDEX_REL)
 const INDEX_DIR = path.posix.dirname(INDEX_REL)
-const HOME_FILE = path.join(CONTENT_ROOT, "index.md")
+const HOME_FILE = path.join(CONTENT_ROOT, LANTERN_ROOT, "index.md")
 const START = "<!-- PUBLIC_ARTICLES_START -->"
 const END = "<!-- PUBLIC_ARTICLES_END -->"
 const HOME_LINK_START = "<!-- PUBLIC_ARTICLES_LINK_START -->"
@@ -110,7 +111,7 @@ function titleFromFrontmatter(fm, rel) {
 }
 
 function campaignFromRel(rel) {
-  return /^Campaigns\/([^/]+)\//i.exec(rel)?.[1] ?? ""
+  return /^Lantern and Ledger\/Campaigns\/([^/]+)\//i.exec(rel)?.[1] ?? ""
 }
 
 function typeLabel(value) {
@@ -162,7 +163,7 @@ function render(items) {
 function renderHomeLink() {
   return [
     HOME_LINK_START,
-    '<p class="public-articles-link"><a href="./The%20Lantern%20and%20Ledger/Articles">Browse spoiler-free Lantern & Ledger articles →</a></p>',
+    '<p class="public-articles-link"><a href="./Articles">Browse spoiler-free Lantern & Ledger articles →</a></p>',
     HOME_LINK_END,
   ].join("\n")
 }
