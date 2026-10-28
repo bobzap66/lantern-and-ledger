@@ -200,10 +200,15 @@ function renderPublicationHomeLink(publication) {
 function renderRootHomeLinks() {
   return [
     HOME_LINK_START,
-    '<div class="public-articles-links">',
-    '  <p class="public-articles-link"><a href="./lantern-and-ledger/articles/">Browse spoiler-free Lantern & Ledger articles →</a></p>',
-    '  <p class="public-articles-link"><a href="./beacon-and-bulletin/articles/">Browse spoiler-free Beacon & Bulletin articles →</a></p>',
-    "</div>",
+    '<section class="greene-reading-room">',
+    '  <span class="greene-reading-eyebrow">Spoiler-free reading</span>',
+    '  <h2>Stories before the spoilers</h2>',
+    '  <p>Browse public-facing features and dispatches from either side of Greene Gaming without opening campaign-spoiler archives.</p>',
+    '  <div class="greene-article-links">',
+    '    <a class="greene-article-link greene-article-link--lantern" href="./lantern-and-ledger/articles/"><strong>Lantern &amp; Ledger</strong><span>Browse Pathfinder articles →</span></a>',
+    '    <a class="greene-article-link greene-article-link--beacon" href="./beacon-and-bulletin/articles/"><strong>Beacon &amp; Bulletin</strong><span>Browse Starfinder articles →</span></a>',
+    "  </div>",
+    "</section>",
     HOME_LINK_END,
   ].join("\n")
 }
