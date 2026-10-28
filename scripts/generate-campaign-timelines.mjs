@@ -2,7 +2,10 @@ import { promises as fs } from "node:fs"
 import path from "node:path"
 
 const contentRoot = path.resolve(process.argv[2] ?? "content")
-const campaignsRoot = path.join(contentRoot, "Campaigns")
+const campaignRoots = [
+  path.join(contentRoot, "Lantern and Ledger", "Campaigns"),
+  path.join(contentRoot, "Beacon and Bulletin", "Campaigns"),
+]
 const START = "<!-- CAMPAIGN_TIMELINE_START -->"
 const END = "<!-- CAMPAIGN_TIMELINE_END -->"
 
@@ -25,7 +28,14 @@ const MONTH_INDEX = new Map(MONTHS.map((month, i) => [month.toLowerCase(), i + 1
 
 async function walk(dir) {
   const out = []
-  for (const entry of await fs.readdir(dir, { withFileTypes: true })) {
+  let entries
+  try {
+    entries = await fs.readdir(dir, { withFileTypes: true })
+  } catch (error) {
+    if (error.code === "ENOENT") return out
+    throw error
+  }
+  for (const entry of entries) {
     if (entry.name === ".git" || entry.name === ".obsidian") continue
     const full = path.join(dir, entry.name)
     if (entry.isDirectory()) out.push(...(await walk(full)))
@@ -57,7 +67,17 @@ function parseManualEvents(text) {
   const pattern = /<!--\s*timeline-event\s*\n([\s\S]*?)\n\s*-->/gi
   for (const match of text.matchAll(pattern)) {
     const event = parseKeyValueLines(match[1])
-    if (event.title && (event.date || event.start || event.event_start || event.campaign_date_start || event.campaign_date || event.sort_order || event.timeline_sort_order)) events.push(event)
+    if (
+      event.title &&
+      (event.date ||
+        event.start ||
+        event.event_start ||
+        event.campaign_date_start ||
+        event.campaign_date ||
+        event.sort_order ||
+        event.timeline_sort_order)
+    )
+      events.push(event)
   }
   return events
 }
@@ -132,7 +152,8 @@ function seasonYearLabel(date) {
 
 function cleanTitle(title, sessionNumber) {
   if (!title) return "Untitled event"
-  if (sessionNumber) return title.replace(new RegExp(`^Session\\s+${sessionNumber}\\s*[:—-]\\s*`, "i"), "")
+  if (sessionNumber)
+    return title.replace(new RegExp(`^Session\\s+${sessionNumber}\\s*[:—-]\\s*`, "i"), "")
   return title
 }
 
@@ -144,7 +165,11 @@ function plainText(value) {
 }
 
 function escapeAttr(value) {
-  return plainText(value).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+  return plainText(value)
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
 }
 
 function relativeWikiLink(timelineFile, sourceFile, label) {
@@ -159,8 +184,12 @@ function renderEntry(entry, index, isFirstInGroup) {
   const major = importance === "major" || (!importance && isFirstInGroup)
   const side = index % 2 === 0 ? "left" : "right"
   const kind = major ? "major" : "minor"
-  const title = entry.fm.timeline_title || entry.fm.title || cleanTitle(entry.basename, entry.fm.session_number)
-  const label = entry.fm.timeline_label || entry.fm.label || (entry.fm.session_number ? `Session ${entry.fm.session_number}` : entry.fm.type || "Campaign record")
+  const title =
+    entry.fm.timeline_title || entry.fm.title || cleanTitle(entry.basename, entry.fm.session_number)
+  const label =
+    entry.fm.timeline_label ||
+    entry.fm.label ||
+    (entry.fm.session_number ? `Session ${entry.fm.session_number}` : entry.fm.type || "Campaign record")
   const summary = entry.fm.timeline_summary || entry.fm.summary || ""
   const dateLabel = entry.fm.timeline_date_label || entry.fm.date_label || ""
   const lines = [
@@ -170,7 +199,8 @@ function renderEntry(entry, index, isFirstInGroup) {
     `> ${dateLabel || formatRange(entry.start, entry.end)}`,
   ]
 
-  const calendarEnabled = String(entry.fm.timeline_calendar || entry.fm.calendar || "").toLowerCase() === "true"
+  const calendarEnabled =
+    String(entry.fm.timeline_calendar || entry.fm.calendar || "").toLowerCase() === "true"
   if (calendarEnabled && entry.start.day) {
     const attrs = [
       'data-calendar="Calendar of Golarion"',
@@ -178,7 +208,8 @@ function renderEntry(entry, index, isFirstInGroup) {
       `data-name="${escapeAttr(entry.fm.calendar_event_name || title)}"`,
       `data-category="${escapeAttr(entry.fm.calendar_category || "Miscellaneous Events")}"`,
     ]
-    if (entry.end?.day && entry.end.raw !== entry.start.raw) attrs.push(`data-end-date="${entry.end.year}-${entry.end.monthName}-${entry.end.day}"`)
+    if (entry.end?.day && entry.end.raw !== entry.start.raw)
+      attrs.push(`data-end-date="${entry.end.year}-${entry.end.monthName}-${entry.end.day}"`)
     lines.push(`>`, `> <span ${attrs.join(" ")}></span>`)
   }
 
@@ -188,7 +219,9 @@ function renderEntry(entry, index, isFirstInGroup) {
     const links = entry.fm.timeline_links || entry.fm.links || entry.fm.link || ""
     if (links) lines.push(`>`, `> ${links}`)
   } else {
-    const readLabel = entry.fm.timeline_link_label || (entry.fm.session_number ? `Read Session ${entry.fm.session_number}` : "Read source")
+    const readLabel =
+      entry.fm.timeline_link_label ||
+      (entry.fm.session_number ? `Read Session ${entry.fm.session_number}` : "Read source")
     lines.push(`>`, `> ${relativeWikiLink(entry.timelineFile, entry.file, readLabel)}`)
   }
   return lines.join("\n")
@@ -227,10 +260,16 @@ function renderGroups(entries, grouping) {
 }
 
 const timelineFiles = []
-for (const file of await walk(campaignsRoot)) {
-  const text = await fs.readFile(file, "utf8")
-  const fm = parseFrontmatter(text)
-  if (String(fm.type || "").toLowerCase() === "timeline" && String(fm.generated_timeline || "").toLowerCase() === "true") timelineFiles.push({ file, text, fm })
+for (const campaignRoot of campaignRoots) {
+  for (const file of await walk(campaignRoot)) {
+    const text = await fs.readFile(file, "utf8")
+    const fm = parseFrontmatter(text)
+    if (
+      String(fm.type || "").toLowerCase() === "timeline" &&
+      String(fm.generated_timeline || "").toLowerCase() === "true"
+    )
+      timelineFiles.push({ file, text, fm })
+  }
 }
 
 for (const timeline of timelineFiles) {
@@ -253,42 +292,75 @@ for (const timeline of timelineFiles) {
     const hasCampaignDate = Boolean(fm.campaign_date_start || fm.campaign_date)
     const explicitOrder = Number(fm.timeline_sort_order)
     const explicitlyIncluded = String(fm.timeline_include || "").toLowerCase() === "true"
-    const isSessionReport = String(fm.type || "").toLowerCase() === "report" && /^Session\s+\d+/i.test(String(fm.title || path.basename(file, ".md")))
+    const isSessionReport =
+      String(fm.type || "").toLowerCase() === "report" &&
+      /^Session\s+\d+/i.test(String(fm.title || path.basename(file, ".md")))
     const calendarRange = isSessionReport ? parseCalendarEventRange(text) : null
     const hasSessionDate = isSessionReport && Boolean(fm.event_start || fm.event_date || calendarRange)
-    if (!hasCampaignDate && !explicitlyIncluded && !hasSessionDate && !Number.isFinite(explicitOrder)) continue
-    if (String(fm.source_layer || "").toLowerCase() === "reconstructed-retrospective" && !explicitlyIncluded) continue
+    if (!hasCampaignDate && !explicitlyIncluded && !hasSessionDate && !Number.isFinite(explicitOrder))
+      continue
+    if (
+      String(fm.source_layer || "").toLowerCase() === "reconstructed-retrospective" &&
+      !explicitlyIncluded
+    )
+      continue
 
-    const sessionMatch = /^Session\s+0*(\d+)/i.exec(String(fm.title || path.basename(file, ".md")))
-    const effectiveFm = isSessionReport && sessionMatch
-      ? {
-          ...fm,
-          session_number: fm.session_number || String(Number(sessionMatch[1])),
-          timeline_label: fm.timeline_label || `Session ${Number(sessionMatch[1])}`,
-          timeline_link_label: fm.timeline_link_label || `Read Session ${Number(sessionMatch[1])}`,
-        }
-      : fm
+    const sessionMatch = /^Session\s+0*(\d+)/i.exec(
+      String(fm.title || path.basename(file, ".md")),
+    )
+    const effectiveFm =
+      isSessionReport && sessionMatch
+        ? {
+            ...fm,
+            session_number: fm.session_number || String(Number(sessionMatch[1])),
+            timeline_label: fm.timeline_label || `Session ${Number(sessionMatch[1])}`,
+            timeline_link_label: fm.timeline_link_label || `Read Session ${Number(sessionMatch[1])}`,
+          }
+        : fm
 
-    const startRaw = fm.campaign_date_start || fm.campaign_date || fm.event_start || fm.event_date || calendarRange?.start.raw
-    const endRaw = fm.campaign_date_end || fm.campaign_date || fm.event_end || fm.event_date || calendarRange?.end.raw || startRaw
+    const startRaw =
+      fm.campaign_date_start ||
+      fm.campaign_date ||
+      fm.event_start ||
+      fm.event_date ||
+      calendarRange?.start.raw
+    const endRaw =
+      fm.campaign_date_end ||
+      fm.campaign_date ||
+      fm.event_end ||
+      fm.event_date ||
+      calendarRange?.end.raw ||
+      startRaw
     let start = parseGolarionDate(startRaw)
     let end = parseGolarionDate(endRaw)
     const sortOrder = Number.isFinite(explicitOrder) ? explicitOrder : null
     if ((!start || !end) && sortOrder !== null) {
       if (!String(fm.timeline_date_label || fm.date_label || "").trim()) {
-        throw new Error(`Timeline entry needs timeline_date_label when using timeline_sort_order: ${path.relative(contentRoot, file)}`)
+        throw new Error(
+          `Timeline entry needs timeline_date_label when using timeline_sort_order: ${path.relative(contentRoot, file)}`,
+        )
       }
       start = { raw: String(sortOrder), year: 0, month: null, monthName: null, day: null }
       end = start
     }
     if (!start || !end) continue
 
-    entries.push({ file, timelineFile: timeline.file, basename: path.basename(file, ".md"), fm: effectiveFm, start, end, sortOrder, manual: false })
+    entries.push({
+      file,
+      timelineFile: timeline.file,
+      basename: path.basename(file, ".md"),
+      fm: effectiveFm,
+      start,
+      end,
+      sortOrder,
+      manual: false,
+    })
   }
 
   for (const sourceText of manualSources) {
     for (const fm of parseManualEvents(sourceText)) {
-      const startRaw = fm.start || fm.date || fm.event_start || fm.campaign_date_start || fm.campaign_date
+      const startRaw =
+        fm.start || fm.date || fm.event_start || fm.campaign_date_start || fm.campaign_date
       const endRaw = fm.end || fm.event_end || fm.campaign_date_end || startRaw
       let start = parseGolarionDate(startRaw)
       let end = parseGolarionDate(endRaw)
@@ -302,20 +374,39 @@ for (const timeline of timelineFiles) {
         end = start
       }
       if (!start || !end) continue
-      entries.push({ file: timeline.file, timelineFile: timeline.file, basename: fm.title, fm, start, end, sortOrder: Number.isFinite(sortOrder) ? sortOrder : null, manual: true })
+      entries.push({
+        file: timeline.file,
+        timelineFile: timeline.file,
+        basename: fm.title,
+        fm,
+        start,
+        end,
+        sortOrder: Number.isFinite(sortOrder) ? sortOrder : null,
+        manual: true,
+      })
     }
   }
 
-  entries.sort((a, b) => (a.sortOrder ?? sortKey(a.start)) - (b.sortOrder ?? sortKey(b.start)) || sortKey(a.end) - sortKey(b.end) || String(a.fm.title || a.basename).localeCompare(String(b.fm.title || b.basename)))
+  entries.sort(
+    (a, b) =>
+      (a.sortOrder ?? sortKey(a.start)) - (b.sortOrder ?? sortKey(b.start)) ||
+      sortKey(a.end) - sortKey(b.end) ||
+      String(a.fm.title || a.basename).localeCompare(String(b.fm.title || b.basename)),
+  )
 
   const grouping = String(timeline.fm.timeline_grouping || "year").toLowerCase()
   const rendered = renderGroups(entries, grouping)
   const block = `${START}\n${rendered}\n${END}`
   const pattern = new RegExp(`${START}[\\s\\S]*?${END}`, "m")
-  if (!pattern.test(timeline.text)) throw new Error(`Generated timeline is missing markers: ${path.relative(contentRoot, timeline.file)}`)
+  if (!pattern.test(timeline.text))
+    throw new Error(
+      `Generated timeline is missing markers: ${path.relative(contentRoot, timeline.file)}`,
+    )
   const updated = timeline.text.replace(pattern, block)
   await fs.writeFile(timeline.file, updated, "utf8")
-  console.log(`Generated timeline: ${path.relative(contentRoot, timeline.file)} (${entries.length} entries)`)
+  console.log(
+    `Generated timeline: ${path.relative(contentRoot, timeline.file)} (${entries.length} entries)`,
+  )
 }
 
 if (timelineFiles.length === 0) console.log("No generated campaign timelines configured")
