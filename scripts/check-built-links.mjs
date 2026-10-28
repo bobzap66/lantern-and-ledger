@@ -2,8 +2,9 @@ import { promises as fs } from "node:fs"
 import path from "node:path"
 
 const outputRoot = path.resolve(process.argv[2] ?? "public")
-const basePath = `/${(process.argv[3] ?? "lantern-and-ledger").replace(/^\/+|\/+$/g, "")}/`
-const baseRoot = basePath.replace(/\/$/, "")
+const deploymentBase = (process.argv[3] ?? "").replace(/^\/+|\/+$/g, "")
+const baseRoot = deploymentBase ? `/${deploymentBase}` : ""
+const basePath = `${baseRoot}/`.replace(/\/{2,}/g, "/")
 const htmlFiles = []
 const outputPaths = new Set()
 
@@ -22,10 +23,14 @@ async function collectOutput(dir) {
 function routeFor(file) {
   const relative = path.relative(outputRoot, file).split(path.sep).join("/")
   if (relative === "index.html") return basePath
-  return `${basePath}${relative.replace(/\.html$/, "").replace(/\/index$/, "/")}`
+  return `${basePath}${relative.replace(/\.html$/, "").replace(/\/index$/, "/")}`.replace(
+    /\/{2,}/g,
+    "/",
+  )
 }
 
 function isInsideBase(pathname) {
+  if (!baseRoot) return pathname.startsWith("/")
   return pathname === baseRoot || pathname.startsWith(basePath)
 }
 
