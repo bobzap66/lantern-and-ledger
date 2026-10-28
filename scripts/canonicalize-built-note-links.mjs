@@ -3,8 +3,9 @@ import path from "node:path"
 import { slugifyFilePath } from "@quartz-community/utils"
 
 const outputRoot = path.resolve(process.argv[2] ?? "public")
-const baseRoot = `/${(process.argv[3] ?? "lantern-and-ledger").replace(/^\/+|\/+$/g, "")}`
-const siteOrigin = new URL(process.argv[4] ?? "https://bobzap66.github.io").origin
+const deploymentBase = (process.argv[3] ?? "").replace(/^\/+|\/+$/g, "")
+const baseRoot = deploymentBase ? `/${deploymentBase}` : ""
+const siteOrigin = new URL(process.argv[4] ?? "https://greene-gaming.com").origin
 const htmlFiles = []
 const outputPaths = new Set()
 
@@ -28,7 +29,10 @@ function attributeValue(tag, name) {
 function routeFor(file) {
   const relative = path.relative(outputRoot, file).split(path.sep).join("/")
   if (relative === "index.html") return `${baseRoot}/`
-  return `${baseRoot}/${relative.replace(/\.html$/, "").replace(/\/index$/, "/")}`
+  return `${baseRoot}/${relative.replace(/\.html$/, "").replace(/\/index$/, "/")}`.replace(
+    /\/{2,}/g,
+    "/",
+  )
 }
 
 function suffixFor(originalHref) {
@@ -40,14 +44,14 @@ function canonicalSlugHref(dataSlug, originalHref) {
   let slug = dataSlug.replace(/^\/+|\/+$/g, "")
   const suffix = suffixFor(originalHref)
 
-  if (!slug || slug === "index") return `${baseRoot}/${suffix}`
+  if (!slug || slug === "index") return `${baseRoot}/${suffix}`.replace(/\/{2,}/g, "/")
 
   if (slug.endsWith("/index")) {
     slug = slug.slice(0, -"/index".length)
-    return `${baseRoot}/${slug}/${suffix}`
+    return `${baseRoot}/${slug}/${suffix}`.replace(/\/{2,}/g, "/")
   }
 
-  return `${baseRoot}/${slug}${suffix}`
+  return `${baseRoot}/${slug}${suffix}`.replace(/\/{2,}/g, "/")
 }
 
 await collectOutput(outputRoot)
@@ -73,7 +77,7 @@ function canonicalHref(file, originalHref, dataSlug) {
   if (target.origin !== siteOrigin) return originalHref
 
   let pathname = target.pathname
-  const insideBase = pathname === baseRoot || pathname.startsWith(`${baseRoot}/`)
+  const insideBase = !baseRoot || pathname === baseRoot || pathname.startsWith(`${baseRoot}/`)
   if (!insideBase) {
     pathname = `${baseRoot}${pathname}`.replace(/\/{2,}/g, "/")
   }
@@ -102,7 +106,7 @@ function canonicalImageSrc(file, originalSrc) {
     pathname = target.pathname
   }
 
-  const insideBase = pathname === baseRoot || pathname.startsWith(`${baseRoot}/`)
+  const insideBase = !baseRoot || pathname === baseRoot || pathname.startsWith(`${baseRoot}/`)
   if (!insideBase) {
     pathname = `${baseRoot}${pathname}`.replace(/\/{2,}/g, "/")
   }
