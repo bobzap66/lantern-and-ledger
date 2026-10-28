@@ -161,6 +161,7 @@ export function sitePublicationExplorerFilter(node: SitePublicationExplorerNode)
     let ownPublication = "lantern-and-ledger"
     let bestBoundaryLength = -1
     let hasCurrentPublicationDescendant = false
+    let isDirectPublicationBoundary = false
 
     for (const rawBoundary of parsed) {
       const boundaryPath = String(rawBoundary?.path ?? "")
@@ -177,6 +178,10 @@ export function sitePublicationExplorerFilter(node: SitePublicationExplorerNode)
         bestBoundaryLength = boundaryPath.length
       }
 
+      if (node.isFolder && boundaryPath.length > 0 && boundaryPath === path) {
+        isDirectPublicationBoundary = true
+      }
+
       if (
         node.isFolder &&
         publication === normalizedPublication &&
@@ -185,6 +190,13 @@ export function sitePublicationExplorerFilter(node: SitePublicationExplorerNode)
       ) {
         hasCurrentPublicationDescendant = true
       }
+    }
+
+    // Greene Gaming is the parent publication. Its Explorer should expose the two
+    // direct publication roots as destinations without expanding their full trees.
+    if (normalizedPublication === "greene-gaming") {
+      if (!node.isFolder) return ownPublication === normalizedPublication
+      return ownPublication === normalizedPublication || isDirectPublicationBoundary
     }
 
     if (!node.isFolder) return ownPublication === normalizedPublication
