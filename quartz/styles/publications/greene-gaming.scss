@@ -1,0 +1,156 @@
+/* Greene Gaming parent brand and homepage. */
+#quartz-body.site-publication--greene-gaming,
+.site-publication-header--greene-gaming {
+  --publication-accent: #dc9e3e;
+  --publication-secondary: #154e64;
+  --publication-rule: rgba(106, 169, 125, 0.34);
+  --publication-surface: #030908;
+  --site-publication-accent: #dc9e3e;
+  --site-publication-secondary: #154e64;
+  --site-publication-rule: rgba(106, 169, 125, 0.34);
+  --site-publication-glow: 0 18px 46px rgba(3, 9, 8, 0.32);
+}
+
+#quartz-body.site-publication--greene-gaming {
+  --secondary: #385c35 !important;
+  --tertiary: #154e64 !important;
+  --highlight: rgba(106, 169, 125, 0.16) !important;
+  --textHighlight: rgba(148, 227, 243, 0.22) !important;
+}
+
+.site-publication-header--greene-gaming .site-publication-masthead img {
+  width: min(100%, 28rem);
+  aspect-ratio: 1088 / 363;
+  padding: clamp(0.75rem, 2.4vw, 1.35rem) clamp(1rem, 4vw, 2.4rem);
+  box-sizing: border-box;
+  border-color: rgba(232, 209, 168, 0.26);
+  background:
+    radial-gradient(circle at 24% 50%, rgba(56, 92, 53, 0.2), transparent 34%),
+    radial-gradient(circle at 76% 50%, rgba(21, 78, 100, 0.24), transparent 36%), #030908;
+}
+
+.site-publication-header--greene-gaming .site-publication-archive-rule {
+  color: #6aa97d;
+}
+
+#quartz-body.site-publication--greene-gaming .page-title::after {
+  content: "TABLETOP WORLDS · SHARED STORIES" !important;
+  color: #6aa97d !important;
+}
+
+body[data-slug="index"] #quartz-body.site-publication--greene-gaming {
+  .page-header {
+    margin-top: 1.25rem;
+  }
+
+  article {
+    max-width: 72rem;
+    margin-inline: auto;
+  }
+
+  .greene-home-intro {
+    max-width: 47rem;
+    margin: 0.5rem auto 2.2rem;
+    color: var(--darkgray);
+    font-size: clamp(1.05rem, 1.4vw, 1.2rem);
+    line-height: 1.7;
+    text-align: center;
+  }
+
+  .greene-publication-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(1rem, 3vw, 1.6rem);
+    margin: 1.25rem 0 2rem;
+  }
+
+  .greene-publication-card {
+    position: relative;
+    display: flex;
+    min-height: 17rem;
+    flex-direction: column;
+    padding: clamp(1.25rem, 3vw, 1.8rem);
+    overflow: hidden;
+    border: 1px solid var(--publication-rule);
+    border-radius: 0.65rem;
+    background: color-mix(in srgb, var(--light) 92%, var(--card-accent) 8%);
+    box-shadow: 0 14px 32px rgba(3, 9, 8, 0.12);
+  }
+
+  .greene-publication-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 4px;
+    background: linear-gradient(var(--card-accent), var(--card-secondary));
+  }
+
+  .greene-publication-card--lantern {
+    --card-accent: #dc9e3e;
+    --card-secondary: #385c35;
+  }
+
+  .greene-publication-card--beacon {
+    --card-accent: #94e3f3;
+    --card-secondary: #154e64;
+  }
+
+  .greene-publication-eyebrow {
+    color: var(--card-secondary);
+    font-size: 0.68rem;
+    font-weight: 750;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .greene-publication-card h2 {
+    margin: 0.55rem 0 0.75rem;
+    padding: 0;
+    border: 0;
+    color: var(--dark);
+    font-size: clamp(1.55rem, 3vw, 2.1rem);
+  }
+
+  .greene-publication-card p {
+    margin: 0;
+    color: var(--darkgray);
+    line-height: 1.65;
+  }
+
+  .greene-publication-link {
+    display: inline-flex;
+    width: fit-content;
+    margin-top: auto;
+    padding-top: 1.3rem;
+    color: var(--card-secondary);
+    font-weight: 750;
+    text-decoration: none;
+  }
+
+  .greene-publication-link:hover {
+    color: var(--card-accent);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .public-articles-link {
+    margin-top: 1.5rem;
+    text-align: center;
+  }
+}
+
+@media (max-width: 800px) {
+  .site-publication-header--greene-gaming .site-publication-masthead img {
+    width: min(100%, 20rem);
+  }
+
+  body[data-slug="index"] #quartz-body.site-publication--greene-gaming {
+    .greene-publication-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .greene-publication-card {
+      min-height: 14rem;
+    }
+  }
+}

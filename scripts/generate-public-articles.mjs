@@ -161,7 +161,7 @@ function render(items) {
 function renderHomeLink() {
   return [
     HOME_LINK_START,
-    '<p class="public-articles-link"><a href="./Articles">Browse spoiler-free Lantern & Ledger articles →</a></p>',
+    '<p class="public-articles-link"><a href="./lantern-and-ledger/articles/">Browse spoiler-free Lantern & Ledger articles →</a></p>',
     HOME_LINK_END,
   ].join("\n")
 }

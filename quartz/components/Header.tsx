@@ -6,7 +6,9 @@ const Header: QuartzComponent = (props: QuartzComponentProps) => {
   const { children, cfg, ctx, fileData } = props
   const frontmatter = fileData.frontmatter as Record<string, unknown> | undefined
   const sitePublication = getSitePublication(frontmatter)
+  const isGreeneGaming = sitePublication.key === "greene-gaming"
   const isLanternLedger = sitePublication.key === "lantern-and-ledger"
+  const isBeaconBulletin = sitePublication.key === "beacon-and-bulletin"
   const siteRoot =
     ctx.argv.serve || !cfg.baseUrl
       ? ""
@@ -17,7 +19,8 @@ const Header: QuartzComponent = (props: QuartzComponentProps) => {
     .map(encodeURIComponent)
     .join("/")
   const homePath = encodedHomeSlug ? `${siteRoot}/${encodedHomeSlug}` : `${siteRoot}/`
-  const lanternHomePath = `${siteRoot}/`
+  const greeneHomePath = `${siteRoot}/`
+  const lanternHomePath = `${siteRoot}/lantern-and-ledger/`
   const beaconHomePath = `${siteRoot}/beacon-and-bulletin/`
   const spoilerControllerPath = `${siteRoot}/static/campaign-spoilers.js`
   const preferencesControllerPath = `${siteRoot}/static/preferences.js`
@@ -31,9 +34,12 @@ const Header: QuartzComponent = (props: QuartzComponentProps) => {
   const compactPath = `${brandingRoot}/lantern-and-ledger-compact.webp`
   const beaconMastheadPath = `${siteRoot}/static/branding/beacon-and-bulletin-masthead.webp`
   const beaconCompactPath = `${siteRoot}/static/branding/beacon-and-bulletin-compact.webp`
-  const faviconPath = isLanternLedger
-    ? `${brandingRoot}/lantern-and-ledger-favicon.webp`
-    : `${siteRoot}/static/branding/beacon-and-bulletin-favicon.webp`
+  const greeneWordmarkPath = `${siteRoot}/static/branding/greene-gaming-wordmark.png`
+  const faviconPath = isGreeneGaming
+    ? `${siteRoot}/static/branding/greene-gaming-favicon.webp`
+    : isLanternLedger
+      ? `${brandingRoot}/lantern-and-ledger-favicon.webp`
+      : `${siteRoot}/static/branding/beacon-and-bulletin-favicon.webp`
 
   return (
     <>
@@ -54,7 +60,16 @@ const Header: QuartzComponent = (props: QuartzComponentProps) => {
           href={homePath}
           aria-label={`${sitePublication.title} home`}
         >
-          {isLanternLedger ? (
+          {isGreeneGaming ? (
+            <img
+              class="site-publication-masthead__greene"
+              src={greeneWordmarkPath}
+              alt="Greene Gaming"
+              width={1088}
+              height={363}
+              decoding="async"
+            />
+          ) : isLanternLedger ? (
             <picture>
               <source media="(max-width: 800px)" srcSet={compactPath} width={1254} height={1254} />
               <img
@@ -80,7 +95,17 @@ const Header: QuartzComponent = (props: QuartzComponentProps) => {
         <div class="site-publication-archive-rule" aria-hidden="true">
           <span>{sitePublication.archiveLabel}</span>
         </div>
-        <nav class="site-publication-switcher" aria-label="Publications">
+        <nav class="site-publication-switcher" aria-label="Greene Gaming publications">
+          <a
+            class={`site-publication-switcher__link${isGreeneGaming ? " is-current" : ""}`}
+            href={greeneHomePath}
+            aria-current={isGreeneGaming ? "page" : undefined}
+          >
+            Greene Gaming
+          </a>
+          <span class="site-publication-switcher__divider" aria-hidden="true">
+            /
+          </span>
           <a
             class={`site-publication-switcher__link${isLanternLedger ? " is-current" : ""}`}
             href={lanternHomePath}
@@ -92,9 +117,9 @@ const Header: QuartzComponent = (props: QuartzComponentProps) => {
             /
           </span>
           <a
-            class={`site-publication-switcher__link${!isLanternLedger ? " is-current" : ""}`}
+            class={`site-publication-switcher__link${isBeaconBulletin ? " is-current" : ""}`}
             href={beaconHomePath}
-            aria-current={!isLanternLedger ? "page" : undefined}
+            aria-current={isBeaconBulletin ? "page" : undefined}
           >
             Beacon & Bulletin
           </a>
