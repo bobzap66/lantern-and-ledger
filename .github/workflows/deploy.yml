@@ -94,11 +94,11 @@ jobs:
 
       - name: Copy theme ornament assets
         run: |
-          mkdir -p public/ornaments
-          cp quartz/static/ornaments/*.svg public/ornaments/ 2>/dev/null || true
-          cp quartz/static/ornaments/*.webp public/ornaments/ 2>/dev/null || true
+          mkdir -p public/lantern-and-ledger/ornaments
+          cp quartz/static/ornaments/*.svg public/lantern-and-ledger/ornaments/ 2>/dev/null || true
+          cp quartz/static/ornaments/*.webp public/lantern-and-ledger/ornaments/ 2>/dev/null || true
           echo "Published theme ornaments:"
-          ls -la public/ornaments/
+          ls -la public/lantern-and-ledger/ornaments/
 
       - name: Merge campaign timeline metadata
         run: node scripts/merge-golarion-timeline-metadata.mjs

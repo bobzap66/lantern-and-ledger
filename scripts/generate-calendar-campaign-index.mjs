@@ -3,7 +3,8 @@ import path from "node:path"
 import YAML from "yaml"
 
 const contentRoot = path.resolve(process.argv[2] ?? "content")
-const calendarFile = path.join(contentRoot, "Calendar.md")
+const calendarFile = path.join(contentRoot, "Lantern and Ledger", "Calendar.md")
+const calendarRoot = path.dirname(calendarFile)
 const campaignsRoot = path.join(contentRoot, "Lantern and Ledger", "Campaigns")
 const START = "<!-- CALENDAR_CAMPAIGN_INDEX_START -->"
 const END = "<!-- CALENDAR_CAMPAIGN_INDEX_END -->"
@@ -60,7 +61,7 @@ async function findTimeline(campaignDir) {
     } else if (entry.isFile() && entry.name.toLowerCase().endsWith(".md")) {
       const text = await fs.readFile(fullPath, "utf8")
       if (parseFrontmatter(text).type === "timeline") {
-        matches.push(path.relative(contentRoot, fullPath).replaceAll(path.sep, "/"))
+        matches.push(path.relative(calendarRoot, fullPath).replaceAll(path.sep, "/"))
       }
     }
   }
@@ -71,7 +72,7 @@ function card(campaign, timeline) {
   const { name, metadata, relativeDir } = campaign
   const rawDate =
     metadata.status === "archived"
-      ? metadata.current_date ?? metadata.campaign_date_end
+      ? (metadata.current_date ?? metadata.campaign_date_end)
       : metadata.current_date
   const date = formatCampaignDate(rawDate)
   const dateLabel =
@@ -86,7 +87,7 @@ function card(campaign, timeline) {
   const linkLabel = timeline ? `View ${name} timeline` : `Browse ${name}`
 
   return [
-    "  <section class=\"campaign-archive-group\">",
+    '  <section class="campaign-archive-group">',
     `    <h3>${escapeHtml(name)}</h3>`,
     ...(Number.isInteger(startYear) && startYear > 0
       ? [`    <p><strong>Campaign began · ${startYear} AR</strong></p>`]
@@ -117,7 +118,9 @@ async function main() {
     if (!metadata.status || !metadata.directory_summary) {
       throw new Error(`${indexPath} needs status and directory_summary metadata`)
     }
-    const relativeDir = path.relative(contentRoot, path.dirname(indexPath)).replaceAll(path.sep, "/")
+    const relativeDir = path
+      .relative(calendarRoot, path.dirname(indexPath))
+      .replaceAll(path.sep, "/")
     const timelines = await findTimeline(path.dirname(indexPath))
     campaigns.push({
       name: metadata.title ?? entry.name,
@@ -165,7 +168,9 @@ async function main() {
   }
   const updated = `${source.slice(0, start + START.length)}\n\n${generated}\n\n${source.slice(end)}`
   await fs.writeFile(calendarFile, updated, "utf8")
-  console.log(`Generated calendar campaign index for ${campaigns.length} campaigns in ${calendarFile}`)
+  console.log(
+    `Generated calendar campaign index for ${campaigns.length} campaigns in ${calendarFile}`,
+  )
 }
 
 main().catch((error) => {
