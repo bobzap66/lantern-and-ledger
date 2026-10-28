@@ -3,7 +3,6 @@ import path from "node:path"
 import YAML from "yaml"
 
 const contentRoot = path.resolve(process.argv[2] ?? "content")
-const campaignsRoot = path.join(contentRoot, "Campaigns")
 const DIRECTORY_START = "<!-- CAMPAIGN_DIRECTORY_GENERATED_START -->"
 const DIRECTORY_END = "<!-- CAMPAIGN_DIRECTORY_GENERATED_END -->"
 const ARCHIVE_START = "<!-- CAMPAIGN_ARCHIVE_GENERATED_START -->"
@@ -14,6 +13,10 @@ const STATUS_GROUPS = [
   { status: "upcoming", title: "Upcoming Campaigns" },
   { status: "archived", title: "Archived Campaigns" },
 ]
+const PUBLICATION_CAMPAIGN_ROOTS = new Map([
+  ["Lantern & Ledger", path.join(contentRoot, "Lantern and Ledger", "Campaigns")],
+  ["Beacon & Bulletin", path.join(contentRoot, "Beacon and Bulletin", "Campaigns")],
+])
 
 function parseFrontmatter(text) {
   const match = /^---\s*\r?\n([\s\S]*?)\r?\n---/.exec(text)
@@ -29,6 +32,16 @@ function normalizeSitePublication(value) {
 
   if (normalized === "beacon & bulletin") return "Beacon & Bulletin"
   return DEFAULT_SITE_PUBLICATION
+}
+
+function campaignRootForPublication(sitePublication) {
+  const root = PUBLICATION_CAMPAIGN_ROOTS.get(sitePublication)
+  if (!root) throw new Error(`Unsupported site_publication: ${sitePublication}`)
+  return root
+}
+
+function relativeContentPath(filePath) {
+  return path.relative(contentRoot, filePath).replaceAll(path.sep, "/")
 }
 
 function escapeHtml(value) {
@@ -65,7 +78,7 @@ function startYear(campaign) {
   return dateYear ? Number(dateYear) : 0
 }
 
-function card(campaign, sourceDir, { archived = false, titleLevel = 3 } = {}) {
+function card(campaign, sourceDir, campaignBaseRel, { archived = false, titleLevel = 3 } = {}) {
   const { folder, metadata, name } = campaign
   const slug = campaignSlug(folder)
   const classes = ["campaign-directory__card", `campaign-directory__card--${slug}`]
@@ -74,7 +87,7 @@ function card(campaign, sourceDir, { archived = false, titleLevel = 3 } = {}) {
   const accent = /^#[\da-f]{6}$/i.test(String(metadata.directory_accent ?? ""))
     ? ` style="--campaign-directory-accent: ${metadata.directory_accent}"`
     : ""
-  const href = relativeUrl(sourceDir, path.posix.join("Campaigns", folder))
+  const href = relativeUrl(sourceDir, path.posix.join(campaignBaseRel, folder))
   const image = typeof metadata.directory_image === "string" ? metadata.directory_image : ""
   const imageTarget = image.replace(/^\/+/, "")
   const imageMarkup = imageTarget
@@ -110,6 +123,7 @@ function replaceGeneratedBlock(source, startMarker, endMarker, generated, filePa
 }
 
 async function loadCampaigns(sitePublication) {
+  const campaignsRoot = campaignRootForPublication(sitePublication)
   const entries = await fs.readdir(campaignsRoot, { withFileTypes: true })
   const campaigns = []
   for (const entry of entries) {
@@ -145,7 +159,7 @@ async function loadCampaigns(sitePublication) {
   return campaigns
 }
 
-function buildDirectory(campaigns, sitePublication, sourceDir) {
+function buildDirectory(campaigns, sitePublication, sourceDir, campaignBaseRel) {
   const counts = STATUS_GROUPS.map(({ status }) => {
     const count = campaigns.filter((campaign) => campaign.metadata.status === status).length
     return `${count} ${status === "upcoming" ? "upcoming" : status} campaign${count === 1 ? "" : "s"}`
@@ -156,7 +170,7 @@ function buildDirectory(campaigns, sitePublication, sourceDir) {
     if (members.length === 0) return ""
     const archived = status === "archived"
     const cards = members
-      .map((campaign) => card(campaign, sourceDir, { archived, titleLevel: 3 }))
+      .map((campaign) => card(campaign, sourceDir, campaignBaseRel, { archived, titleLevel: 3 }))
       .join("\n")
     return [
       '<section class="campaign-directory__section">',
@@ -179,12 +193,12 @@ function buildDirectory(campaigns, sitePublication, sourceDir) {
   ].join("\n")
 }
 
-function buildArchive(campaigns, sitePublication, sourceDir) {
+function buildArchive(campaigns, sitePublication, sourceDir, campaignBaseRel) {
   const archived = campaigns.filter((campaign) => campaign.metadata.status === "archived")
   const archiveContent =
     archived.length > 0
       ? archived
-          .map((campaign) => card(campaign, sourceDir, { archived: true, titleLevel: 2 }))
+          .map((campaign) => card(campaign, sourceDir, campaignBaseRel, { archived: true, titleLevel: 2 }))
           .join("\n")
       : '<p class="campaign-directory__empty">No archived campaigns yet.</p>'
 
@@ -242,9 +256,8 @@ async function main() {
       )
     }
 
-    const sourceDir = path
-      .relative(contentRoot, path.dirname(target.directoryFile))
-      .replace(/\\/g, "/")
+    const sourceDir = relativeContentPath(path.dirname(target.directoryFile))
+    const campaignBaseRel = relativeContentPath(campaignRootForPublication(directoryPublication))
     const campaigns = await loadCampaigns(directoryPublication)
     const outputs = [
       {
@@ -252,14 +265,14 @@ async function main() {
         source: target.directorySource,
         startMarker: DIRECTORY_START,
         endMarker: DIRECTORY_END,
-        generated: buildDirectory(campaigns, directoryPublication, sourceDir),
+        generated: buildDirectory(campaigns, directoryPublication, sourceDir, campaignBaseRel),
       },
       {
         filePath: target.archiveFile,
         source: target.archiveSource,
         startMarker: ARCHIVE_START,
         endMarker: ARCHIVE_END,
-        generated: buildArchive(campaigns, directoryPublication, sourceDir),
+        generated: buildArchive(campaigns, directoryPublication, sourceDir, campaignBaseRel),
       },
     ]
 
