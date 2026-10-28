@@ -15,7 +15,13 @@ const SMALL_WORDS = new Set([
   "to",
 ])
 
-export function campaignFromSlug(slug: string | undefined) {
+type CampaignLocation = {
+  fallbackKey: string
+  rootSlug: string
+  fallbackName: string
+}
+
+function campaignLocationFromSlug(slug: string | undefined): CampaignLocation | null {
   if (!slug) return null
 
   const directMatch = /^campaigns\/([^/]+)(?:\/|$)/i.exec(slug)
@@ -23,16 +29,20 @@ export function campaignFromSlug(slug: string | undefined) {
 
   const first = directMatch[1]?.toLowerCase()
   let key: string | undefined
+  let rootSlug: string | undefined
 
   if (first === "archived") {
     key = /^campaigns\/archived\/([^/]+)(?:\/|$)/i.exec(slug)?.[1]
+    if (key) rootSlug = `campaigns/archived/${key}`
   } else {
     key = directMatch[1]
+    if (key) rootSlug = `campaigns/${key}`
   }
 
   const normalizedKey = key?.toLowerCase()
   if (
     !normalizedKey ||
+    !rootSlug ||
     normalizedKey === "campaigns" ||
     normalizedKey === "archived" ||
     normalizedKey === "index" ||
@@ -50,16 +60,47 @@ export function campaignFromSlug(slug: string | undefined) {
       return lower.charAt(0).toUpperCase() + lower.slice(1)
     })
 
-  return { key: normalizedKey, name: words.join(" ") }
+  return {
+    fallbackKey: normalizedKey,
+    rootSlug: rootSlug.toLowerCase(),
+    fallbackName: words.join(" "),
+  }
+}
+
+export function campaignFromSlug(slug: string | undefined) {
+  const location = campaignLocationFromSlug(slug)
+  if (!location) return null
+  return { key: location.fallbackKey, name: location.fallbackName }
 }
 
 export function shouldGateCampaignPage(slug: string | undefined, spoiler: unknown) {
   return campaignFromSlug(slug) !== null && spoiler !== false
 }
 
-export const CampaignSpoilerGate: QuartzComponent = ({ fileData }: QuartzComponentProps) => {
-  const campaign = campaignFromSlug(fileData.slug)
-  if (!campaign || fileData.frontmatter?.spoiler === false) return null
+export const CampaignSpoilerGate: QuartzComponent = ({ fileData, allFiles }: QuartzComponentProps) => {
+  if (fileData.frontmatter?.spoiler === false) return null
+
+  const location = campaignLocationFromSlug(fileData.slug)
+  if (!location) return null
+
+  const campaignRoot = allFiles.find(
+    (candidate) => candidate.slug?.toLowerCase() === location.rootSlug,
+  )
+
+  const explicitCampaignId = fileData.frontmatter?.campaign_id
+  const inheritedCampaignId = campaignRoot?.frontmatter?.campaign_id
+  const rootTitle = campaignRoot?.frontmatter?.title
+
+  const key =
+    (typeof explicitCampaignId === "string" && explicitCampaignId.trim()) ||
+    (typeof inheritedCampaignId === "string" && inheritedCampaignId.trim()) ||
+    location.fallbackKey
+
+  const name =
+    (typeof rootTitle === "string" && rootTitle.trim()) ||
+    location.fallbackName
+
+  const campaign = { key: key.toLowerCase(), name }
 
   return (
     <div
