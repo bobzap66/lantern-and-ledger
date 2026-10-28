@@ -48,63 +48,191 @@ body[data-slug="index"] #quartz-body.site-publication--greene-gaming {
     margin-inline: auto;
   }
 
-  .greene-home-intro {
-    max-width: 47rem;
-    margin: 0.5rem auto 2.2rem;
-    color: var(--darkgray);
-    font-size: clamp(1.05rem, 1.4vw, 1.2rem);
-    line-height: 1.7;
+  .greene-home-hero {
+    position: relative;
+    margin: 0.4rem 0 clamp(2rem, 5vw, 3.25rem);
+    padding: clamp(1.6rem, 5vw, 3rem) clamp(1.2rem, 5vw, 3rem) clamp(1.7rem, 4vw, 2.4rem);
+    overflow: hidden;
+    border: 1px solid rgba(232, 209, 168, 0.2);
+    border-radius: 1.15rem;
+    background:
+      radial-gradient(circle at 18% 38%, rgba(56, 92, 53, 0.42), transparent 34%),
+      radial-gradient(circle at 82% 34%, rgba(21, 78, 100, 0.48), transparent 35%),
+      linear-gradient(145deg, #030908 0%, #07130f 48%, #031019 100%);
+    box-shadow: 0 24px 58px rgba(3, 9, 8, 0.3);
     text-align: center;
+  }
+
+  .greene-home-hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(110deg, transparent 35%, rgba(232, 209, 168, 0.05), transparent 65%);
+  }
+
+  .greene-home-title {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .greene-home-brand {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.4rem, 2vw, 1.15rem);
+    margin-inline: auto;
+  }
+
+  .greene-home-brand img {
+    display: block;
+    margin: 0;
+    border: 0;
+    box-shadow: none;
+  }
+
+  .greene-home-monogram {
+    width: clamp(5.25rem, 15vw, 8rem);
+    border-radius: 18% !important;
+    filter: drop-shadow(0 9px 22px rgba(0, 0, 0, 0.45));
+  }
+
+  .greene-home-wordmark {
+    width: min(64%, 31rem);
+    max-height: 10rem;
+    object-fit: contain;
+    filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.4));
+  }
+
+  .greene-home-intro {
+    position: relative;
+    z-index: 1;
+    max-width: 48rem;
+    margin: clamp(1.25rem, 3vw, 1.8rem) auto 0;
+    color: #e8d1a8;
+    font-size: clamp(1.02rem, 1.5vw, 1.2rem);
+    line-height: 1.72;
+    text-wrap: balance;
   }
 
   .greene-publication-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: clamp(1rem, 3vw, 1.6rem);
-    margin: 1.25rem 0 2rem;
+    margin: 1.25rem 0 2.4rem;
   }
 
   .greene-publication-card {
+    --card-accent: #dc9e3e;
+    --card-secondary: #385c35;
+    --card-glow: rgba(220, 158, 62, 0.18);
     position: relative;
     display: flex;
-    min-height: 17rem;
+    min-height: 20rem;
     flex-direction: column;
-    padding: clamp(1.25rem, 3vw, 1.8rem);
+    padding: clamp(1.35rem, 3vw, 2rem);
     overflow: hidden;
-    border: 1px solid var(--publication-rule);
-    border-radius: 0.65rem;
-    background: color-mix(in srgb, var(--light) 92%, var(--card-accent) 8%);
+    border: 1px solid color-mix(in srgb, var(--card-accent) 38%, var(--gray) 62%);
+    border-radius: 0.9rem;
+    background:
+      radial-gradient(circle at 90% 9%, var(--card-glow), transparent 34%),
+      color-mix(in srgb, var(--light) 95%, var(--card-secondary) 5%);
     box-shadow: 0 14px 32px rgba(3, 9, 8, 0.12);
+    color: var(--dark);
+    text-decoration: none !important;
+    transform: translateY(0);
+    transition:
+      transform 160ms ease,
+      border-color 160ms ease,
+      box-shadow 160ms ease;
   }
 
   .greene-publication-card::before {
     content: "";
     position: absolute;
-    inset: 0 auto 0 0;
-    width: 4px;
-    background: linear-gradient(var(--card-accent), var(--card-secondary));
+    inset: 0 0 auto;
+    height: 4px;
+    background: linear-gradient(90deg, var(--card-secondary), var(--card-accent));
+  }
+
+  .greene-publication-card::after {
+    content: "";
+    position: absolute;
+    right: -3.5rem;
+    bottom: -4.5rem;
+    width: 12rem;
+    height: 12rem;
+    border: 1px solid color-mix(in srgb, var(--card-accent) 28%, transparent);
+    border-radius: 50%;
+    box-shadow:
+      0 0 0 1.8rem color-mix(in srgb, var(--card-secondary) 8%, transparent),
+      0 0 0 3.7rem color-mix(in srgb, var(--card-accent) 5%, transparent);
+    pointer-events: none;
+  }
+
+  .greene-publication-card:hover,
+  .greene-publication-card:focus-visible {
+    border-color: var(--card-accent);
+    box-shadow: 0 18px 42px var(--card-glow);
+    transform: translateY(-4px);
+  }
+
+  .greene-publication-card:focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--card-accent) 60%, white 40%);
+    outline-offset: 3px;
   }
 
   .greene-publication-card--lantern {
     --card-accent: #dc9e3e;
     --card-secondary: #385c35;
+    --card-glow: rgba(220, 158, 62, 0.2);
   }
 
   .greene-publication-card--beacon {
     --card-accent: #94e3f3;
     --card-secondary: #154e64;
+    --card-glow: rgba(148, 227, 243, 0.2);
   }
 
-  .greene-publication-eyebrow {
+  .greene-publication-eyebrow,
+  .greene-reading-eyebrow {
     color: var(--card-secondary);
-    font-size: 0.68rem;
-    font-weight: 750;
-    letter-spacing: 0.14em;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
   }
 
+  .greene-publication-mark {
+    display: grid;
+    width: 3.2rem;
+    height: 3.2rem;
+    margin-top: 1rem;
+    place-items: center;
+    border: 1px solid color-mix(in srgb, var(--card-accent) 55%, var(--card-secondary) 45%);
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--card-secondary) 12%, var(--light) 88%);
+    color: var(--card-secondary);
+    font-family: var(--headerFont);
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    box-shadow: 0 0 22px var(--card-glow);
+  }
+
   .greene-publication-card h2 {
-    margin: 0.55rem 0 0.75rem;
+    position: relative;
+    z-index: 1;
+    margin: 0.7rem 0 0.75rem;
     padding: 0;
     border: 0;
     color: var(--dark);
@@ -112,30 +240,104 @@ body[data-slug="index"] #quartz-body.site-publication--greene-gaming {
   }
 
   .greene-publication-card p {
+    position: relative;
+    z-index: 1;
     margin: 0;
     color: var(--darkgray);
     line-height: 1.65;
   }
 
+  .greene-publication-features {
+    position: relative;
+    z-index: 1;
+    margin-top: 1rem;
+    color: color-mix(in srgb, var(--darkgray) 82%, var(--card-secondary) 18%);
+    font-size: 0.82rem;
+    font-weight: 650;
+  }
+
   .greene-publication-link {
+    position: relative;
+    z-index: 1;
     display: inline-flex;
     width: fit-content;
     margin-top: auto;
-    padding-top: 1.3rem;
+    padding-top: 1.4rem;
     color: var(--card-secondary);
-    font-weight: 750;
-    text-decoration: none;
+    font-weight: 800;
   }
 
-  .greene-publication-link:hover {
+  .greene-publication-card:hover .greene-publication-link,
+  .greene-publication-card:focus-visible .greene-publication-link {
     color: var(--card-accent);
-    text-decoration: underline;
-    text-underline-offset: 0.2em;
   }
 
-  .public-articles-link {
-    margin-top: 1.5rem;
-    text-align: center;
+  .greene-reading-room {
+    margin: clamp(2rem, 5vw, 3.5rem) 0 1rem;
+    padding: clamp(1.4rem, 4vw, 2.2rem);
+    border: 1px solid rgba(106, 169, 125, 0.28);
+    border-radius: 0.9rem;
+    background:
+      linear-gradient(120deg, rgba(56, 92, 53, 0.09), rgba(21, 78, 100, 0.1)),
+      var(--light);
+  }
+
+  .greene-reading-eyebrow {
+    --card-secondary: #6aa97d;
+  }
+
+  .greene-reading-room h2 {
+    margin: 0.45rem 0 0.6rem;
+    padding: 0;
+    border: 0;
+  }
+
+  .greene-reading-room > p {
+    max-width: 48rem;
+    margin: 0;
+    color: var(--darkgray);
+    line-height: 1.65;
+  }
+
+  .greene-article-links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.85rem;
+    margin-top: 1.25rem;
+  }
+
+  .greene-article-link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.95rem 1.05rem;
+    border: 1px solid var(--gray);
+    border-radius: 0.65rem;
+    background: color-mix(in srgb, var(--light) 96%, var(--link-accent) 4%);
+    color: var(--dark);
+    text-decoration: none !important;
+    transition:
+      border-color 150ms ease,
+      transform 150ms ease;
+  }
+
+  .greene-article-link--lantern {
+    --link-accent: #dc9e3e;
+  }
+
+  .greene-article-link--beacon {
+    --link-accent: #94e3f3;
+  }
+
+  .greene-article-link span {
+    color: var(--darkgray);
+    font-size: 0.88rem;
+  }
+
+  .greene-article-link:hover,
+  .greene-article-link:focus-visible {
+    border-color: var(--link-accent);
+    transform: translateY(-2px);
   }
 }
 
@@ -145,12 +347,25 @@ body[data-slug="index"] #quartz-body.site-publication--greene-gaming {
   }
 
   body[data-slug="index"] #quartz-body.site-publication--greene-gaming {
-    .greene-publication-grid {
+    .greene-home-brand {
+      flex-direction: column;
+    }
+
+    .greene-home-monogram {
+      width: 6.5rem;
+    }
+
+    .greene-home-wordmark {
+      width: min(92%, 24rem);
+    }
+
+    .greene-publication-grid,
+    .greene-article-links {
       grid-template-columns: 1fr;
     }
 
     .greene-publication-card {
-      min-height: 14rem;
+      min-height: 17rem;
     }
   }
 }
