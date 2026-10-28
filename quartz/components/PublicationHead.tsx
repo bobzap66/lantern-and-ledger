@@ -12,6 +12,7 @@ export default (() => {
     const frontmatter = props.fileData.frontmatter as Record<string, unknown> | undefined
     const publication = getSitePublication(frontmatter)
     const isBeacon = publication.key === "beacon-and-bulletin"
+    const isGreeneGaming = publication.key === "greene-gaming"
     const rawPageTitle = String(
       props.fileData.frontmatter?.title ?? i18n(props.cfg.locale).propertyDefaults.title,
     )
@@ -35,10 +36,12 @@ export default (() => {
     const baseDir = slug === "404" ? sitePath : pathToRoot(slug!)
     const faviconPath = isBeacon
       ? joinSegments(baseDir, "static/branding/beacon-and-bulletin-favicon.webp")
-      : joinSegments(
-          baseDir,
-          "assets/images/lantern-and-ledger-branding/lantern-and-ledger-favicon.webp",
-        )
+      : isGreeneGaming
+        ? joinSegments(baseDir, "static/branding/greene-gaming-favicon.webp")
+        : joinSegments(
+            baseDir,
+            "assets/images/lantern-and-ledger-branding/lantern-and-ledger-favicon.webp",
+          )
     const children = toChildArray(rendered.props.children).filter((child) => {
       if (!child || typeof child !== "object") return true
       const vnode = child as { type?: unknown; props?: { rel?: unknown } }
