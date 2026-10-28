@@ -3,7 +3,10 @@ import path from "node:path"
 import YAML from "yaml"
 
 const contentRoot = path.resolve(process.argv[2] ?? "content")
-const campaignsRoot = path.join(contentRoot, "Campaigns")
+const campaignRoots = [
+  path.join(contentRoot, "Lantern and Ledger", "Campaigns"),
+  path.join(contentRoot, "Beacon and Bulletin", "Campaigns"),
+]
 const TOTAL_MARKER = "<!-- VIGNETTE_TOTAL -->"
 const COUNT_MARKER = /<!-- VIGNETTE_COUNT:(.+?) -->/g
 
@@ -50,7 +53,6 @@ function pieceLabel(count) {
 async function generateIndex(indexPath, vignetteRoot) {
   const directory = path.dirname(indexPath)
   const source = await fs.readFile(indexPath, "utf8")
-  const newline = source.includes("\r\n") ? "\r\n" : "\n"
   let updated = source
 
   if (updated.includes(TOTAL_MARKER)) {
@@ -88,25 +90,32 @@ async function generateIndex(indexPath, vignetteRoot) {
 }
 
 async function main() {
-  let campaigns
-  try {
-    campaigns = await fs.readdir(campaignsRoot, { withFileTypes: true })
-  } catch {
-    throw new Error(`Campaign content directory not found: ${campaignsRoot}`)
-  }
-
   let updatedCount = 0
   let indexCount = 0
-  for (const campaign of campaigns) {
-    if (!campaign.isDirectory()) continue
-    const vignetteRoot = path.join(campaignsRoot, campaign.name, "Vignettes")
-    const vignetteFiles = await walk(vignetteRoot)
-    for (const indexPath of vignetteFiles.filter(
-      (filePath) => path.basename(filePath).toLowerCase() === "index.md",
-    )) {
-      indexCount++
-      updatedCount += await generateIndex(indexPath, vignetteRoot)
+  let campaignCount = 0
+
+  for (const campaignsRoot of campaignRoots) {
+    const campaigns = await fs.readdir(campaignsRoot, { withFileTypes: true }).catch((error) => {
+      if (error.code === "ENOENT") return []
+      throw error
+    })
+
+    for (const campaign of campaigns) {
+      if (!campaign.isDirectory()) continue
+      campaignCount++
+      const vignetteRoot = path.join(campaignsRoot, campaign.name, "Vignettes")
+      const vignetteFiles = await walk(vignetteRoot)
+      for (const indexPath of vignetteFiles.filter(
+        (filePath) => path.basename(filePath).toLowerCase() === "index.md",
+      )) {
+        indexCount++
+        updatedCount += await generateIndex(indexPath, vignetteRoot)
+      }
     }
+  }
+
+  if (campaignCount === 0) {
+    throw new Error(`No campaign content directories found under publication roots in ${contentRoot}`)
   }
 
   console.log(`Generated vignette counts in ${updatedCount} of ${indexCount} vignette indexes`)
