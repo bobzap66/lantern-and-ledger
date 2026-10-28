@@ -89,9 +89,7 @@ function cleanDescription(value) {
 }
 
 function descriptionFromBody(text) {
-  const body = text
-    .replace(/^---\s*\n[\s\S]*?\n---\s*/m, "")
-    .replace(/<!--[\s\S]*?-->/g, "")
+  const body = text.replace(/^---\s*\n[\s\S]*?\n---\s*/m, "").replace(/<!--[\s\S]*?-->/g, "")
 
   for (const paragraph of body.split(/\n\s*\n/)) {
     const raw = paragraph.trim()
@@ -136,7 +134,7 @@ function linkTo(rel) {
   const withoutExtension = rel.replace(/\.md$/i, "")
   let relative = path.posix.relative(INDEX_DIR, withoutExtension)
   if (!relative.startsWith(".")) relative = `./${relative}`
-  return encodeURI(relative)
+  return relative
 }
 
 function render(items) {
@@ -146,7 +144,7 @@ function render(items) {
     lines.push("_No spoiler-free articles have been published yet._")
   } else {
     for (const item of items) {
-      lines.push(`### [${item.title}](${linkTo(item.rel)})`)
+      lines.push(`### [[${linkTo(item.rel)}|${item.title}]]`)
       const meta = [item.campaign, item.type, item.date ? `Published ${formatDate(item.date)}` : ""]
         .filter(Boolean)
         .join(" · ")
@@ -177,7 +175,9 @@ for (const file of await walk(CONTENT_ROOT)) {
   const rel = path.relative(CONTENT_ROOT, file).replace(/\\/g, "/")
   const text = await fs.readFile(file, "utf8")
   const fm = parseFrontmatter(text)
-  const type = String(fm.type ?? "").trim().toLowerCase()
+  const type = String(fm.type ?? "")
+    .trim()
+    .toLowerCase()
 
   if (fm.draft === true || fm.publish === false || fm.unlisted === true) continue
   if (fm.spoiler !== false) continue
@@ -224,4 +224,6 @@ if (homeText.includes(HOMEPAGE_RECENTS_START)) {
 }
 
 await fs.writeFile(HOME_FILE, homeText, "utf8")
-console.log(`Generated ${items.length} spoiler-free Lantern & Ledger article entries in ${INDEX_REL}`)
+console.log(
+  `Generated ${items.length} spoiler-free Lantern & Ledger article entries in ${INDEX_REL}`,
+)

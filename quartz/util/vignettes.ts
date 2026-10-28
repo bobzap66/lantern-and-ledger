@@ -184,6 +184,8 @@ export function vignettesForArchive(archive: VignetteNote, allNotes: VignetteNot
   return allNotes.filter(
     (candidate) =>
       isVignette(candidate) &&
+      candidate.frontmatter?.draft !== true &&
+      candidate.frontmatter?.publish !== false &&
       path.posix.dirname(normalizeVaultPath(candidate.relativePath)).toLowerCase() === directory,
   )
 }

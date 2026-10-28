@@ -3,7 +3,9 @@ import path from "node:path"
 
 const CONTENT_ROOT = path.resolve(process.argv[2] ?? "content")
 const IGNORED_DIRS = new Set([".git", ".obsidian", "node_modules", "private", "templates"])
-const RESOURCE_EXTENSIONS = /\.(?:png|jpe?g|webp|gif|svg|pdf|json|ya?ml|css|js|mjs|cjs|mp3|mp4|webm|ogg|wav|zip|stl|3mf|obj|xlsx?|docx?|pptx?|csv|txt)$/i
+const IGNORED_FILES = new Set(["agents.md"])
+const RESOURCE_EXTENSIONS =
+  /\.(?:png|jpe?g|webp|gif|svg|pdf|json|ya?ml|css|js|mjs|cjs|mp3|mp4|webm|ogg|wav|zip|stl|3mf|obj|xlsx?|docx?|pptx?|csv|txt)$/i
 const SAME_SITE = /^(?:https?:\/\/)?bobzap66\.github\.io\/(?:inner-sea-region\/)?/i
 
 const violations = []
@@ -23,7 +25,12 @@ async function walk(dir) {
     if (entry.isDirectory() && IGNORED_DIRS.has(entry.name.toLowerCase())) continue
     const full = path.join(dir, entry.name)
     if (entry.isDirectory()) files.push(...(await walk(full)))
-    else if (entry.isFile() && entry.name.toLowerCase().endsWith(".md")) files.push(full)
+    else if (
+      entry.isFile() &&
+      entry.name.toLowerCase().endsWith(".md") &&
+      !IGNORED_FILES.has(entry.name.toLowerCase())
+    )
+      files.push(full)
   }
 
   return files
@@ -45,9 +52,7 @@ function record(file, text, offset, kind, message, snippet) {
 
 function stripAngles(value) {
   const trimmed = String(value ?? "").trim()
-  return trimmed.startsWith("<") && trimmed.endsWith(">")
-    ? trimmed.slice(1, -1).trim()
-    : trimmed
+  return trimmed.startsWith("<") && trimmed.endsWith(">") ? trimmed.slice(1, -1).trim() : trimmed
 }
 
 function splitAnchor(value) {
@@ -86,17 +91,38 @@ function checkWikilinks(file, text) {
     if (target.startsWith("#") || isResource(target)) continue
 
     if (SAME_SITE.test(target)) {
-      record(file, text, offset, "wikilink", "Internal links must never use the deployed site URL.", whole)
+      record(
+        file,
+        text,
+        offset,
+        "wikilink",
+        "Internal links must never use the deployed site URL.",
+        whole,
+      )
       continue
     }
 
     if (isExternal(target)) {
-      record(file, text, offset, "wikilink", "External URLs must use normal Markdown links, not wikilinks.", whole)
+      record(
+        file,
+        text,
+        offset,
+        "wikilink",
+        "External URLs must use normal Markdown links, not wikilinks.",
+        whole,
+      )
       continue
     }
 
     if (target.startsWith("/")) {
-      record(file, text, offset, "wikilink", "Internal wikilinks must be relative, never root-qualified.", whole)
+      record(
+        file,
+        text,
+        offset,
+        "wikilink",
+        "Internal wikilinks must be relative, never root-qualified.",
+        whole,
+      )
       continue
     }
 
@@ -142,7 +168,12 @@ function checkMarkdownLinks(file, text) {
       continue
     }
 
-    if (destination.startsWith("/inner-sea-region/") || destination.startsWith("/campaigns/") || destination.startsWith("/locations/") || destination.startsWith("/groups/")) {
+    if (
+      destination.startsWith("/inner-sea-region/") ||
+      destination.startsWith("/campaigns/") ||
+      destination.startsWith("/locations/") ||
+      destination.startsWith("/groups/")
+    ) {
       record(
         file,
         text,
@@ -156,7 +187,11 @@ function checkMarkdownLinks(file, text) {
 
     if (isExternal(destination) || isResource(destination)) continue
 
-    if (/\.md(?:#|$)/i.test(destination) || destination.startsWith("./") || destination.startsWith("../")) {
+    if (
+      /\.md(?:#|$)/i.test(destination) ||
+      destination.startsWith("./") ||
+      destination.startsWith("../")
+    ) {
       record(
         file,
         text,
@@ -191,4 +226,6 @@ console.log(`Link convention check passed.`)
 console.log(`  Markdown files scanned: ${filesScanned}`)
 console.log(`  Wikilinks checked: ${wikilinksChecked}`)
 console.log(`  Markdown links inspected: ${markdownLinksChecked}`)
-console.log(`  Canonical internal-note form: [[./relative/path|Label]] or [[../relative/path|Label]]`)
+console.log(
+  `  Canonical internal-note form: [[./relative/path|Label]] or [[../relative/path|Label]]`,
+)

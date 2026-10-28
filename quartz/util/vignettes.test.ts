@@ -43,6 +43,28 @@ test("archive membership is directory-scoped even when character names collide",
   )
 })
 
+test("archive membership excludes unpublished vignettes", () => {
+  const archive = note("Campaigns/Example/Vignettes/Comet/index.md", {
+    type: "index",
+    character: "[[../../Characters/Comet|Comet]]",
+  })
+  const published = note("Campaigns/Example/Vignettes/Comet/Published.md", {
+    type: "vignette",
+  })
+  const draft = note("Campaigns/Example/Vignettes/Comet/Draft.md", {
+    type: "vignette",
+    draft: true,
+  })
+  const privateNote = note("Campaigns/Example/Vignettes/Comet/Private.md", {
+    type: "vignette",
+    publish: false,
+  })
+
+  assert.deepEqual(vignettesForArchive(archive, [archive, published, draft, privateNote]), [
+    published,
+  ])
+})
+
 test("publication date takes precedence over campaign date", () => {
   const date = vignetteDate({
     date: "2026-09-12",

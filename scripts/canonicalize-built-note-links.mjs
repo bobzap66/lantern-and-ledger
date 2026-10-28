@@ -40,6 +40,35 @@ function suffixFor(originalHref) {
   return suffixIndex >= 0 ? originalHref.slice(suffixIndex) : ""
 }
 
+function legacyPublicationCandidates(pathname) {
+  const candidates = [pathname]
+
+  if (pathname === "/campaigns" || pathname.startsWith("/campaigns/")) {
+    candidates.push(`/lantern-and-ledger${pathname}`, `/beacon-and-bulletin${pathname}`)
+  }
+
+  const lanternCampaignsRoot = "/lantern-and-ledger/campaigns"
+  if (pathname === lanternCampaignsRoot || pathname.startsWith(`${lanternCampaignsRoot}/`)) {
+    candidates.push(pathname.slice("/lantern-and-ledger".length))
+  }
+
+  if (pathname === "/the-lantern-and-ledger" || pathname.startsWith("/the-lantern-and-ledger/")) {
+    candidates.push(pathname.replace("/the-lantern-and-ledger", "/lantern-and-ledger"))
+  }
+
+  const duplicatedLanternRoot = "/lantern-and-ledger/the-lantern-and-ledger"
+  if (pathname === duplicatedLanternRoot || pathname.startsWith(`${duplicatedLanternRoot}/`)) {
+    candidates.push(pathname.replace(duplicatedLanternRoot, "/lantern-and-ledger"))
+  }
+
+  const misplacedReferencesRoot = "/lantern-and-ledger/external-references"
+  if (pathname === misplacedReferencesRoot || pathname.startsWith(`${misplacedReferencesRoot}/`)) {
+    candidates.push(pathname.slice("/lantern-and-ledger".length))
+  }
+
+  return [...new Set(candidates)]
+}
+
 function canonicalSlugHref(dataSlug, originalHref) {
   let slug = dataSlug.replace(/^\/+|\/+$/g, "")
   const suffix = suffixFor(originalHref)
@@ -48,10 +77,12 @@ function canonicalSlugHref(dataSlug, originalHref) {
 
   if (slug.endsWith("/index")) {
     slug = slug.slice(0, -"/index".length)
-    return `${baseRoot}/${slug}/${suffix}`.replace(/\/{2,}/g, "/")
+    const pathname = `${baseRoot}/${slug}/`.replace(/\/{2,}/g, "/")
+    return `${canonicalRoutePath(pathname)}${suffix}`
   }
 
-  return `${baseRoot}/${slug}${suffix}`.replace(/\/{2,}/g, "/")
+  const pathname = `${baseRoot}/${slug}`.replace(/\/{2,}/g, "/")
+  return `${canonicalRoutePath(pathname)}${suffix}`
 }
 
 await collectOutput(outputRoot)
@@ -60,6 +91,22 @@ const canonicalRoutes = new Map()
 for (const file of htmlFiles) {
   const route = routeFor(file)
   canonicalRoutes.set(route.replace(/\/$/, "") || "/", route)
+}
+
+function canonicalRoutePath(pathname) {
+  for (const candidate of legacyPublicationCandidates(pathname)) {
+    const routeKey = candidate.replace(/\/$/, "") || "/"
+    const canonical = canonicalRoutes.get(routeKey)
+    if (canonical) return canonical
+  }
+  return pathname
+}
+
+function canonicalOutputPath(pathname) {
+  for (const candidate of legacyPublicationCandidates(pathname)) {
+    if (outputPaths.has(candidate)) return candidate
+  }
+  return null
 }
 
 function canonicalHref(file, originalHref, dataSlug) {
@@ -82,8 +129,7 @@ function canonicalHref(file, originalHref, dataSlug) {
     pathname = `${baseRoot}${pathname}`.replace(/\/{2,}/g, "/")
   }
 
-  const routeKey = pathname.replace(/\/$/, "") || "/"
-  pathname = canonicalRoutes.get(routeKey) ?? pathname
+  pathname = canonicalRoutePath(pathname)
   return `${pathname}${target.search}${target.hash}`
 }
 
@@ -111,14 +157,16 @@ function canonicalImageSrc(file, originalSrc) {
     pathname = `${baseRoot}${pathname}`.replace(/\/{2,}/g, "/")
   }
 
-  if (outputPaths.has(pathname)) return `${pathname}${target.search}${target.hash}`
+  const canonicalPathname = canonicalOutputPath(pathname)
+  if (canonicalPathname) return `${canonicalPathname}${target.search}${target.hash}`
 
   const relativeAssetPath = pathname.slice(baseRoot.length).replace(/^\/+/, "")
   if (!relativeAssetPath) return originalSrc
 
   const sluggedAssetPath = String(slugifyFilePath(relativeAssetPath)).replace(/^\/+/, "")
   const candidate = `${baseRoot}/${sluggedAssetPath}`.replace(/\/{2,}/g, "/")
-  if (outputPaths.has(candidate)) return `${candidate}${target.search}${target.hash}`
+  const canonicalCandidate = canonicalOutputPath(candidate)
+  if (canonicalCandidate) return `${canonicalCandidate}${target.search}${target.hash}`
 
   // Older notes sometimes contain a relative path with too few `../` segments.
   // Once resolved from a deeply nested article, that produces paths such as

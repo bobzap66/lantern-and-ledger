@@ -90,8 +90,13 @@ function card(campaign, sourceDir, campaignBaseRel, { archived = false, titleLev
   const href = relativeUrl(sourceDir, path.posix.join(campaignBaseRel, folder))
   const image = typeof metadata.directory_image === "string" ? metadata.directory_image : ""
   const imageTarget = image.replace(/^\/+/, "")
+  const focalPoint = /^\s*\d+(?:\.\d+)?%\s+\d+(?:\.\d+)?%\s*$/.test(
+    String(metadata.directory_focal_point ?? ""),
+  )
+    ? ` style="object-position: ${escapeHtml(metadata.directory_focal_point)}"`
+    : ""
   const imageMarkup = imageTarget
-    ? `\n<img class="campaign-directory__image" src="${escapeHtml(relativeUrl(sourceDir, imageTarget))}" alt="">`
+    ? `\n<img class="campaign-directory__image" src="${escapeHtml(relativeUrl(sourceDir, imageTarget))}" alt=""${focalPoint}>`
     : ""
   const status = archived ? "Archived" : metadata.status === "upcoming" ? "Upcoming" : "Active"
   const statusMarkup = `\n<div class="campaign-directory__status">${status}</div>`
@@ -137,7 +142,8 @@ async function loadCampaigns(sitePublication) {
     }
 
     const metadata = parseFrontmatter(text)
-    if (metadata.type !== "campaign" || metadata.draft === true || metadata.publish === false) continue
+    if (metadata.type !== "campaign" || metadata.draft === true || metadata.publish === false)
+      continue
     if (normalizeSitePublication(metadata.site_publication) !== sitePublication) continue
     if (!STATUS_GROUPS.some((group) => group.status === metadata.status)) {
       throw new Error(`${indexPath} needs status active, upcoming, or archived`)
@@ -198,7 +204,9 @@ function buildArchive(campaigns, sitePublication, sourceDir, campaignBaseRel) {
   const archiveContent =
     archived.length > 0
       ? archived
-          .map((campaign) => card(campaign, sourceDir, campaignBaseRel, { archived: true, titleLevel: 2 }))
+          .map((campaign) =>
+            card(campaign, sourceDir, campaignBaseRel, { archived: true, titleLevel: 2 }),
+          )
           .join("\n")
       : '<p class="campaign-directory__empty">No archived campaigns yet.</p>'
 
@@ -289,7 +297,9 @@ async function main() {
       await fs.writeFile(filePath, updated, "utf8")
     }
 
-    const archivedCount = campaigns.filter((campaign) => campaign.metadata.status === "archived").length
+    const archivedCount = campaigns.filter(
+      (campaign) => campaign.metadata.status === "archived",
+    ).length
     console.log(
       `Generated ${directoryPublication} campaign directory and archive from ${campaigns.length} campaign roots (${archivedCount} archived)`,
     )

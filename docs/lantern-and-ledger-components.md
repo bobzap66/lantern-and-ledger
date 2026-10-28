@@ -362,6 +362,28 @@ The campaign directory (`Campaigns/index.md`) and completed-campaign archive (`C
 
 Directory cards use each root's `title`, `directory_eyebrow`, `directory_summary`, `directory_image`, and optional `directory_accent` metadata. Every card shows a status label (`Active`, `Upcoming`, or `Archived`); the eyebrow contains only the setting/location and known in-world year or year span. Each generated block is bounded by markers in its source page. The production workflow runs this generator after it checks out the vault and before Quartz builds; do not manually add campaign cards inside generated blocks.
 
+### Campaign image normalization
+
+Campaign roots use one preserved source image to produce two canonical WebP derivatives:
+
+- `hero_image`: 2048×800 for the campaign landing-page hero.
+- `directory_image`: 1536×1024 for directory and archive cards.
+
+The supporting metadata is `campaign_image_source`, `hero_alt`, `hero_focal_point`,
+`directory_alt`, and `directory_focal_point`. Focal points use CSS percentage syntax such as
+`65% 40%`. The generated hero `<img>` carries the hero focal point as its `object-position`, and
+the directory generator does the same for directory cards. A campaign awaiting final launch art may
+temporarily set `campaign_image_pending: true`.
+
+Generate or refresh derivatives in a vault checkout and optionally create a review sheet with:
+
+```text
+node scripts/normalize-campaign-images.mjs ../Inner_Sea_Region_Obsidian_Prototype --write --contact-sheet=campaign-image-contact-sheet.webp
+```
+
+Without `--write`, the script is a validator. Production runs that validation and fails on missing,
+misnamed, or incorrectly sized derivatives. It never recrops campaign art during deployment.
+
 ## Campaign timelines
 
 Generator:

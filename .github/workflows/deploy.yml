@@ -60,6 +60,9 @@ jobs:
       - name: Check image metadata accessibility
         run: node scripts/check-image-accessibility.mjs content
 
+      - name: Validate campaign image derivatives
+        run: node scripts/normalize-campaign-images.mjs content
+
       - name: Pin Explorer subdirectory navigation fix
         run: |
           npm install --no-save github:quartz-community/explorer#07de53f210f86287f41f0b349271c036bdc0b7c4

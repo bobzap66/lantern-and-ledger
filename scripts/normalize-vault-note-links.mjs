@@ -3,6 +3,7 @@ import path from "node:path"
 
 const CONTENT_ROOT = path.resolve(process.argv[2] ?? "content")
 const IGNORED_DIRS = new Set([".git", ".obsidian", "node_modules", "private", "templates"])
+const IGNORED_FILES = new Set(["agents.md"])
 const RESOURCE_EXTENSIONS =
   /\.(?:png|jpe?g|webp|gif|svg|pdf|json|ya?ml|css|js|mjs|cjs|mp3|mp4|webm|ogg|wav|zip|stl|3mf|obj|xlsx?|docx?|pptx?|csv|txt)$/i
 const PUBLICATION_CAMPAIGN_PREFIXES = [
@@ -23,7 +24,12 @@ async function walk(dir) {
     if (entry.isDirectory() && IGNORED_DIRS.has(entry.name.toLowerCase())) continue
     const full = path.join(dir, entry.name)
     if (entry.isDirectory()) files.push(...(await walk(full)))
-    else if (entry.isFile() && entry.name.toLowerCase().endsWith(".md")) files.push(full)
+    else if (
+      entry.isFile() &&
+      entry.name.toLowerCase().endsWith(".md") &&
+      !IGNORED_FILES.has(entry.name.toLowerCase())
+    )
+      files.push(full)
   }
 
   return files
@@ -76,6 +82,9 @@ function relativeTarget(file, vaultTarget) {
 function normalizeWikilinks(file, text) {
   return text.replace(/(!?)\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g, (whole, bang, rawTarget, label) => {
     const target = String(rawTarget).trim()
+    if (target === "." || target === "..") {
+      return `${bang}[[${target}/index${label ? `|${label}` : ""}]]`
+    }
     if (
       !target ||
       target.startsWith("#") ||
