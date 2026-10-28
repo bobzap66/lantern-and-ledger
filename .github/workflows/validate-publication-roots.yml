@@ -27,6 +27,7 @@ jobs:
           ref: greene-gaming-publication-roots
           path: content
           fetch-depth: 0
+          token: ${{ secrets.VAULT_TOKEN }}
 
       - name: Setup Node
         uses: actions/setup-node@v7
