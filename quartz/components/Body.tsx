@@ -19,14 +19,55 @@ function campaignKeyFromSlug(slug: string | undefined) {
   return first
 }
 
-function campaignClassFromSlug(slug: string | undefined) {
-  const key = campaignKeyFromSlug(slug)
-  if (!key) return null
+function campaignRootSlugFromSlug(slug: string | undefined) {
+  if (!slug) return null
 
-  const safeKey = key
+  const directMatch = /^campaigns\/([^/]+)(?:\/|$)/i.exec(slug)
+  if (!directMatch) return null
+
+  const first = directMatch[1]?.toLowerCase()
+  if (!first || first === "index" || first === "archive") return null
+
+  if (first === "archived") {
+    const archivedKey = /^campaigns\/archived\/([^/]+)(?:\/|$)/i.exec(slug)?.[1]
+    return archivedKey ? `campaigns/archived/${archivedKey}`.toLowerCase() : null
+  }
+
+  return `campaigns/${directMatch[1]}`.toLowerCase()
+}
+
+function safeCampaignClassKey(value: string) {
+  return value
+    .trim()
+    .toLowerCase()
     .replace(/[^a-z0-9-]+/g, "-")
     .replace(/^-+|-+$/g, "")
+}
 
+function campaignClass(
+  slug: string | undefined,
+  frontmatter: Record<string, unknown> | undefined,
+  allFiles: QuartzComponentProps["allFiles"],
+) {
+  const explicitTheme = String(frontmatter?.theme ?? "").trim()
+  if (explicitTheme) {
+    const safeKey = safeCampaignClassKey(explicitTheme)
+    return safeKey ? `campaign--${safeKey}` : null
+  }
+
+  const rootSlug = campaignRootSlugFromSlug(slug)
+  const campaignRoot = rootSlug
+    ? allFiles.find((candidate) => candidate.slug?.toLowerCase() === rootSlug)
+    : undefined
+  const inheritedTheme = String(campaignRoot?.frontmatter?.theme ?? "").trim()
+  if (inheritedTheme) {
+    const safeKey = safeCampaignClassKey(inheritedTheme)
+    return safeKey ? `campaign--${safeKey}` : null
+  }
+
+  const key = campaignKeyFromSlug(slug)
+  if (!key) return null
+  const safeKey = safeCampaignClassKey(key)
   return safeKey ? `campaign--${safeKey}` : null
 }
 
@@ -213,9 +254,9 @@ function hasReadingProgress(
 
 const Body: QuartzComponent = (props: QuartzComponentProps) => {
   const { children, fileData, allFiles } = props
-  const lockedByDefault = isCampaignPage(fileData.slug)
-  const campaignClass = campaignClassFromSlug(fileData.slug)
   const frontmatter = fileData.frontmatter as Record<string, unknown> | undefined
+  const lockedByDefault = isCampaignPage(fileData.slug) && frontmatter?.spoiler !== false
+  const resolvedCampaignClass = campaignClass(fileData.slug, frontmatter, allFiles)
   const sitePublication = getSitePublication(frontmatter)
   const publicationBoundaries = JSON.stringify(getSitePublicationBoundaries(allFiles))
   const formalPublication = isFormalPublication(frontmatter, fileData.slug)
@@ -225,7 +266,7 @@ const Body: QuartzComponent = (props: QuartzComponentProps) => {
   const editorialFormat = normalizedEditorialValue(frontmatter?.format)
   const editorialSeries = String(frontmatter?.series ?? "").trim()
   const bodyClasses = [
-    campaignClass,
+    resolvedCampaignClass,
     `site-publication--${sitePublication.key}`,
     lockedByDefault ? "campaign-spoiler-pending" : "",
     formalPublication ? "formal-publication" : "",
