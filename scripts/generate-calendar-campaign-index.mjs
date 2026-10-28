@@ -4,7 +4,7 @@ import YAML from "yaml"
 
 const contentRoot = path.resolve(process.argv[2] ?? "content")
 const calendarFile = path.join(contentRoot, "Calendar.md")
-const campaignsRoot = path.join(contentRoot, "Campaigns")
+const campaignsRoot = path.join(contentRoot, "Lantern and Ledger", "Campaigns")
 const START = "<!-- CALENDAR_CAMPAIGN_INDEX_START -->"
 const END = "<!-- CALENDAR_CAMPAIGN_INDEX_END -->"
 const CALENDAR_NAME = "Calendar of Golarion"
