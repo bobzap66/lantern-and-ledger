@@ -155,8 +155,10 @@ test("Explorer filter scopes sibling publication trees", () => {
     assert.equal(sitePublicationExplorerFilter(node("beacon-and-bulletin", true)), false)
 
     currentPublication = "greene-gaming"
-    assert.equal(sitePublicationExplorerFilter(node("lantern-and-ledger", true)), false)
-    assert.equal(sitePublicationExplorerFilter(node("beacon-and-bulletin", true)), false)
+    assert.equal(sitePublicationExplorerFilter(node("lantern-and-ledger", true)), true)
+    assert.equal(sitePublicationExplorerFilter(node("beacon-and-bulletin", true)), true)
+    assert.equal(sitePublicationExplorerFilter(node("lantern-and-ledger/campaigns", true)), false)
+    assert.equal(sitePublicationExplorerFilter(node("beacon-and-bulletin/campaigns", true)), false)
   } finally {
     runtime.document = originalDocument
   }
