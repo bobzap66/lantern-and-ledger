@@ -50,9 +50,10 @@ jobs:
           EOF
 
           AUTH="$(printf 'x-access-token:%s' "$VAULT_TOKEN" | base64 -w0)"
-          git -C content -c http.extraheader="AUTHORIZATION: basic $AUTH" \
-            fetch --depth=1 --filter=blob:none origin greene-gaming-publication-roots
+          git -C content config http.https://github.com/.extraheader "AUTHORIZATION: basic $AUTH"
+          git -C content fetch --depth=1 --filter=blob:none origin greene-gaming-publication-roots
           git -C content checkout --detach FETCH_HEAD
+          git -C content config --unset-all http.https://github.com/.extraheader
 
           while IFS= read -r media; do
             mkdir -p "content/$(dirname "$media")"
