@@ -5,6 +5,6 @@ import greeneGamingStyles from "../styles/publications/greene-gaming.scss"
 
 export default (() => {
   const PublicationStyles: QuartzComponent = () => null
-  PublicationStyles.css = `${lanternLedgerStyles}\n${beaconBulletinStyles}\n${greeneGamingStyles}`
+  PublicationStyles.css = `${lanternLedgerStyles}\n${beaconBulletinStyles}\n${greeneGamingStyles}\n.site-publication-header--greene-gaming .site-publication-switcher { display: none; }`
   return PublicationStyles
 }) satisfies QuartzComponentConstructor
