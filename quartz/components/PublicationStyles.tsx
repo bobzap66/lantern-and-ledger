@@ -2,9 +2,10 @@ import { QuartzComponent, QuartzComponentConstructor } from "./types"
 import lanternLedgerStyles from "../styles/publications/lantern-and-ledger.scss"
 import beaconBulletinStyles from "../styles/publications/beacon-and-bulletin.scss"
 import greeneGamingStyles from "../styles/publications/greene-gaming.scss"
+import greeneGamingCardArtStyles from "../styles/publications/greene-gaming-card-art.scss"
 
 export default (() => {
   const PublicationStyles: QuartzComponent = () => null
-  PublicationStyles.css = `${lanternLedgerStyles}\n${beaconBulletinStyles}\n${greeneGamingStyles}\n.site-publication-header--greene-gaming .site-publication-switcher { display: none; }`
+  PublicationStyles.css = `${lanternLedgerStyles}\n${beaconBulletinStyles}\n${greeneGamingStyles}\n${greeneGamingCardArtStyles}\n.site-publication-header--greene-gaming .site-publication-switcher { display: none; }`
   return PublicationStyles
 }) satisfies QuartzComponentConstructor
