@@ -1,15 +1,6 @@
 ;(() => {
   const SPOILER_PREFIX = "isr-campaign-spoilers:"
-  const CAMPAIGNS = [
-    ["claws-of-the-tyrant", "Claws of the Tyrant"],
-    ["crown-of-the-kobold-king", "Crown of the Kobold King"],
-    ["abomination-vaults", "Abomination Vaults"],
-    ["curtain-call", "Curtain Call"],
-    ["kingmaker", "Kingmaker"],
-    ["rise-of-the-runelords", "Rise of the Runelords"],
-    ["season-of-ghosts", "Season of Ghosts"],
-    ["the-fall-of-plaguestone", "The Fall of Plaguestone"],
-  ]
+  const CAMPAIGN_DATA_URL = "/static/preferences-campaigns.json"
 
   const setTheme = (theme) => {
     if (theme !== "light" && theme !== "dark") return
@@ -50,10 +41,25 @@
     )
   }
 
-  const campaignRow = (key, name) => `
-    <article class="preference-campaign" data-campaign-key="${key}" data-campaign-name="${name}">
+  const escapeHtml = (value) =>
+    String(value ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+
+  const loadCampaignData = async () => {
+    const response = await fetch(CAMPAIGN_DATA_URL, { cache: "no-store" })
+    if (!response.ok) throw new Error(`Campaign preference data returned ${response.status}`)
+    const data = await response.json()
+    if (!Array.isArray(data?.publications)) throw new Error("Campaign preference data is malformed")
+    return data.publications
+  }
+
+  const campaignRow = (campaign) => `
+    <article class="preference-campaign" data-campaign-key="${escapeHtml(campaign.id)}" data-campaign-name="${escapeHtml(campaign.name)}">
       <div>
-        <p class="preference-campaign__name">${name}</p>
+        <p class="preference-campaign__name">${escapeHtml(campaign.name)}</p>
         <p class="preference-campaign__status"></p>
       </div>
       <div class="preference-campaign__controls">
@@ -62,13 +68,37 @@
       </div>
     </article>`
 
-  const renderPreferencesMarkup = (root) => {
+  const publicationGroup = (publication) => {
+    const campaigns = Array.isArray(publication.campaigns) ? publication.campaigns : []
+    const countLabel = `${campaigns.length} campaign${campaigns.length === 1 ? "" : "s"}`
+    const rows = campaigns.length
+      ? campaigns.map(campaignRow).join("")
+      : '<p class="preference-publication__empty">No campaigns are available yet.</p>'
+
+    return `
+      <details class="preference-publication" data-preference-publication="${escapeHtml(publication.key)}" open>
+        <summary class="preference-publication__summary">
+          <span class="preference-publication__title">${escapeHtml(publication.title)}</span>
+          <span class="preference-publication__count">${countLabel}</span>
+        </summary>
+        <div class="preference-publication__body">
+          <div class="preference-campaign-list">${rows}</div>
+        </div>
+      </details>`
+  }
+
+  const renderPreferencesMarkup = (root, publications, loadError = false) => {
     if (root.dataset.preferencesMarkup === "true") return
     root.dataset.preferencesMarkup = "true"
+
+    const campaignGroups = loadError
+      ? '<p class="preference-data-error">Campaign preferences could not be loaded. Reload the page to try again.</p>'
+      : publications.map(publicationGroup).join("")
+
     root.innerHTML = `
       <section class="reader-preferences__section" aria-labelledby="preferences-appearance">
         <h2 id="preferences-appearance">Appearance</h2>
-        <p>Choose the color scheme used by the archive. The sun/moon control in the sidebar changes the same setting.</p>
+        <p>Choose the color scheme used by Greene Gaming. The sun/moon control in the sidebar changes the same setting.</p>
         <div class="preference-choice-group" role="group" aria-label="Color scheme">
           <button class="preference-choice" type="button" data-preference-theme="light" aria-pressed="false">Light</button>
           <button class="preference-choice" type="button" data-preference-theme="dark" aria-pressed="false">Dark</button>
@@ -79,18 +109,9 @@
           <h2 id="preferences-spoilers">Campaign spoilers</h2>
           <button class="preference-action" type="button" data-hide-all-spoilers>Hide all spoilers</button>
         </div>
-        <p>Campaign archives remain behind their spoiler warning until you choose to unlock them. You can unlock a campaign here or directly from its warning screen.</p>
+        <p>Campaign archives remain behind their spoiler warning until you choose to unlock them. Campaigns are grouped by publication below.</p>
         <p class="preference-status-summary" data-spoiler-summary></p>
-        <div class="preference-campaign-group" data-spoiler-group="visible">
-          <h3>Currently showing spoilers</h3>
-          <div class="preference-campaign-list"></div>
-        </div>
-        <div class="preference-campaign-group" data-spoiler-group="hidden">
-          <h3>Spoilers hidden</h3>
-          <div class="preference-campaign-list">
-            ${CAMPAIGNS.map(([key, name]) => campaignRow(key, name)).join("")}
-          </div>
-        </div>
+        <div class="preference-publications">${campaignGroups}</div>
         <p class="preference-note">Spoiler choices are remembered only on this browser and device.</p>
       </section>`
   }
@@ -103,51 +124,30 @@
   }
 
   const syncSpoilerControls = (root) => {
-    const visibleList = root.querySelector('[data-spoiler-group="visible"] .preference-campaign-list')
-    const hiddenList = root.querySelector('[data-spoiler-group="hidden"] .preference-campaign-list')
-    const visibleGroup = root.querySelector('[data-spoiler-group="visible"]')
-    const hiddenGroup = root.querySelector('[data-spoiler-group="hidden"]')
-    const summary = root.querySelector("[data-spoiler-summary]")
-    if (!visibleList || !hiddenList) return
-
     const rows = Array.from(root.querySelectorAll(".preference-campaign[data-campaign-key]"))
+    const summary = root.querySelector("[data-spoiler-summary]")
     let visibleCount = 0
 
-    rows
-      .sort((a, b) =>
-        (a.dataset.campaignName || "").localeCompare(b.dataset.campaignName || ""),
-      )
-      .forEach((row) => {
-        const key = row.dataset.campaignKey
-        if (!key) return
-        const enabled = spoilersVisible(key)
-        row.dataset.spoilersVisible = String(enabled)
+    rows.forEach((row) => {
+      const key = row.dataset.campaignKey
+      if (!key) return
+      const enabled = spoilersVisible(key)
+      row.dataset.spoilersVisible = String(enabled)
 
-        const badge = row.querySelector(".preference-campaign__badge")
-        const status = row.querySelector(".preference-campaign__status")
-        const action = row.querySelector("[data-spoiler-toggle]")
+      const badge = row.querySelector(".preference-campaign__badge")
+      const status = row.querySelector(".preference-campaign__status")
+      const action = row.querySelector("[data-spoiler-toggle]")
 
-        if (badge) badge.textContent = enabled ? "Spoilers visible" : "Spoilers hidden"
-        if (status) {
-          status.textContent = enabled
-            ? "Campaign pages and campaign history are currently unlocked on this browser."
-            : "Campaign pages remain protected by the spoiler warning."
-        }
-        if (action) {
-          action.textContent = enabled ? "Hide spoilers" : "Show spoilers"
-          action.dataset.nextSpoilerState = enabled ? "hidden" : "visible"
-        }
+      if (enabled) visibleCount += 1
+      if (badge) badge.textContent = enabled ? "Spoilers visible" : "Spoilers hidden"
+      if (status) {
+        status.textContent = enabled
+          ? "Campaign pages and campaign history are currently unlocked on this browser."
+          : "Campaign pages remain protected by the spoiler warning."
+      }
+      if (action) action.textContent = enabled ? "Hide spoilers" : "Show spoilers"
+    })
 
-        if (enabled) {
-          visibleCount += 1
-          visibleList.appendChild(row)
-        } else {
-          hiddenList.appendChild(row)
-        }
-      })
-
-    if (visibleGroup) visibleGroup.hidden = visibleCount === 0
-    if (hiddenGroup) hiddenGroup.hidden = visibleCount === rows.length
     if (summary) {
       summary.textContent =
         visibleCount === 0
@@ -156,12 +156,22 @@
     }
   }
 
-  const installPreferences = () => {
+  const installPreferences = async () => {
     const root = document.querySelector("[data-reader-preferences]")
     if (!root || root.dataset.preferencesInstalled === "true") return
     root.dataset.preferencesInstalled = "true"
 
-    renderPreferencesMarkup(root)
+    let publications = []
+    let loadError = false
+    try {
+      publications = await loadCampaignData()
+    } catch (error) {
+      loadError = true
+      console.error("Unable to load reader preference campaigns", error)
+    }
+
+    if (!root.isConnected) return
+    renderPreferencesMarkup(root, publications, loadError)
     syncThemeControls(root)
     syncSpoilerControls(root)
 
@@ -194,7 +204,9 @@
       }
     })
 
-    document.addEventListener("themechange", () => syncThemeControls(root))
+    document.addEventListener("themechange", () => {
+      if (root.isConnected) syncThemeControls(root)
+    })
   }
 
   document.addEventListener("nav", installPreferences)
