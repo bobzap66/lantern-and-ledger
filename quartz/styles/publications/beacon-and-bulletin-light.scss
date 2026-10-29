@@ -1,0 +1,233 @@
+/* Beacon & Bulletin — light mode: orbital newsroom / astrogation chart. */
+
+[saved-theme="light"] body:has(#quartz-body.site-publication--beacon-and-bulletin) {
+  background-color: #edf4f7;
+  background-image:
+    radial-gradient(circle at 14% 8%, rgba(0, 132, 159, 0.09), transparent 25rem),
+    radial-gradient(circle at 88% 4%, rgba(155, 40, 128, 0.055), transparent 22rem),
+    linear-gradient(rgba(35, 95, 119, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(35, 95, 119, 0.045) 1px, transparent 1px),
+    #edf4f7;
+  background-size: auto, auto, 32px 32px, 32px 32px, auto;
+}
+
+[saved-theme="light"] #quartz-body.site-publication--beacon-and-bulletin {
+  --bnb-void: #edf4f7;
+  --bnb-deep-space: #f7fbfd;
+  --bnb-surface: #dce9ef;
+  --bnb-surface-raised: #ffffff;
+  --bnb-cyan: #087f98;
+  --bnb-magenta: #9d277f;
+  --bnb-violet: #6250a8;
+  --bnb-starlight: #102c3d;
+  --bnb-muted: #567080;
+  --bnb-rule: rgba(23, 101, 130, 0.22);
+  --bnb-rule-strong: rgba(8, 127, 152, 0.52);
+  --bnb-glow: 0 0 0 1px rgba(8, 127, 152, 0.035), 0 14px 32px rgba(31, 70, 88, 0.11);
+  --light: var(--bnb-void) !important;
+  --lightgray: var(--bnb-surface) !important;
+  --gray: var(--bnb-muted) !important;
+  --darkgray: #304c5c !important;
+  --dark: var(--bnb-starlight) !important;
+  --secondary: var(--bnb-cyan) !important;
+  --tertiary: var(--bnb-magenta) !important;
+  --highlight: rgba(8, 127, 152, 0.09) !important;
+  --textHighlight: rgba(157, 39, 127, 0.14) !important;
+  --isr-rule: var(--bnb-rule) !important;
+  --isr-shadow: var(--bnb-glow) !important;
+  --site-publication-accent: var(--bnb-cyan);
+  --site-publication-secondary: var(--bnb-violet);
+  --site-publication-rule: var(--bnb-rule);
+  --site-publication-glow: var(--bnb-glow);
+  color-scheme: light;
+}
+
+/* Pale reading surface with drafting-line accents rather than a luminous terminal. */
+[saved-theme="light"] .page > #quartz-body.site-publication--beacon-and-bulletin .center::before {
+  border-color: var(--bnb-rule);
+  background:
+    linear-gradient(145deg, rgba(8, 127, 152, 0.045), transparent 28%),
+    linear-gradient(315deg, rgba(157, 39, 127, 0.025), transparent 32%),
+    color-mix(in srgb, var(--bnb-deep-space) 96%, white 4%);
+  box-shadow: var(--bnb-glow);
+}
+
+/* Masthead becomes a clean orbital briefing plate. */
+[saved-theme="light"] .site-publication-header--beacon-and-bulletin {
+  --site-publication-rule: rgba(8, 127, 152, 0.28);
+  --site-publication-glow: 0 12px 30px rgba(31, 70, 88, 0.12);
+}
+
+[saved-theme="light"] .site-publication-header--beacon-and-bulletin .site-publication-wordmark {
+  border-color: rgba(8, 127, 152, 0.34);
+  background:
+    radial-gradient(circle at 78% 50%, rgba(8, 127, 152, 0.32) 0 2px, transparent 3px),
+    radial-gradient(circle at 78% 50%, transparent 0 15px, rgba(8, 127, 152, 0.19) 16px 17px, transparent 18px 26px, rgba(157, 39, 127, 0.1) 27px 28px, transparent 29px),
+    linear-gradient(110deg, rgba(8, 127, 152, 0.07), transparent 38%),
+    linear-gradient(290deg, rgba(157, 39, 127, 0.045), transparent 42%),
+    #f8fcfd;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.7),
+    0 0 0 1px rgba(8, 127, 152, 0.025),
+    0 14px 32px rgba(31, 70, 88, 0.12);
+}
+
+[saved-theme="light"] .site-publication-header--beacon-and-bulletin .site-publication-wordmark::before {
+  border-color: rgba(8, 127, 152, 0.14);
+}
+
+[saved-theme="light"] .site-publication-header--beacon-and-bulletin .site-publication-wordmark::after {
+  background: linear-gradient(transparent, rgba(8, 127, 152, 0.34), transparent);
+  box-shadow: 11rem 0 0 rgba(157, 39, 127, 0.11);
+}
+
+[saved-theme="light"] .site-publication-header--beacon-and-bulletin .site-publication-wordmark__title {
+  color: #102c3d;
+  text-shadow: none;
+}
+
+[saved-theme="light"] .site-publication-header--beacon-and-bulletin .site-publication-wordmark__subtitle {
+  color: #087f98;
+}
+
+[saved-theme="light"] .site-publication-header--beacon-and-bulletin .site-publication-archive-rule {
+  color: #607887;
+}
+
+[saved-theme="light"] .site-publication-header--beacon-and-bulletin .site-publication-archive-rule::before,
+[saved-theme="light"] .site-publication-header--beacon-and-bulletin .site-publication-archive-rule::after {
+  background: linear-gradient(90deg, transparent, rgba(8, 127, 152, 0.5), rgba(157, 39, 127, 0.22));
+}
+
+/* Editorial identity keeps cyan as the connective tissue but removes dark-mode glow. */
+[saved-theme="light"] #quartz-body.site-publication--beacon-and-bulletin .article-title::after,
+[saved-theme="light"] #quartz-body.site-publication--beacon-and-bulletin article h2::after,
+[saved-theme="light"] #quartz-body.site-publication--beacon-and-bulletin hr {
+  box-shadow: none;
+}
+
+[saved-theme="light"] #quartz-body.site-publication--beacon-and-bulletin article a:hover,
+[saved-theme="light"] #quartz-body.site-publication--beacon-and-bulletin a.internal:hover {
+  color: var(--bnb-magenta);
+  text-decoration-color: color-mix(in srgb, var(--bnb-magenta) 62%, transparent);
+}
+
+[saved-theme="light"] #quartz-body.site-publication--beacon-and-bulletin blockquote {
+  border-left-color: var(--bnb-magenta);
+  background:
+    linear-gradient(90deg, rgba(157, 39, 127, 0.075), transparent 66%),
+    rgba(255, 255, 255, 0.58);
+  color: #304c5c;
+}
+
+/* Holo-news cards become cool white briefing panels. */
+[saved-theme="light"] #quartz-body.site-publication--beacon-and-bulletin .home-reference-card,
+[saved-theme="light"] #quartz-body.site-publication--beacon-and-bulletin .home-editorial-card,
+[saved-theme="light"] #quartz-body.site-publication--beacon-and-bulletin article .campaign-recent-card {
+  border-color: var(--bnb-rule);
+  background:
+    linear-gradient(135deg, rgba(8, 127, 152, 0.055), transparent 42%),
+    linear-gradient(315deg, rgba(157, 39, 127, 0.025), transparent 42%),
+    rgba(255, 255, 255, 0.78);
+  box-shadow: 0 8px 22px rgba(31, 70, 88, 0.09);
+}
+
+[saved-theme="light"] #quartz-body.site-publication--beacon-and-bulletin .home-reference-card::before,
+[saved-theme="light"] #quartz-body.site-publication--beacon-and-bulletin .home-editorial-card::before,
+[saved-theme="light"] #quartz-body.site-publication--beacon-and-bulletin article .campaign-recent-card::before {
+  border-top-color: rgba(8, 127, 152, 0.58);
+  border-left-color: rgba(8, 127, 152, 0.58);
+}
+
+[saved-theme="light"] #quartz-body.site-publication--beacon-and-bulletin .home-reference-card::after,
+[saved-theme="light"] #quartz-body.site-publication--beacon-and-bulletin .home-editorial-card::after,
+[saved-theme="light"] #quartz-body.site-publication--beacon-and-bulletin article .campaign-recent-card::after {
+  border-right-color: rgba(157, 39, 127, 0.32);
+  border-bottom-color: rgba(157, 39, 127, 0.32);
+}
+
+[saved-theme="light"] #quartz-body.site-publication--beacon-and-bulletin .home-reference-card:hover,
+[saved-theme="light"] #quartz-body.site-publication--beacon-and-bulletin .home-editorial-card:hover,
+[saved-theme="light"] #quartz-body.site-publication--beacon-and-bulletin article .campaign-recent-card:hover {
+  border-color: var(--bnb-rule-strong);
+  box-shadow: 0 12px 28px rgba(31, 70, 88, 0.13), 0 0 0 1px rgba(8, 127, 152, 0.04);
+}
+
+/* Campaign imagery remains cinematic, but its surrounding card belongs to the light newsroom. */
+[saved-theme="light"] #quartz-body.site-publication--beacon-and-bulletin article .campaign-directory__card {
+  border-color: rgba(8, 127, 152, 0.24);
+  background-color: #d9e7ec;
+  box-shadow: 0 10px 26px rgba(31, 70, 88, 0.14);
+}
+
+[saved-theme="light"] #quartz-body.site-publication--beacon-and-bulletin article .campaign-directory__card:hover {
+  box-shadow: 0 14px 30px rgba(31, 70, 88, 0.18), 0 0 0 1px rgba(8, 127, 152, 0.06);
+}
+
+/* Keep white copy over campaign art; use a navy image scrim instead of black. */
+[saved-theme="light"] #quartz-body.site-publication--beacon-and-bulletin .campaign-directory__card::after {
+  background:
+    linear-gradient(0deg, rgba(8, 28, 43, 0.94) 0%, rgba(8, 28, 43, 0.7) 40%, rgba(8, 28, 43, 0.2) 76%, rgba(8, 28, 43, 0.04) 100%),
+    linear-gradient(90deg, rgba(8, 127, 152, 0.09), transparent 52%),
+    linear-gradient(270deg, rgba(157, 39, 127, 0.06), transparent 40%);
+}
+
+[saved-theme="light"] #quartz-body.site-publication--beacon-and-bulletin .campaign-directory__eyebrow {
+  color: color-mix(in srgb, var(--campaign-directory-accent) 76%, white 24%);
+}
+
+[saved-theme="light"] #quartz-body.site-publication--beacon-and-bulletin .campaign-directory__status {
+  color: rgba(238, 249, 253, 0.76);
+}
+
+[saved-theme="light"] #quartz-body.site-publication--beacon-and-bulletin .campaign-directory__title {
+  color: #f4fbff;
+}
+
+[saved-theme="light"] #quartz-body.site-publication--beacon-and-bulletin .campaign-directory__subtitle {
+  color: rgba(238, 249, 253, 0.86);
+}
+
+/* Reference material reads like a clean briefing sheet rather than a dark terminal. */
+[saved-theme="light"] #quartz-body.site-publication--beacon-and-bulletin article img {
+  box-shadow: 0 8px 22px rgba(31, 70, 88, 0.14);
+}
+
+[saved-theme="light"] #quartz-body.site-publication--beacon-and-bulletin article table {
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 8px 20px rgba(31, 70, 88, 0.08);
+}
+
+[saved-theme="light"] #quartz-body.site-publication--beacon-and-bulletin article th {
+  background: linear-gradient(90deg, #d4e9ef, #e2edf5);
+  color: #17384b;
+}
+
+[saved-theme="light"] #quartz-body.site-publication--beacon-and-bulletin article tr:nth-child(even) {
+  background: rgba(8, 127, 152, 0.045);
+}
+
+[saved-theme="light"] #quartz-body.site-publication--beacon-and-bulletin .callout {
+  border-color: var(--bnb-rule);
+  background: rgba(255, 255, 255, 0.68);
+  box-shadow: 0 6px 18px rgba(31, 70, 88, 0.08);
+}
+
+/* Navigation controls become pale instrument panels. */
+[saved-theme="light"] #quartz-body.site-publication--beacon-and-bulletin .search-button,
+[saved-theme="light"] #quartz-body.site-publication--beacon-and-bulletin .darkmode,
+[saved-theme="light"] #quartz-body.site-publication--beacon-and-bulletin .readermode {
+  border-color: rgba(8, 127, 152, 0.17);
+  background: rgba(255, 255, 255, 0.58);
+}
+
+[saved-theme="light"] #quartz-body.site-publication--beacon-and-bulletin .search-button:hover,
+[saved-theme="light"] #quartz-body.site-publication--beacon-and-bulletin .darkmode:hover,
+[saved-theme="light"] #quartz-body.site-publication--beacon-and-bulletin .readermode:hover {
+  border-color: var(--bnb-rule-strong);
+  background: rgba(8, 127, 152, 0.08);
+}
+
+[saved-theme="light"] body[data-slug$="beacon-and-bulletin" i] #quartz-body.site-publication--beacon-and-bulletin article > p:first-of-type {
+  color: #405d6d;
+}
