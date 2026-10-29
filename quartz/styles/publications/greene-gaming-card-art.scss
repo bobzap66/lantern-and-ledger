@@ -1,0 +1,53 @@
+/* Publication artwork for the Greene Gaming landing-page cards. */
+body[data-slug="index"] #quartz-body.site-publication--greene-gaming {
+  .greene-publication-art {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    width: clamp(5.75rem, 11vw, 7rem);
+    aspect-ratio: 1;
+    margin-top: 1rem;
+    place-items: center;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--card-accent) 42%, var(--gray) 58%);
+    border-radius: 0.85rem;
+    background:
+      radial-gradient(circle at 50% 42%, var(--card-glow), transparent 70%),
+      color-mix(in srgb, var(--light) 94%, var(--card-secondary) 6%);
+    box-shadow: 0 8px 24px color-mix(in srgb, var(--card-glow) 72%, transparent);
+  }
+
+  .greene-publication-art img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0.28rem;
+    box-sizing: border-box;
+    border: 0;
+    border-radius: 0.72rem;
+    background: transparent;
+    box-shadow: none;
+    object-fit: contain;
+  }
+
+  .greene-publication-title {
+    position: relative;
+    z-index: 1;
+    display: block;
+    margin: 0.7rem 0 0.75rem;
+    color: var(--dark);
+    font-family: var(--headerFont);
+    font-size: clamp(1.55rem, 3vw, 2.1rem);
+    font-weight: 700;
+    line-height: 1.12;
+  }
+}
+
+@media (max-width: 800px) {
+  body[data-slug="index"] #quartz-body.site-publication--greene-gaming {
+    .greene-publication-art {
+      width: 6.25rem;
+    }
+  }
+}
