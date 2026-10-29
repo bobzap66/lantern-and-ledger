@@ -86,6 +86,11 @@ jobs:
       - name: Build Quartz
         run: npx quartz build
 
+      - name: Publish reader preference campaign list
+        run: |
+          mkdir -p public/static
+          cp quartz/static/preferences-campaigns.json public/static/preferences-campaigns.json
+
       - name: Generate Golarion calendar data
         run: node scripts/generate-golarion-calendar.mjs
 
