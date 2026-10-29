@@ -87,17 +87,17 @@ function card(campaign, timeline) {
   const linkLabel = timeline ? `View ${name} timeline` : `Browse ${name}`
 
   return [
-    '  <section class="campaign-archive-group">',
-    `    <h3>${escapeHtml(name)}</h3>`,
+    '    <section class="campaign-archive-group">',
+    `      <h3>${escapeHtml(name)}</h3>`,
     ...(Number.isInteger(startYear) && startYear > 0
-      ? [`    <p><strong>Campaign began · ${startYear} AR</strong></p>`]
+      ? [`      <p><strong>Campaign began · ${startYear} AR</strong></p>`]
       : []),
     ...(date && dateLabel
-      ? [`    <p><strong>${dateLabel} · ${escapeHtml(date)}</strong></p>`]
+      ? [`      <p><strong>${dateLabel} · ${escapeHtml(date)}</strong></p>`]
       : []),
-    `    <p>${escapeHtml(metadata.directory_summary)}</p>`,
-    `    <p><a href=\"${href}\">${escapeHtml(linkLabel)}</a></p>`,
-    "  </section>",
+    `      <p>${escapeHtml(metadata.directory_summary)}</p>`,
+    `      <p><a href=\"${href}\">${escapeHtml(linkLabel)}</a></p>`,
+    "    </section>",
   ].join("\n")
 }
 
@@ -141,20 +141,27 @@ async function main() {
   })
 
   const statusGroups = [
-    { status: "active", title: "Active Campaigns" },
-    { status: "upcoming", title: "Upcoming Campaigns" },
-    { status: "archived", title: "Archived Campaigns" },
+    { status: "active", title: "Active Campaigns", open: true },
+    { status: "upcoming", title: "Upcoming Campaigns", open: false },
+    { status: "archived", title: "Archived Campaigns", open: false },
   ]
   const generated = statusGroups
-    .map(({ status, title }) => {
+    .map(({ status, title, open }) => {
       const members = campaigns.filter((campaign) => campaign.metadata.status === status)
       if (members.length === 0) return ""
+      const count = `${members.length} campaign${members.length === 1 ? "" : "s"}`
       return [
-        `### ${title}`,
-        "",
-        '<div class="campaign-archive-grid">',
+        `<details class="calendar-campaign-chronology calendar-campaign-chronology--${status}"${open ? " open" : ""}>`,
+        '  <summary class="calendar-campaign-chronology__summary">',
+        `    <span class="calendar-campaign-chronology__title">${title}</span>`,
+        `    <span class="calendar-campaign-chronology__count">${count}</span>`,
+        "  </summary>",
+        '  <div class="calendar-campaign-chronology__body">',
+        '    <div class="campaign-archive-grid">',
         members.map((campaign) => card(campaign, campaign.timeline)).join("\n\n"),
-        "</div>",
+        "    </div>",
+        "  </div>",
+        "</details>",
       ].join("\n")
     })
     .filter(Boolean)
