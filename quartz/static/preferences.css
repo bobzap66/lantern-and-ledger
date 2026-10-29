@@ -74,22 +74,87 @@
   font-size: 0.95rem;
 }
 
-.preference-campaign-group {
+.preference-publications {
+  display: grid;
+  gap: 0.85rem;
   margin-top: 1rem;
 }
 
-.preference-campaign-group[hidden] {
-  display: none !important;
+.preference-publication {
+  overflow: clip;
+  border: 1px solid var(--lightgray);
+  border-radius: 0.45rem;
+  background: color-mix(in srgb, var(--light) 98%, var(--secondary) 2%);
 }
 
-.preference-campaign-group h3 {
-  margin: 0 0 0.65rem;
-  font-size: 1rem;
+.preference-publication__summary {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 1rem;
+  cursor: pointer;
+  color: var(--dark);
+  font-family: var(--titleFont);
+  font-weight: 700;
+  list-style: none;
+}
+
+.preference-publication__summary::-webkit-details-marker {
+  display: none;
+}
+
+.preference-publication__summary::before {
+  content: "▸";
+  flex: 0 0 auto;
+  color: var(--tertiary);
+  transition: transform 120ms ease;
+}
+
+.preference-publication[open] > .preference-publication__summary::before {
+  transform: rotate(90deg);
+}
+
+.preference-publication__summary:hover,
+.preference-publication__summary:focus-visible {
+  background: color-mix(in srgb, var(--light) 92%, var(--secondary) 8%);
+  outline: none;
+}
+
+.preference-publication__title {
+  flex: 1 1 auto;
+}
+
+.preference-publication__count {
+  flex: 0 0 auto;
+  color: var(--gray);
+  font-family: var(--bodyFont);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.preference-publication__body {
+  padding: 0 0.85rem 0.85rem;
+  border-top: 1px solid var(--lightgray);
+}
+
+.preference-publication__empty,
+.preference-data-error {
+  margin: 0.85rem 0 0;
+  color: var(--gray);
+}
+
+.preference-data-error {
+  padding: 0.85rem;
+  border: 1px solid var(--lightgray);
+  border-radius: 0.35rem;
+  background: var(--light);
 }
 
 .preference-campaign-list {
   display: grid;
   gap: 0.65rem;
+  padding-top: 0.85rem;
 }
 
 .preference-campaign {
@@ -154,6 +219,14 @@
 
   .preference-section-heading .preference-action {
     width: 100%;
+  }
+
+  .preference-publication__summary {
+    padding-inline: 0.8rem;
+  }
+
+  .preference-publication__body {
+    padding-inline: 0.65rem;
   }
 
   .preference-campaign {
