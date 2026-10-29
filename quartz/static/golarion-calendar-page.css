@@ -1,0 +1,87 @@
+.calendar-campaign-chronology {
+  margin: 1rem 0;
+  overflow: hidden;
+  border: 1px solid var(--isr-rule, var(--lightgray));
+  border-radius: 0.65rem;
+  background: color-mix(in srgb, var(--light) 96%, var(--highlight) 4%);
+}
+
+.calendar-campaign-chronology__summary {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 1rem;
+  cursor: pointer;
+  list-style: none;
+  background: color-mix(in srgb, var(--light) 90%, var(--highlight) 10%);
+}
+
+.calendar-campaign-chronology__summary::-webkit-details-marker {
+  display: none;
+}
+
+.calendar-campaign-chronology__summary::after {
+  content: "▾";
+  margin-left: 0.25rem;
+  color: var(--tertiary);
+  font-size: 0.95rem;
+  transition: transform 140ms ease;
+}
+
+.calendar-campaign-chronology:not([open]) .calendar-campaign-chronology__summary::after {
+  transform: rotate(-90deg);
+}
+
+.calendar-campaign-chronology__summary:hover,
+.calendar-campaign-chronology__summary:focus-visible {
+  background: color-mix(in srgb, var(--light) 84%, var(--highlight) 16%);
+}
+
+.calendar-campaign-chronology__title {
+  color: var(--dark);
+  font-family: var(--headerFont);
+  font-size: 1.12rem;
+  font-weight: 650;
+}
+
+.calendar-campaign-chronology__count {
+  margin-left: auto;
+  color: var(--gray);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.calendar-campaign-chronology__body {
+  padding: 1rem;
+  border-top: 1px solid var(--isr-rule, var(--lightgray));
+}
+
+.calendar-campaign-chronology__body .campaign-archive-grid {
+  margin: 0;
+}
+
+.calendar-campaign-chronology__body .campaign-archive-group:first-child {
+  margin-top: 0;
+}
+
+@media (max-width: 600px) {
+  .calendar-campaign-chronology__summary {
+    gap: 0.5rem;
+    padding: 0.8rem 0.85rem;
+  }
+
+  .calendar-campaign-chronology__title {
+    font-size: 1rem;
+  }
+
+  .calendar-campaign-chronology__count {
+    font-size: 0.7rem;
+  }
+
+  .calendar-campaign-chronology__body {
+    padding: 0.8rem;
+  }
+}
