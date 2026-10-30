@@ -12,7 +12,7 @@ const explorerOrder: Record<string, string[]> = {
     "rules",
     "external-references",
   ],
-  campaigns: ["kingmaker", "claws-of-the-tyrant", "season-of-ghosts", "abomination-vaults"],
+  campaigns: ["active-campaigns", "coming-soon", "campaign-archive"],
   "the-lantern-and-ledger": ["the-lantern-and-ledger-history", "staff"],
   "campaigns/kingmaker": [
     "kingmaker-the-story-so-far",
@@ -141,6 +141,109 @@ const explorerItemLabel = (item) => {
 
 const explorerItemIsFolder = (item) => Boolean(item.querySelector(":scope > .folder-container"))
 
+const campaignGroups = [
+  { status: "active", label: "Active Campaigns", key: "active-campaigns" },
+  { status: "upcoming", label: "Coming Soon", key: "coming-soon" },
+  { status: "archived", label: "Campaign Archive", key: "campaign-archive" },
+]
+
+const explorerCampaignMetadata = () => {
+  const context = document.querySelector(
+    "#site-publication-explorer-context[data-explorer-campaigns]",
+  )
+  const rawCampaigns = context?.getAttribute("data-explorer-campaigns")
+  if (!rawCampaigns) return []
+
+  try {
+    const campaigns = JSON.parse(rawCampaigns)
+    return Array.isArray(campaigns) ? campaigns : []
+  } catch {
+    return []
+  }
+}
+
+const currentPublication = () =>
+  document
+    .querySelector("#quartz-body[data-site-publication]")
+    ?.getAttribute("data-site-publication")
+
+const currentCampaignPath = () => {
+  const active = document.querySelector(".explorer a.active")
+  const campaign = active?.closest("li")
+  return normalizeExplorerPath(
+    campaign?.querySelector(":scope > .folder-container")?.dataset.folderpath ?? "",
+  )
+}
+
+const makeCampaignGroup = (template, group, campaigns, activeCampaignPath) => {
+  const fragment = template.content.cloneNode(true)
+  const item = fragment.querySelector("li")
+  const container = item?.querySelector(":scope > .folder-container")
+  const title = container?.querySelector(".folder-title")
+  const outer = item?.querySelector(":scope > .folder-outer")
+  const content = outer?.querySelector(":scope > ul")
+  if (!item || !container || !title || !outer || !content) return null
+
+  item.dataset.campaignGroup = group.status
+  container.dataset.folderpath = `campaign-groups/${group.key}/index`
+  title.textContent = group.label
+  for (const campaign of campaigns) {
+    campaign.dataset.explorerCampaign = "true"
+    content.appendChild(campaign)
+  }
+
+  const containsCurrentCampaign = campaigns.some((campaign) => {
+    const path = normalizeExplorerPath(
+      campaign.querySelector(":scope > .folder-container")?.dataset.folderpath ?? "",
+    )
+    return path === activeCampaignPath
+  })
+  outer.classList.toggle("open", containsCurrentCampaign)
+  return item
+}
+
+const groupPublicationCampaigns = () => {
+  const publication = currentPublication()
+  if (!publication) return
+
+  const metadata = explorerCampaignMetadata().filter(
+    (campaign) => campaign?.publication === publication,
+  )
+  if (metadata.length === 0) return
+  const statusByPath = new Map(
+    metadata.map((campaign) => [normalizeExplorerPath(campaign.path), campaign.status]),
+  )
+
+  for (const list of document.querySelectorAll(".explorer ul")) {
+    const parentPath = parentPathForList(list)
+    if (parentPath !== "campaigns" && !parentPath.endsWith("/campaigns")) continue
+    if (list.querySelector(":scope > li[data-campaign-group]")) continue
+
+    const template = document.querySelector("#template-folder")
+    if (!template) return
+    const activeCampaignPath = currentCampaignPath()
+    const members = Array.from(list.children).filter((item) => {
+      if (item.tagName !== "LI" || item.classList.contains("overflow-end")) return false
+      const folderPath = normalizeExplorerPath(
+        item.querySelector(":scope > .folder-container")?.dataset.folderpath ?? "",
+      )
+      return statusByPath.has(folderPath)
+    })
+
+    for (const group of campaignGroups) {
+      const campaigns = members.filter((item) => {
+        const path = normalizeExplorerPath(
+          item.querySelector(":scope > .folder-container")?.dataset.folderpath ?? "",
+        )
+        return statusByPath.get(path) === group.status
+      })
+      if (campaigns.length === 0) continue
+      const groupItem = makeCampaignGroup(template, group, campaigns, activeCampaignPath)
+      if (groupItem) list.insertBefore(groupItem, list.querySelector(":scope > .overflow-end"))
+    }
+  }
+}
+
 const curateExplorerList = (list) => {
   const parentPath = parentPathForList(list)
   const rankedKeys = explorerOrder[parentPath] ?? []
@@ -224,6 +327,7 @@ const curateAllExplorers = () => {
       for (const list of document.querySelectorAll(".explorer ul")) {
         curateExplorerList(list)
       }
+      groupPublicationCampaigns()
       routePublicationCampaigns()
     } catch (error) {
       console.warn("[Explorer curator] Leaving stock Explorer order in place", error)
@@ -236,6 +340,19 @@ const explorerCuratorObserver = new MutationObserver(curateAllExplorers)
 const attachExplorerCurator = () => {
   for (const explorer of document.querySelectorAll(".explorer")) {
     explorerCuratorObserver.observe(explorer, { childList: true, subtree: true })
+    if (explorer.dataset.campaignGroupsBound !== "true") {
+      explorer.dataset.campaignGroupsBound = "true"
+      explorer.addEventListener("click", (event) => {
+        const target = event.target
+        if (!(target instanceof Element)) return
+        const groupItem = target.closest("li[data-campaign-group]")
+        const control = target.closest(".folder-icon, .folder-button")
+        if (!groupItem || !control) return
+        event.preventDefault()
+        event.stopPropagation()
+        groupItem.querySelector(":scope > .folder-outer")?.classList.toggle("open")
+      })
+    }
   }
   curateAllExplorers()
 }
