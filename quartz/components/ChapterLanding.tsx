@@ -18,6 +18,23 @@ function canonicalSlug(value: unknown) {
   return String(simplifySlug(raw as FullSlug)).replace(/\/index$/i, "")
 }
 
+function publicationAwareRoot(fileData: QuartzComponentProps["fileData"], value: unknown) {
+  const root = canonicalSlug(value)
+  const currentSlug = canonicalSlug(fileData.slug)
+  if (!root || !currentSlug) return root
+
+  if (currentSlug === root || currentSlug.startsWith(`${root}/`)) return root
+
+  const nestedMarker = `/${root}/`
+  const nestedIndex = currentSlug.indexOf(nestedMarker)
+  if (nestedIndex >= 0) {
+    return `${currentSlug.slice(0, nestedIndex)}/${root}`
+  }
+
+  if (currentSlug.endsWith(`/${root}`)) return currentSlug
+  return root
+}
+
 function optionalNumber(value: unknown) {
   if (value === undefined || value === null || text(value) === "") return undefined
   const number = Number(value)
@@ -93,7 +110,7 @@ function chapterEntries(fileData: QuartzComponentProps["fileData"], allFiles: Ar
   const fm = (fileData.frontmatter ?? {}) as Record<string, unknown>
   if (normalized(fm.chapter_status) === "upcoming") return []
 
-  const root = canonicalSlug(fm.series_root)
+  const root = publicationAwareRoot(fileData, fm.series_root)
   if (!root) return []
 
   const startSession = optionalNumber(fm.chapter_start_session)
@@ -196,6 +213,7 @@ export default (() => {
 
     const root = canonicalSlug(fm.series_root)
     if (!root) return null
+    const archiveRoot = publicationAwareRoot(fileData, fm.series_root)
 
     const entries = chapterEntries(fileData, allFiles)
     const chapters = chapterPages(root, allFiles)
@@ -304,7 +322,7 @@ export default (() => {
             )}
 
             <a
-              href={resolveRelative(fileData.slug, root as FullSlug)}
+              href={resolveRelative(fileData.slug, archiveRoot as FullSlug)}
               class="chapter-navigation__item chapter-navigation__archive internal"
             >
               <span class="chapter-navigation__label">Full archive</span>
@@ -332,6 +350,11 @@ export default (() => {
 
   ChapterLanding.css = `
 ${editorialCardCss}
+
+.center:has(.chapter-landing-index) .popover-hint > article + p,
+.center:has(.chapter-landing-index) .popover-hint > article + p + div {
+  display: none;
+}
 
 .chapter-landing-index {
   margin: 2.2rem 0 0.75rem;
