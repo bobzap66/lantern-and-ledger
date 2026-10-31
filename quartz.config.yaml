@@ -187,6 +187,8 @@ plugins:
     enabled: true
   - source: "@quartz-community/explorer"
     enabled: true
+    options:
+      folderClickBehavior: link
     layout:
       position: left
       priority: 50
