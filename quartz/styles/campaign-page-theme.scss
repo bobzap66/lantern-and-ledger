@@ -1751,11 +1751,20 @@
 #quartz-body.campaign--murder-in-metal-city
   article:not(:has(.callout[data-callout^="timeline-"]))
   h2::after {
+  /* Beacon & Bulletin supplies an absolutely positioned accent line on H2s.
+     The campaign underline is a full-width 8:1 asset, so it must return to
+     normal flow rather than inheriting that accent line positioning. */
+  display: block;
+  position: relative;
+  right: auto;
+  bottom: auto;
+  left: auto;
   width: 100%;
   max-width: none;
   aspect-ratio: 8 / 1;
   height: auto;
   margin-top: -0.18rem;
+  box-shadow: none;
   background: url("/lantern-and-ledger/ornaments/murder-in-metal-city-h2-underline-8x1.webp") left
     center / 100% 100% no-repeat;
 }
