@@ -516,8 +516,11 @@ export const ArticleAuthorCards: QuartzTransformerPlugin = () => {
           const sourceType = String(sourceFm?.type ?? "")
             .trim()
             .toLowerCase()
-          if (sourceType === "article" || isBeaconPublishedPost(sourceFm)) {
-            const key = authorKey(sourceFm?.author)
+          const isCampaignEditorial =
+            sourceType === "campaign" && typeof sourceFm?.editorial_author === "string" &&
+            sourceFm.editorial_author.trim().length > 0
+          if (sourceType === "article" || isBeaconPublishedPost(sourceFm) || isCampaignEditorial) {
+            const key = authorKey(isCampaignEditorial ? sourceFm?.editorial_author : sourceFm?.author)
             const author = authors.get(key)
             if (author) {
               const fm = author.frontmatter
@@ -589,6 +592,26 @@ export const ArticleAuthorCards: QuartzTransformerPlugin = () => {
               : ""
 
           if (!authorCard && !contributorStrip) return
+
+          // Campaign landing pages can place the shared author card immediately after
+          // their editorial introduction without hardcoding author metadata or markup.
+          if (isCampaignEditorial) {
+            const markerIndex = tree.children.findIndex(
+              (node: any) =>
+                node?.type === "html" &&
+                /<!--\s*CAMPAIGN_EDITORIAL_AUTHOR_CARD\s*-->/.test(String(node.value ?? "")),
+            )
+            if (markerIndex >= 0 && authorCard) {
+              tree.children.splice(
+                markerIndex,
+                1,
+                ...[authorCard, contributorStrip]
+                  .filter(Boolean)
+                  .map((value) => ({ type: "html", value })),
+              )
+            }
+            return
+          }
 
           const byline = authorCard
             ? tree.children.findIndex(
