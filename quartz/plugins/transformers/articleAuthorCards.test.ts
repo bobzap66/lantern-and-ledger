@@ -51,6 +51,19 @@ author: "[[../../../../Beacon and Bulletin/Staff/The Unfinished Proof of Joy|Joy
 `,
     )
 
+    const sessionReportPath = writeNote(
+      root,
+      "Beacon and Bulletin/Campaigns/Murder in Metal City/Sessions/Session 1.md",
+      `---
+title: Incredulous Static
+type: session-report
+publication: "Beacon & Bulletin"
+site_publication: "Beacon & Bulletin"
+author: "[[../../../Staff/The Unfinished Proof of Joy|Joy]]"
+---
+`,
+    )
+
     const plugin = ArticleAuthorCards()
     const markdownPlugin = plugin.markdownPlugins!({
       argv: { directory: root },
@@ -60,6 +73,7 @@ author: "[[../../../../Beacon and Bulletin/Staff/The Unfinished Proof of Joy|Joy
     for (const [filePath, title] of [
       [articlePath, "A Blog Post"],
       [vignettePath, "Lunch Review"],
+      [sessionReportPath, "Incredulous Static"],
     ]) {
       const tree: any = {
         type: "root",
@@ -85,8 +99,33 @@ author: "[[../../../../Beacon and Bulletin/Staff/The Unfinished Proof of Joy|Joy
       assert.ok(cardIndex > 2)
       assert.equal(tree.children[cardIndex - 1].children[0].children[0].value, "By Joy, Blogger")
       assert.match(tree.children[cardIndex].value, /The Unfinished Proof of Joy/)
-      assert.match(tree.children[cardIndex].value, /2 published posts in the archive/)
+      assert.match(tree.children[cardIndex].value, /3 published posts in the archive/)
     }
+
+    const unrelatedReportPath = writeNote(
+      root,
+      "Other Campaign/Sessions/Unrelated.md",
+      `---
+title: Unrelated Report
+type: session-report
+publication: "The Lantern and Ledger"
+author: Joy
+---
+`,
+    )
+    const unrelatedReportTree: any = {
+      type: "root",
+      children: [
+        { type: "heading", depth: 1, children: [{ type: "text", value: "Unrelated Report" }] },
+      ],
+    }
+    transform(unrelatedReportTree, { path: unrelatedReportPath })
+    assert.equal(
+      unrelatedReportTree.children.some(
+        (node: any) => node.type === "html" && node.value.includes('class="isr-author-card"'),
+      ),
+      false,
+    )
 
     const internalThoughtPath = writeNote(
       root,
