@@ -323,6 +323,16 @@ function publicationDate(frontmatter: Record<string, any> | undefined) {
   return frontmatter?.publication_date ?? frontmatter?.publication_date_ar
 }
 
+function isBeaconPublishedPost(frontmatter: Record<string, any> | undefined) {
+  const type = String(frontmatter?.type ?? "").trim().toLowerCase()
+  const publication = String(frontmatter?.publication ?? "")
+    .trim()
+    .replace(/\s+/g, " ")
+    .toLowerCase()
+  return (type === "vignette" || type === "session-report") &&
+    publication === "beacon & bulletin"
+}
+
 function relativeSlugHref(fromRelativePath: string, toSlug: any) {
   const fromSlug = simplifySlug(slugifyFilePath(fromRelativePath as any))
   const normalizedFromSlug = String(fromSlug).replaceAll("\\", "/")
@@ -377,13 +387,7 @@ export const ArticleAuthorCards: QuartzTransformerPlugin = () => {
       const type = String(note.frontmatter?.type ?? "")
         .trim()
         .toLowerCase()
-      const isBAndBPublishedVignette =
-        type === "vignette" &&
-        String(note.frontmatter?.publication ?? "")
-          .trim()
-          .replace(/\s+/g, " ")
-          .toLowerCase() === "beacon & bulletin"
-      if (type === "article" || isBAndBPublishedVignette) {
+      if (type === "article" || isBeaconPublishedPost(note.frontmatter)) {
         const key = authorKey(note.frontmatter?.author)
         if (key) {
           const author = authors.get(key)
@@ -512,13 +516,7 @@ export const ArticleAuthorCards: QuartzTransformerPlugin = () => {
           const sourceType = String(sourceFm?.type ?? "")
             .trim()
             .toLowerCase()
-          const isBAndBPublishedVignette =
-            sourceType === "vignette" &&
-            String(sourceFm?.publication ?? "")
-              .trim()
-              .replace(/\s+/g, " ")
-              .toLowerCase() === "beacon & bulletin"
-          if (sourceType === "article" || isBAndBPublishedVignette) {
+          if (sourceType === "article" || isBeaconPublishedPost(sourceFm)) {
             const key = authorKey(sourceFm?.author)
             const author = authors.get(key)
             if (author) {
