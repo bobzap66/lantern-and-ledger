@@ -21,6 +21,7 @@ test("adds author byline cards to article and vignette posts linked to a staff p
       `---
 title: The Unfinished Proof of Joy
 type: author
+site_publication: "Beacon & Bulletin"
 aliases:
   - Joy
 role: Blogger
@@ -35,6 +36,7 @@ short_bio: A curious contemplative reporting across the Pact Worlds.
       `---
 title: A Blog Post
 type: article
+publication_date: 324-Sarenith-17
 author: "[[../Staff/The Unfinished Proof of Joy|The Unfinished Proof of Joy]]"
 ---
 `,
@@ -44,6 +46,7 @@ author: "[[../Staff/The Unfinished Proof of Joy|The Unfinished Proof of Joy]]"
       "Campaigns/Murder in Metal City/Vignettes/GM Vignettes/Lunch Review.md",
       `---
 title: Lunch Review
+publication_date: 325-Rova-14
 type: vignette
 publication: "Beacon & Bulletin"
 author: "[[../../../../Beacon and Bulletin/Staff/The Unfinished Proof of Joy|Joy]]"
@@ -56,6 +59,7 @@ author: "[[../../../../Beacon and Bulletin/Staff/The Unfinished Proof of Joy|Joy
       "Beacon and Bulletin/Campaigns/Murder in Metal City/Sessions/Session 1.md",
       `---
 title: Incredulous Static
+publication_date: 325-Rova-15
 type: session-report
 publication: "Beacon & Bulletin"
 site_publication: "Beacon & Bulletin"
@@ -101,6 +105,28 @@ author: "[[../../../Staff/The Unfinished Proof of Joy|Joy]]"
       assert.match(tree.children[cardIndex].value, /The Unfinished Proof of Joy/)
       assert.match(tree.children[cardIndex].value, /3 published posts in the archive/)
     }
+
+    const joyProfilePath = path.join(
+      root,
+      "Beacon and Bulletin/Staff/The Unfinished Proof of Joy.md",
+    )
+    const joyProfileTree: any = {
+      type: "root",
+      children: [
+        { type: "heading", depth: 1, children: [{ type: "text", value: "The Unfinished Proof of Joy" }] },
+      ],
+    }
+    transform(joyProfileTree, { path: joyProfilePath })
+    const joyWork = joyProfileTree.children.find(
+      (node: any) => node.type === "html" && node.value.includes('class="isr-author-articles"'),
+    )?.value ?? ""
+    assert.match(joyWork, /Published Work by The Unfinished Proof of Joy/)
+    assert.match(joyWork, /Incredulous Static/)
+    assert.match(joyWork, /Lunch Review/)
+    assert.match(joyWork, /A Blog Post/)
+    assert.ok(joyWork.indexOf("Incredulous Static") < joyWork.indexOf("Lunch Review"))
+    assert.ok(joyWork.indexOf("Lunch Review") < joyWork.indexOf("A Blog Post"))
+    assert.equal((joyWork.match(/<li>/g) ?? []).length, 3)
 
     const campaignPath = writeNote(
       root,
