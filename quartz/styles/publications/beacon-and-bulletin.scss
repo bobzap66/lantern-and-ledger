@@ -539,6 +539,53 @@ body:has(#quartz-body.site-publication--beacon-and-bulletin) {
   border-top: 1px solid var(--bnb-rule);
 }
 
+/* Light-mode legibility for Joy's newsroom panel; preserve the existing dark theme. */
+:root:not([saved-theme="dark"]) #quartz-body.site-publication--beacon-and-bulletin .campaign-editorial-note--joy {
+  border-color: #9dc5d4;
+  border-left-color: #167a96;
+  background:
+    linear-gradient(135deg, rgba(20, 125, 158, 0.08), transparent 58%),
+    linear-gradient(315deg, rgba(152, 52, 126, 0.035), transparent 55%),
+    #eaf5fa;
+  box-shadow: 0 4px 16px rgba(15, 54, 74, 0.08);
+  color: #193d51;
+}
+
+:root:not([saved-theme="dark"]) #quartz-body.site-publication--beacon-and-bulletin .campaign-editorial-note--joy::before {
+  border-top-color: #397f98;
+  border-right-color: #397f98;
+}
+
+:root:not([saved-theme="dark"]) #quartz-body.site-publication--beacon-and-bulletin .campaign-editorial-note--joy .campaign-editorial-note__eyebrow {
+  color: #892d73;
+}
+
+:root:not([saved-theme="dark"]) #quartz-body.site-publication--beacon-and-bulletin article .campaign-editorial-note--joy h2 {
+  color: #143447;
+}
+
+:root:not([saved-theme="dark"]) #quartz-body.site-publication--beacon-and-bulletin .campaign-editorial-note--joy p {
+  color: #24495e;
+}
+
+:root:not([saved-theme="dark"]) #quartz-body.site-publication--beacon-and-bulletin .campaign-editorial-note--joy .campaign-editorial-note__byline {
+  color: #3c6073;
+}
+
+:root:not([saved-theme="dark"]) #quartz-body.site-publication--beacon-and-bulletin .campaign-editorial-note--joy .campaign-editorial-note__links {
+  border-top-color: #a4c7d4;
+}
+
+:root:not([saved-theme="dark"]) #quartz-body.site-publication--beacon-and-bulletin article .campaign-editorial-note--joy a {
+  color: #075e79;
+  text-decoration-color: #3b8da4;
+}
+
+:root:not([saved-theme="dark"]) #quartz-body.site-publication--beacon-and-bulletin article .campaign-editorial-note--joy a:hover {
+  color: #8d276f;
+  text-decoration-color: #8d276f;
+}
+
 /* Starfinder campaign archive grid: the shared Claws structure with Beacon holo-panels. */
 #quartz-body.site-publication--beacon-and-bulletin .campaign-archive-grid {
   --campaign-nav-accent: var(--bnb-cyan);
