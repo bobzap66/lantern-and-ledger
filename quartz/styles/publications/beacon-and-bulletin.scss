@@ -416,6 +416,68 @@ body:has(#quartz-body.site-publication--beacon-and-bulletin) {
   font-size: 0.78rem;
 }
 
+/* Campaign landing pages: shared responsive navigation, Starfinder holo-panel treatment. */
+#quartz-body.site-publication--beacon-and-bulletin .campaign-primary-nav {
+  --campaign-nav-accent: var(--bnb-cyan);
+}
+
+#quartz-body.site-publication--beacon-and-bulletin article a.campaign-primary-nav__item {
+  border: 1px solid var(--bnb-rule-strong);
+  border-top: 3px solid var(--bnb-cyan);
+  border-radius: 0.5rem;
+  background:
+    linear-gradient(135deg, rgba(25, 221, 244, 0.09), transparent 52%),
+    linear-gradient(315deg, rgba(240, 42, 198, 0.06), transparent 52%),
+    var(--bnb-surface);
+  box-shadow: var(--bnb-glow);
+  color: var(--bnb-starlight);
+}
+
+#quartz-body.site-publication--beacon-and-bulletin article a.campaign-primary-nav__item::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-top: 1px solid rgba(240, 42, 198, 0.5);
+  border-right: 1px solid rgba(240, 42, 198, 0.5);
+  pointer-events: none;
+}
+
+#quartz-body.site-publication--beacon-and-bulletin article a.campaign-primary-nav__item:hover {
+  border-color: var(--bnb-cyan);
+  background:
+    linear-gradient(135deg, rgba(25, 221, 244, 0.15), transparent 55%),
+    linear-gradient(315deg, rgba(240, 42, 198, 0.09), transparent 55%),
+    var(--bnb-surface-raised);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.34), 0 0 18px rgba(25, 221, 244, 0.12);
+}
+
+#quartz-body.site-publication--beacon-and-bulletin article a.campaign-primary-nav__item:focus-visible {
+  outline: 2px solid var(--bnb-magenta);
+  outline-offset: 3px;
+}
+
+#quartz-body.site-publication--beacon-and-bulletin .campaign-primary-nav__eyebrow {
+  color: var(--bnb-cyan);
+  font-family: var(--codeFont, monospace);
+}
+
+#quartz-body.site-publication--beacon-and-bulletin .campaign-primary-nav__title {
+  color: var(--bnb-starlight);
+  font-family: "Source Sans 3", system-ui, sans-serif;
+  font-weight: 700;
+}
+
+#quartz-body.site-publication--beacon-and-bulletin .campaign-primary-nav__description {
+  color: #c7d9e6;
+}
+
+#quartz-body.site-publication--beacon-and-bulletin article a.campaign-primary-nav__item::after {
+  color: var(--bnb-cyan);
+}
+
 /* Campaign directory */
 #quartz-body.site-publication--beacon-and-bulletin .campaign-directory__intro,
 #quartz-body.site-publication--beacon-and-bulletin .campaign-directory__empty {
