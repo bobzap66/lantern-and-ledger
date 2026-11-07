@@ -478,6 +478,67 @@ body:has(#quartz-body.site-publication--beacon-and-bulletin) {
   color: var(--bnb-cyan);
 }
 
+/* Joy's newsroom introduction: a holo-news field report, not a fantasy archive notice. */
+#quartz-body.site-publication--beacon-and-bulletin .campaign-editorial-note--joy {
+  --campaign-nav-accent: var(--bnb-magenta);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--bnb-rule);
+  border-left: 4px solid var(--bnb-magenta);
+  border-radius: 0.5rem;
+  background:
+    linear-gradient(135deg, rgba(240, 42, 198, 0.08), transparent 52%),
+    linear-gradient(315deg, rgba(25, 221, 244, 0.055), transparent 50%),
+    var(--bnb-surface);
+  box-shadow: var(--bnb-glow);
+}
+
+#quartz-body.site-publication--beacon-and-bulletin .campaign-editorial-note--joy::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-top: 1px solid rgba(25, 221, 244, 0.6);
+  border-right: 1px solid rgba(25, 221, 244, 0.6);
+  pointer-events: none;
+}
+
+#quartz-body.site-publication--beacon-and-bulletin .campaign-editorial-note--joy .campaign-editorial-note__eyebrow {
+  color: var(--bnb-magenta);
+  font-family: var(--codeFont, monospace);
+}
+
+#quartz-body.site-publication--beacon-and-bulletin article .campaign-editorial-note--joy h2 {
+  margin: 0 0 0.55rem;
+  padding: 0;
+  border: 0;
+  color: var(--bnb-starlight);
+  font-family: "Source Sans 3", system-ui, sans-serif;
+}
+
+#quartz-body.site-publication--beacon-and-bulletin article .campaign-editorial-note--joy h2::after {
+  display: none;
+}
+
+#quartz-body.site-publication--beacon-and-bulletin .campaign-editorial-note--joy p {
+  color: #c7d9e6;
+}
+
+#quartz-body.site-publication--beacon-and-bulletin .campaign-editorial-note--joy .campaign-editorial-note__byline {
+  color: var(--bnb-muted);
+  font-family: var(--codeFont, monospace);
+  font-size: 0.79rem;
+  font-style: normal;
+}
+
+#quartz-body.site-publication--beacon-and-bulletin .campaign-editorial-note--joy .campaign-editorial-note__links {
+  margin-top: 0.9rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--bnb-rule);
+}
+
 /* Campaign directory */
 #quartz-body.site-publication--beacon-and-bulletin .campaign-directory__intro,
 #quartz-body.site-publication--beacon-and-bulletin .campaign-directory__empty {
