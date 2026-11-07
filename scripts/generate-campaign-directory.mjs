@@ -12,7 +12,7 @@ const HOMEPAGE_END = "<!-- HOMEPAGE_CAMPAIGNS_GENERATED_END -->"
 const DEFAULT_SITE_PUBLICATION = "Lantern & Ledger"
 const STATUS_GROUPS = [
   { status: "active", title: "Active Campaigns" },
-  { status: "upcoming", title: "Upcoming Campaigns" },
+  { status: "upcoming", title: "Coming Soon" },
   { status: "archived", title: "Archived Campaigns" },
 ]
 const PUBLICATION_CAMPAIGN_ROOTS = new Map([
@@ -104,7 +104,7 @@ function card(campaign, sourceDir, campaignBaseRel, { archived = false, titleLev
   const imageMarkup = imageTarget
     ? `\n<img class="campaign-directory__image" src="${escapeHtml(relativeUrl(sourceDir, imageTarget))}" alt=""${focalPoint}>`
     : ""
-  const status = archived ? "Archived" : metadata.status === "upcoming" ? "Upcoming" : "Active"
+  const status = archived ? "Archived" : metadata.status === "upcoming" ? "Coming Soon" : "Active"
   const statusMarkup = `\n<div class="campaign-directory__status">${status}</div>`
 
   return [
@@ -227,7 +227,10 @@ function buildArchive(campaigns, sitePublication, sourceDir, campaignBaseRel) {
 
 function homepageArchiveCard(sourceDir, campaignBaseRel) {
   const href = relativeUrl(sourceDir, path.posix.join(campaignBaseRel, "Archive"))
-  const image = relativeUrl(sourceDir, "assets/images/campaign-archive-chest.webp")
+  const isBeacon = campaignBaseRel.startsWith("Beacon and Bulletin/")
+  const image = isBeacon
+    ? "/static/branding/beacon-and-bulletin-compact.webp"
+    : relativeUrl(sourceDir, "assets/images/campaign-archive-chest.webp")
   return [
     '<section class="campaign-directory__section">',
     '<h3 class="campaign-directory__section-title">Campaign Archive</h3>',
@@ -237,9 +240,9 @@ function homepageArchiveCard(sourceDir, campaignBaseRel) {
     `<img class="campaign-directory__image" src="${image}" alt="">`,
     '<div class="campaign-directory__copy">',
     '<div class="campaign-directory__status">Completed Campaigns</div>',
-    '<div class="campaign-directory__eyebrow">Preserved by The Lantern and Ledger</div>',
+    `<div class="campaign-directory__eyebrow">Preserved by ${isBeacon ? "Beacon &amp; Bulletin" : "The Lantern and Ledger"}</div>`,
     '<h4 class="campaign-directory__title">Campaign Archive</h4>',
-    '<p class="campaign-directory__subtitle">Browse the completed campaign chronicles, characters, and stories preserved here.</p>',
+    `<p class="campaign-directory__subtitle">${isBeacon ? "Browse completed Starfinder expeditions, transmissions, and crew records preserved here." : "Browse the completed campaign chronicles, characters, and stories preserved here."}</p>`,
     "</div>",
     "</div>",
     "</div>",
