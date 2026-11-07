@@ -428,6 +428,15 @@ export const ArticleAuthorCards: QuartzTransformerPlugin = () => {
       )
     }
 
+    for (const list of postsByAuthor.values()) {
+      list.sort(
+        (a, b) =>
+          publicationRank(publicationDate(b.frontmatter)) -
+            publicationRank(publicationDate(a.frontmatter)) ||
+          String(a.frontmatter?.title ?? "").localeCompare(String(b.frontmatter?.title ?? "")),
+      )
+    }
+
     for (const list of contributionsByAuthor.values()) {
       list.sort(
         (a, b) =>
@@ -455,15 +464,22 @@ export const ArticleAuthorCards: QuartzTransformerPlugin = () => {
 
           if (sourceFm?.type === "author") {
             const key = authorKey(sourceFm?.title ?? path.basename(relativeSource, ".md"))
-            const articles = articlesByAuthor.get(key) ?? []
+            const isBeaconAuthor = String(sourceFm?.site_publication ?? sourceFm?.publication ?? "")
+              .trim()
+              .toLowerCase() === "beacon & bulletin"
+            // Beacon author profiles include articles, session reports and published
+            // vignettes. Lantern profiles retain their articles-only presentation.
+            const publishedWork = isBeaconAuthor
+              ? (postsByAuthor.get(key) ?? [])
+              : (articlesByAuthor.get(key) ?? [])
             const contributions = contributionsByAuthor.get(key) ?? []
-            if (articles.length === 0 && contributions.length === 0) return
+            if (publishedWork.length === 0 && contributions.length === 0) return
 
             const name = String(sourceFm?.title ?? path.basename(relativeSource, ".md"))
             const sections: string[] = []
 
-            if (articles.length > 0) {
-              const items = articles
+            if (publishedWork.length > 0) {
+              const items = publishedWork
                 .map((article) => {
                   const title = String(
                     article.frontmatter?.title ?? path.basename(article.relativePath, ".md"),
@@ -476,7 +492,7 @@ export const ArticleAuthorCards: QuartzTransformerPlugin = () => {
               sections.push(
                 [
                   '<section class="isr-author-articles">',
-                  `<h2>Articles by ${escapeHtml(name)}</h2>`,
+                  `<h2>${isBeaconAuthor ? "Published Work" : "Articles"} by ${escapeHtml(name)}</h2>`,
                   `<ul>\n${items}\n</ul>`,
                   "</section>",
                 ].join("\n"),
