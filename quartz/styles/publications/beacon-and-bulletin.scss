@@ -539,6 +539,57 @@ body:has(#quartz-body.site-publication--beacon-and-bulletin) {
   border-top: 1px solid var(--bnb-rule);
 }
 
+/* Starfinder campaign archive grid: the shared Claws structure with Beacon holo-panels. */
+#quartz-body.site-publication--beacon-and-bulletin .campaign-archive-grid {
+  --campaign-nav-accent: var(--bnb-cyan);
+}
+
+#quartz-body.site-publication--beacon-and-bulletin article .campaign-archive-group {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--bnb-rule);
+  border-top: 2px solid var(--bnb-cyan);
+  border-radius: 0.5rem;
+  background:
+    linear-gradient(135deg, rgba(25, 221, 244, 0.07), transparent 48%),
+    linear-gradient(315deg, rgba(240, 42, 198, 0.055), transparent 50%),
+    var(--bnb-surface);
+  box-shadow: var(--bnb-glow);
+}
+
+#quartz-body.site-publication--beacon-and-bulletin article .campaign-archive-group::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 2rem;
+  height: 2rem;
+  border-top: 1px solid rgba(240, 42, 198, 0.48);
+  border-right: 1px solid rgba(240, 42, 198, 0.48);
+  pointer-events: none;
+}
+
+#quartz-body.site-publication--beacon-and-bulletin article .campaign-archive-group h3 {
+  color: var(--bnb-starlight);
+  font-family: "Source Sans 3", system-ui, sans-serif;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+#quartz-body.site-publication--beacon-and-bulletin article .campaign-archive-group li {
+  color: #c7d9e6;
+}
+
+#quartz-body.site-publication--beacon-and-bulletin article .campaign-archive-group li::marker {
+  color: var(--bnb-magenta);
+}
+
+#quartz-body.site-publication--beacon-and-bulletin article .campaign-archive-group a {
+  font-weight: 650;
+  text-underline-offset: 0.17em;
+}
+
 /* Campaign directory */
 #quartz-body.site-publication--beacon-and-bulletin .campaign-directory__intro,
 #quartz-body.site-publication--beacon-and-bulletin .campaign-directory__empty {
