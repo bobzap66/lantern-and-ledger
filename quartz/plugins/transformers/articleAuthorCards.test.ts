@@ -102,6 +102,32 @@ author: "[[../../../Staff/The Unfinished Proof of Joy|Joy]]"
       assert.match(tree.children[cardIndex].value, /3 published posts in the archive/)
     }
 
+    const campaignPath = writeNote(
+      root,
+      "Beacon and Bulletin/Campaigns/Murder in Metal City/index.md",
+      `---
+title: Murder in Metal City
+type: campaign
+editorial_author: "[[../../Staff/The Unfinished Proof of Joy|Joy]]"
+---
+`,
+    )
+    const campaignTree: any = {
+      type: "root",
+      children: [
+        { type: "heading", depth: 1, children: [{ type: "text", value: "Murder in Metal City" }] },
+        { type: "html", value: '<aside class="campaign-editorial-note">Joy writes here.</aside>' },
+        { type: "html", value: "<!-- CAMPAIGN_EDITORIAL_AUTHOR_CARD -->" },
+        { type: "html", value: "<!-- CAMPAIGN_RECENTS_START -->" },
+      ],
+    }
+    transform(campaignTree, { path: campaignPath })
+    assert.equal(campaignTree.children.length, 4)
+    assert.match(campaignTree.children[2].value, /class="isr-author-card"/)
+    assert.match(campaignTree.children[2].value, /The Unfinished Proof of Joy/)
+    assert.match(campaignTree.children[2].value, /3 published posts in the archive/)
+    assert.equal(campaignTree.children[3].value, "<!-- CAMPAIGN_RECENTS_START -->")
+
     const unrelatedReportPath = writeNote(
       root,
       "Other Campaign/Sessions/Unrelated.md",
