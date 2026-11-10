@@ -410,6 +410,121 @@ function renderBlock(start, end, recents, baseDir) {
   ].join("\n")
 }
 
+const READING_PATH_START = "<!-- CAMPAIGN_READING_PATH_START -->"
+const READING_PATH_END = "<!-- CAMPAIGN_READING_PATH_END -->"
+
+function sessionOrderToken(note) {
+  const value = String(note.sessionNumber || /\bsession\s+(\d+[a-z]?)\b/i.exec(note.title)?.[1] || "")
+  const match = /^(\d+)([a-z]?)$/i.exec(value)
+  if (!match) return null
+  return Number(match[1]) * 100 + (match[2] ? match[2].toLowerCase().charCodeAt(0) - 96 : 0)
+}
+
+function numberedSessionsForCampaign(pool) {
+  return pool
+    .filter((note) => {
+      const type = String(note.type ?? "").toLowerCase()
+      const sessionRecord = ["session-note", "session-report", "session"].includes(type)
+        || note.rel.toLowerCase().includes("/session notes/")
+      return sessionRecord && sessionOrderToken(note) !== null
+    })
+    .sort((a, b) =>
+      sessionOrderToken(a) - sessionOrderToken(b)
+      || a.created - b.created
+      || a.rel.localeCompare(b.rel),
+    )
+}
+
+function campaignPrimaryLinks(source) {
+  const links = []
+  for (const match of source.matchAll(/<a class="campaign-primary-nav__item" href="([^"]+)">([\s\S]*?)<\/a>/g)) {
+    const title = /<span class="campaign-primary-nav__title">([^<]+)<\/span>/.exec(match[2])?.[1]
+    if (title) links.push({ href: match[1], title })
+  }
+  return links
+}
+
+function readingPathCard(href, eyebrow, title, description) {
+  return [
+    '<a class="campaign-reading-path__card internal" href="' + escapeHtml(href) + '">',
+    '<span class="campaign-reading-path__eyebrow">' + escapeHtml(eyebrow) + '</span>',
+    '<strong class="campaign-reading-path__title">' + escapeHtml(title) + '</strong>',
+    '<span class="campaign-reading-path__description">' + escapeHtml(description) + '</span>',
+    '</a>',
+  ].join("\n")
+}
+
+function readingPathBlock(campaign, pool, source) {
+  const nav = campaignPrimaryLinks(source)
+  const story = nav.find((link) => /story so far/i.test(link.title))
+  const archive = nav.find((link) => /session|chronicle|dispatch|report|oral history/i.test(link.title))
+  const numbered = numberedSessionsForCampaign(pool)
+  const first = numbered[0]
+  const latest = numbered.at(-1)
+  const cards = []
+  const used = new Set()
+
+  const addCard = (href, eyebrow, title, description) => {
+    if (!href || used.has(href)) return
+    used.add(href)
+    cards.push(readingPathCard(href, eyebrow, title, description))
+  }
+
+  if (first && latest && first.rel !== latest.rel) {
+    addCard(encodeURI(linkFrom(campaign.dir, first.rel)), "Start here", "Start at the Beginning", first.title)
+  } else if (archive && campaign.status !== "upcoming") {
+    addCard(archive.href, "Start here", "Browse the Session Record", archive.title)
+  }
+
+  if (story) {
+    addCard(story.href, "Catch up", "The Story So Far", "A shorter route through the events to date")
+  }
+
+  if (latest && campaign.status !== "upcoming") {
+    addCard(
+      encodeURI(linkFrom(campaign.dir, latest.rel)),
+      campaign.status === "archived" ? "The conclusion" : "Most recent",
+      campaign.status === "archived" ? "Final Session" : "Latest Session",
+      latest.title,
+    )
+  }
+
+  if (cards.length < 2) return ""
+  return [
+    READING_PATH_START,
+    '<nav class="campaign-reading-path" aria-label="Campaign reading paths">',
+    '<h2 class="campaign-reading-path__heading">Read This Campaign</h2>',
+    '<div class="campaign-reading-path__grid">',
+    ...cards,
+    '</div>',
+    '</nav>',
+    READING_PATH_END,
+  ].join("\n")
+}
+
+async function injectCampaignReadingPath(campaign, pool) {
+  const original = await fs.readFile(campaign.file, "utf8")
+  const prior = new RegExp("\\n?" + READING_PATH_START + "[\\s\\S]*?" + READING_PATH_END + "\\n*", "g")
+  let source = original.replace(prior, "")
+  const block = readingPathBlock(campaign, pool, source)
+  if (!block) {
+    if (source !== original) await fs.writeFile(campaign.file, source, "utf8")
+    return
+  }
+
+  const nav = /<nav class="campaign-primary-nav"[\s\S]*?<\/nav>/.exec(source)
+  if (nav) {
+    source = source.replace(nav[0], nav[0] + "\n\n" + block)
+  } else if (source.includes(CAMPAIGN_START)) {
+    source = source.replace(CAMPAIGN_START, block + "\n\n" + CAMPAIGN_START)
+  } else {
+    // Do not put navigation above the spoiler warning or campaign introduction.
+    return
+  }
+
+  if (source !== original) await fs.writeFile(campaign.file, source, "utf8")
+}
+
 async function injectBlock(file, start, end, block, preferredMarker = null) {
   let text = await fs.readFile(file, "utf8")
   const existing = new RegExp(`${start}[\\s\\S]*?${end}\\n*`, "m")
@@ -464,6 +579,7 @@ for (const file of await walk(CONTENT_ROOT)) {
         dir: path.posix.dirname(rel),
         title: String(fm.title || match[1]),
         sitePublication,
+        status: String(fm.status ?? "").trim().toLowerCase(),
       })
   }
 
@@ -531,6 +647,7 @@ for (const campaign of campaigns) {
   const recents = chooseRecents(pool, new Set([campaign.rel]), CAMPAIGN_COUNT)
   const block = renderBlock(CAMPAIGN_START, CAMPAIGN_END, recents, campaign.dir)
   await injectBlock(campaign.file, CAMPAIGN_START, CAMPAIGN_END, block)
+  await injectCampaignReadingPath(campaign, pool)
   console.log(`${campaign.title} (${campaign.sitePublication}) recents generated`)
   console.log("  Brand New:", recents.brandNew.map((note) => note.title).join(", "))
   console.log("  Recently Updated:", recents.recentlyUpdated.map((note) => note.title).join(", "))
