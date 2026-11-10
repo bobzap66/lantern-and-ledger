@@ -23,6 +23,7 @@ import RelatedRecords from "./quartz/components/RelatedRecords"
 import ArchiveReadingActions from "./quartz/components/ArchiveReadingActions"
 import ResponsiveCompatibility from "./quartz/components/ResponsiveCompatibility"
 import SessionNavigation from "./quartz/components/SessionNavigation"
+import SessionMediaLinks from "./quartz/components/SessionMediaLinks"
 import VignetteNavigation from "./quartz/components/VignetteNavigation"
 import FacetedSearch from "./quartz/components/FacetedSearch"
 import ExplorerCurator from "./quartz/components/ExplorerCurator"
@@ -48,6 +49,7 @@ const relatedRecords = RelatedRecords()
 const sessionArchiveActions = ArchiveReadingActions()
 const responsiveCompatibility = ResponsiveCompatibility()
 const sessionNavigation = SessionNavigation()
+const sessionMediaLinks = SessionMediaLinks()
 const vignetteNavigation = VignetteNavigation()
 const facetedSearch = FacetedSearch()
 const explorerCurator = ExplorerCurator()
@@ -71,7 +73,7 @@ const localLayout = {
     stripAdvertisement,
   ],
   right: [sidebarAdvertisement],
-  afterBody: [chapterLanding, relatedRecords, sessionNavigation, vignetteNavigation],
+  afterBody: [chapterLanding, sessionMediaLinks, relatedRecords, sessionNavigation, vignetteNavigation],
 }
 
 componentRegistry.register("publication-styles", publicationStyles, "local")
@@ -88,6 +90,7 @@ componentRegistry.register("advertisement-strip", stripAdvertisement, "local")
 componentRegistry.register("related-records", relatedRecords, "local")
 componentRegistry.register("session-archive-actions", sessionArchiveActions, "local")
 componentRegistry.register("session-navigation", sessionNavigation, "local")
+componentRegistry.register("session-media-links", sessionMediaLinks, "local")
 componentRegistry.register("vignette-navigation", vignetteNavigation, "local")
 componentRegistry.register("faceted-search", facetedSearch, "local")
 
