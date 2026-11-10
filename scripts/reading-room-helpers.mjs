@@ -1,4 +1,5 @@
 import path from "node:path"
+import { slugifyFilePath } from "@quartz-community/utils"
 
 const EDITORIAL_TYPES = new Set(["article", "vignette", "session-note", "session-report", "chronicle", "news-article", "story", "oral-history", "journal", "journal-entry", "report", "dispatch", "campaign-history"])
 
@@ -56,9 +57,16 @@ export function typeLabel(type, format) {
   return raw.split(/[-_]+/).filter(Boolean).map((word) => word[0].toUpperCase() + word.slice(1)).join(" ")
 }
 
+export function storySlug(rel) {
+  return String(slugifyFilePath(rel)).replace(/^\/+|\/+$/g, "")
+}
+
 export function relativeStoryHref(rel, indexRel) {
-  const target = rel.replace(/\.md$/i, "")
-  const indexDir = path.posix.dirname(indexRel)
+  const target = storySlug(rel)
+  const indexSlug = storySlug(indexRel)
+  const indexDir = indexRel.toLowerCase().endsWith("/index.md")
+    ? path.posix.dirname(indexSlug)
+    : path.posix.dirname(indexSlug)
   let relative = path.posix.relative(indexDir, target)
   if (!relative.startsWith(".")) relative = "./" + relative
   return relative.split("/").map((segment) => segment === "." || segment === ".." ? segment : encodeURIComponent(segment)).join("/")
@@ -85,7 +93,7 @@ export function renderReadingRoom(items, indexRel, publicationName) {
     const { year, iso, label } = dateParts(item.date)
     const campaign = item.campaign || "Independent"
     const byline = item.author ? (item.authorProfileRel
-      ? '<a href="' + escapeHtml(relativeStoryHref(item.authorProfileRel, indexRel)) + '">' + escapeHtml(item.author) + '</a>'
+      ? '<a data-slug="' + escapeHtml(storySlug(item.authorProfileRel)) + '" href="' + escapeHtml(relativeStoryHref(item.authorProfileRel, indexRel)) + '">' + escapeHtml(item.author) + '</a>'
       : escapeHtml(item.author)) : ""
     const href = escapeHtml(relativeStoryHref(item.rel, indexRel))
     const metaLabel = [campaign, item.type].filter(Boolean).join(" · ")
@@ -93,13 +101,13 @@ export function renderReadingRoom(items, indexRel, publicationName) {
     lines.push(
       '<article class="editorial-reading-room__card" data-campaign="' + escapeHtml(campaign) + '" data-author="' + escapeHtml(item.author || "") + '" data-type="' + escapeHtml(item.type) + '" data-year="' + escapeHtml(year) + '" data-search="' + escapeHtml(search) + '">',
       '<p class="editorial-reading-room__category">' + escapeHtml(metaLabel) + '</p>',
-      '<h3><a href="' + href + '">' + escapeHtml(item.title) + '</a></h3>',
+      '<h3><a data-slug="' + escapeHtml(storySlug(item.rel)) + '" href="' + href + '">' + escapeHtml(item.title) + '</a></h3>',
       item.description ? '<p class="editorial-reading-room__summary">' + escapeHtml(item.description) + '</p>' : "",
       '<div class="editorial-reading-room__foot">',
       byline ? '<span class="editorial-reading-room__byline">By ' + byline + '</span>' : '<span class="editorial-reading-room__byline">From the archive</span>',
       iso ? '<time datetime="' + iso + '">' + escapeHtml(label) + '</time>' : "",
       '</div>',
-      '<a class="editorial-reading-room__read" href="' + href + '">Read story <span aria-hidden="true">→</span></a>',
+      '<a class="editorial-reading-room__read" data-slug="' + escapeHtml(storySlug(item.rel)) + '" href="' + href + '">Read story <span aria-hidden="true">→</span></a>',
       '</article>',
     )
   }
