@@ -177,7 +177,7 @@ function buildDirectory(campaigns, sitePublication, sourceDir, campaignBaseRel) 
     return `${count} ${status === "upcoming" ? "upcoming" : status} campaign${count === 1 ? "" : "s"}`
   })
 
-  const sections = STATUS_GROUPS.map(({ status, title }) => {
+  const sections = STATUS_GROUPS.filter(({ status }) => status !== "archived").map(({ status, title }) => {
     const members = campaigns.filter((campaign) => campaign.metadata.status === status)
     if (members.length === 0) return ""
     const archived = status === "archived"
@@ -197,10 +197,12 @@ function buildDirectory(campaigns, sitePublication, sourceDir, campaignBaseRel) 
   return [
     `<div class="campaign-directory" data-site-publication="${escapeHtml(sitePublication)}">`,
     campaigns.length > 0
-      ? `<p class="campaign-directory__intro">${counts.join(", ")}, preserved below.</p>`
+      ? `<p class="campaign-directory__intro">${counts.join(", ")}.</p>`
       : '<p class="campaign-directory__empty">No campaigns have been added yet.</p>',
     ...sections,
-    '<p><a href="./Archive">Browse the completed campaign chronicles →</a></p>',
+    campaigns.some((campaign) => campaign.metadata.status === "archived")
+      ? homepageArchiveCard(sourceDir, campaignBaseRel, { headingLevel: 2 })
+      : "",
     "</div>",
   ].join("\n")
 }
@@ -225,7 +227,7 @@ function buildArchive(campaigns, sitePublication, sourceDir, campaignBaseRel) {
   ].join("\n")
 }
 
-function homepageArchiveCard(sourceDir, campaignBaseRel) {
+function homepageArchiveCard(sourceDir, campaignBaseRel, { headingLevel = 3 } = {}) {
   const href = relativeUrl(sourceDir, path.posix.join(campaignBaseRel, "Archive"))
   const isBeacon = campaignBaseRel.startsWith("Beacon and Bulletin/")
   const image = isBeacon
@@ -233,7 +235,7 @@ function homepageArchiveCard(sourceDir, campaignBaseRel) {
     : relativeUrl(sourceDir, "assets/images/campaign-archive-chest.webp")
   return [
     '<section class="campaign-directory__section">',
-    '<h3 class="campaign-directory__section-title">Campaign Archive</h3>',
+    `<h${headingLevel} class="campaign-directory__section-title">Campaign Archive</h${headingLevel}>`,
     '<div class="campaign-directory__grid campaign-directory__grid--archived">',
     '<div class="campaign-directory__card campaign-directory__card--archived campaign-directory__card--campaign-archive">',
     `<a class="campaign-directory__link" href="${href}" aria-label="Browse the Campaign Archive"></a>`,
@@ -241,7 +243,7 @@ function homepageArchiveCard(sourceDir, campaignBaseRel) {
     '<div class="campaign-directory__copy">',
     '<div class="campaign-directory__status">Completed Campaigns</div>',
     `<div class="campaign-directory__eyebrow">Preserved by ${isBeacon ? "Beacon &amp; Bulletin" : "The Lantern and Ledger"}</div>`,
-    '<h4 class="campaign-directory__title">Campaign Archive</h4>',
+    `<h${headingLevel + 1} class="campaign-directory__title">Campaign Archive</h${headingLevel + 1}>`,
     `<p class="campaign-directory__subtitle">${isBeacon ? "Browse completed Starfinder expeditions, transmissions, and crew records preserved here." : "Browse the completed campaign chronicles, characters, and stories preserved here."}</p>`,
     "</div>",
     "</div>",
@@ -271,7 +273,9 @@ function buildHomepageCampaigns(campaigns, sitePublication, sourceDir, campaignB
   return [
     `<div class="campaign-directory" data-site-publication="${escapeHtml(sitePublication)}">`,
     ...sections,
-    homepageArchiveCard(sourceDir, campaignBaseRel),
+    campaigns.some((campaign) => campaign.metadata.status === "archived")
+      ? homepageArchiveCard(sourceDir, campaignBaseRel)
+      : "",
     "</div>",
     `<p><a href="${relativeUrl(sourceDir, campaignBaseRel)}">Browse the complete campaign directory →</a></p>`,
   ].join("\n")
