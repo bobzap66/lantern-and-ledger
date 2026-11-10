@@ -439,6 +439,20 @@ completed campaigns are reached through the archive card. The archive card is
 omitted when no completed campaigns exist. An empty dedicated archive page
 continues to show a helpful empty state.
 
+## Publishing preflight
+
+The manual validation workflow runs `scripts/audit-publication-preflight.mjs content`
+after generating the campaign directory and homepage recents. It checks
+publication assignment and campaign status, highlights stale or missing
+generated status cards, reports missing image alt metadata, flags duplicate or
+missing H1 headings, and warns when `publish: false` is used without
+`draft: true`.
+
+Warnings appear as GitHub Actions annotations without stopping deployment.
+Invalid publication assignment or campaign status is a build-blocking error.
+Run the script with `--strict` to treat warnings as errors during an
+independent cleanup pass.
+
 ## Campaign timelines
 
 Generator:
