@@ -17,7 +17,8 @@ function frontmatter(source) {
 }
 
 function report(target, message, fatal = false) {
-  ;(fatal ? errors : warnings).push({ target, message })
+  const destination = fatal ? errors : warnings
+  destination.push({ target, message })
 }
 
 function text(value) {
