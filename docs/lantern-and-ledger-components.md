@@ -409,6 +409,23 @@ Recognized session entry types include `session-note`, `session-report`, and
 Publishing discovery respects `draft`, `publish`, `unlisted`, and `hidden`
 metadata. A new campaign can use the same guide without a custom UI component.
 
+## Session recording links
+
+The shared `SessionMediaLinks` component is registered in `quartz.ts` and
+renders after published session notes and reports. It supports optional
+frontmatter fields:
+
+- `youtube_url`: watch the session on YouTube
+- `twitch_url`: watch the session on Twitch
+- `podcast_url`: listen to a published podcast episode
+- `recording_url`: generic recording destination when no platform-specific
+  field is available
+
+Only literal `https://` links are shown. Duplicate URLs are collapsed.
+If a session has no recording metadata, the component renders nothing. Put
+links on individual session records; do not infer episode URLs from playlist
+names or invent missing recordings.
+
 ## Recent content and archive visibility
 
 `generate-homepage-recents.mjs` includes `session-report` records and the
