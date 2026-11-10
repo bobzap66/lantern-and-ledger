@@ -26,6 +26,7 @@ const HIDDEN_RECENT_PATHS = [
 const NON_RECENT_TYPES = new Set(["index", "series-chapter"])
 const HOME_EDITORIAL_FOLDERS = new Set([
   "session notes",
+  "sessions",
   "vignettes",
   "articles",
   "chapters",
@@ -41,6 +42,7 @@ const HOME_EDITORIAL_TYPES = new Set([
   "report",
   "session",
   "session-note",
+  "session-report",
   "vignette",
 ])
 const RECENT_TYPE_LABELS = new Map([
@@ -55,6 +57,7 @@ const RECENT_TYPE_LABELS = new Map([
   ["report", "Report"],
   ["session", "Session"],
   ["session-note", "Session Report"],
+  ["session-report", "Session Report"],
   ["settlement", "Settlement"],
   ["timeline", "Timeline"],
   ["timeline-metadata", "Timeline Metadata"],
@@ -122,7 +125,12 @@ function gitHistory(rel) {
 
 function parseDate(value) {
   if (!value || typeof value !== "string") return null
-  const date = new Date(value)
+  const normalized = value.trim()
+  // A date-only metadata value represents a calendar day, not midnight UTC.
+  // Render at UTC noon so America/New_York never displays the prior date.
+  const date = /^\d{4}-\d{2}-\d{2}$/.test(normalized)
+    ? new Date(`${normalized}T12:00:00Z`)
+    : new Date(normalized)
   return Number.isNaN(date.valueOf()) ? null : date
 }
 
