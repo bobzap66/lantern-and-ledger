@@ -1,6 +1,8 @@
 import { promises as fs } from "node:fs"
 import path from "node:path"
 import { execFileSync } from "node:child_process"
+import YAML from "yaml"
+import { isPublicEditorial, normalizeAuthor, authorKey, parseDisplayDate, typeLabel, renderReadingRoom } from "./reading-room-helpers.mjs"
 
 const CONTENT_ROOT = path.resolve(process.argv[2] ?? "content")
 const START = "<!-- PUBLIC_ARTICLES_START -->"
@@ -48,21 +50,9 @@ async function walk(dir) {
   return files
 }
 
-function parseFrontmatter(text) {
-  const match = /^---\s*\r?\n([\s\S]*?)\r?\n---/.exec(text)
-  if (!match) return {}
-
-  const fm = {}
-  for (const line of match[1].split(/\r?\n/)) {
-    const field = /^([A-Za-z0-9_-]+):\s*(.*?)\s*$/.exec(line)
-    if (!field) continue
-
-    let value = field[2].replace(/^['"]|['"]$/g, "")
-    if (/^(true|false)$/i.test(value)) value = value.toLowerCase() === "true"
-    fm[field[1].toLowerCase()] = value
-  }
-
-  return fm
+function parseFrontmatter(source) {
+  const match = /^---\s*\r?\n([\s\S]*?)\r?\n---/.exec(source)
+  return match ? (YAML.parse(match[1]) ?? {}) : {}
 }
 
 function normalizePublication(value) {
@@ -91,11 +81,6 @@ function gitCreatedDate(rel) {
   }
 }
 
-function parseDate(value) {
-  if (!value || typeof value !== "string") return null
-  const date = new Date(value)
-  return Number.isNaN(date.valueOf()) ? null : date
-}
 
 function cleanDescription(value) {
   return String(value ?? "")
@@ -136,23 +121,6 @@ function campaignFromRel(rel, publication) {
   return rel.slice(prefix.length).split("/")[0] ?? ""
 }
 
-function typeLabel(value) {
-  return String(value ?? "")
-    .trim()
-    .split(/[-_]+/)
-    .filter(Boolean)
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ")
-}
-
-function formatDate(date) {
-  return new Intl.DateTimeFormat("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    timeZone: "America/New_York",
-  }).format(date)
-}
 
 function linkTo(rel, indexRel) {
   const withoutExtension = rel.replace(/\.md$/i, "")
@@ -162,26 +130,6 @@ function linkTo(rel, indexRel) {
   return relative
 }
 
-function render(items, publication) {
-  const lines = [START]
-
-  if (items.length === 0) {
-    lines.push("_No spoiler-free articles have been published yet._")
-  } else {
-    for (const item of items) {
-      lines.push(`### [[${linkTo(item.rel, publication.indexRel)}|${item.title}]]`)
-      const meta = [item.campaign, item.type, item.date ? `Published ${formatDate(item.date)}` : ""]
-        .filter(Boolean)
-        .join(" · ")
-      if (meta) lines.push(`*${meta}*`)
-      if (item.description) lines.push("", item.description)
-      lines.push("")
-    }
-  }
-
-  lines.push(END)
-  return lines.join("\n")
-}
 
 function replaceMarkedBlock(source, startMarker, endMarker, replacement) {
   const existing = new RegExp(`${startMarker}[\\s\\S]*?${endMarker}`, "m")
@@ -219,6 +167,20 @@ for (const publication of PUBLICATIONS) {
   const indexFile = path.join(CONTENT_ROOT, publication.indexRel)
   let indexText = await fs.readFile(indexFile, "utf8")
   const items = []
+  const authorProfiles = new Map()
+
+  // Resolve byline aliases to existing staff profiles, never synthetic profiles.
+  for (const file of files) {
+    const rel = path.relative(CONTENT_ROOT, file).replaceAll("\\", "/")
+    const fm = parseFrontmatter(await fs.readFile(file, "utf8"))
+    if (!isPublication(fm.site_publication, publication)) continue
+    if (fm.draft === true || fm.publish === false || fm.unlisted === true) continue
+    if (!["author", "contributor"].includes(String(fm.type ?? "").toLowerCase())) continue
+    for (const name of [fm.title, ...(Array.isArray(fm.aliases) ? fm.aliases : [])]) {
+      const key = authorKey(name)
+      if (key) authorProfiles.set(key, rel)
+    }
+  }
 
   for (const file of files) {
     if (path.resolve(file) === path.resolve(indexFile)) continue
@@ -230,21 +192,20 @@ for (const publication of PUBLICATIONS) {
       .trim()
       .toLowerCase()
 
-    if (fm.draft === true || fm.publish === false || fm.unlisted === true) continue
-    if (fm.spoiler !== false) continue
-    if (!isPublication(fm.site_publication, publication)) continue
-    if (EXCLUDED_TYPES.has(type)) continue
+    if (!isPublicEditorial(fm, isPublication(fm.site_publication, publication))) continue
 
     items.push({
       rel,
       title: titleFromFrontmatter(fm, rel),
       campaign: campaignFromRel(rel, publication),
-      type: typeLabel(type),
+      type: typeLabel(type, fm.format),
+      author: normalizeAuthor(fm.author ?? fm.correspondent ?? fm.editorial_author ?? ""),
+      authorProfileRel: authorProfiles.get(authorKey(fm.author ?? fm.correspondent ?? fm.editorial_author ?? "")) || "",
       description:
         cleanDescription(fm.card_description ?? fm.description ?? fm.summary ?? fm.excerpt) ||
         descriptionFromBody(text),
       date:
-        parseDate(fm.date ?? fm.created ?? fm.article_release_date ?? fm.publication_date) ??
+        parseDisplayDate(fm.article_release_date ?? fm.created ?? fm.date ?? fm.session_date) ??
         gitCreatedDate(rel),
     })
   }
@@ -255,7 +216,7 @@ for (const publication of PUBLICATIONS) {
     return bTime - aTime || a.title.localeCompare(b.title)
   })
 
-  indexText = replaceMarkedBlock(indexText, START, END, render(items, publication))
+  indexText = replaceMarkedBlock(indexText, START, END, [START, renderReadingRoom(items, publication.indexRel, publication.name), END].join("\n"))
   await fs.writeFile(indexFile, indexText, "utf8")
 
   if (publication.homeRel) {
