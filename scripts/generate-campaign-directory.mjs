@@ -174,8 +174,9 @@ async function loadCampaigns(sitePublication) {
 function buildDirectory(campaigns, sitePublication, sourceDir, campaignBaseRel) {
   const counts = STATUS_GROUPS.map(({ status }) => {
     const count = campaigns.filter((campaign) => campaign.metadata.status === status).length
+    if (count === 0) return ""
     return `${count} ${status === "upcoming" ? "upcoming" : status} campaign${count === 1 ? "" : "s"}`
-  })
+  }).filter(Boolean)
 
   const sections = STATUS_GROUPS.filter(({ status }) => status !== "archived").map(({ status, title }) => {
     const members = campaigns.filter((campaign) => campaign.metadata.status === status)
