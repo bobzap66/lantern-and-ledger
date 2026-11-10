@@ -1810,3 +1810,79 @@
     width: 100%;
   }
 }
+
+
+/* Shared, generated campaign reading guide across both publications. */
+.center article .campaign-reading-path {
+  margin: 1.4rem 0 1.7rem;
+  padding: 1rem;
+  border: 1px solid var(--campaign-page-rule, var(--lightgray));
+  border-radius: 0.65rem;
+  background: color-mix(in srgb, var(--light) 96%, var(--campaign-page-accent, var(--tertiary)) 4%);
+}
+
+.center article .campaign-reading-path__heading {
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.05rem, 2.4vw, 1.35rem);
+  color: var(--darkgray);
+}
+
+.center article .campaign-reading-path__heading::after {
+  display: none !important;
+}
+
+.center article .campaign-reading-path__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.center article a.campaign-reading-path__card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+  padding: 0.85rem 0.9rem;
+  border: 1px solid var(--lightgray);
+  border-top: 3px solid var(--campaign-page-accent, var(--tertiary));
+  border-radius: 0.45rem;
+  background: var(--light);
+  color: var(--darkgray);
+  text-decoration: none !important;
+}
+
+.center article a.campaign-reading-path__card:hover,
+.center article a.campaign-reading-path__card:focus-visible {
+  border-color: var(--campaign-page-accent, var(--secondary));
+  box-shadow: 0 0.25rem 0.65rem color-mix(in srgb, var(--dark) 13%, transparent);
+}
+
+.center article .campaign-reading-path__eyebrow {
+  color: var(--darkgray);
+  font: 700 0.7rem/1.3 var(--bodyFont);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.center article .campaign-reading-path__title {
+  color: var(--darkgray);
+  font: 700 1rem/1.3 var(--headerFont);
+}
+
+.center article .campaign-reading-path__description {
+  color: var(--darkgray);
+  font: 400 0.88rem/1.45 var(--bodyFont);
+  opacity: 0.9;
+}
+
+@media (max-width: 920px) {
+  .center article .campaign-reading-path__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 620px) {
+  .center article .campaign-reading-path__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
