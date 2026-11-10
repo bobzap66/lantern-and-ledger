@@ -64,15 +64,16 @@ export function storySlug(rel) {
 export function relativeStoryHref(rel, indexRel) {
   const target = storySlug(rel)
   const indexSlug = storySlug(indexRel)
-  const indexDir = indexRel.toLowerCase().endsWith("/index.md")
-    ? path.posix.dirname(indexSlug)
-    : path.posix.dirname(indexSlug)
+  const indexDir = path.posix.dirname(indexSlug)
   let relative = path.posix.relative(indexDir, target)
   if (!relative.startsWith(".")) relative = "./" + relative
   return relative.split("/").map((segment) => segment === "." || segment === ".." ? segment : encodeURIComponent(segment)).join("/")
 }
 
 export function renderReadingRoom(items, indexRel, publicationName) {
+  const campaignDirectoryHref = indexRel.toLowerCase().endsWith("/index.md")
+    ? "../campaigns/"
+    : "./campaigns/"
   const lines = [
     '<section class="editorial-reading-room" aria-label="Browse editorial articles" data-publication="' + escapeHtml(publicationName) + '">',
     '<div class="editorial-reading-room__intro"><p class="editorial-reading-room__eyebrow">The Reading Room</p>',
@@ -115,7 +116,7 @@ export function renderReadingRoom(items, indexRel, publicationName) {
   lines.push(
     '</div>',
     '<p class="editorial-reading-room__empty" hidden>No articles match those filters. Try another author, campaign, or year.</p>',
-    '<p class="editorial-reading-room__notice">Looking for the complete campaign record? Visit the <a href="../campaigns/">campaign directory</a> to browse spoiler-protected stories.</p>',
+    '<p class="editorial-reading-room__notice">Looking for the complete campaign record? Visit the <a href="' + campaignDirectoryHref + '">campaign directory</a> to browse spoiler-protected stories.</p>',
     '</section>',
   )
   return lines.join("\n")
