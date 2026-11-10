@@ -77,6 +77,9 @@ jobs:
       - name: Generate campaign directory and archive
         run: node scripts/generate-campaign-directory.mjs content
 
+      - name: Audit published campaign metadata and navigation
+        run: node scripts/audit-publication-preflight.mjs content
+
       - name: Generate reader preference campaign list
         run: node scripts/generate-preferences-campaigns.mjs content
 
