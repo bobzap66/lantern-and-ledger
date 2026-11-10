@@ -384,6 +384,44 @@ node scripts/normalize-campaign-images.mjs ../Inner_Sea_Region_Obsidian_Prototyp
 Without `--write`, the script is a validator. Production runs that validation and fails on missing,
 misnamed, or incorrectly sized derivatives. It never recrops campaign art during deployment.
 
+## Campaign reading paths
+
+Campaign landing pages gain a shared, responsive **Read This Campaign** guide during
+`scripts/generate-homepage-recents.mjs`. The generator inserts a bounded
+`CAMPAIGN_READING_PATH_START` / `CAMPAIGN_READING_PATH_END` block directly after the
+campaign's existing `.campaign-primary-nav` (or before the campaign recent-notes
+block when there is no primary navigation). The shared styling lives in
+`quartz/styles/campaign-page-theme.scss` and inherits campaign/publication colors.
+
+The guide derives its links from published records, without duplicating the
+existing campaign-specific navigation:
+
+- **Start at the Beginning** uses the lowest numbered session entry.
+- **The Story So Far** uses the campaign's already curated primary-navigation link.
+- **Latest Session** (or **Final Session** for an archived campaign) uses the highest
+  numbered session entry.
+- When numbering is missing, an existing session-archive link may be used
+  instead. Redundant destinations are suppressed, and no guide is shown unless
+  at least two useful destinations exist.
+
+Recognized session entry types include `session-note`, `session-report`, and
+`session`. Session notes inside a `Session Notes` directory are also recognized.
+Publishing discovery respects `draft`, `publish`, `unlisted`, and `hidden`
+metadata. A new campaign can use the same guide without a custom UI component.
+
+## Recent content and archive visibility
+
+`generate-homepage-recents.mjs` includes `session-report` records and the
+`Sessions` directory when selecting homepage editorial entries. Date-only
+metadata is anchored at noon UTC before formatting in the site's New York
+timezone, avoiding one-day display shifts.
+
+`generate-campaign-directory.mjs` derives home and directory cards from the
+same campaign root metadata. Both surfaces show active and upcoming campaigns;
+completed campaigns are reached through the archive card. The archive card is
+omitted when no completed campaigns exist. An empty dedicated archive page
+continues to show a helpful empty state.
+
 ## Campaign timelines
 
 Generator:
