@@ -16,6 +16,7 @@ import { PageTypeDispatcher } from "./quartz/plugins/pageTypes"
 import CharacterVignettes from "./quartz/components/CharacterVignettes"
 import ChapterLanding from "./quartz/components/ChapterLanding"
 import HomepageEditorialCards from "./quartz/components/HomepageEditorialCards"
+import ReadingRoomRuntime from "./quartz/components/ReadingRoomRuntime"
 import LegacySeriesNavCleanup from "./quartz/components/LegacySeriesNavCleanup"
 import ReadingProgress from "./quartz/components/ReadingProgress"
 import Advertisement from "./quartz/components/Advertisement"
@@ -41,6 +42,7 @@ componentRegistry.setOptionOverrides("@quartz-community/explorer", {
 const characterVignettes = CharacterVignettes()
 const chapterLanding = ChapterLanding()
 const homepageEditorialCards = HomepageEditorialCards()
+const readingRoomRuntime = ReadingRoomRuntime()
 const legacySeriesNavCleanup = LegacySeriesNavCleanup()
 const readingProgress = ReadingProgress()
 const sidebarAdvertisement = Advertisement({ placement: "sidebar" })
@@ -67,6 +69,7 @@ const localLayout = {
     responsiveCompatibility,
     legacySeriesNavCleanup,
     homepageEditorialCards,
+    readingRoomRuntime,
     readingProgress,
     characterVignettes,
     sessionArchiveActions,
@@ -82,6 +85,7 @@ componentRegistry.register("explorer-curator", explorerCurator, "local")
 componentRegistry.register("responsive-compatibility", responsiveCompatibility, "local")
 componentRegistry.register("legacy-series-nav-cleanup", legacySeriesNavCleanup, "local")
 componentRegistry.register("homepage-editorial-cards", homepageEditorialCards, "local")
+componentRegistry.register("reading-room-runtime", readingRoomRuntime, "local")
 componentRegistry.register("reading-progress", readingProgress, "local")
 componentRegistry.register("character-vignettes", characterVignettes, "local")
 componentRegistry.register("chapter-landing", chapterLanding, "local")
