@@ -50,6 +50,17 @@ const CARD_CSS = `
   cursor: inherit;
 }
 
+.isr-character-card-image--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--tertiary) 25%, var(--lightgray) 75%);
+  color: var(--darkgray);
+  font-family: var(--headerFont);
+  font-size: 2rem;
+  font-weight: 700;
+}
+
 .isr-character-card-copy {
   display: flex;
   flex: 1;
@@ -153,6 +164,22 @@ function wikilinkTarget(value: unknown) {
   return (match ? match[1] : value).replaceAll("\\", "/").replace(/\.md$/i, "")
 }
 
+// Resolve a card selection to its canonical note path, not its displayed title.
+// This allows one campaign to feature characters whose biographies live in another.
+function normalizeCharacterPath(value: unknown, sourceDirectory: string) {
+  const target = wikilinkTarget(value).trim().replaceAll("\\", "/").replace(/^\/+/, "")
+  if (!target) return ""
+
+  const vaultRelative = /^(?:Lantern and Ledger|Beacon and Bulletin|Campaigns|Atlas|Bestiary|Rules|World)\//i.test(target)
+  const resolved = vaultRelative ? target : path.posix.join(sourceDirectory, target)
+  return path.posix
+    .normalize(resolved)
+    .replace(/^(\.\/)+/, "")
+    .replace(/\.md$/i, "")
+    .replace(/\/index$/i, "")
+    .toLowerCase()
+}
+
 function characterKey(
   value: unknown,
   sourcePath: string,
@@ -178,6 +205,7 @@ function characterKey(
 export const CharacterCards: QuartzTransformerPlugin = () => {
   let root = ""
   let characters: CharacterNote[] = []
+  let charactersByPath = new Map<string, CharacterNote>()
   let vignetteCounts = new Map<string, number>()
 
   const ensureIndex = (vaultRoot: string) => {
@@ -193,6 +221,12 @@ export const CharacterCards: QuartzTransformerPlugin = () => {
       }
     })
     characters = all.filter((note) => note.frontmatter?.role === "player-character")
+    charactersByPath = new Map(
+      characters.map((character) => [
+        normalizeCharacterPath(character.relativePath, ""),
+        character,
+      ]),
+    )
     const characterTitlesByPath = new Map(
       characters.map((note) => [
         note.relativePath.replaceAll("\\", "/").replace(/\.md$/i, "").toLowerCase(),
@@ -235,16 +269,31 @@ export const CharacterCards: QuartzTransformerPlugin = () => {
           const wantedGroup = typeof query.group === "string" ? query.group.trim().toLowerCase() : ""
           const excludedGroup = typeof query.exclude_group === "string" ? query.exclude_group.trim().toLowerCase() : ""
           const recursive = query.recursive === true
+          const includedPaths = Array.isArray(query.include)
+            ? query.include
+                .map((value: unknown) => normalizeCharacterPath(value, currentDirectory))
+                .filter((value: string) => value.length > 0)
+            : []
+          const seenIncluded = new Set<string>()
+          const candidates = includedPaths.length > 0
+            ? includedPaths.flatMap((includedPath: string) => {
+                const character = charactersByPath.get(includedPath)
+                if (!character || seenIncluded.has(character.relativePath)) return []
+                seenIncluded.add(character.relativePath)
+                return [character]
+              })
+            : characters.filter((character) => {
+                const characterDirectory = path.dirname(character.relativePath).replaceAll("\\", "/")
+                return characterDirectory === currentDirectory || (recursive && characterDirectory.startsWith(`${currentDirectory}/`))
+              })
 
-          const cards = characters
-            .filter((character) => {
-              const characterDirectory = path.dirname(character.relativePath).replaceAll("\\", "/")
-              return characterDirectory === currentDirectory || (recursive && characterDirectory.startsWith(`${currentDirectory}/`))
-            })
+          const cards = candidates
             .filter((character) => !wantedStatus || String(character.frontmatter?.status ?? "").trim().toLowerCase() === wantedStatus)
             .filter((character) => !wantedGroup || String(character.frontmatter?.card_group ?? "").trim().toLowerCase() === wantedGroup)
             .filter((character) => !excludedGroup || String(character.frontmatter?.card_group ?? "").trim().toLowerCase() !== excludedGroup)
-            .sort((a, b) => Number(a.frontmatter?.card_order ?? 999) - Number(b.frontmatter?.card_order ?? 999) || String(a.frontmatter?.title ?? "").localeCompare(String(b.frontmatter?.title ?? "")))
+            .sort((a, b) => includedPaths.length > 0
+              ? 0
+              : Number(a.frontmatter?.card_order ?? 999) - Number(b.frontmatter?.card_order ?? 999) || String(a.frontmatter?.title ?? "").localeCompare(String(b.frontmatter?.title ?? "")))
             .map((character) => {
               const fm = character.frontmatter
               const title = fm.title ?? path.basename(character.relativePath, ".md")
@@ -261,7 +310,7 @@ export const CharacterCards: QuartzTransformerPlugin = () => {
                 : `./${escapeHtml(encodeRelativeUrl(nestedPath))}`
               const image = portrait
                 ? `<img class="isr-character-card-image" src="${encodeRelativeUrl(path.relative(sourceDirectory, path.resolve(vaultRoot, portrait)))}" alt="${escapeHtml(portraitAlt)}">`
-                : ""
+                : `<div class="isr-character-card-image isr-character-card-image--placeholder" role="img" aria-label="No portrait available for ${escapeHtml(title)}"><span aria-hidden="true">${escapeHtml(String(title).trim().split(/\\s+/).slice(0, 2).map((word) => word[0] ?? "").join("").toUpperCase())}</span></div>`
               return [
                 '<article class="isr-character-card">',
                 `<a href="${href}" aria-label="Open ${escapeHtml(title)} dossier">`,
