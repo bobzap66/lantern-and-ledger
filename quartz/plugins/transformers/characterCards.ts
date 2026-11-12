@@ -310,7 +310,7 @@ export const CharacterCards: QuartzTransformerPlugin = () => {
                 : `./${escapeHtml(encodeRelativeUrl(nestedPath))}`
               const image = portrait
                 ? `<img class="isr-character-card-image" src="${encodeRelativeUrl(path.relative(sourceDirectory, path.resolve(vaultRoot, portrait)))}" alt="${escapeHtml(portraitAlt)}">`
-                : `<div class="isr-character-card-image isr-character-card-image--placeholder" role="img" aria-label="No portrait available for ${escapeHtml(title)}"><span aria-hidden="true">${escapeHtml(String(title).trim().split(/\\s+/).slice(0, 2).map((word) => word[0] ?? "").join("").toUpperCase())}</span></div>`
+                : `<div class="isr-character-card-image isr-character-card-image--placeholder" role="img" aria-label="No portrait available for ${escapeHtml(title)}"><span aria-hidden="true">${escapeHtml(String(title).trim().split(/\s+/).slice(0, 2).map((word) => word[0] ?? "").join("").toUpperCase())}</span></div>`
               return [
                 '<article class="isr-character-card">',
                 `<a href="${href}" aria-label="Open ${escapeHtml(title)} dossier">`,
