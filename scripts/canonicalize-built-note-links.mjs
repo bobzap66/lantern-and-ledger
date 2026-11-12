@@ -113,8 +113,14 @@ function suffixFor(originalHref) {
 function legacyPublicationCandidates(pathname) {
   const candidates = [pathname]
 
-  if (pathname.includes("percent2c")) {
-    candidates.push(pathname.replace(/percent2c/g, ","))
+  // Quartz can turn an encoded comma (%2C) into "-percent2c" in
+  // generated links even though the emitted page keeps the literal comma.
+  // Replace the whole escaped sequence so no stray hyphen remains.
+  if (/-percent2c/i.test(pathname)) {
+    candidates.push(pathname.replace(/-percent2c/gi, ","))
+  }
+  if (/percent2c/i.test(pathname)) {
+    candidates.push(pathname.replace(/percent2c/gi, ","))
   }
 
   if (pathname === "/Lantern-and-Ledger" || pathname.startsWith("/Lantern-and-Ledger/")) {
