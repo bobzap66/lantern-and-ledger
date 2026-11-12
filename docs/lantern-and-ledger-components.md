@@ -73,7 +73,15 @@ group: willowshore-company
 exclude_group: inactive
 # Include matching character notes in child folders.
 recursive: true
+# Instead of directory discovery, use an exact, ordered roster of canonical paths.
+include:
+  - "[[../../Abomination Vaults/Characters/August Shepard]]"
+  - "[[./Sylas Starling]]"
 ```
+
+The `include` list overrides the default same-directory (or `recursive`) discovery and selects character notes by their canonical **file paths**, not names. Paths can be relative Obsidian wikilinks from the index containing the code block, or vault-root-relative paths. The resulting cards display in the list's order, without duplicates, even if a character's record is stored under a different campaign. Unresolvable entries are skipped rather than matching a same-named person elsewhere. Existing `status`, `group`, and `exclude_group` filters still apply.
+
+This is the preferred way to show returning heroes in a sequel campaign without copying their character notes. The cards link to the existing biographies and reuse their portraits and vignette counts. If a character has no `portrait`, a labeled initials placeholder keeps the card layout intact.
 
 Character records must use:
 
