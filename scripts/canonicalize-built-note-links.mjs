@@ -113,6 +113,10 @@ function suffixFor(originalHref) {
 function legacyPublicationCandidates(pathname) {
   const candidates = [pathname]
 
+  if (pathname.includes("percent2c")) {
+    candidates.push(pathname.replace(/percent2c/g, ","))
+  }
+
   if (pathname === "/Lantern-and-Ledger" || pathname.startsWith("/Lantern-and-Ledger/")) {
     candidates.push(pathname.replace("/Lantern-and-Ledger", "/lantern-and-ledger"))
   }
