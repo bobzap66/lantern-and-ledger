@@ -26,10 +26,8 @@ const Header: QuartzComponent = (props: QuartzComponentProps) => {
   const preferencesControllerPath = `${siteRoot}/static/preferences.js`
   const preferencesStylesPath = `${siteRoot}/static/preferences.css`
   const golarionPageLoaderPath = `${siteRoot}/static/golarion-page-loader.js`
-  // Quartz's Assets emitter slugifies file paths as it copies them into public/.
-  // The source folder is "lantern and ledger branding", so its published path is
-  // "lantern-and-ledger-branding" rather than a URL-encoded space-separated path.
-  const brandingRoot = `${siteRoot}/assets/images/lantern-and-ledger-branding`
+  // Match the canonical vault directory; publication externalizes these URLs to R2.
+  const brandingRoot = `${siteRoot}/assets/images/lantern-and-ledger/branding`
   const mastheadPath = `${brandingRoot}/wide_vintage_newspaper_masthead_style_illustration.webp`
   const compactPath = `${brandingRoot}/lantern-and-ledger-compact.webp`
   const beaconMastheadPath = `${siteRoot}/static/branding/beacon-and-bulletin-masthead.webp`
