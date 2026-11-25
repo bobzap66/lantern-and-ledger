@@ -767,3 +767,17 @@ When adding or materially changing a component:
 4. Update this reference with syntax, options, fallback behavior, and implementation path.
 5. Confirm mobile behavior and dark mode.
 6. Confirm the component remains outside `docs/` only when it is actual publishable campaign content; this documentation itself must remain internal to the Quartz repository.
+
+## Formal editorial session-note bylines
+
+`ArticleAuthorCards` recognizes canonical `type: session-note` records with
+`format: news-article` or `format: chronicle` and an explicit in-world
+`publication` of `The Lantern and Ledger`, `Lantern & Ledger`, or
+`Beacon & Bulletin`. These receive the shared byline card, contribute to its
+published-post count, and appear on the matching author's archive alongside
+articles. Draft/unpublished records remain excluded from the archive index.
+Ordinary session reports without these editorial fields retain their existing behavior.
+
+A staff profile uses `type: author`, `role`, `short_bio`, and a
+vault-relative `portrait`; `person` links an editorial identity to an existing
+character biography. Match the article's `author` to the profile title.
