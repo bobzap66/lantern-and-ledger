@@ -40,7 +40,7 @@ export default (() => {
         ? joinSegments(baseDir, "static/branding/greene-gaming-favicon.webp")
         : joinSegments(
             baseDir,
-            "assets/images/lantern-and-ledger-branding/lantern-and-ledger-favicon.webp",
+            "assets/images/lantern-and-ledger/branding/lantern-and-ledger-favicon.webp",
           )
     const children = toChildArray(rendered.props.children).filter((child) => {
       if (!child || typeof child !== "object") return true
