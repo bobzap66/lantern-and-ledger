@@ -202,7 +202,7 @@ author: Joy
   }
 })
 
-test("formal editorial session notes receive cards and enter the author's archive", () => {
+test("all session notes receive cards and enter the author archive without editorial metadata", () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "serial-author-"))
   try {
     const profile = writeNote(root, "Staff/Sylas Starling.md", `---
@@ -217,14 +217,14 @@ short_bio: A theatrical account of extraordinary adventures.
       ["Second.md", "Second Installment", "news-article", "4724-Gozran-13", ""],
       ["Chronicle.md", "A Chronicle", "chronicle", "4724-Gozran-1", ""],
       ["Draft.md", "Unpublished Draft", "news-article", "4724-Gozran-20", "draft: true"],
-      ["Private.md", "Private Notes", "session-report", "4724-Gozran-1", ""],
+      ["Ordinary.md", "Ordinary Notes", "session-report", "4724-Gozran-1", ""],
     ].map(([name, title, format, date, extra]) => ({
       title,
       file: writeNote(root, name, `---
 title: ${title}
 type: session-note
 format: ${format}
-publication: The Lantern and Ledger
+${name === "Ordinary.md" ? "" : "publication: The Lantern and Ledger"}
 publication_date: ${date}
 author: Sylas Starling
 ${extra}
@@ -238,18 +238,19 @@ ${extra}
     transform(tree, {path: notes[1].file})
     const html = tree.children.find((n: any) => n.type === "html")?.value ?? ""
     assert.match(html, /isr-author-card/)
-    assert.match(html, /3 published posts/)
+    assert.match(html, /4 published posts/)
     const authorTree: any = {children: []}
     transform(authorTree, {path: profile})
     const archive = authorTree.children.find((n: any) => n.type === "html")?.value ?? ""
     assert.match(archive, /First Installment/)
     assert.match(archive, /Second Installment/)
     assert.match(archive, /A Chronicle/)
-    assert.doesNotMatch(archive, /Unpublished Draft|Private Notes/)
+    assert.doesNotMatch(archive, /Unpublished Draft/)
+    assert.match(archive, /Ordinary Notes/)
     assert.ok(archive.indexOf("Second Installment") < archive.indexOf("First Installment"))
     const privateTree: any = {children: []}
     transform(privateTree, {path: notes[4].file})
-    assert.equal(privateTree.children.length, 0)
+    assert.match(privateTree.children[0].value, /isr-author-card/)
   } finally {
     fs.rmSync(root, {recursive: true, force: true})
   }

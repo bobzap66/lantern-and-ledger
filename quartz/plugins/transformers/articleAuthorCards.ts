@@ -334,13 +334,8 @@ function isBeaconPublishedPost(frontmatter: Record<string, any> | undefined) {
 }
 
 
-function isPublishedEditorialSession(frontmatter: Record<string, any> | undefined) {
-  const type = String(frontmatter?.type ?? "").trim().toLowerCase()
-  const format = String(frontmatter?.format ?? "").trim().toLowerCase()
-  const publication = String(frontmatter?.publication ?? "").trim().toLowerCase()
-  return type === "session-note" &&
-    ["news-article", "chronicle"].includes(format) &&
-    ["the lantern and ledger", "lantern & ledger", "beacon & bulletin"].includes(publication)
+function isSessionNote(frontmatter: Record<string, any> | undefined) {
+  return String(frontmatter?.type ?? "").trim().toLowerCase() === "session-note"
 }
 
 function relativeSlugHref(fromRelativePath: string, toSlug: any) {
@@ -397,7 +392,7 @@ export const ArticleAuthorCards: QuartzTransformerPlugin = () => {
       const type = String(note.frontmatter?.type ?? "")
         .trim()
         .toLowerCase()
-      if (type === "article" || isBeaconPublishedPost(note.frontmatter) || isPublishedEditorialSession(note.frontmatter)) {
+      if (type === "article" || isBeaconPublishedPost(note.frontmatter) || isSessionNote(note.frontmatter)) {
         const key = authorKey(note.frontmatter?.author)
         if (key) {
           const author = authors.get(key)
@@ -408,7 +403,7 @@ export const ArticleAuthorCards: QuartzTransformerPlugin = () => {
           posts.push(note)
           postsByAuthor.set(canonicalKey, posts)
 
-          if (type === "article" || isPublishedEditorialSession(note.frontmatter)) {
+          if (type === "article" || isSessionNote(note.frontmatter)) {
             const articles = articlesByAuthor.get(canonicalKey) ?? []
             articles.push(note)
             articlesByAuthor.set(canonicalKey, articles)
@@ -477,7 +472,7 @@ export const ArticleAuthorCards: QuartzTransformerPlugin = () => {
             const isBeaconAuthor = String(sourceFm?.site_publication ?? sourceFm?.publication ?? "")
               .trim()
               .toLowerCase() === "beacon & bulletin"
-            // Include formal editorial session notes alongside articles. Beacon profiles
+            // Include session notes alongside articles. Beacon profiles
             // also include their published vignette and legacy session-report posts.
             const publishedWork = isBeaconAuthor
               ? (postsByAuthor.get(key) ?? [])
@@ -545,7 +540,7 @@ export const ArticleAuthorCards: QuartzTransformerPlugin = () => {
           const isCampaignEditorial =
             sourceType === "campaign" && typeof sourceFm?.editorial_author === "string" &&
             sourceFm.editorial_author.trim().length > 0
-          if (sourceType === "article" || isBeaconPublishedPost(sourceFm) || isPublishedEditorialSession(sourceFm) || isCampaignEditorial) {
+          if (sourceType === "article" || isBeaconPublishedPost(sourceFm) || isSessionNote(sourceFm) || isCampaignEditorial) {
             const key = authorKey(isCampaignEditorial ? sourceFm?.editorial_author : sourceFm?.author)
             const author = authors.get(key)
             if (author) {
