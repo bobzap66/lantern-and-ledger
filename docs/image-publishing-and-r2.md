@@ -13,6 +13,15 @@ R2 is a published mirror, not a second authoring location. Do not edit the R2 co
 
 For Curtain Call, keep archival master audio such as WAV files outside the website repository. Only the web-ready MP3 belongs under `assets/audio/curtain-call/`.
 
+## Publication branding paths
+
+Lantern & Ledger's desktop masthead, compact mobile logo, and favicon live in
+`assets/images/lantern-and-ledger/branding/` in the vault. Both `Header.tsx`
+and `PublicationHead.tsx` must reference that directory. Preserve the slash
+between the campaign/publication directory and `branding`; the obsolete
+`lantern-and-ledger-branding` directory no longer exists. These references
+follow the same build validation and R2 externalization as other vault images.
+
 ## Vault-to-R2 synchronization
 
 Changes under either `assets/images/**` or `assets/audio/**` on the vault's `main` branch trigger the vault workflow `.github/workflows/sync-images-to-r2.yml`. The filename is historical; the workflow now publishes both asset families.
